@@ -30,4 +30,6 @@
 
 	<!-- 静态资源访问处理方式 -->
 	<mvc:default-servlet-handler />
+	
+	<import resource="spring-context.xml" />
 </beans>
