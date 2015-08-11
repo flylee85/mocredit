@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <pluginGroups>
+    <pluginGroup>org.codehaus.cargo</pluginGroup>
+    <pluginGroup>org.mortbay.jetty</pluginGroup>
+  </pluginGroups>
+	
+  <localRepository>D:/maven</localRepository>
+  
+  <proxies>
+  </proxies>
+
+  <servers>
+	 <server>
+		<id>local</id>
+		<username>deployer</username>
+		<password>deployer</password>
+	</server>
+    <server>
+      <id>incito-releases</id>
+      <username>admin</username>
+      <password>admin123</password>
+    </server>
+    <server>
+      <id>incito-snapshots</id>
+      <username>admin</username>
+      <password>admin123</password>
+    </server>
+    <server>
+      <id>tomcat-deploy</id>
+      <username>admin</username>
+      <password>admin123</password>
+    </server>
+  </servers>
+
+  <mirrors>
+  <!--
+	<mirror>
+		<id>nexus-osc</id>
+		<mirrorOf>*</mirrorOf>
+		<name>Nexus osc</name>
+		<url>http://maven.oschina.net/content/groups/public/</url>
+	</mirror>
+-->
+    <mirror>
+      <id>incito</id>
+      <mirrorOf>central</mirrorOf>
+      <name>Incito Nexus Repository</name>
+      <url>http://192.168.11.112/nexus/content/groups/public</url>
+    </mirror>
+	
+  </mirrors>
+
+  <profiles>
+    <profile>
+      <id>incito</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>http://central</url>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </releases>
+        </repository>
+        <repository>
+          <releases>
+            <enabled>false</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>warn</checksumPolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <id>incito-snapshots</id>
+          <name>Incito Snapshots</name>
+          <url>http://192.168.11.112/nexus/content/repositories/snapshots</url>
+          <layout>default</layout>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <url>http://central</url>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+      <properties>
+        <log.lvl>warn</log.lvl>
+        <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
+      </properties>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>incito</activeProfile>
+  </activeProfiles>
+</settings>
