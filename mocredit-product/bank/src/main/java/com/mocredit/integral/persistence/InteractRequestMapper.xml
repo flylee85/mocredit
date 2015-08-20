@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.mocredit.integral.persistence.InteractRequestMapper">
+
+    <insert id="save" parameterType="com.mocredit.integral.entity.Interact" >
+       INSERT INTO ti_payment_in_request_log(ip,interface,request,`TIMESTAMP`,order_id)
+       VALUES(#{ip},#{reqInterface},#{request},now(),#{orderId})
+    </insert>
+
+</mapper>

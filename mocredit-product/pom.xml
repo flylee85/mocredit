@@ -12,6 +12,7 @@
 	<!-- 定义产品模块组件 -->
   <modules>
     <module>integral</module>
+	<module>bank</module>
   </modules>
   
   <build>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+    <!-- ===================================================================== -->
+    <!--  定义全局输出适配器                                                      -->
+    <!-- ===================================================================== -->
+    <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}]-[%c]-[%t] %x - %m%n"/>
+        </layout>
+        <!--过滤器设置输出的级别-->       
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">       
+            <param name="levelMin" value="ERROR" />       
+            <param name="AcceptOnMatch" value="true" />       
+        </filter> 
+    </appender>
+<category name="org.apache.axis">
+	<priority value="error"></priority>
+</category>
+    <!-- ===================================================================== -->
+    <!--  根日志记录器                                                          -->
+    <!-- ===================================================================== -->
+    <root>
+        <level value="ERROR"/>
+        <appender-ref ref="consoleAppender"/>
+    </root>
+</log4j:configuration>
