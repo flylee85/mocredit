@@ -23,6 +23,7 @@ public class InRequestLog {
 	private Date timestamp;
 	private String orderId;
 
+
 	public Integer getUuid() {
 		return uuid;
 	}

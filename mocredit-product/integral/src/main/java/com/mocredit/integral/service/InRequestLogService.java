@@ -7,5 +7,4 @@ import com.mocredit.integral.entity.InRequestLog;
  *
  */
 public interface InRequestLogService  extends BaseService<InRequestLog>{
-
 }

@@ -14,5 +14,6 @@ public interface InRequestLogMapper {
 	 * @param t
 	 * @return
 	 */
-	int save(@Param(value = "t") InRequestLog t);
+	int save(InRequestLog t);
+
 }

@@ -8,5 +8,11 @@ package com.mocredit.integral.service;
  * @param <T>
  */
 public interface BaseService<T> {
+	/**
+	 * 保存信息模板方法
+	 * 
+	 * @param t
+	 * @return
+	 */
 	boolean save(T t);
 }

@@ -30,7 +30,6 @@ public class BaseController {
 	protected static final int FAIL = 1;
 	protected static final int PAGE_SIZE = 10;
 
-
 	/**
 	 * 获取请求参数 返回Map 格式
 	 * 
@@ -70,7 +69,8 @@ public class BaseController {
 		// 获取文件上传组件的request请求对象
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req;
 		// 使用map接收页面表单参数信息
-		Map<String, Object> params = new HashMap(multipartRequest.getParameterMap());
+		Map<String, Object> params = new HashMap(
+				multipartRequest.getParameterMap());
 
 		// 由于接收的map值 Object 内容是String[]格式，在此需要格式转换
 		Set<String> keys = params.keySet();
@@ -95,7 +95,9 @@ public class BaseController {
 
 	/**
 	 * 输出为JSON字符串
-	 * @param result 是否成功，0：成功，非零：失败（不同数值不同原因）
+	 * 
+	 * @param result
+	 *            是否成功，0：成功，非零：失败（不同数值不同原因）
 	 * @return JSON字符串
 	 */
 	protected String renderJSONString(int result) {
@@ -103,34 +105,40 @@ public class BaseController {
 		map.put("code", result);
 		return JSON.toJSONString(map);
 	}
-	
+
 	/**
 	 * 输出为JSON字符串
-	 * @param result 是否成功，0：成功，非零：失败（不同数值不同原因）
-	 * @param data 要转换为JSON字符串的对象
+	 * 
+	 * @param result
+	 *            是否成功，0：成功，非零：失败（不同数值不同原因）
+	 * @param data
+	 *            要转换为JSON字符串的对象
 	 * @return JSON字符串
 	 */
-	protected String renderJSONString(int result, Object data){
+	protected String renderJSONString(int result, Object data) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("code", result);
 		map.put("data", data);
 		return JSON.toJSONString(map);
 	}
-	
+
 	/**
 	 * 输出为JSON字符串
-	 * @param result 是否成功，0：成功，非零：失败（不同数值不同原因）
-	 * @param data 要转换为JSON字符串的List对象
+	 * 
+	 * @param result
+	 *            是否成功，0：成功，非零：失败（不同数值不同原因）
+	 * @param data
+	 *            要转换为JSON字符串的List对象
 	 * @return JSON字符串
 	 */
-	protected <T> String renderJSONString(int result, List<T> data){
+	protected <T> String renderJSONString(int result, List<T> data) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("code", result);
 		map.put("data", data);
 		return JSON.toJSONString(map);
 	}
-	
-	protected <T> String renderJSONString(int result, Map<String,T> data) {
+
+	protected <T> String renderJSONString(int result, Map<String, T> data) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("code", result);
 		map.put("data", data);

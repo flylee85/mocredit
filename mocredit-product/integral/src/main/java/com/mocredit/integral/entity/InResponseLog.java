@@ -9,16 +9,21 @@ import java.util.Date;
  * 
  */
 public class InResponseLog {
-/**
- *  uuid                 int not null auto_increment,
- *  request_id           int comment '请求记录ID',
- *  response             blob comment '响应数据 json格式',
- *  timestamp            datetime comment '时间戳 yyyyMMddHHmmssSSS',
- */
+	/**
+	 * uuid int not null auto_increment, request_id int comment '请求记录ID',
+	 * response blob comment '响应数据 json格式', timestamp datetime comment '时间戳
+	 * yyyyMMddHHmmssSSS',
+	 */
 	private Integer uuid;
 	private Integer requestId;
 	private String response;
 	private Date timestamp;
+
+	public InResponseLog(Integer requestId, String response) {
+		super();
+		this.requestId = requestId;
+		this.response = response;
+	}
 
 	public Integer getUuid() {
 		return uuid;

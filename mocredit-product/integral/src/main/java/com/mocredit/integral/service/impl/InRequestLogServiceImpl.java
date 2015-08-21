@@ -12,7 +12,7 @@ import com.mocredit.integral.service.InRequestLogService;
  * @author ytq
  * 
  */
-@Service 
+@Service
 public class InRequestLogServiceImpl implements InRequestLogService {
 	@Autowired
 	private InRequestLogMapper inRequestLogMapper;
@@ -21,5 +21,4 @@ public class InRequestLogServiceImpl implements InRequestLogService {
 	public boolean save(InRequestLog t) {
 		return inRequestLogMapper.save(t) > 0;
 	}
-
 }

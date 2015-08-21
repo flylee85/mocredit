@@ -2,9 +2,10 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mocredit.integral.persistence.InRequestLogMapper">
-	<insert id="save" parameterType="com.mocredit.integral.entity.InRequestLog">
+	<insert id="save" useGeneratedKeys="true" keyProperty="uuid"
+		parameterType="com.mocredit.integral.entity.InRequestLog">
 		insert into
 		`ti_in_request_log`(ip,interface,request,timestamp,order_id)
-		values(#{t.ip},#{t.interfaceUrl},#{t.request},#{t.timestamp},#{t.orderId})
+		values(#{ip},#{interfaceUrl},#{request},now(),#{orderId})
 	</insert>
 </mapper>
