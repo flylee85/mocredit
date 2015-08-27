@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.mocredit.bank.persistence.InResponseMapper">
+
+    <insert id="save" parameterType="com.mocredit.bank.entity.InResponse"  useGeneratedKeys="true" keyProperty="uuid">
+       INSERT INTO ti_payment_in_response_log(request_id,response,`TIMESTAMP`)
+       VALUES(#{requestId},#{response},now())
+    </insert>
+
+</mapper>

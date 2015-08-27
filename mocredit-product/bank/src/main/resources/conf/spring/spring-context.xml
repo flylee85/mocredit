@@ -32,21 +32,49 @@
 	<!-- define the SqlSessionFactory -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="typeAliasesPackage" value="com.mocredit.integral.entity" />
+		<property name="typeAliasesPackage" value="com.mocredit.bank.entity" />
 		<property name="plugins">  
             <ref bean="paginationInterceptor"/>  
         </property> 
 	</bean>
-	<bean id="interactRequestService" class="com.mocredit.integral.service.impl.InteractRequestServiceImpl"> 
-	</bean> 
 	<!-- scan for mappers and let them be autowired -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.mocredit.integral.persistence" />
+		<property name="basePackage" value="com.mocredit.bank.persistence" />
 	</bean>
-	
+	<!-- ****************** **********************定时任务 ********** ****************************** -->
+	<!-- 调度器 -->
+	 <bean name="quartzFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="citicSessionTrigger"/>
+				<ref bean="citicCheckAccountTrigger"/>
+			</list>
+		</property>
+	</bean>
+	<!-- 中信银行定时保持链接 -->
+	<bean name="citicTask" class="com.mocredit.bank.task.CiticTask"></bean>
+	<!-- 任务调度类 -->
+	<bean id="citicSessionJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="citicTask"/>
+		<property name="targetMethod" value="maintainSession"/>
+		<property name="concurrent" value="false"/>
+	</bean>
+	<bean id="citicCheckAccountJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="citicTask"/>
+		<property name="targetMethod" value="checkAccount"/>
+		<property name="concurrent" value="false"/>
+	</bean>
+	<!-- 触发器，每25分钟执行一次 -->
+	<bean name="citicSessionTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="citicSessionJob"/>
+		<property name="cronExpression" value="0 0/25 * * * ?"/>
+	</bean>
+	<bean name="citicCheckAccountTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="citicCheckAccountJob"/>
+		<property name="cronExpression" value="0 40 23 * * ?"/>
+	</bean>
 	<!--事物处理方式 使用@Transactional 标注在 方法上-->
 	<tx:annotation-driven transaction-manager="transactionManager"/> 
-	
 	<bean id="paginationInterceptor" class="com.mocredit.base.pagehelper.PageHelper">
 		<property name="dialect" value="mysql" />
 	</bean>
