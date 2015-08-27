@@ -5,6 +5,6 @@
 	<insert id="save" parameterType="com.mocredit.integral.entity.OutResponseLog">
 		insert into
 		`ti_out_response_log`(request_id,response,timestamp)
-		values(#{t.requestId},#{t.request},#{t.timestamp})
+		values(#{t.requestId},#{t.response},now())
 	</insert>
 </mapper>

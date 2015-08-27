@@ -4,7 +4,17 @@
 <mapper namespace="com.mocredit.integral.persistence.OrderMapper">
 	<insert id="save" parameterType="com.mocredit.integral.entity.Order">
 		insert into
-		`ti_order`(request_id,card_num,bank,shop_id,shop_name,store_id,store_name,activity_id,activity_name,device,amount,order_id,pos_id,pos_time,ctime)
-		values(#{t.requestId},#{t.cardNum},#{t.bank},#{t.shopId},#{t.shopName},#{t.storeId},#{t.storeName},#{t.activityId},#{t.activityName},#{t.device},#{t.amount},#{t.orderId},#{t.posId},#{t.posTime},now())
+		`ti_order`(request_id,card_num,bank,shop_id,shop_name,store_id,store_name,activity_id,activity_name,device,amount,order_id,status,ctime)
+		values(#{t.requestId},#{t.cardNum},#{t.bank},#{t.shopId},#{t.shopName},#{t.storeId},#{t.storeName},#{t.activityId},#{t.activityName},#{t.device},#{t.amount},#{t.orderId},#{t.status},now())
 	</insert>
+	<select id="getOrderByOrderId" resultType="int">
+		select count(1) from
+		`ti_order` where order_id=#{orderId}
+	</select>
+	<update id="updateStatusByOrderId">
+		update `ti_order`
+		set
+		status=#{status} where
+		order_id=#{orderId}
+	</update>
 </mapper>

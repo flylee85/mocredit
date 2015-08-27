@@ -1,7 +1,5 @@
 package com.mocredit.integral.persistence;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.mocredit.integral.entity.InRequestLog;
 
 /**

@@ -15,4 +15,21 @@ public interface OrderMapper {
 	 * @return
 	 */
 	int save(@Param(value = "t") Order t);
+
+	/**
+	 * 更加订单id查询订单
+	 * 
+	 * @param orderId
+	 * @return
+	 */
+	int getOrderByOrderId(String orderId);
+
+	/**
+	 * 根据订单Id更新订单状态
+	 * 
+	 * @param orderId
+	 * @param status
+	 * @return
+	 */
+	int updateStatusByOrderId(String orderId, Integer status);
 }

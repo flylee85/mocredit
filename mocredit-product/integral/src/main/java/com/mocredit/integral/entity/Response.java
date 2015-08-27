@@ -7,14 +7,17 @@ package com.mocredit.integral.entity;
  * 
  */
 public class Response {
-	private String code;
-	private String errMsg;
+	private String success;
+	private String errorMsg;
+	private String errorCode;
 	private Object data;
 
-	public Response(String code, String errMsg, Object data) {
+	public Response(String success, String errorMsg, String errorCode,
+			Object data) {
 		super();
-		this.code = code;
-		this.errMsg = errMsg;
+		this.success = success;
+		this.errorMsg = errorMsg;
+		this.errorCode = errorCode;
 		this.data = data;
 	}
 
@@ -22,24 +25,28 @@ public class Response {
 		super();
 	}
 
-	public Response(String code) {
-		this.code = code;
+	public String getSuccess() {
+		return success;
 	}
 
-	public String getCode() {
-		return code;
+	public void setSuccess(String success) {
+		this.success = success;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public String getErrorMsg() {
+		return errorMsg;
 	}
 
-	public String getErrMsg() {
-		return errMsg;
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
 	}
 
-	public void setErrMsg(String errMsg) {
-		this.errMsg = errMsg;
+	public String getErrorCode() {
+		return errorCode;
+	}
+
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
 	}
 
 	public Object getData() {

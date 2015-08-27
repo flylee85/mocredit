@@ -22,8 +22,7 @@ public class Order {
    device               varchar(50) comment '终端ID',
    amount               decimal(10,0) comment '金额',
    order_id             varchar(30) comment '订单号',
-   pos_id               varchar(10) comment 'POS流水号',
-   pos_time             varchar(20) comment 'POS交易时间',
+   status               int(1) comment '1交易完成 2交易撤销'    
    ctime                datetime comment '创建时间',
    primary key (uuid)
  */
@@ -40,8 +39,7 @@ public class Order {
 	private String device;
 	private Integer amount;
 	private String orderId;
-	private String posId;
-	private String posTime;
+	private Integer status;
 	private Date ctime;
 	public Integer getUuid() {
 		return uuid;
@@ -121,23 +119,37 @@ public class Order {
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
 	}
-	public String getPosId() {
-		return posId;
+	public Integer getStatus() {
+		return status;
 	}
-	public void setPosId(String posId) {
-		this.posId = posId;
-	}
-	public String getPosTime() {
-		return posTime;
-	}
-	public void setPosTime(String posTime) {
-		this.posTime = posTime;
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	public Date getCtime() {
 		return ctime;
 	}
 	public void setCtime(Date ctime) {
 		this.ctime = ctime;
+	}
+	@Override
+	public String toString() {
+		return "Order ["
+				+ (uuid != null ? "uuid=" + uuid + ", " : "")
+				+ (requestId != null ? "requestId=" + requestId + ", " : "")
+				+ (cardNum != null ? "cardNum=" + cardNum + ", " : "")
+				+ (bank != null ? "bank=" + bank + ", " : "")
+				+ (shopId != null ? "shopId=" + shopId + ", " : "")
+				+ (shopName != null ? "shopName=" + shopName + ", " : "")
+				+ (storeId != null ? "storeId=" + storeId + ", " : "")
+				+ (storeName != null ? "storeName=" + storeName + ", " : "")
+				+ (activityId != null ? "activityId=" + activityId + ", " : "")
+				+ (activityName != null ? "activityName=" + activityName + ", "
+						: "")
+				+ (device != null ? "device=" + device + ", " : "")
+				+ (amount != null ? "amount=" + amount + ", " : "")
+				+ (orderId != null ? "orderId=" + orderId + ", " : "")
+				+ (status != null ? "status=" + status + ", " : "")
+				+ (ctime != null ? "ctime=" + ctime : "") + "]";
 	}
 		
 }

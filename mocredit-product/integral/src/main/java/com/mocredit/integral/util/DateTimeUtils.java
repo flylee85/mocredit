@@ -8,6 +8,22 @@ import java.util.Date;
 
 public class DateTimeUtils {
 
+	public static String parseYYYYMMDD(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(date);
+	}
+
+	public static String getWeekOfDate(Date dt) {
+		String[] weekDays = { "7", "1", "2", "3", "4", "5", "6" };
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dt);
+		int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+		if (w < 0) {
+			w = 0;
+		}
+		return weekDays[w];
+	}
+
 	public static String dateToStr(java.util.Date aDteValue, String aFmtDate) {
 		String strRtn = null;
 		if (aFmtDate.length() == 0) {
@@ -30,6 +46,7 @@ public class DateTimeUtils {
 		Date a = new Date();
 		return dateToStr(a, "yyyy-MM-dd HH:mm:ss");
 	}
+
 	public static String getDate(String format, int addday) {
 		Date a = new Date();
 		return dateToStr(addday(a, addday), format);
@@ -218,26 +235,32 @@ public class DateTimeUtils {
 		long second1 = between % 60;
 		return "" + day1 + "天" + hour1 + "小时" + minute1 + "分" + second1 + "秒";
 	}
+
 	/**
 	 * 两个时间差值（单位为秒）
-	 * @param statetime 开始时间
-	 * @param endtime 结束时间
-	 * @param format 格式（yyyy-MM-dd HH:mm:ss 或  yyyyMMddHHmmssSSS）
+	 * 
+	 * @param statetime
+	 *            开始时间
+	 * @param endtime
+	 *            结束时间
+	 * @param format
+	 *            格式（yyyy-MM-dd HH:mm:ss 或 yyyyMMddHHmmssSSS）
 	 * @return
 	 * @throws ParseException
 	 */
-	public static long betweensecond(String statetime, String endtime,String format)
-			throws ParseException {
+	public static long betweensecond(String statetime, String endtime,
+			String format) throws ParseException {
 		SimpleDateFormat dfs = new SimpleDateFormat(format);
 		java.util.Date begin = dfs.parse(statetime);
 		java.util.Date end = dfs.parse(endtime);
 		long between = (end.getTime() - begin.getTime()) / 1000;// 除以1000是为了转换成秒
-//		long day1 = between / (24 * 3600);
-//		long hour1 = between % (24 * 3600) / 3600;
-//		long minute1 = between % 3600 / 60;
-//		long second1 = between % 60;
+		// long day1 = between / (24 * 3600);
+		// long hour1 = between % (24 * 3600) / 3600;
+		// long minute1 = between % 3600 / 60;
+		// long second1 = between % 60;
 		return between;
 	}
+
 	/**
 	 * 获取淘宝增量时间段
 	 * 
@@ -303,14 +326,17 @@ public class DateTimeUtils {
 		// System.out.println(state-begin);
 		// System.out.println(getDateofpoor("2011-06-01","2011-05-01 14:11:11"));
 		//
-//		Date[] s = DateTimeUtils.getTaoBaoSandE(30);
-//		System.out.println(s[0]);
-//		System.out.println(s[1]);
-//		if (s.length == 4) {
-//			System.out.println(s[2]);
-//			System.out.println(s[3]);
-//		}
-		System.out.println( DateTimeUtils.betweensecond("20120906203212122",DateTimeUtils.getDate("yyyyMMddHHmmssSSS"),"yyyyMMddHHmmssSSS"));
+		// Date[] s = DateTimeUtils.getTaoBaoSandE(30);
+		// System.out.println(s[0]);
+		// System.out.println(s[1]);
+		// if (s.length == 4) {
+		// System.out.println(s[2]);
+		// System.out.println(s[3]);
+		// }
+		System.out.println(DateTimeUtils
+				.betweensecond("20120906203212122",
+						DateTimeUtils.getDate("yyyyMMddHHmmssSSS"),
+						"yyyyMMddHHmmssSSS"));
 	}
 
 	public static String addDay(String format, int addday) {
