@@ -29,12 +29,8 @@
             org.springframework.web.util.Log4jConfigListener  
         </listener-class>  
     </listener>
-     <filter>
-      <filter-name>myFilter</filter-name>
-      <filter-class>com.mocredit.integral.filter.InteractFilter</filter-class>
-    </filter>
-    <filter-mapping>
-       <filter-name>myFilter</filter-name>
-       <url-pattern>/*</url-pattern>
-    </filter-mapping>  
+    <!-- 商户启动登录 -->
+   <listener>
+    <listener-class>com.mocredit.bank.listener.MerchantInitListener</listener-class>
+  </listener>
 </web-app>

@@ -9,7 +9,6 @@
     <artifactId>mocredit-product</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  
   <artifactId>bank</artifactId>
   <packaging>war</packaging>
   <name>bank</name>
@@ -81,9 +80,14 @@
 		<artifactId>bcprov-jdk15on</artifactId>
 		<version>1.47</version>
 	</dependency>
+	<dependency>
+			<groupId>quartz</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.5.2</version>
+		</dependency>
   </dependencies>
   
   <build>
-    <finalName>integral</finalName>
+    <finalName>bank</finalName>
   </build>
 </project>
