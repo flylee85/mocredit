@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.mocredit.integral.constant.ErrorCodeType;
+import com.mocredit.integral.entity.Activity;
 import com.mocredit.integral.entity.InRequestLog;
 import com.mocredit.integral.entity.Response;
 import com.mocredit.integral.service.ActivityService;
@@ -26,6 +27,7 @@ import com.mocredit.integral.service.InRequestLogService;
 import com.mocredit.integral.service.OrderService;
 import com.mocredit.integral.util.DateEditor;
 import com.mocredit.integral.vo.ActivityVo;
+import com.mocredit.integral.vo.ConfirmInfoVo;
 import com.mocredit.integral.vo.OrderVo;
 
 /**
@@ -81,7 +83,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
 						"");
 			}
 		} catch (Exception e) {
-			LOGGER.error("### payment error param={} ###", param);
+			LOGGER.error("### payment error param={} error={}###", param, e);
 			resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
 			return renderJSONString(false, "积分消费失败", resp.getErrorCode(), "");
 		}
@@ -131,9 +133,10 @@ public class IntegralInterfaceController extends IntegralBaseController {
 		try {
 			JsonNode jsonNode = objectMapper.readTree(param);
 			String orderId = jsonNode.get("orderId").asText();
+			String device = jsonNode.get("device").asText();
 			saveInRequestLog(request, orderId, param);
 			if (paymentRevokeJson(getBankInterfaceUrl("paymentRevoke"), param,
-					orderId, resp)) {
+					device, orderId, resp)) {
 				LOGGER.info("### paymentRevoke success param={} ###", orderId);
 				return renderJSONString(true, "", "", "");
 			} else {
@@ -142,7 +145,8 @@ public class IntegralInterfaceController extends IntegralBaseController {
 						"");
 			}
 		} catch (Exception e) {
-			LOGGER.error("### paymentRevoke error param={} ###", param);
+			LOGGER.error("### paymentRevoke error param={} error={} ###",
+					param, e);
 			resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
 			return renderJSONString(false, "积分消费撤销失败", resp.getErrorCode(), "");
 		}
@@ -179,7 +183,8 @@ public class IntegralInterfaceController extends IntegralBaseController {
 						"");
 			}
 		} catch (Exception e) {
-			LOGGER.error("### paymentReserval error param={} ###", param);
+			LOGGER.error("### paymentReserval error param={} error={} ###",
+					param, e);
 			resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
 			return renderJSONString(false, "积分消费冲正失败", resp.getErrorCode(), "");
 		}
@@ -218,7 +223,9 @@ public class IntegralInterfaceController extends IntegralBaseController {
 						resp.getErrorCode(), "");
 			}
 		} catch (Exception e) {
-			LOGGER.error("### paymentRevokeReserval error param={} ###", param);
+			LOGGER.error(
+					"### paymentRevokeReserval error param={} error={} ###",
+					param, e);
 			resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
 			return renderJSONString(false, "积分消费撤销冲正失败", resp.getErrorCode(),
 					"");
@@ -243,12 +250,28 @@ public class IntegralInterfaceController extends IntegralBaseController {
 		// paramMap.put("activityId", conformInfoVo.getActivityId());
 		// paramMap.put("cardNum", conformInfoVo.getCardNum());
 		Response resp = new Response();
-		saveInRequestLog(request, null, param);
-		if (confirmInfoJson(getBankInterfaceUrl("confirmInfo"), param, resp)) {
-			LOGGER.info("### confirmInfo success param={} ###", param);
-			return renderJSONString(true, "", "", "");
-		} else {
-			LOGGER.error("### confirmInfo error param={} ###", param);
+		try {
+
+			ConfirmInfoVo confirmInfo = JSON.parseObject(param,
+					ConfirmInfoVo.class);
+			Activity activity = activityService.getByActivityId(confirmInfo
+					.getActivityId());
+			confirmInfo.setProductType(activity.getProductType());
+			saveInRequestLog(request, null, param);
+			String jsonStr = JSON.toJSONString(confirmInfo);
+			if (confirmInfoJson(getBankInterfaceUrl("confirmInfo"), jsonStr,
+					resp)) {
+				LOGGER.info("### confirmInfo success param={} ###", param);
+				return renderJSONString(true, "", "", "");
+			} else {
+				LOGGER.error("### confirmInfo error param={} ###", param);
+				return renderJSONString(false, "积分查询失败", resp.getErrorCode(),
+						"");
+			}
+		} catch (Exception e) {
+			LOGGER.error("### confirmInfo error param={} error={} ###", param,
+					e);
+			resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
 			return renderJSONString(false, "积分查询失败", resp.getErrorCode(), "");
 		}
 	}
@@ -273,8 +296,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
 			ActivityVo activity = JSON.parseObject(param, ActivityVo.class);
 			activity.setProductType(activity.getProductCode());
 			saveInRequestLog(request, null, param);
-			if (activityService.operActivityAndStore(activity,
-					activity.getOperCode(), activity.getStoreList(), resp)) {
+			if (activityService.operActivityAndStore(activity, resp)) {
 				LOGGER.info(
 						"### request in success activityImport param={} ###",
 						param);

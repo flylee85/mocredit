@@ -1,6 +1,10 @@
 package com.mocredit.integral.vo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mocredit.integral.entity.Activity;
+import com.mocredit.integral.entity.Store;
 
 /**
  * @author ytq 2015年8月24日
@@ -8,7 +12,7 @@ import com.mocredit.integral.entity.Activity;
 public class ActivityVo extends Activity {
 	private String productCode;
 	private Integer operCode;
-	private String storeList;
+	private List<Store> storeList = new ArrayList<Store>();
 
 	public String getProductCode() {
 		return productCode;
@@ -26,11 +30,11 @@ public class ActivityVo extends Activity {
 		this.operCode = operCode;
 	}
 
-	public String getStoreList() {
+	public List<Store> getStoreList() {
 		return storeList;
 	}
 
-	public void setStoreList(String storeList) {
+	public void setStoreList(List<Store> storeList) {
 		this.storeList = storeList;
 	}
 

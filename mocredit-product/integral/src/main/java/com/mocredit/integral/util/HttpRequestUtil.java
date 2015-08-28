@@ -176,12 +176,9 @@ public class HttpRequestUtil {
 	}
 
 	public static String doPostJson(String url, String param) throws Exception {
-
 		URL localURL = new URL(url);
-
 		URLConnection connection = openConnection(localURL);
 		HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
-
 		httpURLConnection.setDoOutput(true);
 		httpURLConnection.setRequestMethod("POST");
 		httpURLConnection.setRequestProperty("Accept-Charset", CHARSET);
@@ -189,7 +186,6 @@ public class HttpRequestUtil {
 				.setRequestProperty("Content-Type", "application/json");
 		httpURLConnection.setRequestProperty("Content-Length",
 				String.valueOf(param.length()));
-
 		OutputStream outputStream = null;
 		OutputStreamWriter outputStreamWriter = null;
 		InputStream inputStream = null;
@@ -197,52 +193,39 @@ public class HttpRequestUtil {
 		BufferedReader reader = null;
 		StringBuffer resultBuffer = new StringBuffer();
 		String tempLine = null;
-
 		try {
 			outputStream = httpURLConnection.getOutputStream();
-			outputStreamWriter = new OutputStreamWriter(outputStream);
-
+			outputStreamWriter = new OutputStreamWriter(outputStream, CHARSET);
 			outputStreamWriter.write(param);
 			outputStreamWriter.flush();
-
 			if (httpURLConnection.getResponseCode() >= 300) {
 				throw new Exception(
 						"HTTP Request is not success, Response code is "
 								+ httpURLConnection.getResponseCode());
 			}
-
 			inputStream = httpURLConnection.getInputStream();
 			inputStreamReader = new InputStreamReader(inputStream, CHARSET);
 			reader = new BufferedReader(inputStreamReader);
-
 			while ((tempLine = reader.readLine()) != null) {
 				resultBuffer.append(tempLine);
 			}
-
 		} finally {
-
 			if (outputStreamWriter != null) {
 				outputStreamWriter.close();
 			}
-
 			if (outputStream != null) {
 				outputStream.close();
 			}
-
 			if (reader != null) {
 				reader.close();
 			}
-
 			if (inputStreamReader != null) {
 				inputStreamReader.close();
 			}
-
 			if (inputStream != null) {
 				inputStream.close();
 			}
-
 		}
-
 		return resultBuffer.toString();
 	}
 
@@ -256,13 +239,13 @@ public class HttpRequestUtil {
 	}
 
 	public static void main(String[] args) throws Exception {
-//		System.out.println(doPostJson("http://localhost:8080/integral/interface/activityImport", "{\"activityId\":\"1\",\"startTime\":\"2015-08-12 11:11:11\",\"storeList\":\"[{\"shopId\":\"1\",\"storeId\":\"3\"}]\"}")
-//		);
+		// System.out.println(doPostJson("http://localhost:8080/integral/interface/activityImport",
+		// "{\"activityId\":\"1\",\"startTime\":\"2015-08-12 11:11:11\",\"storeList\":\"[{\"shopId\":\"1\",\"storeId\":\"3\"}]\"}")
+		// );
 
-
-
-
-		System.out.println(doPostJson("http://localhost:8080/integral/interface/activityImport", "{\"operCode\":1,\"activityId\":\"17\",\"startTime\":\"2015-08-12 11:11:11\",\"storeList\":[{\"shopId\":1,\"storeId\":3}]}")
-		);
+		System.out
+				.println(doPostJson(
+						"http://localhost:8080/integral/interface/activityImport",
+						"{\"operCode\":1,\"activityId\":\"17\",\"startTime\":\"2015-08-12 11:11:11\",\"storeList\":[{\"shopId\":1,\"storeId\":3}]}"));
 	}
 }

@@ -22,15 +22,16 @@ public class Order {
    device               varchar(50) comment '终端ID',
    amount               decimal(10,0) comment '金额',
    order_id             varchar(30) comment '订单号',
-   status               int(1) comment '1交易完成 2交易撤销'    
+   status               int(1) comment '1交易完成 2交易撤销' 
+   trans_date           varchar(8)  交易日期 格式：yyyyMMdd   
    ctime                datetime comment '创建时间',
    primary key (uuid)
  */
 	private Integer uuid;
 	private Integer requestId;
-	private Integer cardNum;
+	private String cardNum;
 	private String bank;
-	private String shopId;
+	private Integer shopId;
 	private String shopName;
 	private String storeId;
 	private String storeName;
@@ -40,6 +41,7 @@ public class Order {
 	private Integer amount;
 	private String orderId;
 	private Integer status;
+	private String transDate;
 	private Date ctime;
 	public Integer getUuid() {
 		return uuid;
@@ -53,10 +55,10 @@ public class Order {
 	public void setRequestId(Integer requestId) {
 		this.requestId = requestId;
 	}
-	public Integer getCardNum() {
+	public String getCardNum() {
 		return cardNum;
 	}
-	public void setCardNum(Integer cardNum) {
+	public void setCardNum(String cardNum) {
 		this.cardNum = cardNum;
 	}
 	public String getBank() {
@@ -65,10 +67,10 @@ public class Order {
 	public void setBank(String bank) {
 		this.bank = bank;
 	}
-	public String getShopId() {
+	public Integer getShopId() {
 		return shopId;
 	}
-	public void setShopId(String shopId) {
+	public void setShopId(Integer shopId) {
 		this.shopId = shopId;
 	}
 	public String getShopName() {
@@ -125,6 +127,13 @@ public class Order {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+	
+	public String getTransDate() {
+		return transDate;
+	}
+	public void setTransDate(String transDate) {
+		this.transDate = transDate;
+	}
 	public Date getCtime() {
 		return ctime;
 	}
@@ -133,23 +142,14 @@ public class Order {
 	}
 	@Override
 	public String toString() {
-		return "Order ["
-				+ (uuid != null ? "uuid=" + uuid + ", " : "")
-				+ (requestId != null ? "requestId=" + requestId + ", " : "")
-				+ (cardNum != null ? "cardNum=" + cardNum + ", " : "")
-				+ (bank != null ? "bank=" + bank + ", " : "")
-				+ (shopId != null ? "shopId=" + shopId + ", " : "")
-				+ (shopName != null ? "shopName=" + shopName + ", " : "")
-				+ (storeId != null ? "storeId=" + storeId + ", " : "")
-				+ (storeName != null ? "storeName=" + storeName + ", " : "")
-				+ (activityId != null ? "activityId=" + activityId + ", " : "")
-				+ (activityName != null ? "activityName=" + activityName + ", "
-						: "")
-				+ (device != null ? "device=" + device + ", " : "")
-				+ (amount != null ? "amount=" + amount + ", " : "")
-				+ (orderId != null ? "orderId=" + orderId + ", " : "")
-				+ (status != null ? "status=" + status + ", " : "")
-				+ (ctime != null ? "ctime=" + ctime : "") + "]";
+		return "Order [uuid=" + uuid + ", requestId=" + requestId
+				+ ", cardNum=" + cardNum + ", bank=" + bank + ", shopId="
+				+ shopId + ", shopName=" + shopName + ", storeId=" + storeId
+				+ ", storeName=" + storeName + ", activityId=" + activityId
+				+ ", activityName=" + activityName + ", device=" + device
+				+ ", amount=" + amount + ", orderId=" + orderId + ", status="
+				+ status + ", transDate=" + transDate + ", ctime=" + ctime
+				+ "]";
 	}
-		
+	
 }

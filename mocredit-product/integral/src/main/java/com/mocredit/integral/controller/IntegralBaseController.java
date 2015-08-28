@@ -118,9 +118,9 @@ public class IntegralBaseController extends BaseController {
 	 * @return
 	 */
 	protected boolean paymentRevokeJson(String url, String param,
-			String orderId, Response resp) {
+			String device, String orderId, Response resp) {
 		return httpRequstService.paymentRevokeJson(getRequestId(), url, param,
-				orderId, resp);
+				device, orderId, resp);
 	}
 
 	/**

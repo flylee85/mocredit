@@ -5,6 +5,7 @@ import java.util.Date;
 import com.mocredit.integral.entity.Activity;
 import com.mocredit.integral.entity.ActivityTransRecord;
 import com.mocredit.integral.entity.Response;
+import com.mocredit.integral.vo.ActivityVo;
 
 /**
  * 活动业务层
@@ -16,8 +17,7 @@ import com.mocredit.integral.entity.Response;
 public interface ActivityService extends BaseService<Activity> {
 	Activity getByActivityId(Integer activityId);
 
-	boolean operActivityAndStore(Activity activity, Integer operCode,
-			String storeList, Response resp);
+	boolean operActivityAndStore(ActivityVo activity,  Response resp);
 
 	/**
 	 * 保存ActivityTransRecord

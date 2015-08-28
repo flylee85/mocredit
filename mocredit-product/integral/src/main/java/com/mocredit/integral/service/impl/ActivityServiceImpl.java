@@ -20,6 +20,7 @@ import com.mocredit.integral.persistence.ActivityMapper;
 import com.mocredit.integral.service.ActivityService;
 import com.mocredit.integral.service.LogService;
 import com.mocredit.integral.util.DateTimeUtils;
+import com.mocredit.integral.vo.ActivityVo;
 
 /**
  * 
@@ -43,11 +44,10 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 	}
 
 	@Override
-	public boolean operActivityAndStore(Activity activity, Integer operCode,
-			String storeList, Response resp) {
+	public boolean operActivityAndStore(ActivityVo activity, Response resp) {
 		boolean flag = true;
 		// 1导入 2 更新 3 取消 4 启用
-		switch (operCode) {
+		switch (activity.getOperCode()) {
 		case 1:
 			Activity ac = getByActivityId(activity.getActivityId());
 			if (ac != null) {
@@ -55,19 +55,15 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 				flag = false;
 			} else {
 				try {
-					JsonNode jsonNode = objectMapper.readTree(storeList);
-					List<Store> storeLists = new ArrayList<Store>();
-					for (JsonNode jNode : jsonNode) {
-						Integer shopId = jNode.get("shopId").asInt();
-						Integer storeId = jNode.get("storeId").asInt();
-						storeLists.add(getStore(activity, shopId, storeId));
+					for (Store store : activity.getStoreList()) {
+						store.setActivityId(activity.getActivityId());
 					}
 					// 保存活动和对应的店铺
-					saveActivityAndStore(activity, storeLists);
+					saveActivityAndStore(activity, activity.getStoreList());
 				} catch (Exception e) {
 					LOGGER.error(
 							"###operActivityAndStore storeList={} error={}###",
-							storeList, e);
+							e);
 					resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
 					flag = false;
 				}
@@ -76,19 +72,14 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 			break;
 		case 2:
 			try {
-				JsonNode jsonNode = objectMapper.readTree(storeList);
-				List<Store> storeLists = new ArrayList<Store>();
-				for (JsonNode jNode : jsonNode) {
-					Integer shopId = jNode.get("shopId").asInt();
-					Integer storeId = jNode.get("storeId").asInt();
-					storeLists.add(getStore(activity, shopId, storeId));
+				for (Store store : activity.getStoreList()) {
+					store.setActivityId(activity.getActivityId());
 				}
 				// 保存活动和对应的店铺
-				updateActivityAndStore(activity, storeLists);
+				updateActivityAndStore(activity, activity.getStoreList());
 			} catch (Exception e) {
 				LOGGER.error(
-						"###operActivityAndStore storeList={} error={}###",
-						storeList, e);
+						"###operActivityAndStore storeList={} error={}###", e);
 				resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
 				flag = false;
 			}
@@ -109,14 +100,6 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 			break;
 		}
 		return flag;
-	}
-
-	public Store getStore(Activity activity, Integer shopId, Integer storeId) {
-		Store store = new Store();
-		store.setActivityId(activity.getActivityId());
-		store.setShopId(shopId);
-		store.setStoreId(storeId);
-		return store;
 	}
 
 	@Transactional

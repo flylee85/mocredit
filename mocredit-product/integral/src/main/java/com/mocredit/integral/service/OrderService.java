@@ -9,5 +9,15 @@ import com.mocredit.integral.entity.Order;
  * 
  */
 public interface OrderService extends BaseService<Order> {
-	boolean isExistOrderAndUpdate(String orderId);
+	boolean isExistOrderAndUpdate(String device, String orderId);
+
+	/**
+	 * 通过device,orderId,transDate判断订单是否已经存在
+	 * 
+	 * @param device
+	 * @param orderId
+	 * @param transDate
+	 * @return
+	 */
+	boolean isExistOrder(String device, String orderId, String transDate);
 }

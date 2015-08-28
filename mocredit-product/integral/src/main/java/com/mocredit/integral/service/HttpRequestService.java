@@ -1,23 +1,24 @@
 package com.mocredit.integral.service;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.mocredit.integral.constant.ErrorCodeType;
 import com.mocredit.integral.constant.OrderStatus;
+import com.mocredit.integral.dto.PaymentDto;
 import com.mocredit.integral.entity.Activity;
 import com.mocredit.integral.entity.ActivityTransRecord;
 import com.mocredit.integral.entity.Order;
 import com.mocredit.integral.entity.OutRequestLog;
 import com.mocredit.integral.entity.OutResponseLog;
 import com.mocredit.integral.entity.Response;
+import com.mocredit.integral.entity.ResponseData;
 import com.mocredit.integral.util.DateTimeUtils;
 import com.mocredit.integral.util.HttpRequestUtil;
 
@@ -40,9 +41,9 @@ public class HttpRequestService extends LogService {
 		return true;
 	}
 
-	public int getActTRCount(String maxType) {
+	public Integer getActTRCount(String maxType) {
 		// 暂定01代表每日，02代表每周，03代表每月，空代表不限制',
-		int count = 0;
+		Integer count = null;
 		switch (maxType) {
 		case "01":
 			Date now = new Date();
@@ -50,6 +51,8 @@ public class HttpRequestService extends LogService {
 					now);
 			if (atr01 != null) {
 				count = atr01.getTransCount();
+			} else {
+				count = 0;
 			}
 
 			break;
@@ -63,6 +66,8 @@ public class HttpRequestService extends LogService {
 					cal02S.getTime(), cal02E.getTime());
 			if (atr02 != null) {
 				count = atr02.getTransCount();
+			} else {
+				count = 0;
 			}
 			break;
 		case "03":
@@ -77,6 +82,8 @@ public class HttpRequestService extends LogService {
 					cal03S.getTime(), cal03E.getTime());
 			if (atr03 != null) {
 				count = atr03.getTransCount();
+			} else {
+				count = 0;
 			}
 			break;
 		}
@@ -84,7 +91,7 @@ public class HttpRequestService extends LogService {
 	}
 
 	/**
-	 * post josn and save order
+	 * post json and save order
 	 * 
 	 * @param requestId
 	 * @param url
@@ -115,24 +122,38 @@ public class HttpRequestService extends LogService {
 				// 3,判断使用次数是否超过最大使用次数限制
 				if (activity.getMaxType() != null
 						&& !"".equals(activity.getMaxType())) {
+					// 4,判断最大类型参数是否正确并返回当前类型目前消费次数
+					Integer count = getActTRCount(activity.getMaxType());
+					if (null == count) {
+						resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
+						return false;
+					}
 					if (activity.getMaxNumber() != null
-							&& activity.getMaxNumber() < getActTRCount(activity
-									.getMaxType())) {
+							&& activity.getMaxNumber() < count) {
 						resp.setErrorCode(ErrorCodeType.ACTIVITY_OUT_COUNT
 								.getValue());
 						return false;
 					}
+				}
+				// 5,条件判断订单是否已经存在
+				if (orderService.isExistOrder(order.getDevice(),
+						order.getOrderId(), DateTimeUtils.getDate("yyyyMMdd"))) {
+					resp.setErrorCode(ErrorCodeType.EXIST_ORDER_ERROR
+							.getValue());
+					return false;
 				}
 			} else {
 				resp.setErrorCode(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
 						.getValue());
 				return false;
 			}
-			String response = doPostJson(requestId, url, param);
+			String response = doPostJson(requestId, url,
+					getPaymentDto(activity, order));
 			boolean anaFlag = analyJsonReponse(requestId, url, param, response,
 					resp);
 			if (anaFlag) {
 				// 设置订单reuestId和交易完成状态
+				order.setTransDate(DateTimeUtils.getDate("yyyyMMdd"));
 				order.setRequestId(requestId);
 				order.setStatus(OrderStatus.FINISH.getValue());
 				if (!orderService.save(order)) {
@@ -152,6 +173,23 @@ public class HttpRequestService extends LogService {
 					url, requestId, param, e);
 			return false;
 		}
+	}
+
+	/**
+	 * 构建请求payment接口参数
+	 * 
+	 * @param activity
+	 * @param order
+	 * @return
+	 */
+	private String getPaymentDto(Activity activity, Order order) {
+		PaymentDto paymentDto = new PaymentDto();
+		paymentDto.setProductType(activity.getProductType());
+		paymentDto.setCardNum(order.getCardNum() + "");
+		paymentDto.setDevice(order.getDevice());
+		paymentDto.setTransAmt(order.getAmount() + "");
+		paymentDto.setShopId(order.getShopId());
+		return JSON.toJSONString(paymentDto);
 	}
 
 	public boolean doPostAndSaveOrder(Integer requestId, String url,
@@ -222,7 +260,10 @@ public class HttpRequestService extends LogService {
 			return false;
 		}
 		try {
-			return true;
+			ResponseData responseData = JSON.parseObject(reponse,
+					ResponseData.class);
+			resp.setData(responseData);
+			return responseData.getSuccess();
 		} catch (Exception e) {
 			resp.setErrorCode(ErrorCodeType.ANA_RESPONSE_ERROR.getValue());
 			LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
@@ -263,8 +304,8 @@ public class HttpRequestService extends LogService {
 			boolean anaFlag = analyReponse(requestId, url, paramMap, response,
 					resp);
 			if (anaFlag) {
-				if (!orderService.isExistOrderAndUpdate(paramMap.get("orderId")
-						+ "")) {
+				if (!orderService.isExistOrderAndUpdate(paramMap.get("device")
+						+ "", paramMap.get("orderId") + "")) {
 					resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
 							.getValue());
 					return false;
@@ -293,13 +334,13 @@ public class HttpRequestService extends LogService {
 	 * @return
 	 */
 	public boolean paymentRevokeJson(Integer requestId, String url,
-			String param, String orderId, Response resp) {
+			String param, String device, String orderId, Response resp) {
 		try {
 			String response = doPostJson(requestId, url, param);
 			boolean anaFlag = analyJsonReponse(requestId, url, param, response,
 					resp);
 			if (anaFlag) {
-				if (!orderService.isExistOrderAndUpdate(orderId)) {
+				if (!orderService.isExistOrderAndUpdate(device, orderId)) {
 					resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
 							.getValue());
 					return false;
@@ -500,7 +541,7 @@ public class HttpRequestService extends LogService {
 			outResponseLogService.save(new OutResponseLog(requestId, response));
 			return response;
 		} catch (Exception e) {
-			LOGGER.error("### doPost url={}, requestId={},parm={}, error={}",
+			LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
 					url, requestId, param, e);
 			return null;
 		}

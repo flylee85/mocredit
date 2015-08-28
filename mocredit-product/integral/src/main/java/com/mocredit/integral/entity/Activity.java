@@ -7,7 +7,7 @@ import java.util.Date;
  * @author ytq
  *
  */
-public class Activity {
+public class Activity{
 /**
    activity_id          int comment '活动ID',
    activity_name        varchar(200) comment '活动名',

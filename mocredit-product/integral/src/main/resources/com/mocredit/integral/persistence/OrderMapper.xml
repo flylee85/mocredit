@@ -4,17 +4,23 @@
 <mapper namespace="com.mocredit.integral.persistence.OrderMapper">
 	<insert id="save" parameterType="com.mocredit.integral.entity.Order">
 		insert into
-		`ti_order`(request_id,card_num,bank,shop_id,shop_name,store_id,store_name,activity_id,activity_name,device,amount,order_id,status,ctime)
-		values(#{t.requestId},#{t.cardNum},#{t.bank},#{t.shopId},#{t.shopName},#{t.storeId},#{t.storeName},#{t.activityId},#{t.activityName},#{t.device},#{t.amount},#{t.orderId},#{t.status},now())
+		`ti_order`(request_id,card_num,bank,shop_id,shop_name,store_id,store_name,activity_id,activity_name,device,amount,order_id,status,trans_date,ctime)
+		values(#{t.requestId},#{t.cardNum},#{t.bank},#{t.shopId},#{t.shopName},#{t.storeId},#{t.storeName},#{t.activityId},#{t.activityName},#{t.device},#{t.amount},#{t.orderId},#{t.status},#{t.transDate},now())
 	</insert>
-	<select id="getOrderByOrderId" resultType="int">
-		select count(1) from
-		`ti_order` where order_id=#{orderId}
+	<select id="getOrderByOrderIdAndDevice" resultType="int">
+		select
+		count(1) from
+		`ti_order` where order_id=#{orderId} and device=#{device}
 	</select>
-	<update id="updateStatusByOrderId">
+	<update id="updateStatusByOrderIdAndDevice">
 		update `ti_order`
 		set
 		status=#{status} where
-		order_id=#{orderId}
+		order_id=#{orderId} and device=#{device}
 	</update>
+	<select id="isExistOrder" resultType="int">
+		select count(1) from
+		`ti_order` where order_id=#{orderId} and device=#{device} and
+		trans_date=#{transDate}
+	</select>
 </mapper>

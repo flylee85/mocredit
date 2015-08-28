@@ -3,6 +3,8 @@ package com.mocredit.integral.vo;
 import java.io.Serializable;
 import java.util.List;
 
+import com.mocredit.integral.entity.Store;
+
 /**
  * @author ytq 2015年8月24日
  */
@@ -18,38 +20,48 @@ public class ActivityImportVo implements Serializable {
 	private String activityName;
 	private String productCode;
 	private Integer operCode;
-	private List<Integer> lists;
-	
-	public List<Integer> getLists() {
-		return lists;
+	private List<Store> storeList;
+
+	public List<Store> getStoreList() {
+		return storeList;
 	}
-	public void setLists(List<Integer> lists) {
-		this.lists = lists;
+
+	public void setStoreList(List<Store> storeList) {
+		this.storeList = storeList;
 	}
+
 	public Integer getActivityId() {
 		return activityId;
 	}
+
 	public void setActivityId(Integer activityId) {
 		this.activityId = activityId;
 	}
+
 	public String getActivityName() {
 		return activityName;
 	}
+
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
 	}
+
 	public String getProductCode() {
 		return productCode;
 	}
+
 	public void setProductCode(String productCode) {
 		this.productCode = productCode;
 	}
+
 	public Integer getOperCode() {
 		return operCode;
 	}
+
 	public void setOperCode(Integer operCode) {
 		this.operCode = operCode;
 	}
+
 	@Override
 	public String toString() {
 		return "ActivityImportVo [activityId=" + activityId + ", activityName="

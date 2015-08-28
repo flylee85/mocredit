@@ -10,7 +10,8 @@ public enum ErrorCodeType {
     EXIST_STORE_ERROR("504", "已存在该门店"), 
     PARAM_ERROR("505", "参数错误"),
 	ACTIVITY_OUT_DATE("506","不在活动时间内"),
-	ACTIVITY_OUT_COUNT("507","超过活动限制次数");
+	ACTIVITY_OUT_COUNT("507","超过活动限制次数"),
+	EXIST_ORDER_ERROR("508","已存在该订单");
 	private String value;
 	private String text;
 
