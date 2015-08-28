@@ -27,19 +27,18 @@ public class InteractFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
-		if (null == service) {
-			service = SpringContextUtils.getBean("inRequestLogServiceImpl");
-		}
-		InRequestLog inRequestLog = new InRequestLog();
-		inRequestLog.setIp(getIpAddr(request));
-		JSON.toJSON(request.getParameterMap());
-		inRequestLog.setRequest(JSON.toJSON(request.getParameterMap())
-				.toString());
-		String orderId = request.getParameter("orderId");
-		inRequestLog.setOrderId(null == orderId ? "" : orderId);
-		inRequestLog.setInterfaceUrl(request.getRequestURI());
-		service.save(inRequestLog);
-		request.setAttribute("request_id", inRequestLog.getUuid());
+//		if (null == service) {
+//			service = SpringContextUtils.getBean("inRequestLogServiceImpl");
+//		}
+//		InRequestLog inRequestLog = new InRequestLog();
+//		inRequestLog.setIp(getIpAddr(request));
+//		inRequestLog.setRequest(JSON.toJSON(request.getParameterMap())
+//				.toString());
+//		String orderId = request.getParameter("orderId");
+//		inRequestLog.setOrderId(null == orderId ? "" : orderId);
+//		inRequestLog.setInterfaceUrl(request.getRequestURI());
+//		service.save(inRequestLog);
+//		request.setAttribute("request_id", inRequestLog.getUuid());
 		chain.doFilter(request, response);
 	}
 

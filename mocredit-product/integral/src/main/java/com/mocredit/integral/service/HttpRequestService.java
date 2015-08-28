@@ -83,14 +83,26 @@ public class HttpRequestService extends LogService {
 		return count;
 	}
 
-	public boolean doPostAndSaveOrder(Integer requestId, String url,
-			Map<?, ?> paramMap, Order order, Response resp) {
+	/**
+	 * post josn and save order
+	 * 
+	 * @param requestId
+	 * @param url
+	 * @param param
+	 * @param order
+	 * @param resp
+	 * @return
+	 */
+	public boolean doPostJsonAndSaveOrder(Integer requestId, String url,
+			String param, Order order, Response resp) {
 		try {
 			Activity activity = activityService.getByActivityId(order
 					.getActivityId());
 			if (activity != null) {
 				order.setActivityName(activity.getActivityName());
 				Date now = new Date();
+				// 1，先判断当前时间在活动时间范围内
+				// 2，再判断当前时间的所属的星期范围内
 				if (activity.getStartTime().getTime() <= now.getTime()
 						&& now.getTime() <= activity.getEndTime().getTime()
 						&& (activity.getSelectDate().contains(DateTimeUtils
@@ -100,6 +112,68 @@ public class HttpRequestService extends LogService {
 							.getValue());
 					return false;
 				}
+				// 3,判断使用次数是否超过最大使用次数限制
+				if (activity.getMaxType() != null
+						&& !"".equals(activity.getMaxType())) {
+					if (activity.getMaxNumber() != null
+							&& activity.getMaxNumber() < getActTRCount(activity
+									.getMaxType())) {
+						resp.setErrorCode(ErrorCodeType.ACTIVITY_OUT_COUNT
+								.getValue());
+						return false;
+					}
+				}
+			} else {
+				resp.setErrorCode(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
+						.getValue());
+				return false;
+			}
+			String response = doPostJson(requestId, url, param);
+			boolean anaFlag = analyJsonReponse(requestId, url, param, response,
+					resp);
+			if (anaFlag) {
+				// 设置订单reuestId和交易完成状态
+				order.setRequestId(requestId);
+				order.setStatus(OrderStatus.FINISH.getValue());
+				if (!orderService.save(order)) {
+					resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
+							.getValue());
+					return false;
+				} else {
+					return true;
+				}
+			} else {
+				return anaFlag;
+			}
+		} catch (Exception e) {
+			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+			LOGGER.error(
+					"### doPostJsonAndSaveOrder url={}, requestId={},param={}, error={}",
+					url, requestId, param, e);
+			return false;
+		}
+	}
+
+	public boolean doPostAndSaveOrder(Integer requestId, String url,
+			Map<?, ?> paramMap, Order order, Response resp) {
+		try {
+			Activity activity = activityService.getByActivityId(order
+					.getActivityId());
+			if (activity != null) {
+				order.setActivityName(activity.getActivityName());
+				Date now = new Date();
+				// 1，先判断当前时间在活动时间范围内
+				// 2，再判断当前时间的所属的星期范围内
+				if (activity.getStartTime().getTime() <= now.getTime()
+						&& now.getTime() <= activity.getEndTime().getTime()
+						&& (activity.getSelectDate().contains(DateTimeUtils
+								.getWeekOfDate(now)))) {
+				} else {
+					resp.setErrorCode(ErrorCodeType.ACTIVITY_OUT_DATE
+							.getValue());
+					return false;
+				}
+				// 3,判断使用次数是否超过最大使用次数限制
 				if (activity.getMaxType() != null
 						&& !"".equals(activity.getMaxType())) {
 					if (activity.getMaxNumber() != null
@@ -119,9 +193,10 @@ public class HttpRequestService extends LogService {
 			boolean anaFlag = analyReponse(requestId, url, paramMap, response,
 					resp);
 			if (anaFlag) {
+				// 设置订单reuestId和交易完成状态
 				order.setRequestId(requestId);
 				order.setStatus(OrderStatus.FINISH.getValue());
-				if (orderService.save(order)) {
+				if (!orderService.save(order)) {
 					resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
 							.getValue());
 					return false;
@@ -136,6 +211,22 @@ public class HttpRequestService extends LogService {
 			LOGGER.error(
 					"### doPostAndSaveOrder url={}, requestId={},parms={}, error={}",
 					url, requestId, paramMap.toString(), e);
+			return false;
+		}
+	}
+
+	public boolean analyJsonReponse(Integer requestId, String url,
+			String param, String reponse, Response resp) {
+		if (reponse == null) {
+			resp.setErrorCode(ErrorCodeType.POST_BANK_ERROR.getValue());
+			return false;
+		}
+		try {
+			return true;
+		} catch (Exception e) {
+			resp.setErrorCode(ErrorCodeType.ANA_RESPONSE_ERROR.getValue());
+			LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
+					url, requestId, param, e);
 			return false;
 		}
 	}
@@ -156,16 +247,73 @@ public class HttpRequestService extends LogService {
 		}
 	}
 
+	/**
+	 * 积分消费撤销
+	 * 
+	 * @param requestId
+	 * @param url
+	 * @param paramMap
+	 * @param resp
+	 * @return
+	 */
 	public boolean paymentRevoke(Integer requestId, String url,
 			Map<?, ?> paramMap, Response resp) {
 		try {
 			String response = doPost(requestId, url, paramMap);
-			return analyReponse(requestId, url, paramMap, response, resp);
+			boolean anaFlag = analyReponse(requestId, url, paramMap, response,
+					resp);
+			if (anaFlag) {
+				if (!orderService.isExistOrderAndUpdate(paramMap.get("orderId")
+						+ "")) {
+					resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
+							.getValue());
+					return false;
+				} else {
+					return true;
+				}
+			} else {
+				return anaFlag;
+			}
 		} catch (Exception e) {
 			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
 			LOGGER.error(
 					"### paymentRevoke url={}, requestId={},parms={}, error={}",
 					url, requestId, paramMap.toString(), e);
+			return false;
+		}
+	}
+
+	/**
+	 * 积分消费撤销
+	 * 
+	 * @param requestId
+	 * @param url
+	 * @param paramMap
+	 * @param resp
+	 * @return
+	 */
+	public boolean paymentRevokeJson(Integer requestId, String url,
+			String param, String orderId, Response resp) {
+		try {
+			String response = doPostJson(requestId, url, param);
+			boolean anaFlag = analyJsonReponse(requestId, url, param, response,
+					resp);
+			if (anaFlag) {
+				if (!orderService.isExistOrderAndUpdate(orderId)) {
+					resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
+							.getValue());
+					return false;
+				} else {
+					return true;
+				}
+			} else {
+				return anaFlag;
+			}
+		} catch (Exception e) {
+			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+			LOGGER.error(
+					"### paymentRevokeJson url={}, requestId={},param={}, error={}",
+					url, requestId, param, e);
 			return false;
 		}
 	}
@@ -184,6 +332,20 @@ public class HttpRequestService extends LogService {
 		}
 	}
 
+	public boolean paymentReservalJson(Integer requestId, String url,
+			String param, Response resp) {
+		try {
+			String response = doPostJson(requestId, url, param);
+			return analyJsonReponse(requestId, url, param, response, resp);
+		} catch (Exception e) {
+			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+			LOGGER.error(
+					"### paymentReservalJson url={}, requestId={},param={}, error={}",
+					url, requestId, param, e);
+			return false;
+		}
+	}
+
 	public boolean paymentRevokeReserval(Integer requestId, String url,
 			Map<?, ?> paramMap, Response resp) {
 		try {
@@ -198,6 +360,29 @@ public class HttpRequestService extends LogService {
 		}
 	}
 
+	public boolean paymentRevokeReservalJson(Integer requestId, String url,
+			String param, Response resp) {
+		try {
+			String response = doPostJson(requestId, url, param);
+			return analyJsonReponse(requestId, url, param, response, resp);
+		} catch (Exception e) {
+			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+			LOGGER.error(
+					"### paymentRevokeReserval url={}, requestId={},param={}, error={}",
+					url, requestId, param, e);
+			return false;
+		}
+	}
+
+	/**
+	 * 查询积分
+	 * 
+	 * @param requestId
+	 * @param url
+	 * @param paramMap
+	 * @param resp
+	 * @return
+	 */
 	public boolean confirmInfo(Integer requestId, String url,
 			Map<?, ?> paramMap, Response resp) {
 		try {
@@ -212,6 +397,38 @@ public class HttpRequestService extends LogService {
 		}
 	}
 
+	/**
+	 * 查询积分
+	 * 
+	 * @param requestId
+	 * @param url
+	 * @param paramMap
+	 * @param resp
+	 * @return
+	 */
+	public boolean confirmInfoJson(Integer requestId, String url, String param,
+			Response resp) {
+		try {
+			String response = doPostJson(requestId, url, param);
+			return analyJsonReponse(requestId, url, param, response, resp);
+		} catch (Exception e) {
+			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+			LOGGER.error(
+					"### confirmInfo url={}, requestId={},param={}, error={}",
+					url, requestId, param.toString(), e);
+			return false;
+		}
+	}
+
+	/**
+	 * 活动同步
+	 * 
+	 * @param requestId
+	 * @param url
+	 * @param paramMap
+	 * @param resp
+	 * @return
+	 */
 	public boolean activityImport(Integer requestId, String url,
 			Map<?, ?> paramMap, Response resp) {
 		try {
@@ -240,6 +457,15 @@ public class HttpRequestService extends LogService {
 		}
 	}
 
+	/**
+	 * post方式请求接口
+	 * 
+	 * @param requestId
+	 * @param url
+	 * @param paramMap
+	 * @return
+	 */
+
 	private String doPost(Integer requestId, String url, Map<?, ?> paramMap) {
 		try {
 			LOGGER.info("### doPost url={},requestId={},params={} ###", url,
@@ -252,6 +478,30 @@ public class HttpRequestService extends LogService {
 		} catch (Exception e) {
 			LOGGER.error("### doPost url={}, requestId={},parms={}, error={}",
 					url, requestId, paramMap.toString(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * 以json方式post请求接口
+	 * 
+	 * @param requestId
+	 * @param url
+	 * @param paramMap
+	 * @return
+	 */
+
+	private String doPostJson(Integer requestId, String url, String param) {
+		try {
+			LOGGER.info("### doPost url={},requestId={},param={} ###", url,
+					requestId, param);
+			outRequestLogService.save(new OutRequestLog(requestId, url, param));
+			String response = HttpRequestUtil.doPostJson(url, param);
+			outResponseLogService.save(new OutResponseLog(requestId, response));
+			return response;
+		} catch (Exception e) {
+			LOGGER.error("### doPost url={}, requestId={},parm={}, error={}",
+					url, requestId, param, e);
 			return null;
 		}
 	}

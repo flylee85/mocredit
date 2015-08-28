@@ -43,8 +43,8 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 	}
 
 	@Override
-	public boolean operActivityAndStore(Activity activity, String productCode,
-			Integer operCode, String storeList, Response resp) {
+	public boolean operActivityAndStore(Activity activity, Integer operCode,
+			String storeList, Response resp) {
 		boolean flag = true;
 		// 1导入 2 更新 3 取消 4 启用
 		switch (operCode) {

@@ -1,6 +1,5 @@
 package com.mocredit.integral.service;
 
-
 import java.util.Date;
 
 import com.mocredit.integral.entity.Activity;
@@ -17,8 +16,8 @@ import com.mocredit.integral.entity.Response;
 public interface ActivityService extends BaseService<Activity> {
 	Activity getByActivityId(Integer activityId);
 
-	boolean operActivityAndStore(Activity activity, String productCode,
-			Integer operCode, String storeList, Response resp);
+	boolean operActivityAndStore(Activity activity, Integer operCode,
+			String storeList, Response resp);
 
 	/**
 	 * 保存ActivityTransRecord
