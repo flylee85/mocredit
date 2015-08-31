@@ -17,11 +17,11 @@ import com.mocredit.bank.entity.Payment;
 import com.mocredit.bank.entity.TiPaymentReport;
 import com.mocredit.bank.entity.TiShopMerchant;
 import com.mocredit.bank.persistence.TiPaymentReportMapper;
-import com.mocredit.bank.persistence.TiShopMerchantMapper;
 import com.mocredit.bank.service.ShopMerchantService;
 import com.mocredit.bank.service.impl.IntegralCiticServiceImpl;
 import com.mocredit.bank.util.DateTimeUtils;
 import com.mocredit.bank.util.Variable;
+import com.mocredit.base.util.Banks;
 
 /**
  * 中信银行定时任务
@@ -37,8 +37,6 @@ public class CiticTask {
 	@Autowired
 	private IntegralCiticServiceImpl citicService;
 	@Autowired
-	private TiShopMerchantMapper merchantMapper;
-	@Autowired
 	private TiPaymentReportMapper reportMapper;
 
 	/**
@@ -47,7 +45,7 @@ public class CiticTask {
 	 * @return
 	 */
 	public boolean maintainSession() {
-		List<TiShopMerchant> allMerchants = merchantService.getAllMerchants();
+		List<TiShopMerchant> allMerchants = merchantService.getMerchantsByBank(Banks.CITIC);
 		boolean flag = true;
 		for (TiShopMerchant merchant : allMerchants) {
 			Payment payment = new Payment();
@@ -84,7 +82,7 @@ public class CiticTask {
 	 * 对账
 	 */
 	public void checkAccount() {
-		List<TiShopMerchant> selectValidMerchants = merchantMapper.selectAllMerchants();
+		List<TiShopMerchant> selectValidMerchants = merchantService.getMerchantsByBank(Banks.CITIC);
 		for (TiShopMerchant merchant : selectValidMerchants) {
 			Map<String, Object> param = new HashMap<>();
 			param.put("merchantId", merchant.getMerchantId());

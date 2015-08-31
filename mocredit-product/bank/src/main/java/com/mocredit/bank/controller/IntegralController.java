@@ -19,7 +19,6 @@ import com.mocredit.bank.persistence.InRequestMapper;
 import com.mocredit.bank.persistence.InResponseMapper;
 import com.mocredit.bank.service.IntegralService;
 import com.mocredit.bank.service.impl.IntegralServiceLocator;
-import com.mocredit.bank.task.CiticTask;
 import com.mocredit.bank.util.DateTimeUtils;
 import com.mocredit.bank.util.Utils;
 import com.mocredit.bank.util.Variable;
@@ -33,8 +32,6 @@ public class IntegralController {
 	private InRequestMapper requestMapper;
 	@Autowired
 	private InResponseMapper responseMapper;
-	@Autowired
-	private CiticTask task;
 
 	/**
 	 * 积分扣减
@@ -58,34 +55,29 @@ public class IntegralController {
 		// return "";
 		// }
 		// RequestData requestData=JSON.parseObject(param, RequestData.class);
-//		RequestData requestData = new RequestData();
-//		// requestData.setMerchantId(Variable.TEST_ZXMERCHANTID);
-//		// requestData.setMerchantName(Variable.TEST_ZXMERCHANTNAME);
-//		// requestData.setMerchantPassword(Variable.TEST_ZXMERCHANTPASSWORD);
-//		requestData.setShopId(1);
-//		requestData.setCardNum("5182128000042869");
-//		requestData.setOrderId(DateTimeUtils.getDate("yyDHHmmssSSS"));
-//		requestData.setProductType("00000000");
-//		requestData.setTransAmt("10");
-//		requestData.setDevice("10000000");
-//		int requestId = saveRequestLog(request, param, requestData.getOrderId());
-//		requestData.setRequestId(requestId);
-//
-//		ResponseData responseData = null;
-//		String checkParam = checkPaymentParam(requestData);
-//		if (!Variable.OK.equals(checkParam)) {
-//			responseData = new ResponseData(RespError.PARAM_ERROR.getErrorCode(),
-//					RespError.PARAM_ERROR.getErrorMsg() + ":" + checkParam, false);
-//		} else {
-//			IntegralService service = locator.getService(requestData.getBank());
-//			responseData = service.payment(requestData);
-//		}
-//
-//		String responseStr = JSON.toJSONString(responseData);
-//		saveResponseLog(responseStr, String.valueOf(requestId));
-//		return responseStr;
-		task.checkAccount();
-		return "";
+		RequestData requestData = new RequestData();
+		requestData.setShopId(1);
+		requestData.setCardNum("5182128000042869");
+		requestData.setOrderId(DateTimeUtils.getDate("yyDHHmmssSSS"));
+		requestData.setProductType("00000000");
+		requestData.setTransAmt("10");
+		requestData.setDevice("10000000");
+		int requestId = saveRequestLog(request, param, requestData.getOrderId());
+		requestData.setRequestId(requestId);
+
+		ResponseData responseData = null;
+		String checkParam = checkPaymentParam(requestData);
+		if (!Variable.OK.equals(checkParam)) {
+			responseData = new ResponseData(RespError.PARAM_ERROR.getErrorCode(),
+					RespError.PARAM_ERROR.getErrorMsg() + ":" + checkParam, false);
+		} else {
+			IntegralService service = locator.getService(requestData.getBank());
+			responseData = service.payment(requestData);
+		}
+
+		String responseStr = JSON.toJSONString(responseData);
+		saveResponseLog(responseStr, String.valueOf(requestId));
+		return responseStr;
 	}
 
 	/**
