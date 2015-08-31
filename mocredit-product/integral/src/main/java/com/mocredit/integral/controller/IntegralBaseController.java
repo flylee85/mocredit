@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSON;
+import com.mocredit.base.util.IpUtil;
 import com.mocredit.base.web.BaseController;
 import com.mocredit.integral.entity.InResponseLog;
 import com.mocredit.integral.entity.Order;
@@ -26,22 +27,7 @@ public class IntegralBaseController extends BaseController {
 	private Properties config;
 
 	public static String getIpAddr(HttpServletRequest request) {
-		String ip = request.getHeader("X-Real-IP");
-		if (!Utils.isNullOrBlank(ip) && !"unknown".equalsIgnoreCase(ip)) {
-			return ip;
-		}
-		ip = request.getHeader("X-Forwarded-For");
-		if (!Utils.isNullOrBlank(ip) && !"unknown".equalsIgnoreCase(ip)) {
-			// 多次反向代理后会有多个IP值，第一个为真实IP。
-			int index = ip.indexOf(',');
-			if (index != -1) {
-				return ip.substring(0, index);
-			} else {
-				return ip;
-			}
-		} else {
-			return request.getRemoteAddr();
-		}
+		return IpUtil.getIp(request);
 	}
 
 	protected String renderJSONString(boolean success, String errorMsg,
