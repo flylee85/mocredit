@@ -17,6 +17,7 @@ import com.mocredit.bank.service.ShopMerchantService;
 import com.mocredit.bank.service.impl.IntegralCiticServiceImpl;
 import com.mocredit.bank.util.DateTimeUtils;
 import com.mocredit.bank.util.Variable;
+import com.mocredit.base.util.Banks;
 
 /**
  * 初始化商户
@@ -37,7 +38,7 @@ public class MerchantInitListener implements ApplicationListener<ContextRefreshe
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent arg0) {
-		List<TiShopMerchant> allMerchants = shopMerchantService.getAllMerchants();
+		List<TiShopMerchant> allMerchants = shopMerchantService.getMerchantsByBank(Banks.CITIC);
 		for (TiShopMerchant merchant : allMerchants) {
 			Payment payment = new Payment();
 			payment.setInfoType(Variable.ZX_INFO_TYPE_LOGIN);

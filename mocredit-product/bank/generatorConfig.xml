@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration >
+<classPathEntry location="C:\Users\admin\.m2\repository\mysql\mysql-connector-java\5.1.25\mysql-connector-java-5.1.25.jar"/>
+  <context id="context1" >
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/integral" userId="root" password="root" />
+    <javaModelGenerator targetPackage="com.mocredit.bank.entity" targetProject="bank" />
+   <!--  <sqlMapGenerator targetPackage="com.mocredit.bank.persistence" targetProject="bank" />
+    <javaClientGenerator targetPackage="com.mocredit.bank.persistence" targetProject="bank" type="XMLMAPPER" />-->
+    <table schema="null" tableName="ti_shop_merchant" >
+    </table>
+    <!-- <table schema="null" tableName="ti_payment_report" /> -->
+  </context>
+</generatorConfiguration>

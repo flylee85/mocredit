@@ -2,8 +2,10 @@ package com.mocredit.bank.util;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.dom4j.Document;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mocredit.bank.constant.ZXConst;
+import com.mocredit.bank.entity.MessageObject;
 import com.mocredit.bank.entity.Payment;
 import com.mocredit.bank.entity.RequestData;
 import com.mocredit.bank.entity.TiPaymentReport;
@@ -445,9 +448,13 @@ public class ServiceUtil {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(DateTimeUtils.getDate("yyyyMMddHHmmssSSS"));
+		System.out.println(DateTimeUtils.getDate("yyMMddHHmmssSSS"));
 	}
-
+/**
+ * 生成对账XML
+ * @param records
+ * @return
+ */
 	public static String createCheckAccountDocument(List<Payment> records) {
 		Document document = DocumentHelper.createDocument();
 		Element root = document.addElement("message");// 创建根节点
@@ -479,4 +486,37 @@ public class ServiceUtil {
 		}
 		return document.asXML();
 	}
+	
+	/**
+	 * 民生银行 消费MessageObject
+	 * @param requestData
+	 * @return
+	 */
+	public static MessageObject getPayMessage(RequestData requestData){
+		MessageObject message = new MessageObject();
+    	message.setMesstype("0200");
+    	message.setField02_Primary_Account_Number(requestData.getCardNum());//账号
+    	message.setField03_Processing_Code("000000");//交易处理码
+    	message.setField04_Amount_Of_Transactions(Utils.fillZeroToLen(requestData.getTransAmt(),12));// 交易金额
+    	String batchNo=genBatchAndSerialNo();
+    	message.setField11_System_Trace_Audit_Number(batchNo.substring(6)); //POS终端交易流水
+//		request.setField14_Date_Of_Expired(subByLenFromKey(secondTrackStr, "=", 4));
+		message.setField22_Point_Of_Service_Entry_Mode("010");//服务点输入方式码
+		message.setField25_Point_Of_Service_Condition_Mode("04");//服务点条件码
+    	message.setField37_Retrieval_Reference_Number(getPosno());//POS中心系统流水号
+    	message.setField41_Card_Acceptor_Terminal_ID("00000001");//终端号
+    	message.setField42_Card_Acceptor_ID(""); //TODO 商户ID
+    	message.setField49_Currency_Code_Of_Transaction("156");//货币代码
+    	message.setField60_Reserved_Private(22+batchNo.substring(0, 6));//交易类型+批次号
+    	message.setField62_Reserved_Private("ACTN"+requestData.getProductType());//15位活动代码
+		message.setField64_MAC("3131313131313131");
+		return message;
+	}
+	public static String getPosno(){
+    	Random rd = new Random();
+    	DecimalFormat df1 = new DecimalFormat("000");
+		String currDate1 = new SimpleDateFormat("hhmmssSSS").format(new Date());// 生成日期格式为：年年月月日日、如：110608(11年06月08日)
+		String increase1 = df1.format(rd.nextInt(999));// 4位自增长数
+		return  increase1 + currDate1;
+    }
 }
