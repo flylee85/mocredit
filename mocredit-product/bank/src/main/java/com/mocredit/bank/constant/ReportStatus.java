@@ -8,7 +8,7 @@ package com.mocredit.bank.constant;
  */
 public enum ReportStatus {
 	PAYED((short) 1, "扣减"), REVOKE((short) 2, "撤销"), REVERSAL((short) 3, "冲正"), CHECK_ACCOUNT_YES((short) 4,
-			"对账平"), CHECK_ACCOUNT_NO((short) 5, "对账不平");
+			"对账平"), CHECK_ACCOUNT_NO((short) 5, "对账不平"),REVOKE_REVERSAL((short) 6, "撤销冲正");
 	private short status;
 	private String name;
 
