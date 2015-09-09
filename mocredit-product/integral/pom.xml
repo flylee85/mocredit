@@ -27,7 +27,7 @@
 			<artifactId>jaxrpc-api</artifactId>
 			<version>1.1</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.apache.axis</groupId>
 			<artifactId>axis</artifactId>
 			<version>1.4</version>
@@ -36,7 +36,7 @@
 			<groupId>org.apache.axis</groupId>
 			<artifactId>axis-ssl</artifactId>
 			<version>1.4</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
