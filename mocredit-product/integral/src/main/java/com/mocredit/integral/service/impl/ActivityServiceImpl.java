@@ -1,10 +1,8 @@
 package com.mocredit.integral.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,6 +50,7 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 			Activity ac = getByActivityId(activity.getActivityId());
 			if (ac != null) {
 				resp.setErrorCode(ErrorCodeType.EXIST_ACTIVITY_ERROR.getValue());
+				resp.setErrorMsg(ErrorCodeType.EXIST_ACTIVITY_ERROR.getText());
 				flag = false;
 			} else {
 				try {
@@ -65,6 +64,7 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 							"###operActivityAndStore storeList={} error={}###",
 							e);
 					resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
+					resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
 					flag = false;
 				}
 
@@ -81,6 +81,7 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 				LOGGER.error(
 						"###operActivityAndStore storeList={} error={}###", e);
 				resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
+				resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
 				flag = false;
 			}
 			break;
@@ -88,6 +89,7 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 			if (activityMapper.updateActStatusById(activity.getActivityId(),
 					ActivityStatus.STOP.getValue()) <= 0) {
 				resp.setErrorCode(ErrorCodeType.EXIST_ACTIVITY_ERROR.getValue());
+				resp.setErrorMsg(ErrorCodeType.EXIST_ACTIVITY_ERROR.getText());
 				flag = false;
 			}
 			break;
@@ -95,11 +97,19 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 			if (activityMapper.updateActStatusById(activity.getActivityId(),
 					ActivityStatus.START.getValue()) <= 0) {
 				resp.setErrorCode(ErrorCodeType.EXIST_ACTIVITY_ERROR.getValue());
+				resp.setErrorMsg(ErrorCodeType.EXIST_ACTIVITY_ERROR.getText());
 				flag = false;
 			}
 			break;
 		}
 		return flag;
+	}
+	
+
+	@Override
+	public Store getByShopIdStoreIdAcId(String shopId, String storeId,
+			Integer activityId) {
+		return activityMapper.getByShopIdStoreIdAcId(shopId, storeId, activityId);
 	}
 
 	@Transactional

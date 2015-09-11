@@ -7,12 +7,12 @@ package com.mocredit.integral.entity;
  * 
  */
 public class Response {
-	private String success;
+	private boolean success = true;
 	private String errorMsg;
 	private String errorCode;
 	private Object data;
 
-	public Response(String success, String errorMsg, String errorCode,
+	public Response(boolean success, String errorMsg, String errorCode,
 			Object data) {
 		super();
 		this.success = success;
@@ -25,11 +25,11 @@ public class Response {
 		super();
 	}
 
-	public String getSuccess() {
+	public boolean getSuccess() {
 		return success;
 	}
 
-	public void setSuccess(String success) {
+	public void setSuccess(boolean success) {
 		this.success = success;
 	}
 

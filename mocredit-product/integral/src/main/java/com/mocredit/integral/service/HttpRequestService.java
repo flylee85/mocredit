@@ -19,8 +19,10 @@ import com.mocredit.integral.entity.OutRequestLog;
 import com.mocredit.integral.entity.OutResponseLog;
 import com.mocredit.integral.entity.Response;
 import com.mocredit.integral.entity.ResponseData;
+import com.mocredit.integral.entity.Store;
 import com.mocredit.integral.util.DateTimeUtils;
 import com.mocredit.integral.util.HttpRequestUtil;
+import com.mocredit.integral.vo.ConfirmInfoVo;
 
 @Service
 public class HttpRequestService extends LogService {
@@ -106,6 +108,19 @@ public class HttpRequestService extends LogService {
 			Activity activity = activityService.getByActivityId(order
 					.getActivityId());
 			if (activity != null) {
+
+				// 验证该商户，该门店是否能参加该活动
+				Store store = activityService.getByShopIdStoreIdAcId(
+						order.getShopId() + "", order.getStoreId(),
+						order.getActivityId());
+				if (store == null) {
+					resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_SHOP_STORE
+							.getValue());
+					resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_SHOP_STORE
+							.getText());
+					return false;
+				}
+
 				order.setActivityName(activity.getActivityName());
 				Date now = new Date();
 				// 1，先判断当前时间在活动时间范围内
@@ -117,6 +132,7 @@ public class HttpRequestService extends LogService {
 				} else {
 					resp.setErrorCode(ErrorCodeType.ACTIVITY_OUT_DATE
 							.getValue());
+					resp.setErrorMsg(ErrorCodeType.ACTIVITY_OUT_DATE.getText());
 					return false;
 				}
 				// 3,判断使用次数是否超过最大使用次数限制
@@ -126,12 +142,15 @@ public class HttpRequestService extends LogService {
 					Integer count = getActTRCount(activity.getMaxType());
 					if (null == count) {
 						resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
+						resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
 						return false;
 					}
 					if (activity.getMaxNumber() != null
 							&& activity.getMaxNumber() < count) {
 						resp.setErrorCode(ErrorCodeType.ACTIVITY_OUT_COUNT
 								.getValue());
+						resp.setErrorMsg(ErrorCodeType.ACTIVITY_OUT_COUNT
+								.getText());
 						return false;
 					}
 				}
@@ -140,11 +159,14 @@ public class HttpRequestService extends LogService {
 						order.getOrderId(), DateTimeUtils.getDate("yyyyMMdd"))) {
 					resp.setErrorCode(ErrorCodeType.EXIST_ORDER_ERROR
 							.getValue());
+					resp.setErrorMsg(ErrorCodeType.EXIST_ORDER_ERROR.getText());
 					return false;
 				}
 			} else {
 				resp.setErrorCode(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
 						.getValue());
+				resp.setErrorMsg(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
+						.getText());
 				return false;
 			}
 			String response = doPostJson(requestId, url,
@@ -159,6 +181,8 @@ public class HttpRequestService extends LogService {
 				if (!orderService.save(order)) {
 					resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
 							.getValue());
+					resp.setErrorMsg(ErrorCodeType.SAVE_DATEBASE_ERROR
+							.getText());
 					return false;
 				} else {
 					return true;
@@ -168,6 +192,7 @@ public class HttpRequestService extends LogService {
 			}
 		} catch (Exception e) {
 			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+			resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
 			LOGGER.error(
 					"### doPostJsonAndSaveOrder url={}, requestId={},param={}, error={}",
 					url, requestId, param, e);
@@ -209,6 +234,7 @@ public class HttpRequestService extends LogService {
 				} else {
 					resp.setErrorCode(ErrorCodeType.ACTIVITY_OUT_DATE
 							.getValue());
+					resp.setErrorMsg(ErrorCodeType.ACTIVITY_OUT_DATE.getText());
 					return false;
 				}
 				// 3,判断使用次数是否超过最大使用次数限制
@@ -219,12 +245,16 @@ public class HttpRequestService extends LogService {
 									.getMaxType())) {
 						resp.setErrorCode(ErrorCodeType.ACTIVITY_OUT_COUNT
 								.getValue());
+						resp.setErrorMsg(ErrorCodeType.ACTIVITY_OUT_COUNT
+								.getText());
 						return false;
 					}
 				}
 			} else {
 				resp.setErrorCode(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
 						.getValue());
+				resp.setErrorMsg(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
+						.getText());
 				return false;
 			}
 			String response = doPost(requestId, url, paramMap);
@@ -237,6 +267,8 @@ public class HttpRequestService extends LogService {
 				if (!orderService.save(order)) {
 					resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
 							.getValue());
+					resp.setErrorMsg(ErrorCodeType.SAVE_DATEBASE_ERROR
+							.getText());
 					return false;
 				} else {
 					return true;
@@ -246,6 +278,7 @@ public class HttpRequestService extends LogService {
 			}
 		} catch (Exception e) {
 			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+			resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
 			LOGGER.error(
 					"### doPostAndSaveOrder url={}, requestId={},parms={}, error={}",
 					url, requestId, paramMap.toString(), e);
@@ -257,15 +290,20 @@ public class HttpRequestService extends LogService {
 			String param, String reponse, Response resp) {
 		if (reponse == null) {
 			resp.setErrorCode(ErrorCodeType.POST_BANK_ERROR.getValue());
+			resp.setErrorMsg(ErrorCodeType.POST_BANK_ERROR.getText());
 			return false;
 		}
 		try {
 			ResponseData responseData = JSON.parseObject(reponse,
 					ResponseData.class);
-			resp.setData(responseData);
+			resp.setData(responseData.getData());
+			resp.setErrorCode(responseData.getErrorCode());
+			resp.setErrorMsg(responseData.getErrorMsg());
+			resp.setSuccess(responseData.getSuccess());
 			return responseData.getSuccess();
 		} catch (Exception e) {
 			resp.setErrorCode(ErrorCodeType.ANA_RESPONSE_ERROR.getValue());
+			resp.setErrorMsg(ErrorCodeType.ANA_RESPONSE_ERROR.getText());
 			LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
 					url, requestId, param, e);
 			return false;
@@ -343,6 +381,8 @@ public class HttpRequestService extends LogService {
 				if (!orderService.isExistOrderAndUpdate(device, orderId)) {
 					resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
 							.getValue());
+					resp.setErrorMsg(ErrorCodeType.SAVE_DATEBASE_ERROR
+							.getText());
 					return false;
 				} else {
 					return true;
@@ -352,6 +392,7 @@ public class HttpRequestService extends LogService {
 			}
 		} catch (Exception e) {
 			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+			resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
 			LOGGER.error(
 					"### paymentRevokeJson url={}, requestId={},param={}, error={}",
 					url, requestId, param, e);
@@ -408,6 +449,7 @@ public class HttpRequestService extends LogService {
 			return analyJsonReponse(requestId, url, param, response, resp);
 		} catch (Exception e) {
 			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+			resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
 			LOGGER.error(
 					"### paymentRevokeReserval url={}, requestId={},param={}, error={}",
 					url, requestId, param, e);
@@ -448,12 +490,32 @@ public class HttpRequestService extends LogService {
 	 * @return
 	 */
 	public boolean confirmInfoJson(Integer requestId, String url, String param,
-			Response resp) {
+			ConfirmInfoVo confirmInfo, Response resp) {
 		try {
+			Activity activity = activityService.getByActivityId(confirmInfo
+					.getActivityId());
+			if (activity == null) {
+				resp.setErrorCode(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
+						.getValue());
+				resp.setErrorMsg(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
+						.getText());
+				return false;
+			}
+			Store store = activityService.getByShopIdStoreIdAcId(
+					confirmInfo.getShopId() + "", null,
+					confirmInfo.getActivityId());
+			if (store == null) {
+				resp.setErrorCode(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
+						.getValue());
+				resp.setErrorMsg(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
+						.getText());
+				return false;
+			}
 			String response = doPostJson(requestId, url, param);
 			return analyJsonReponse(requestId, url, param, response, resp);
 		} catch (Exception e) {
 			resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+			resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
 			LOGGER.error(
 					"### confirmInfo url={}, requestId={},param={}, error={}",
 					url, requestId, param.toString(), e);
@@ -536,13 +598,16 @@ public class HttpRequestService extends LogService {
 		try {
 			LOGGER.info("### doPost url={},requestId={},param={} ###", url,
 					requestId, param);
-			outRequestLogService.save(new OutRequestLog(requestId, url, param));
 			String response = HttpRequestUtil.doPostJson(url, param);
+			outRequestLogService.save(new OutRequestLog(requestId, url, param));
 			outResponseLogService.save(new OutResponseLog(requestId, response));
 			return response;
 		} catch (Exception e) {
 			LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
 					url, requestId, param, e);
+			outRequestLogService.save(new OutRequestLog(requestId, url, param));
+			outResponseLogService.save(new OutResponseLog(requestId, e
+					.getMessage()));
 			return null;
 		}
 	}

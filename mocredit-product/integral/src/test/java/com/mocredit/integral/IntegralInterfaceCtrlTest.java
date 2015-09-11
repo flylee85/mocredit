@@ -1,6 +1,7 @@
 package com.mocredit.integral;
 
 import com.alibaba.fastjson.JSON;
+import com.mocredit.base.util.PropertyUtil;
 import com.mocredit.integral.util.HttpRequestUtil;
 import com.mocredit.integral.vo.ActivityImportVo;
 import com.mocredit.integral.vo.ActivityVo;
@@ -14,7 +15,7 @@ import java.net.URLEncoder;
  * Created by ytq on 2015/8/28.
  */
 public class IntegralInterfaceCtrlTest {
-    public final static String BASE_URL = "http://localhost:8080/integral/interface/";
+    public final static String BASE_URL = "http://localhost:8080/integral/";
 
     /**
      * bank  银行代码 中信：citic，民生：cmbc
@@ -54,9 +55,8 @@ public class IntegralInterfaceCtrlTest {
      */
     @Test
     public void confirmInfoTest() throws Exception {
-
         ConfirmInfoVo confirmInfoVo = new ConfirmInfoVo();
-        confirmInfoVo.setActivityId(13);
+        confirmInfoVo.setActivityId(100);
         confirmInfoVo.setBank("citic");
         confirmInfoVo.setCardNum("62140038786912");
         confirmInfoVo.setShopId(1246);
@@ -86,7 +86,7 @@ public class IntegralInterfaceCtrlTest {
      * }
      * ]
      * 其他活动信息待定
-     * <p>
+     * <p/>
      * }
      * * operCode为更新时，需要活动的完整信息（包括门店）
      */
@@ -104,7 +104,7 @@ public class IntegralInterfaceCtrlTest {
         activityVo.setOperCode(1);
         activityVo.setActivityName("星巴克");
         activityVo.setActivityId(111);
-        for (int i = 100; i <= 100; i++) {
+        for (int i = 100; i <= 1000; i++) {
 //            HttpRequestUtil.doPostJson(BASE_URL + "activityImport", jsonStr.replace(":actId", i + ""));
             HttpRequestUtil.doPostJson(BASE_URL + "activityImport", jsonStr.replace(":actId", i + ""));
         }

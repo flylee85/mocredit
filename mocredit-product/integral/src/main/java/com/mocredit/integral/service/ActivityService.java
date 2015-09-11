@@ -5,6 +5,7 @@ import java.util.Date;
 import com.mocredit.integral.entity.Activity;
 import com.mocredit.integral.entity.ActivityTransRecord;
 import com.mocredit.integral.entity.Response;
+import com.mocredit.integral.entity.Store;
 import com.mocredit.integral.vo.ActivityVo;
 
 /**
@@ -35,4 +36,14 @@ public interface ActivityService extends BaseService<Activity> {
 	 * @return
 	 */
 	ActivityTransRecord statCountByTime(Date startTime, Date endTime);
+	/**
+	 * 根据shopId和storeId和activityId查询门店信息
+	 * 
+	 * @param shopId
+	 * @param storeId
+	 * @param activityId
+	 * @return
+	 */
+	Store getByShopIdStoreIdAcId(String shopId, String storeId,
+			Integer activityId);
 }

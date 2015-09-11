@@ -17,6 +17,7 @@ import com.mocredit.integral.entity.Response;
 import com.mocredit.integral.service.HttpRequestService;
 import com.mocredit.integral.service.InResponseLogService;
 import com.mocredit.integral.util.Utils;
+import com.mocredit.integral.vo.ConfirmInfoVo;
 
 public class IntegralBaseController extends BaseController {
 	@Autowired
@@ -36,6 +37,9 @@ public class IntegralBaseController extends BaseController {
 		map.put("success", success);
 		map.put("errorMsg", errorMsg);
 		map.put("errorCode", errorCode);
+		if (null == data) {
+			data = "";
+		}
 		map.put("data", data);
 		String jsonStr = JSON.toJSONString(map);
 		saveReponseLog(getRequestId(), jsonStr);
@@ -180,9 +184,9 @@ public class IntegralBaseController extends BaseController {
 	 * @param paramMap
 	 * @return
 	 */
-	public boolean confirmInfoJson(String url, String param, Response resp) {
+	public boolean confirmInfoJson(String url, String param,ConfirmInfoVo confirmInfo, Response resp) {
 		return httpRequstService.confirmInfoJson(getRequestId(), url, param,
-				resp);
+				 confirmInfo,	resp);
 	}
 
 	/**
