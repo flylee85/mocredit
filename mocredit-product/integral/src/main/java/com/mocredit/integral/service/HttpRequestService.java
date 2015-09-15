@@ -36,6 +36,7 @@ public class HttpRequestService extends LogService {
 	private ActivityService activityService;
 	ObjectMapper objectMapper = new ObjectMapper();
 
+	@Deprecated
 	public boolean doGetAndSaveOrder(Integer requestId, String url, Order order) {
 		String response = doGet(requestId, url);
 		// TODO 解析reponse 如果成功就保存order
@@ -217,6 +218,7 @@ public class HttpRequestService extends LogService {
 		return JSON.toJSONString(paymentDto);
 	}
 
+	@Deprecated
 	public boolean doPostAndSaveOrder(Integer requestId, String url,
 			Map<?, ?> paramMap, Order order, Response resp) {
 		try {
@@ -286,6 +288,16 @@ public class HttpRequestService extends LogService {
 		}
 	}
 
+	/**
+	 * 分析请求bank端响应
+	 * 
+	 * @param requestId
+	 * @param url
+	 * @param param
+	 * @param reponse
+	 * @param resp
+	 * @return
+	 */
 	public boolean analyJsonReponse(Integer requestId, String url,
 			String param, String reponse, Response resp) {
 		if (reponse == null) {
@@ -300,6 +312,15 @@ public class HttpRequestService extends LogService {
 			resp.setErrorCode(responseData.getErrorCode());
 			resp.setErrorMsg(responseData.getErrorMsg());
 			resp.setSuccess(responseData.getSuccess());
+			// 判断bank端的接口响应是否是001(参数错误),002(系统错误)
+			if ("001".equals(resp.getErrorCode())) {
+				resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
+				resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
+			}
+			if ("002".equals(resp.getErrorCode())) {
+				resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+				resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
+			}
 			return responseData.getSuccess();
 		} catch (Exception e) {
 			resp.setErrorCode(ErrorCodeType.ANA_RESPONSE_ERROR.getValue());
@@ -310,6 +331,7 @@ public class HttpRequestService extends LogService {
 		}
 	}
 
+	@Deprecated
 	public boolean analyReponse(Integer requestId, String url,
 			Map<?, ?> paramMap, String reponse, Response resp) {
 		if (reponse == null) {
@@ -335,6 +357,7 @@ public class HttpRequestService extends LogService {
 	 * @param resp
 	 * @return
 	 */
+	@Deprecated
 	public boolean paymentRevoke(Integer requestId, String url,
 			Map<?, ?> paramMap, Response resp) {
 		try {
@@ -400,6 +423,7 @@ public class HttpRequestService extends LogService {
 		}
 	}
 
+	@Deprecated
 	public boolean paymentReserval(Integer requestId, String url,
 			Map<?, ?> paramMap, Response resp) {
 		try {
@@ -428,6 +452,7 @@ public class HttpRequestService extends LogService {
 		}
 	}
 
+	@Deprecated
 	public boolean paymentRevokeReserval(Integer requestId, String url,
 			Map<?, ?> paramMap, Response resp) {
 		try {
@@ -466,6 +491,7 @@ public class HttpRequestService extends LogService {
 	 * @param resp
 	 * @return
 	 */
+	@Deprecated
 	public boolean confirmInfo(Integer requestId, String url,
 			Map<?, ?> paramMap, Response resp) {
 		try {
@@ -532,6 +558,7 @@ public class HttpRequestService extends LogService {
 	 * @param resp
 	 * @return
 	 */
+	@Deprecated
 	public boolean activityImport(Integer requestId, String url,
 			Map<?, ?> paramMap, Response resp) {
 		try {
@@ -546,6 +573,7 @@ public class HttpRequestService extends LogService {
 		}
 	}
 
+	@Deprecated
 	private String doGet(Integer requestId, String url) {
 		try {
 			LOGGER.info("### doGet url={},requestId={} ###", url, requestId);
@@ -568,7 +596,7 @@ public class HttpRequestService extends LogService {
 	 * @param paramMap
 	 * @return
 	 */
-
+	@Deprecated
 	private String doPost(Integer requestId, String url, Map<?, ?> paramMap) {
 		try {
 			LOGGER.info("### doPost url={},requestId={},params={} ###", url,

@@ -1,6 +1,16 @@
 package com.mocredit.integral.constant;
 
 public enum ErrorCodeType {
+	/**银行接口错误编码
+	 * PARAM_ERROR("001", "参数错误"), 
+	 * SYETEM_ERROR("002", "系统错误"),
+	 * LOGIN_ERROR("003", "登录失败"), 
+	 * PAY_ERROR("004", "支付失败"),
+	 * HAS_REVERSED("005", "已撤销成功"),
+	 * NO_REPORT("006","交易记录不存在"),
+	 * INVALID_SHOP("007","该商户没有权限"),
+	 * INVALID_BANK("008","未签约银行"),
+	 */
 	POST_BANK_ERROR("400", "请求Bank出错"), 
 	ANA_RESPONSE_ERROR("401", "解析Bank响应出错"), 
 	SYSTEM_ERROR("500", "系统出错"), 
@@ -13,7 +23,7 @@ public enum ErrorCodeType {
 	ACTIVITY_OUT_COUNT("507","超过活动限制次数"),
 	EXIST_ORDER_ERROR("508","已存在该订单"),
 	ACTIVITY_NOT_EXIST_SHOP("509","该活动不包含该商铺"),
-	ACTIVITY_NOT_EXIST_SHOP_STORE("509","该活动不包含该商铺的门店");
+	ACTIVITY_NOT_EXIST_SHOP_STORE("510","该活动不包含该商铺的门店");
 	private String value;
 	private String text;
 

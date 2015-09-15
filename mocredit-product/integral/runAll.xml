@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="积分测试" thread-count="1">
+	<!-- chrome,firefox和ie不区分大小写 -->
+	<parameter name="baseUrl" value="http://localhost:8080/" />
+	<parameter name="paymentUrl" value="payment" />
+	<test name="全部" preserve-order="true">
+		<packages>
+			<package name="com.mocredit.testcase" />
+		</packages>
+	</test>
+	<listeners>
+		<!--arrow插件实现用例失败重跑以及生成测试报告 -->
+		<listener class-name="com.mocredit.plugins.arrow.TestResultListener" />
+		<listener class-name="com.mocredit.plugins.arrow.RetryListener" />
+		<listener class-name="com.mocredit.plugins.arrow.PowerEmailableReporter" />
+
+	</listeners>
+
+</suite> 
