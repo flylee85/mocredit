@@ -16,8 +16,8 @@ import java.util.Map;
 
 public class HttpRequestUtil {
 	private final static String CHARSET = "utf-8";
-	private final static Integer CONNECTIMREOUT = 3000;
-	private final static Integer SOCKETTIMROUT = 3000;
+	private final static Integer CONNECTIMREOUT = 5000;
+	private final static Integer SOCKETTIMROUT = 5000;
 
 	/**
 	 * Do GET request

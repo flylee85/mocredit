@@ -23,7 +23,9 @@ public enum ErrorCodeType {
 	ACTIVITY_OUT_COUNT("507","超过活动限制次数"),
 	EXIST_ORDER_ERROR("508","已存在该订单"),
 	ACTIVITY_NOT_EXIST_SHOP("509","该活动不包含该商铺"),
-	ACTIVITY_NOT_EXIST_SHOP_STORE("510","该活动不包含该商铺的门店");
+	ACTIVITY_NOT_EXIST_SHOP_STORE("510","该活动不包含该商铺的门店"),
+	NOT_EXIST_ORDER_ERROR("511","不存在该订单");
+	
 	private String value;
 	private String text;
 

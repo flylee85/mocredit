@@ -27,7 +27,7 @@ public interface ActivityMapper {
 	 * @param activityId
 	 * @return
 	 */
-	Activity getByActivityId(Integer activityId);
+	Activity getByActivityId(@Param("activityId") Integer activityId);
 
 	/**
 	 * 根据shopId和storeId和activityId查询门店信息
@@ -37,8 +37,9 @@ public interface ActivityMapper {
 	 * @param activityId
 	 * @return
 	 */
-	Store getByShopIdStoreIdAcId(String shopId, String storeId,
-			Integer activityId);
+	Store getByShopIdStoreIdAcId(@Param("shopId") String shopId,
+			@Param("storeId") String storeId,
+			@Param("activityId") Integer activityId);
 
 	/**
 	 * 保存门店信息
@@ -55,7 +56,8 @@ public interface ActivityMapper {
 	 * @param status
 	 * @return
 	 */
-	int updateActStatusById(Integer activityId, String status);
+	int updateActStatusById(@Param(value = "activityId") Integer activityId,
+			@Param(value = "status") String status);
 
 	/**
 	 * 更具活动id删除活动
@@ -63,7 +65,7 @@ public interface ActivityMapper {
 	 * @param activityId
 	 * @return
 	 */
-	int deleteActAndStoreById(Integer activityId);
+	int deleteActAndStoreById(@Param("activityId") Integer activityId);
 
 	/**
 	 * 保存ActivityTransRecord

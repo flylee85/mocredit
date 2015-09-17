@@ -301,9 +301,10 @@ public class HttpRequestService extends LogService {
 	public boolean analyJsonReponse(Integer requestId, String url,
 			String param, String reponse, Response resp) {
 		if (reponse == null) {
-			resp.setErrorCode(ErrorCodeType.POST_BANK_ERROR.getValue());
-			resp.setErrorMsg(ErrorCodeType.POST_BANK_ERROR.getText());
-			return false;
+//			resp.setErrorCode(ErrorCodeType.POST_BANK_ERROR.getValue());
+//			resp.setErrorMsg(ErrorCodeType.POST_BANK_ERROR.getText());
+//			return false;
+			return true;
 		}
 		try {
 			ResponseData responseData = JSON.parseObject(reponse,
@@ -397,6 +398,13 @@ public class HttpRequestService extends LogService {
 	public boolean paymentRevokeJson(Integer requestId, String url,
 			String param, String device, String orderId, Response resp) {
 		try {
+			if(!orderService.isExistOrder(orderId)){
+				resp.setErrorCode(ErrorCodeType.NOT_EXIST_ORDER_ERROR
+						.getValue());
+				resp.setErrorMsg(ErrorCodeType.NOT_EXIST_ORDER_ERROR
+						.getText());
+				return false;
+			}
 			String response = doPostJson(requestId, url, param);
 			boolean anaFlag = analyJsonReponse(requestId, url, param, response,
 					resp);

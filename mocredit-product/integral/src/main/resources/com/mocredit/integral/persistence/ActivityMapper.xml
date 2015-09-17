@@ -26,15 +26,16 @@
 		`ti_activity` where activity_id=#{activityId}
 	</select>
 	<select id="getByShopIdStoreIdAcId" resultType="com.mocredit.integral.entity.Store">
-		select uuid as uuid,shop_id as shopId,store_id as storeId,activity_id as activityId from
+		select uuid as uuid,shop_id as shopId,store_id as storeId,activity_id
+		as activityId from
 		`ti_store` where 1=1 and activity_id=#{activityId}
 		<if test="shopId!=null">
-		    and shop_id=#{shopId}
+			and shop_id=#{shopId}
 		</if>
 		<if test="storeId!=null">
-		     and store_id=#{storeId} 
+			and store_id=#{storeId}
 		</if>
-		
+
 	</select>
 	<insert id="saveStore" parameterType="com.mocredit.integral.entity.Store">
 		insert into
@@ -43,9 +44,9 @@
 	</insert>
 
 	<update id="updateActStatusById">
-		update `ti_store`
+		update `ti_activity`
 		set
-		status=#{status} where
+		`status`=#{status} where
 		activity_id=#{activityId}
 	</update>
 	<delete id="deleteActAndStoreById">

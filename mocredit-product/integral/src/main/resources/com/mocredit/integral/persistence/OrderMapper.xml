@@ -12,6 +12,11 @@
 		count(1) from
 		`ti_order` where order_id=#{orderId} and device=#{device}
 	</select>
+	<select id="getOrderByOrderId" resultType="int">
+		select
+		count(1) from
+		`ti_order` where order_id=#{orderId}
+	</select>
 	<update id="updateStatusByOrderIdAndDevice">
 		update `ti_order`
 		set

@@ -17,13 +17,21 @@ public interface OrderMapper {
 	int save(@Param(value = "t") Order t);
 
 	/**
-	 * 订单id查询订单
+	 * 订单id和设备号查询订单
 	 * 
 	 * @param orderId
 	 * @return
 	 */
 	int getOrderByOrderIdAndDevice(@Param(value = "device") String device,
 			@Param(value = "orderId") String orderId);
+
+	/**
+	 * 订单id查询订单
+	 * 
+	 * @param orderId
+	 * @return
+	 */
+	int getOrderByOrderId(@Param(value = "orderId") String orderId);
 
 	/**
 	 * 根据订单Id更新订单状态

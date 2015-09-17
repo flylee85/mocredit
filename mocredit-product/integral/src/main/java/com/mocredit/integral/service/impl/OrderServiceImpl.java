@@ -38,10 +38,11 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public boolean isExistOrderAndUpdate(String device,String orderId) {
-		boolean isExist = orderMapper.getOrderByOrderIdAndDevice(device,orderId) > 0;
+	public boolean isExistOrderAndUpdate(String device, String orderId) {
+		boolean isExist = orderMapper.getOrderByOrderIdAndDevice(device,
+				orderId) > 0;
 		if (isExist) {
-			return orderMapper.updateStatusByOrderIdAndDevice(device,orderId,
+			return orderMapper.updateStatusByOrderIdAndDevice(device, orderId,
 					OrderStatus.REVOKE.getValue()) > 0;
 		} else {
 			return isExist;
@@ -51,6 +52,11 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public boolean isExistOrder(String device, String orderId, String transDate) {
 		return orderMapper.isExistOrder(device, orderId, transDate) > 0;
+	}
+
+	@Override
+	public boolean isExistOrder(String orderId) {
+		return orderMapper.getOrderByOrderId(orderId) > 0;
 	}
 
 }
