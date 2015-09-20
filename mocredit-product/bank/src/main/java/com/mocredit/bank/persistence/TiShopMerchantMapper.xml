@@ -15,6 +15,12 @@
     <result column="terminal_id" property="terminalId" jdbcType="VARCHAR" />
     <result column="token" property="token" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="SMALLINT" />
+    <result column="bank" property="bank" jdbcType="VARCHAR" />
+    <result column="batch_no" property="batchNo" jdbcType="VARCHAR" />
+    <result column="pos_no" property="posNo" jdbcType="VARCHAR" />
+    <result column="lmk_tmk" property="lmkTmk" jdbcType="VARCHAR" />
+    <result column="lmk_tpk" property="lmkTpk" jdbcType="VARCHAR" />
+    <result column="lmk_tak" property="lmkTak" jdbcType="VARCHAR" />
   </resultMap>
   <select id="selectByShopId" resultMap="BaseResultMap" parameterType="int" >
     <!--

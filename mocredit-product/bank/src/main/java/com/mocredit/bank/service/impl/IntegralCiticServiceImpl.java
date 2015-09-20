@@ -69,10 +69,10 @@ public class IntegralCiticServiceImpl implements IntegralService {
 			Payment payment = ServiceUtil.getPayment(requestData);
 			String payResult = this.payment(payment);
 			/* 对交易结果验签 */
-			if (!ServiceUtil.verify(payment)) {
-				log.error(requestData.getCardNum() + "验签失败,签名：" + payment.getSignature());
-				return genResponseData(false, RespError.PAY_ERROR, "验签失败", null);
-			}
+//			if (!ServiceUtil.verify(payment)) {
+//				log.error(requestData.getCardNum() + "验签失败,签名：" + payment.getSignature());
+//				return genResponseData(false, RespError.PAY_ERROR, "验签失败", null);
+//			}
 			if (!Variable.OK.equals(payResult)) {
 				return genResponseData(false, RespError.PAY_ERROR, payment.getCommentRes(), null);
 			}
@@ -91,7 +91,7 @@ public class IntegralCiticServiceImpl implements IntegralService {
 	private void savePaymentReport(RequestData requestData, Payment payment) {
 		// 记录交易记录
 		TiPaymentReport report = new TiPaymentReport();
-		report.setBank(Banks.CITIC);
+		report.setBank(Banks.CITIC.getName());
 		report.setTerminalId(payment.getTerminalID());
 		report.setOrderId(payment.getOrderID());
 		report.setCardNum(payment.getPan());
@@ -122,13 +122,7 @@ public class IntegralCiticServiceImpl implements IntegralService {
 	public ResponseData paymentRevoke(RequestData requestData) {
 		try {
 			// 查询交易记录以及记录银行数据
-			Map<String, String> reportParam = new HashMap<>();
-			reportParam.put("orderId", requestData.getOrderId());
-			reportParam.put("device", requestData.getDevice());
-			TiPaymentReport report = reportMapper.selectByOrderId(reportParam);
-			if (null == report) {
-				return genResponseData(false, RespError.NO_REPORT, null, null);
-			}
+			TiPaymentReport report = reportMapper.selectByOrderId(requestData.getOrderId());
 			TiReportDataZx reportData = reportDataMapper.selectByReportId(report.getUuid());
 
 			Payment payment = ServiceUtil.getPaymentRevoke(report, reportData);
@@ -351,14 +345,7 @@ public class IntegralCiticServiceImpl implements IntegralService {
 	public ResponseData paymentReversal(RequestData requestData) {
 		try {
 			// 查询交易记录以及记录银行数据
-			Map<String, String> reportParam = new HashMap<>();
-			reportParam.put("orderId", requestData.getOrderId());
-			reportParam.put("device", requestData.getDevice());
-			TiPaymentReport report = reportMapper.selectByOrderId(reportParam);
-			/* 若不存在该交易记录，认为没有交易成功，返回冲正成功 */
-			if (null == report) {
-				return genResponseData(true, null, null, null);
-			}
+			TiPaymentReport report = reportMapper.selectByOrderId(requestData.getOrderId());
 			TiReportDataZx reportData = reportDataMapper.selectByReportId(report.getUuid());
 
 			Payment payment = ServiceUtil.getPaymentRevoke(report, reportData);
@@ -382,21 +369,10 @@ public class IntegralCiticServiceImpl implements IntegralService {
 	@Override
 	public ResponseData paymentRevokeReversal(RequestData requestData) {
 		// 查询交易记录以及记录银行数据
-		Map<String, String> reportParam = new HashMap<>();
-		reportParam.put("orderId", requestData.getOrderId());
-		reportParam.put("device", requestData.getDevice());
-		TiPaymentReport report = reportMapper.selectByOrderId(reportParam);
-		/* 交易记录不存在 */
-		if (null == report) {
-			return genResponseData(false, RespError.NO_REPORT, null, null);
-		}
+		TiPaymentReport report = reportMapper.selectByOrderId(requestData.getOrderId());
 		/* 交易已撤销，返回失败标志和错误码，中信没有进行撤销冲正的接口，针对这种情况直接，POS端撤销的冲正需要做特殊处理。 */
 		if (ReportStatus.REVOKE.getStatus() == report.getStatus()) {
 			return genResponseData(false, RespError.HAS_REVERSED, null, null);
-		}
-		/* 该笔交易未撤销，返回成功标志 */
-		if (ReportStatus.PAYED.getStatus() == report.getStatus()) {
-			return genResponseData(true, null, null, null);
 		}
 		return genResponseData(false, RespError.SYETEM_ERROR, null, null);
 	}

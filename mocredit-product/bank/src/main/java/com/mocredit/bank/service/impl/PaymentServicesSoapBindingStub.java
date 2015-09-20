@@ -3,6 +3,7 @@ package com.mocredit.bank.service.impl;
 
 import java.rmi.RemoteException;
 
+import javax.xml.namespace.QName;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.client.Call;
@@ -133,12 +134,11 @@ public class PaymentServicesSoapBindingStub extends org.apache.axis.client.Stub 
 		}
 		call.setTargetEndpointAddress(endPoint);
 		call.setMaintainSession(true);
-
 		call.addParameter("paraXML", org.apache.axis.Constants.XSD_STRING, javax.xml.rpc.ParameterMode.IN);
 		call.setReturnType(org.apache.axis.Constants.XSD_STRING);
-		call.setUseSOAPAction(true);
-		call.setSOAPActionURI("http://service.payment.citiccard.com");
-		call.setOperationName(method);
+//		call.setUseSOAPAction(true);
+//		call.setSOAPActionURI("http://service.payment.citiccard.com");
+		call.setOperationName(new QName("http://controller.ws.citicserver.com/",method));
 		String resultA = (String) call.invoke(new Object[] { paramXml });
 
 		
@@ -148,7 +148,7 @@ public class PaymentServicesSoapBindingStub extends org.apache.axis.client.Stub 
 		// 记录银行请求日志
 		BankLog bank = new BankLog();
 		bank.setCardNum(cardNum);
-		bank.setBank(Banks.CITIC);
+		bank.setBank(Banks.CITIC.getName());
 		bank.setUrl(Variable.ZXWSURL);
 		bank.setOperate(method);
 		bank.setRequestId(requestId);

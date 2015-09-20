@@ -10,15 +10,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.mocredit.bank.constant.ReportStatus;
 import com.mocredit.bank.constant.RespError;
 import com.mocredit.bank.datastructure.ResponseData;
 import com.mocredit.bank.entity.InRequest;
 import com.mocredit.bank.entity.InResponse;
 import com.mocredit.bank.entity.RequestData;
+import com.mocredit.bank.entity.TiPaymentReport;
 import com.mocredit.bank.persistence.InRequestMapper;
 import com.mocredit.bank.persistence.InResponseMapper;
+import com.mocredit.bank.persistence.TiPaymentReportMapper;
 import com.mocredit.bank.service.IntegralService;
 import com.mocredit.bank.service.impl.IntegralServiceLocator;
+import com.mocredit.bank.util.BankUtil;
 import com.mocredit.bank.util.DateTimeUtils;
 import com.mocredit.bank.util.Utils;
 import com.mocredit.bank.util.Variable;
@@ -32,19 +36,15 @@ public class IntegralController {
 	private InRequestMapper requestMapper;
 	@Autowired
 	private InResponseMapper responseMapper;
+	@Autowired
+	private TiPaymentReportMapper reportMapper;
 
 	/**
 	 * 积分扣减
 	 * 
-	 * @param 
-	 *             {
-	 *            shopId: 商户ID
-	 *            cardNum:卡号
-	 *            orderId:订单号
-	 *            transAmt:交易金额
-	 *            productType:银行内部活动代码
-	 *            device:机具号
-	 *            }
+	 * @param {
+	 *            shopId: 商户ID cardNum:卡号 orderId:订单号 transAmt:交易金额
+	 *            productType:银行内部活动代码 device:机具号 }
 	 * @return { retCode 返回码 errMsg 错误信息 ,success 是否成功}
 	 */
 	@RequestMapping(value = "/payment", produces = { "application/json;charset=UTF-8" })
@@ -67,12 +67,18 @@ public class IntegralController {
 
 		ResponseData responseData = null;
 		String checkParam = checkPaymentParam(requestData);
+		String bank = BankUtil.getBankByCard(requestData.getCardNum());
 		if (!Variable.OK.equals(checkParam)) {
 			responseData = new ResponseData(RespError.PARAM_ERROR.getErrorCode(),
 					RespError.PARAM_ERROR.getErrorMsg() + ":" + checkParam, false);
 		} else {
-			IntegralService service = locator.getService(requestData.getBank());
-			responseData = service.payment(requestData);
+			IntegralService service = locator.getService(bank);
+			if (null == service) {
+				responseData = new ResponseData(RespError.INVALID_BANK.getErrorCode(),
+						RespError.INVALID_BANK.getErrorMsg(), false);
+			} else {
+				responseData = service.payment(requestData);
+			}
 		}
 
 		String responseStr = JSON.toJSONString(responseData);
@@ -110,11 +116,8 @@ public class IntegralController {
 	 * 积分消费撤销
 	 * 
 	 * @param reqMap
-	 *          {
-	 *            orderId 订单号
-	 *            device 机具号
-	 *          }
-	 *          
+	 *            { orderId 订单号 device 机具号 }
+	 * 
 	 * @return { retCode 返回码 errMsg 错误信息 ,success 是否成功 }
 	 */
 	@RequestMapping(value = "/paymentRevoke", produces = { "application/json;charset=UTF-8" })
@@ -123,8 +126,12 @@ public class IntegralController {
 		RequestData requestData = new RequestData();
 		// 模拟数据
 		requestData.setOrderId("15236150608709");
-		requestData.setDevice("10000000");
-
+		// 消费记录检查
+		TiPaymentReport report = reportMapper.selectByOrderId(requestData.getOrderId());
+		if (null == report || ReportStatus.PAYED.getStatus() != report.getStatus()) {
+			return JSON.toJSONString(
+					new ResponseData(RespError.NO_REPORT.getErrorCode(), RespError.NO_REPORT.getErrorMsg(), false));
+		}
 		int requestId = saveRequestLog(request, param, requestData.getOrderId());
 		requestData.setRequestId(requestId);
 
@@ -134,8 +141,13 @@ public class IntegralController {
 			responseData = new ResponseData(RespError.PARAM_ERROR.getErrorCode(),
 					RespError.PARAM_ERROR.getErrorMsg() + ":" + checkParam, false);
 		} else {
-			IntegralService service = locator.getService(requestData.getBank());
-			responseData = service.paymentRevoke(requestData);
+			IntegralService service = locator.getService(report.getBank());
+			if (null == service) {
+				responseData = new ResponseData(RespError.INVALID_BANK.getErrorCode(),
+						RespError.INVALID_BANK.getErrorMsg(), false);
+			} else {
+				responseData = service.paymentRevoke(requestData);
+			}
 		}
 		String responseStr = JSON.toJSONString(responseData);
 		saveResponseLog(responseStr, String.valueOf(requestId));
@@ -146,10 +158,7 @@ public class IntegralController {
 	 * 积分消费冲正
 	 * 
 	 * @param reqMap
-	 *           {
-	 *            orderId 订单号
-	 *            device 机具号
-	 *          }
+	 *            { orderId 订单号 device 机具号 }
 	 * @return { retCode 返回码 errMsg 错误信息 ,success 是否成功 }
 	 */
 	@RequestMapping(value = "/paymentReversal", produces = { "application/json;charset=UTF-8" })
@@ -158,8 +167,16 @@ public class IntegralController {
 		RequestData requestData = new RequestData();
 		// 模拟数据
 		requestData.setOrderId("15236150608709");
-		requestData.setDevice("10000000");
-
+		// 查询交易记录以及记录银行数据
+		TiPaymentReport report = reportMapper.selectByOrderId(requestData.getOrderId());
+		/* 若不存在该交易记录，认为没有交易成功，返回冲正成功 */
+		if (null == report || ReportStatus.REVERSAL.getStatus() == report.getStatus()) {
+			return JSON.toJSONString(new ResponseData(null, null, true));
+			/* 状态不正确 */
+		} else if (ReportStatus.PAYED.getStatus() != report.getStatus()) {
+			return JSON.toJSONString(
+					new ResponseData(RespError.NO_REPORT.getErrorCode(), RespError.NO_REPORT.getErrorMsg(), false));
+		}
 		int requestId = saveRequestLog(request, param, requestData.getOrderId());
 		requestData.setRequestId(requestId);
 
@@ -169,8 +186,13 @@ public class IntegralController {
 			responseData = new ResponseData(RespError.PARAM_ERROR.getErrorCode(),
 					RespError.PARAM_ERROR.getErrorMsg() + ":" + checkParam, false);
 		} else {
-			IntegralService service = locator.getService(requestData.getBank());
-			responseData = service.paymentRevoke(requestData);
+			IntegralService service = locator.getService(report.getBank());
+			if (null == service) {
+				responseData = new ResponseData(RespError.INVALID_BANK.getErrorCode(),
+						RespError.INVALID_BANK.getErrorMsg(), false);
+			} else {
+				responseData = service.paymentRevoke(requestData);
+			}
 		}
 		String responseStr = JSON.toJSONString(responseData);
 		saveResponseLog(responseStr, String.valueOf(requestId));
@@ -181,10 +203,7 @@ public class IntegralController {
 	 * 积分消费撤销冲正
 	 * 
 	 * @param reqMap
-	 *           {
-	 *            orderId 订单号
-	 *            device 机具号
-	 *          }
+	 *            { orderId 订单号 device 机具号 }
 	 * @return { retCode 返回码 errMsg 错误信息 ,success 是否成功 }
 	 */
 	@RequestMapping(value = "/paymentRevokeReversal", produces = { "application/json;charset=UTF-8" })
@@ -194,8 +213,21 @@ public class IntegralController {
 		RequestData requestData = new RequestData();
 		// 模拟数据
 		requestData.setOrderId("15236150608709");
-		requestData.setDevice("10000000");
-
+		// 查询交易记录以及记录银行数据
+		TiPaymentReport report = reportMapper.selectByOrderId(requestData.getOrderId());
+		/* 交易记录不存在 */
+		if (null == report) {
+			return JSON.toJSONString(
+					new ResponseData(RespError.NO_REPORT.getErrorCode(), RespError.NO_REPORT.getErrorMsg(), false));
+			/* 该笔交易未撤销，返回成功标志 */
+		} else if (ReportStatus.PAYED.getStatus() == report.getStatus()) {
+			return JSON.toJSONString(new ResponseData(null, null, true));
+			/* 状态不正确 */
+		} else if (ReportStatus.REVOKE.getStatus() != report.getStatus()) {
+			return JSON.toJSONString(
+					new ResponseData(RespError.NO_REPORT.getErrorCode(), RespError.NO_REPORT.getErrorMsg(), false));
+		}
+		
 		int requestId = saveRequestLog(request, param, requestData.getOrderId());
 		requestData.setRequestId(requestId);
 
@@ -205,8 +237,13 @@ public class IntegralController {
 			responseData = new ResponseData(RespError.PARAM_ERROR.getErrorCode(),
 					RespError.PARAM_ERROR.getErrorMsg() + ":" + checkParam, false);
 		} else {
-			IntegralService service = locator.getService(requestData.getBank());
-			responseData = service.paymentRevokeReversal(requestData);
+			IntegralService service = locator.getService(report.getBank());
+			if (null == service) {
+				responseData = new ResponseData(RespError.INVALID_BANK.getErrorCode(),
+						RespError.INVALID_BANK.getErrorMsg(), false);
+			} else {
+				responseData = service.paymentRevokeReversal(requestData);
+			}
 		}
 		String responseStr = JSON.toJSONString(responseData);
 		saveResponseLog(responseStr, String.valueOf(requestId));
@@ -217,20 +254,15 @@ public class IntegralController {
 	 * 积分查询
 	 * 
 	 * @param reqMap
-	 *           {
-	 *            cardNum 卡号
-	 *            shopId 商户ID
-	 *            productType  银行内部活动代码
-	 *          }
-	 * @return { retCode 返回码 errMsg 错误信息 ,success 是否成功  data{integral 积分}}
+	 *            { cardNum 卡号 shopId 商户ID productType 银行内部活动代码 }
+	 * @return { retCode 返回码 errMsg 错误信息 ,success 是否成功 data{integral 积分}}
 	 */
 	@RequestMapping(value = "/confirmInfo", produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
-	public String confirmInfo(HttpServletRequest request, HttpServletResponse response,
-			@RequestBody String param) {
+	public String confirmInfo(HttpServletRequest request, HttpServletResponse response, @RequestBody String param) {
 		RequestData requestData = new RequestData();
 		// 模拟数据
-//		requestData.setCardNum("5182128000042869");
+		// requestData.setCardNum("5182128000042869");
 		requestData.setCardNum("5201080000040103");
 		requestData.setProductType("00000000");
 		requestData.setShopId(1);
@@ -244,8 +276,14 @@ public class IntegralController {
 			responseData = new ResponseData(RespError.PARAM_ERROR.getErrorCode(),
 					RespError.PARAM_ERROR.getErrorMsg() + ":" + checkParam, false);
 		} else {
-			IntegralService service = locator.getService(requestData.getBank());
-			responseData = service.confirmInfo(requestData);
+			String bank = BankUtil.getBankByCard(requestData.getCardNum());
+			IntegralService service = locator.getService(bank);
+			if (null == service) {
+				responseData = new ResponseData(RespError.INVALID_BANK.getErrorCode(),
+						RespError.INVALID_BANK.getErrorMsg(), false);
+			} else {
+				responseData = service.confirmInfo(requestData);
+			}
 		}
 		String responseStr = JSON.toJSONString(responseData);
 		saveResponseLog(responseStr, String.valueOf(requestId));
@@ -331,8 +369,9 @@ public class IntegralController {
 		}
 		return result;
 	}
+
 	/**
-	 *积分查询参数检查
+	 * 积分查询参数检查
 	 * 
 	 * @param requestData
 	 * @return
@@ -343,9 +382,9 @@ public class IntegralController {
 			result = "缺少参数";
 		} else if (Utils.isNullOrBlank(requestData.getCardNum())) {
 			result = "缺少参数cardNum";
-		} else if (0==requestData.getShopId()) {
+		} else if (0 == requestData.getShopId()) {
 			result = "缺少参数shopId";
-		}else if (Utils.isNullOrBlank(requestData.getProductType())) {
+		} else if (Utils.isNullOrBlank(requestData.getProductType())) {
 			result = "缺少参数productType";
 		}
 		return result;

@@ -18,8 +18,8 @@ public class IntegralServiceLocator {
 		if (Banks.CITIC.equals(bank)) {
 			return SpringContextUtils.getBean("citicService");
 		} else if (Banks.CMBC.equals(bank)) {
-			return null;
+			return SpringContextUtils.getBean("cmbcService");
 		}
-		return SpringContextUtils.getBean("citicService");
+		return null;
 	}
 }

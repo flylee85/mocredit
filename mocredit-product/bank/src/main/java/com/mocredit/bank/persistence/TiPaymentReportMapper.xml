@@ -45,8 +45,8 @@
       #{posTime,jdbcType=VARCHAR}, #{productType,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, 
       #{status,jdbcType=SMALLINT}, now(), #{device,jdbcType=VARCHAR}, DATE_FORMAT(NOW(),'%Y%m%d'), #{requestId,jdbcType=INTEGER})
   </insert>
-  <select id="selectByOrderId" resultMap="paymentReport" parameterType="java.util.Map">
- 		select pr.uuid,pr.bank,pr.terminal_id,pr.order_id,pr.card_num,pr.pos_id,pr.pos_time,pr.product_type,pr.amount,pr.`status`,pr.ctime,pr.device,trans_date,pr.request_id from ti_payment_report pr where order_id=#{orderId} and device=#{device} and DATE_FORMAT(ctime,'%Y-%m-%d')=DATE_FORMAT(now(),'%Y-%m-%d')
+  <select id="selectByOrderId" resultMap="paymentReport" parameterType="String">
+ 		select pr.uuid,pr.bank,pr.terminal_id,pr.order_id,pr.card_num,pr.pos_id,pr.pos_time,pr.product_type,pr.amount,pr.`status`,pr.ctime,pr.device,trans_date,pr.request_id from ti_payment_report pr where order_id=#{orderId}
   </select>
   <update id="updateStatus"  parameterType="com.mocredit.bank.entity.TiPaymentReport">
   	update ti_payment_report set status=#{status} where uuid=#{uuid}

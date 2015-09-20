@@ -45,7 +45,7 @@ public class CiticTask {
 	 * @return
 	 */
 	public boolean maintainSession() {
-		List<TiShopMerchant> allMerchants = merchantService.getMerchantsByBank(Banks.CITIC);
+		List<TiShopMerchant> allMerchants = merchantService.getMerchantsByBank(Banks.CITIC.getName());
 		boolean flag = true;
 		for (TiShopMerchant merchant : allMerchants) {
 			Payment payment = new Payment();
@@ -82,7 +82,7 @@ public class CiticTask {
 	 * 对账
 	 */
 	public void checkAccount() {
-		List<TiShopMerchant> selectValidMerchants = merchantService.getMerchantsByBank(Banks.CITIC);
+		List<TiShopMerchant> selectValidMerchants = merchantService.getMerchantsByBank(Banks.CITIC.getName());
 		for (TiShopMerchant merchant : selectValidMerchants) {
 			Map<String, Object> param = new HashMap<>();
 			param.put("merchantId", merchant.getMerchantId());

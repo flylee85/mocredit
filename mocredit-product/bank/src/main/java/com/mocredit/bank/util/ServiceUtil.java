@@ -510,6 +510,9 @@ public class ServiceUtil {
     	message.setField60_Reserved_Private(22+merchant.getBatchNo());//交易类型+批次号
     	message.setField62_Reserved_Private("ACTN"+requestData.getProductType());//15位活动代码
 		message.setField64_MAC("3131313131313131");
+
+		// POS流水号+1
+		merchant.setPosNo(String.valueOf(Integer.valueOf(merchant.getPosNo()) + 1));
 		return message;
 	}
 	/**
@@ -517,30 +520,33 @@ public class ServiceUtil {
 	 * @param requestData
 	 * @return
 	 */
-	public static MessageObject getPayReservalMessage(TiPaymentReport report,TiReportDataZx reportData){
-		MessageObject message = new MessageObject();
+	public static MessageObject getPayReservalMessage(TiPaymentReport report,TiReportDataZx reportData,TiShopMerchant merchant){
+		MessageObject message = new MessageObject();//02 11 14 62 41 60 61 03 25 22 38 39 64 49
     	message.setMesstype("0400");
     	message.setField02_Primary_Account_Number(report.getCardNum());//账号
     	message.setField03_Processing_Code("000000");//交易处理码
-    	message.setField04_Amount_Of_Transactions(Utils.fillZeroToLen(report.getAmount(),12));// 交易金额
-    	message.setField11_System_Trace_Audit_Number(report.getPosId()); //POS终端交易流水 
+    	message.setField11_System_Trace_Audit_Number(String.valueOf(Integer.valueOf(merchant.getPosNo())+1)); //POS终端交易流水 
 //		request.setField14_Date_Of_Expired(subByLenFromKey(secondTrackStr, "=", 4));
 		message.setField22_Point_Of_Service_Entry_Mode("010");//服务点输入方式码
 		message.setField25_Point_Of_Service_Condition_Mode("04");//服务点条件码
-    	message.setField37_Retrieval_Reference_Number(getPosno());//POS中心系统流水号
+//    	message.setField37_Retrieval_Reference_Number(getPosno());//POS中心系统流水号
     	message.setField38_Authorization_Identification_Response(reportData.getAuthorizeCode());//授权码
     	/*1．POS终端在时限内未能收到POS中心的应答消息而引发，冲正原因码填“98”。
 			2．POS终端在时限内收到POS中心的批准应答消息，但由于POS机故障无法完成交易而引发，冲正原因码填“96”。
 			3．POS终端对收到POS中心的应答消息，验证MAC出错，冲正原因码填“A0”。
 			4．其他情况，冲正原因码填“06”
 			*/
-    	message.setField39_Response_Code("96");//冲正原因 
+    	message.setField39_Response_Code("98");//冲正原因 
     	message.setField41_Card_Acceptor_Terminal_ID(report.getTerminalId());//终端号
-    	message.setField42_Card_Acceptor_ID(reportData.getMerchantId()); //商户ID
+//    	message.setField42_Card_Acceptor_ID(reportData.getMerchantId()); //商户ID
     	message.setField49_Currency_Code_Of_Transaction("156");//货币代码
     	message.setField60_Reserved_Private(22+reportData.getBatchNo());//交易类型+批次号
-    	message.setField62_Reserved_Private("ACTN"+report.getProductType());//15位活动代码
+//    	message.setField61_Original_Message(reportData.getBatchNo()+report.getPosId());
+    	message.setField62_Reserved_Private(report.getProductType());//15位活动代码
 		message.setField64_MAC("3131313131313131");
+
+		// POS流水号+1
+		merchant.setPosNo(String.valueOf(Integer.valueOf(merchant.getPosNo()) + 1));
 		return message;
 	}
 	/**
@@ -549,28 +555,27 @@ public class ServiceUtil {
 	 * @return
 	 */
 	public static MessageObject getPayRevokeMessage(TiPaymentReport report,TiReportDataZx reportData,TiShopMerchant merchant){
-		MessageObject message = new MessageObject();
+		MessageObject message = new MessageObject();//02 11 14 62 41 60 61  03 25 49 22 37 38 64
     	message.setMesstype("0200");
     	message.setField02_Primary_Account_Number(report.getCardNum());//账号
     	message.setField03_Processing_Code("200000");//交易处理码
     	message.setField04_Amount_Of_Transactions(Utils.fillZeroToLen(report.getAmount(),12));// 交易金额
-    	message.setField11_System_Trace_Audit_Number(report.getPosId()); //POS终端交易流水 
+    	message.setField11_System_Trace_Audit_Number(String.valueOf(Integer.valueOf(merchant.getPosNo())+1)); //POS终端交易流水 
 //		request.setField14_Date_Of_Expired(subByLenFromKey(secondTrackStr, "=", 4));
 		message.setField22_Point_Of_Service_Entry_Mode("010");//服务点输入方式码
 		message.setField25_Point_Of_Service_Condition_Mode("04");//服务点条件码
     	message.setField37_Retrieval_Reference_Number(reportData.getRetrievalNo());//检索参考号
     	message.setField38_Authorization_Identification_Response(reportData.getAuthorizeCode());
-    	/*1．POS终端在时限内未能收到POS中心的应答消息而引发，冲正原因码填“98”。
-			2．POS终端在时限内收到POS中心的批准应答消息，但由于POS机故障无法完成交易而引发，冲正原因码填“96”。
-			3．POS终端对收到POS中心的应答消息，验证MAC出错，冲正原因码填“A0”。
-			4．其他情况，冲正原因码填“06”
-			*/
     	message.setField41_Card_Acceptor_Terminal_ID(report.getTerminalId());//终端号
-    	message.setField42_Card_Acceptor_ID(reportData.getMerchantId()); //商户ID
+//    	message.setField42_Card_Acceptor_ID(reportData.getMerchantId()); //商户ID
     	message.setField49_Currency_Code_Of_Transaction("156");//货币代码
-    	message.setField60_Reserved_Private(22+merchant.getPosNo());//交易类型+批次号
-    	message.setField62_Reserved_Private("ACTN"+report.getProductType());//15位活动代码
+    	message.setField60_Reserved_Private(23+reportData.getBatchNo());//交易类型+批次号
+    	message.setField61_Original_Message(reportData.getBatchNo()+report.getPosId());
+    	message.setField62_Reserved_Private(report.getProductType());//15位活动代码
 		message.setField64_MAC("3131313131313131");
+		
+		// POS流水号+1
+		merchant.setPosNo(String.valueOf(Integer.valueOf(merchant.getPosNo()) + 1));
 		return message;
 	}
 	/**
@@ -598,8 +603,32 @@ public class ServiceUtil {
     	message.setField41_Card_Acceptor_Terminal_ID(report.getTerminalId());//终端号
     	message.setField42_Card_Acceptor_ID(reportData.getMerchantId()); //商户ID
     	message.setField49_Currency_Code_Of_Transaction("156");//货币代码
-    	message.setField60_Reserved_Private(22+report.getPosId());//交易类型+批次号
+    	message.setField60_Reserved_Private(22+reportData.getBatchNo());//交易类型+批次号
     	message.setField62_Reserved_Private("ACTN"+report.getProductType());//15位活动代码
+		message.setField64_MAC("3131313131313131");
+		return message;
+	}
+	
+	/**
+	 * 民生银行 积分查询MessageObject
+	 * @param requestData
+	 * @return
+	 */
+	public static MessageObject getConfirmInfoMessage(RequestData requestData,TiShopMerchant merchant){
+		MessageObject message = new MessageObject();
+    	message.setMesstype("0200");
+    	message.setField02_Primary_Account_Number(requestData.getCardNum());//账号
+    	message.setField03_Processing_Code("310000");//交易处理码
+    	message.setField11_System_Trace_Audit_Number(String.valueOf(Integer.valueOf(merchant.getPosNo())+1)); //POS终端交易流水 +1
+//		request.setField14_Date_Of_Expired(subByLenFromKey(secondTrackStr, "=", 4));
+		message.setField22_Point_Of_Service_Entry_Mode("010");//服务点输入方式码
+		message.setField25_Point_Of_Service_Condition_Mode("04");//服务点条件码
+    	message.setField37_Retrieval_Reference_Number(getPosno());//POS中心系统流水号
+    	message.setField41_Card_Acceptor_Terminal_ID(merchant.getTerminalId());//终端号
+    	message.setField42_Card_Acceptor_ID(merchant.getMerchantId()); //商户ID
+    	message.setField49_Currency_Code_Of_Transaction("156");//货币代码
+    	message.setField60_Reserved_Private(22+merchant.getBatchNo());//交易类型+批次号
+    	message.setField62_Reserved_Private("ACTN"+requestData.getProductType());//15位活动代码
 		message.setField64_MAC("3131313131313131");
 		return message;
 	}

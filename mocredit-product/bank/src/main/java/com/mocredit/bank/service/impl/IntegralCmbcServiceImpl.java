@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.mocredit.bank.constant.ReportStatus;
 import com.mocredit.bank.constant.RespError;
@@ -32,6 +33,7 @@ import com.mocredit.base.util.Banks;
  * @author liaoying Created on 2015年8月27日
  *
  */
+@Service("cmbcService")
 public class IntegralCmbcServiceImpl implements IntegralService {
 	private static Logger logger = Logger.getLogger(IntegralCmbcServiceImpl.class);
 	private static Map<Integer, TiShopMerchant> merchantsCache = new HashMap<>();
@@ -62,8 +64,6 @@ public class IntegralCmbcServiceImpl implements IntegralService {
 		}
 		// 返回码判断成功与否
 		if ("00".equals(response.getField39_Response_Code())) {
-			// POS流水号+1
-			merchant.setPosNo(String.valueOf(Integer.valueOf(merchant.getPosNo()) + 1));
 			savePaymentReport(requestData, response);
 			return new ResponseData(null, null, true);
 		}
@@ -73,17 +73,13 @@ public class IntegralCmbcServiceImpl implements IntegralService {
 	@Override
 	public ResponseData paymentReversal(RequestData requestData) {
 		// 查询交易记录以及记录银行数据
-		Map<String, String> reportParam = new HashMap<>();
-		reportParam.put("orderId", requestData.getOrderId());
-		reportParam.put("device", requestData.getDevice());
-		TiPaymentReport report = reportMapper.selectByOrderId(reportParam);
-		/* 若不存在该交易记录，认为没有交易成功，返回冲正成功 */
-		if (null == report||ReportStatus.REVERSAL.getStatus()==report.getStatus()) {
-			return new ResponseData(null, null, true);
-		}
+		TiPaymentReport report = reportMapper.selectByOrderId(requestData.getOrderId());
 		TiReportDataZx reportData = reportDataMapper.selectByReportId(report.getUuid());
-
-		MessageObject request = ServiceUtil.getPayReservalMessage(report, reportData);
+		TiShopMerchant merchant = getMerchantByMerchantId(reportData.getMerchantId());
+		if (null == merchant) {
+			return new ResponseData(RespError.INVALID_SHOP.getErrorCode(), RespError.INVALID_SHOP.getErrorMsg(), false);
+		}
+		MessageObject request = ServiceUtil.getPayReservalMessage(report, reportData,merchant);
 		MessageObject response = null;
 		try {
 			response = posAction.messReceived(request);
@@ -109,56 +105,44 @@ public class IntegralCmbcServiceImpl implements IntegralService {
 		if (null == merchant) {
 			return new ResponseData(RespError.INVALID_SHOP.getErrorCode(), RespError.INVALID_SHOP.getErrorMsg(), false);
 		}
-			// 查询交易记录以及记录银行数据
-			Map<String, String> reportParam = new HashMap<>();
-			reportParam.put("orderId", requestData.getOrderId());
-			reportParam.put("device", requestData.getDevice());
-			TiPaymentReport report = reportMapper.selectByOrderId(reportParam);
-			if (null == report||ReportStatus.PAYED.getStatus()!=report.getStatus()) {
-				return new ResponseData(RespError.NO_REPORT.getErrorCode(), RespError.NO_REPORT.getErrorMsg(), false);
-			}
-			TiReportDataZx reportData = reportDataMapper.selectByReportId(report.getUuid());
+		// 查询交易记录以及记录银行数据
+		TiPaymentReport report = reportMapper.selectByOrderId(requestData.getOrderId());
+		TiReportDataZx reportData = reportDataMapper.selectByReportId(report.getUuid());
 
-			MessageObject request = ServiceUtil.getPayRevokeMessage(report, reportData,merchant);
-			MessageObject response = null;
-			try {
-				response = posAction.messReceived(request);
-				logger.info("msyhResponse[" + response + "]");
-			} catch (FormatException e) {
-				return new ResponseData(RespError.PAY_ERROR.getErrorCode(), RespError.PAY_ERROR.getErrorMsg(), false);
-			} catch (Exception e) {
-				return new ResponseData(RespError.SYETEM_ERROR.getErrorCode(), RespError.SYETEM_ERROR.getErrorMsg(), false);
-			}
-			// 返回码判断成功与否
-			if ("00".equals(response.getField39_Response_Code())) {
-				/* 成功后修改交易状态 */
-				report.setStatus(ReportStatus.REVOKE.getStatus());
-				reportMapper.updateStatus(report);
-				return new ResponseData(null, null, true);
-			}
+		MessageObject request = ServiceUtil.getPayRevokeMessage(report, reportData, merchant);
+		MessageObject response = null;
+		try {
+			response = posAction.messReceived(request);
+			logger.info("msyhResponse[" + response + "]");
+		} catch (FormatException e) {
 			return new ResponseData(RespError.PAY_ERROR.getErrorCode(), RespError.PAY_ERROR.getErrorMsg(), false);
+		} catch (Exception e) {
+			return new ResponseData(RespError.SYETEM_ERROR.getErrorCode(), RespError.SYETEM_ERROR.getErrorMsg(), false);
+		}
+		// 返回码判断成功与否
+		if ("00".equals(response.getField39_Response_Code())) {
+			/* 成功后修改交易状态 */
+			report.setStatus(ReportStatus.REVOKE.getStatus());
+			reportMapper.updateStatus(report);
+			return new ResponseData(null, null, true);
+		}
+		return new ResponseData(RespError.PAY_ERROR.getErrorCode(), RespError.PAY_ERROR.getErrorMsg(), false);
 	}
 
 	@Override
 	public ResponseData paymentRevokeReversal(RequestData requestData) {
 		// 查询交易记录以及记录银行数据
-		Map<String, String> reportParam = new HashMap<>();
-		reportParam.put("orderId", requestData.getOrderId());
-		reportParam.put("device", requestData.getDevice());
-		TiPaymentReport report = reportMapper.selectByOrderId(reportParam);
-		/* 交易记录不存在 */
-		if (null == report) {
-			return new ResponseData(RespError.NO_REPORT.getErrorCode(), RespError.NO_REPORT.getErrorMsg(), false);
-		}
+		TiPaymentReport report = reportMapper.selectByOrderId(requestData.getOrderId());
 		TiShopMerchant merchant = getMerchantByShopId(requestData.getShopId());
 		if (null == merchant) {
 			return new ResponseData(RespError.INVALID_SHOP.getErrorCode(), RespError.INVALID_SHOP.getErrorMsg(), false);
 		}
 		TiReportDataZx reportData = reportDataMapper.selectByReportId(report.getUuid());
-		/* 交易已撤销成功， 调用撤销冲正*/
+		/* 交易已撤销成功， 调用撤销冲正 */
 		if (ReportStatus.REVOKE.getStatus() == report.getStatus()) {
 			report.setPosId(merchant.getPosNo());
-			MessageObject request = ServiceUtil.getPayRevokeReversalMessage(report, reportData);//TODO
+			MessageObject request = ServiceUtil.getPayRevokeReversalMessage(report, reportData);// TODO
+																								// POSNO和授权码需要从银行接口日志中解析获取
 			MessageObject response = null;
 			try {
 				response = posAction.messReceived(request);
@@ -166,7 +150,8 @@ public class IntegralCmbcServiceImpl implements IntegralService {
 			} catch (FormatException e) {
 				return new ResponseData(RespError.PAY_ERROR.getErrorCode(), RespError.PAY_ERROR.getErrorMsg(), false);
 			} catch (Exception e) {
-				return new ResponseData(RespError.SYETEM_ERROR.getErrorCode(), RespError.SYETEM_ERROR.getErrorMsg(), false);
+				return new ResponseData(RespError.SYETEM_ERROR.getErrorCode(), RespError.SYETEM_ERROR.getErrorMsg(),
+						false);
 			}
 			// 返回码判断成功与否
 			if ("00".equals(response.getField39_Response_Code())) {
@@ -175,10 +160,6 @@ public class IntegralCmbcServiceImpl implements IntegralService {
 				reportMapper.updateStatus(report);
 				return new ResponseData(null, null, true);
 			}
-		}
-		/* 该笔交易未撤销，返回成功标志 */
-		else if (ReportStatus.PAYED.getStatus() == report.getStatus()) {
-			return new ResponseData(null, null, true);
 		}
 		return new ResponseData(RespError.PAY_ERROR.getErrorCode(), RespError.PAY_ERROR.getErrorMsg(), false);
 	}
@@ -189,30 +170,30 @@ public class IntegralCmbcServiceImpl implements IntegralService {
 		if (null == merchant) {
 			return new ResponseData(RespError.INVALID_SHOP.getErrorCode(), RespError.INVALID_SHOP.getErrorMsg(), false);
 		}
-			MessageObject request = ServiceUtil.getPayMessage(requestData, merchant);//TODO
-			MessageObject response = null;
-			try {
-				response = posAction.messReceived(request);
-				logger.info("msyhResponse[" + response + "]");
-			} catch (FormatException e) {
-				return new ResponseData(RespError.PAY_ERROR.getErrorCode(), RespError.PAY_ERROR.getErrorMsg(), false);
-			} catch (Exception e) {
-				return new ResponseData(RespError.SYETEM_ERROR.getErrorCode(), RespError.SYETEM_ERROR.getErrorMsg(), false);
-			}
-			Map<String, Object> data = new HashMap<>();
-			// 返回码判断成功与否
-			if ("00".equals(response.getField39_Response_Code())) {
-				// POS流水号+1
-				merchant.setPosNo(String.valueOf(Integer.valueOf(merchant.getPosNo()) + 1));
-				data.put("integral", Long.parseLong(response.getField62_Reserved_Private()));//TODO
-				data.put("changeFlag", true);
-				ResponseData responseData = new ResponseData(null, null, true);
-				responseData.setData(data);
-				return responseData;
-			}else{
-				data.put("integral", 0);
-				return new ResponseData(RespError.PAY_ERROR.getErrorCode(), RespError.PAY_ERROR.getErrorMsg(), false);
-			}
+		MessageObject request = ServiceUtil.getPayMessage(requestData, merchant);// TODO
+		MessageObject response = null;
+		try {
+			response = posAction.messReceived(request);
+			logger.info("msyhResponse[" + response + "]");
+		} catch (FormatException e) {
+			return new ResponseData(RespError.PAY_ERROR.getErrorCode(), RespError.PAY_ERROR.getErrorMsg(), false);
+		} catch (Exception e) {
+			return new ResponseData(RespError.SYETEM_ERROR.getErrorCode(), RespError.SYETEM_ERROR.getErrorMsg(), false);
+		}
+		Map<String, Object> data = new HashMap<>();
+		// 返回码判断成功与否
+		if ("00".equals(response.getField39_Response_Code())) {
+			// POS流水号+1
+			merchant.setPosNo(String.valueOf(Integer.valueOf(merchant.getPosNo()) + 1));
+			data.put("integral", Long.parseLong(response.getField62_Reserved_Private()));// TODO
+			data.put("changeFlag", true);
+			ResponseData responseData = new ResponseData(null, null, true);
+			responseData.setData(data);
+			return responseData;
+		} else {
+			data.put("integral", 0);
+			return new ResponseData(RespError.PAY_ERROR.getErrorCode(), RespError.PAY_ERROR.getErrorMsg(), false);
+		}
 	}
 
 	@Override
@@ -224,7 +205,7 @@ public class IntegralCmbcServiceImpl implements IntegralService {
 	private void savePaymentReport(RequestData requestData, MessageObject response) {
 		// 记录交易记录
 		TiPaymentReport report = new TiPaymentReport();
-		report.setBank(Banks.CITIC);
+		report.setBank(Banks.CITIC.getName());
 		report.setTerminalId(response.getField41_Card_Acceptor_Terminal_ID());
 		report.setOrderId(requestData.getOrderId());
 		report.setCardNum(response.getField02_Primary_Account_Number());
@@ -244,7 +225,7 @@ public class IntegralCmbcServiceImpl implements IntegralService {
 		reportData.setReportId(report.getUuid());
 		reportData.setAuthorizeCode(response.getField38_Authorization_Identification_Response());
 		reportData.setRetrievalNo(response.getField37_Retrieval_Reference_Number());
-		reportData.setBatchNo(response.getField60_Reserved_Private());
+		reportData.setBatchNo(response.getField60_Reserved_Private().substring(2));
 		reportDataMapper.save(reportData);
 	}
 
@@ -258,11 +239,36 @@ public class IntegralCmbcServiceImpl implements IntegralService {
 		TiShopMerchant tiShopMerchant = merchantsCache.get(shopId);
 		if (null == tiShopMerchant) {
 			tiShopMerchant = merchantMapper.selectByShopId(shopId);
-			merchantsCache.put(shopId, tiShopMerchant);
+			if(null!=tiShopMerchant){
+				merchantsCache.put(shopId, tiShopMerchant);
+			}
 		}
 		return tiShopMerchant;
 	}
-
+	/**
+	 * 获取指定商户的商户号
+	 * 
+	 * @param shopId
+	 * @return
+	 */
+	public TiShopMerchant getMerchantByMerchantId(String merchantId) {
+		for(java.util.Map.Entry<Integer,TiShopMerchant> merchant:merchantsCache.entrySet()){
+			if(merchant.getValue().getMerchantId().equals(merchantId)){
+				return merchant.getValue();
+			}
+		}
+		Map<String, Object> columns=new HashMap<String, Object>();
+		columns.put("merchant_id", merchantId);
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("params", columns);
+		List<TiShopMerchant> merchants = merchantMapper.selectMerchantsByColumn(params);
+		if(null==merchants||merchants.size()==0){
+			return null;
+		}
+		TiShopMerchant merchant = merchants.get(0);
+		merchantsCache.put(merchant.getShopId(), merchant);
+		return merchant;
+	}
 	public void clearMerchants() {
 		merchantsCache.clear();
 	}

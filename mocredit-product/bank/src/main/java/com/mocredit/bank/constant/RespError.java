@@ -6,8 +6,9 @@ public enum RespError {
 	LOGIN_ERROR("003", "登录失败"), 
 	PAY_ERROR("004", "支付失败"),
 	HAS_REVERSED("005", "已撤销成功"),
-	NO_REPORT("006","交易记录不存在"),
-	INVALID_SHOP("007","该商户没有权限");
+	NO_REPORT("006","交易记录不存在或交易的状态不能进行该操作"),
+	INVALID_SHOP("007","该商户没有权限"),
+	INVALID_BANK("008","未签约银行");
 	private String errorCode;
 	private String errorMsg;
 
@@ -23,5 +24,5 @@ public enum RespError {
 	public String getErrorMsg() {
 		return errorMsg;
 	}
-
+	
 }
