@@ -15,6 +15,7 @@ import com.mocredit.bank.entity.Payment;
 import com.mocredit.bank.entity.TiShopMerchant;
 import com.mocredit.bank.service.ShopMerchantService;
 import com.mocredit.bank.service.impl.IntegralCiticServiceImpl;
+import com.mocredit.bank.task.CmbcTask;
 import com.mocredit.bank.util.DateTimeUtils;
 import com.mocredit.bank.util.Variable;
 import com.mocredit.base.util.Banks;
@@ -32,13 +33,14 @@ public class MerchantInitListener implements ApplicationListener<ContextRefreshe
 	private ShopMerchantService shopMerchantService;
 	@Autowired
 	private IntegralCiticServiceImpl  citicService;
-
+	@Autowired
+	private CmbcTask task;
 
 	
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent arg0) {
-		List<TiShopMerchant> allMerchants = shopMerchantService.getMerchantsByBank(Banks.CITIC);
+		List<TiShopMerchant> allMerchants = shopMerchantService.getMerchantsByBank(Banks.CITIC.getName());
 		for (TiShopMerchant merchant : allMerchants) {
 			Payment payment = new Payment();
 			payment.setInfoType(Variable.ZX_INFO_TYPE_LOGIN);
@@ -70,6 +72,8 @@ public class MerchantInitListener implements ApplicationListener<ContextRefreshe
 					}
 				}
 			}
+			
+			task.qianDao();		
 		}
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.mocredit.bank.constant.MerchantStatus;
 import com.mocredit.bank.entity.MessageObject;
@@ -20,6 +21,7 @@ import com.mocredit.base.util.Banks;
  * @author liaoying Created on 2015年8月28日
  *
  */
+@Service
 public class CmbcTask {
 	@Autowired
 	private PosAction posAction;
@@ -28,7 +30,7 @@ public class CmbcTask {
 	private static Logger logger = Logger.getLogger(CmbcTask.class);
 
 	public void qianDao() {
-		List<TiShopMerchant> merchants = merchantService.getValidMerchantsByBank(Banks.CMBC);
+		List<TiShopMerchant> merchants = merchantService.getValidMerchantsByBank(Banks.CMBC.getName());
 		if (null == merchants) {
 			logger.info("民生银行签到时没有发现可用的银行商户号");
 			return;

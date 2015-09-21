@@ -1,9 +1,9 @@
-package com.mocredit.testcase;
+package com.mocredit.testcase.activity_synchronization;
 
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class PaymentTest {
+public class Activity_synchronization_001_ActivitySynchronizationSuccess_Test {
     @Parameters({"baseUrl","paymentUrl"})
 	@Test
 	public void testPayment(String baseUrl,String paymentUrl){

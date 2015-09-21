@@ -15,7 +15,7 @@ public interface TiPaymentReportMapper {
      */
     int save(TiPaymentReport record);
     
-    TiPaymentReport selectByOrderId(Map<String, String> param);
+    TiPaymentReport selectByOrderId(String orderId);
     
     int updateStatus(TiPaymentReport record);
     
