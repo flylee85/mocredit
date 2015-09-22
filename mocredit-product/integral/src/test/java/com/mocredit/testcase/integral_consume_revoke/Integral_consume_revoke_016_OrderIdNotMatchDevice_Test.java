@@ -62,31 +62,31 @@ public class Integral_consume_revoke_016_OrderIdNotMatchDevice_Test {
 		Buffer.append("\"bank\"").append(":").append("\"").append(bank)
 				.append("\"");
 		// 定义device字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(device)
+		Buffer.append("\"device\"").append(":").append("\"").append(device)
 				.append("\"");
 		// 定义orderId字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(orderId)
+		Buffer.append("\"orderId\"").append(":").append("\"").append(orderId)
 				.append("\"");
 		// 定义activityId字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(activityId)
+		Buffer.append("\"activityId\"").append(":").append("\"").append(activityId)
 				.append("\"");
 		// 定义shopId字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(shopId)
+		Buffer.append("\"shopId\"").append(":").append("\"").append(shopId)
 				.append("\"");
 		// 定义shopName字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(shopName)
+		Buffer.append("\"shopName\"").append(":").append("\"").append(shopName)
 				.append("\"");
 		// 定义storeId字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(storeId)
+		Buffer.append("\"storeId\"").append(":").append("\"").append(storeId)
 				.append("\"");
 		// 定义storeName字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(storeName)
+		Buffer.append("\"storeName\"").append(":").append("\"").append(storeName)
 				.append("\"");
 		// 定义cardNum字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(cardNum)
+		Buffer.append("\"cardNum\"").append(":").append("\"").append(cardNum)
 				.append("\"");
 		// 定义integral字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(integral)
+		Buffer.append("\"integral\"").append(":").append("\"").append(integral)
 				.append("\"");
 		// 定义缓冲区结束
 		Buffer.append("}");
@@ -95,7 +95,7 @@ public class Integral_consume_revoke_016_OrderIdNotMatchDevice_Test {
 		
 ///////进行积分消费		
 		// 传入消费参数
-		String resp = HttpRequestUtil.doPostJson(baseUrl + "Buffer", jsonStr);
+		String resp = HttpRequestUtil.doPostJson(baseUrl + "payment", jsonStr);
 		//转换为字符串
 		Response response = JSON.parseObject(resp, Response.class);
 		//返回正常时的结果判定
@@ -108,9 +108,9 @@ public class Integral_consume_revoke_016_OrderIdNotMatchDevice_Test {
 		// 定义字符串引号
 		Buffer.append("{");
 		// 定义cardNum字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(device).append("\"");
+		Buffer.append("\"device\"").append(":").append("\"").append(device).append("\"");
 		// 定义integral字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(orderId_nomatch).append("\"");
+		Buffer.append("\"orderId\"").append(":").append("\"").append(orderId_nomatch).append("\"");
 		// 定义缓冲区结束
 		Buffer.append("}");
 		// 字符串转换成jsonStr
@@ -118,7 +118,7 @@ public class Integral_consume_revoke_016_OrderIdNotMatchDevice_Test {
 		
 ///////进行积分消费		
 		// 传入消费撤销参数
-		String resp3 = HttpRequestUtil.doPostJson(baseUrl + "Buffer2", jsonStr2);
+		String resp3 = HttpRequestUtil.doPostJson(baseUrl + "paymentRevoke", jsonStr2);
 		//转换为字符串
 		Response response3 = JSON.parseObject(resp3, Response.class);
 		//返回异常时的结果判定

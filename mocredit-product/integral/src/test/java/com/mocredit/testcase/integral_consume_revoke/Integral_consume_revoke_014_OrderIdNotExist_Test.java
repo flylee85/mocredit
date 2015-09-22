@@ -41,9 +41,9 @@ public class Integral_consume_revoke_014_OrderIdNotExist_Test {
 		// 定义字符串引号
 		Buffer.append("{");
 		// 定义cardNum字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(device).append("\"");
+		Buffer.append("\"device\"").append(":").append("\"").append(device).append("\"");
 		// 定义integral字段
-		Buffer.append("\"bank\"").append(":").append("\"").append(orderId_notexist).append("\"");
+		Buffer.append("\"orderId\"").append(":").append("\"").append(orderId_notexist).append("\"");
 		// 定义缓冲区结束
 		Buffer.append("}");
 		// 字符串转换成jsonStr
@@ -51,7 +51,7 @@ public class Integral_consume_revoke_014_OrderIdNotExist_Test {
 		
 ///////进行积分消费撤销
 		// 传入消费撤销参数
-		String resp2 = HttpRequestUtil.doPostJson(baseUrl + "Buffer2", jsonStr2);
+		String resp2 = HttpRequestUtil.doPostJson(baseUrl + "paymentRevoke", jsonStr2);
 		//转换为字符串
 		Response response2 = JSON.parseObject(resp2, Response.class);
 		//返回异常时的结果判定
