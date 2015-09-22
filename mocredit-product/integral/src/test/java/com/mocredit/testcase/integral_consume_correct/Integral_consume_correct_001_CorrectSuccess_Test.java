@@ -29,7 +29,7 @@ public class Integral_consume_correct_001_CorrectSuccess_Test {
 	 * 
 	 * 
 	 * 
-	 * 积分消费冲正撤销参数列表 
+	 * 积分消费冲正参数列表 
 	 * 
 	 * device    终端号
 	 * orderId  原订单号
@@ -106,13 +106,13 @@ public class Integral_consume_correct_001_CorrectSuccess_Test {
 		// 定义一个字符串缓冲区
 		StringBuffer Buffer2 = new StringBuffer();
 		// 定义字符串引号
-		Buffer.append("{");
+		Buffer2.append("{");
 		// 定义cardNum字段
-		Buffer.append("\"device\"").append(":").append("\"").append(device).append("\"");
+		Buffer2.append("\"device\"").append(":").append("\"").append(device).append("\"");
 		// 定义integral字段
-		Buffer.append("\"orderId\"").append(":").append("\"").append(orderId).append("\"");
+		Buffer2.append("\"orderId\"").append(":").append("\"").append(orderId).append("\"");
 		// 定义缓冲区结束
-		Buffer.append("}");
+		Buffer2.append("}");
 		// 字符串转换成jsonStr
 		String jsonStr2 = Buffer2.toString();
 		

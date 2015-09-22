@@ -1,5 +1,6 @@
-package com.mocredit.testcase.integral_consume_revoke;
+package com.mocredit.testcase.integral_consume_revoke_correct;
 
+//import java.util.Random;
 import java.util.Random;
 
 import org.testng.Assert;
@@ -15,38 +16,50 @@ import com.mocredit.integral.util.HttpRequestUtil;
 /**
  * @author sc-candao-hgy
  * 
- * @Description     积分消费撤销_订单号长度过长
+ * @Description     积分消费撤销冲正_终端号参数为NULL
  * 
  * */
 
-
-public class Integral_consume_revoke_011_LongerOrderId_Test {
+public class Integral_consume_revoke_correct_006_DeviceNumNull_Test {
 
 	/**
+	 * 积分消费参数列表
+	 * 
 	 * bank 银行代码 中信：citic，民生：cmbc device 终端号 activityId 活动ID orderId 订单号
 	 * 当天、当前机具上不重复 shopId 销售商户号 shopName 销售商户名 storeId 门店ID storeName 门店名称
 	 * cardNum 卡号 integral 消费积分
 	 * 
+	 * 积分消费撤销参数列表 
+	 * 
+     * device    终端号
+     * orderId  原订单号
+	 * 
+	 * 积分消费撤销冲正参数列表
+	 * 
+	 * device    终端号
+     * orderId  原订单号
+	 * 
 	 * @throws Exception
 	 */
 
-	@Parameters({ "baseUrl"})
+	@Parameters({ "baseUrl", "paymentUrl" })
 	@Test
-	public void IntegralConsumeRevok_LongerOrderId(String baseUrl)throws Exception {
+	public void IntegralConsumeRevokeCorrect_DeviceNumNull(String baseUrl)throws Exception {
 		Random r = new Random();
 		int i = 1 + r.nextInt(9000);
 		String bank = PropertyUtil.getProInfo("parmeter", "bank_citic");
 		String device = PropertyUtil.getProInfo("parmeter", "device");
+		String device_null = PropertyUtil.getProInfo("parmeter", "device_null");
 		String orderId = "hegytest" + i;
-		String orderId_longer = "2222222222222222222222222222222222";		
 		String activityId = PropertyUtil.getProInfo("parmeter", "activityId");
 		String shopId = PropertyUtil.getProInfo("parmeter", "shopId");
 		String shopName = PropertyUtil.getProInfo("parmeter", "shopName");
 		String storeId = PropertyUtil.getProInfo("parmeter", "storeId");
 		String storeName = PropertyUtil.getProInfo("parmeter", "storeName");
 		String cardNum = PropertyUtil.getProInfo("parmeter", "cardNum");
-		String integral = PropertyUtil.getProInfo("parmeter", "integral");
+		String integral = PropertyUtil.getProInfo("parmeter", "integral_type");
 
+		//***************************************积分消费**********************************************//
 ////////定义积分消费缓冲区		
 		// 定义一个字符串缓冲区
 		StringBuffer Buffer = new StringBuffer();
@@ -94,9 +107,11 @@ public class Integral_consume_revoke_011_LongerOrderId_Test {
 		Response response = JSON.parseObject(resp, Response.class);
 		//返回正常时的结果判定
 		Assert.assertEquals(response.getSuccess(),true);
-
 		
-////////定义积分消费撤销缓冲区
+		
+//***************************************积分消费撤销**********************************************//
+		
+////////定义积分消费撤销缓冲区********************************
 		// 定义一个字符串缓冲区
 		StringBuffer Buffer2 = new StringBuffer();
 		// 定义字符串引号
@@ -104,20 +119,43 @@ public class Integral_consume_revoke_011_LongerOrderId_Test {
 		// 定义cardNum字段
 		Buffer2.append("\"device\"").append(":").append("\"").append(device).append("\"");
 		// 定义integral字段
-		Buffer2.append("\"orderId\"").append(":").append("\"").append(orderId_longer).append("\"");
+		Buffer2.append("\"orderId\"").append(":").append("\"").append(orderId).append("\"");
 		// 定义缓冲区结束
 		Buffer2.append("}");
 		// 字符串转换成jsonStr
 		String jsonStr2 = Buffer2.toString();
 		
-///////进行积分消费		
+///////进行积分消费撤销		
 		// 传入消费撤销参数
 		String resp2 = HttpRequestUtil.doPostJson(baseUrl + "paymentRevoke", jsonStr2);
 		//转换为字符串
 		Response response2 = JSON.parseObject(resp2, Response.class);
+		//返回正常时的结果判定
+		Assert.assertEquals(response2.getSuccess(),true);
+		
+//***************************************积分消费撤销冲正**********************************************//		
+////////定义积分消费撤销冲正缓冲区
+		// 定义一个字符串缓冲区
+		StringBuffer Buffer3 = new StringBuffer();
+		// 定义字符串引号
+		Buffer3.append("{");
+		// 定义cardNum字段
+		Buffer3.append("\"device\"").append(":").append("\"").append(device_null).append("\"");
+		// 定义integral字段
+		Buffer3.append("\"orderId\"").append(":").append("\"").append(orderId).append("\"");
+		// 定义缓冲区结束
+		Buffer3.append("}");
+		// 字符串转换成jsonStr
+		String jsonStr3 = Buffer3.toString();
+		
+///////进行积分消费撤销冲正		
+		// 传入消费撤销参数
+		String resp3 = HttpRequestUtil.doPostJson(baseUrl + "paymentRevokeReserval", jsonStr3);
+		//转换为字符串
+		Response response3 = JSON.parseObject(resp3, Response.class);
 		//返回异常时的结果判定
-		Assert.assertEquals(response2.getSuccess(), false);
-		Assert.assertEquals(response2.getErrorCode(), "505");
-		Assert.assertEquals(response2.getErrorMsg(), "参数错误");
+		Assert.assertEquals(response3.getSuccess(), false);
+		Assert.assertEquals(response3.getErrorCode(), "505");
+		Assert.assertEquals(response3.getErrorMsg(), "参数错误");
 	}
 }

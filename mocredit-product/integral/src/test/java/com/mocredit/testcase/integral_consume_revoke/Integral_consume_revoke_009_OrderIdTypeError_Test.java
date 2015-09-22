@@ -107,13 +107,13 @@ public class Integral_consume_revoke_009_OrderIdTypeError_Test {
 		// 定义一个字符串缓冲区
 		StringBuffer Buffer2 = new StringBuffer();
 		// 定义字符串引号
-		Buffer.append("{");
+		Buffer2.append("{");
 		// 定义cardNum字段
-		Buffer.append("\"device\"").append(":").append("\"").append(device).append("\"");
+		Buffer2.append("\"device\"").append(":").append("\"").append(device).append("\"");
 		// 定义integral字段
-		Buffer.append("\"orderId\"").append(":").append("\"").append(orderId_type).append("\"");
+		Buffer2.append("\"orderId\"").append(":").append("\"").append(orderId_type).append("\"");
 		// 定义缓冲区结束
-		Buffer.append("}");
+		Buffer2.append("}");
 		// 字符串转换成jsonStr
 		String jsonStr2 = Buffer2.toString();
 		

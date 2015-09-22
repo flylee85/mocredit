@@ -106,13 +106,13 @@ public class Integral_consume_revoke_007_MaxDeviceNum_Test {
 		// 定义一个字符串缓冲区
 		StringBuffer Buffer2 = new StringBuffer();
 		// 定义字符串引号
-		Buffer.append("{");
+		Buffer2.append("{");
 		// 定义cardNum字段
-		Buffer.append("\"device\"").append(":").append("\"").append(device_max).append("\"");
+		Buffer2.append("\"device\"").append(":").append("\"").append(device_max).append("\"");
 		// 定义integral字段
-		Buffer.append("\"orderId\"").append(":").append("\"").append(orderId).append("\"");
+		Buffer2.append("\"orderId\"").append(":").append("\"").append(orderId).append("\"");
 		// 定义缓冲区结束
-		Buffer.append("}");
+		Buffer2.append("}");
 		// 字符串转换成jsonStr
 		String jsonStr2 = Buffer2.toString();
 		
