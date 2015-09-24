@@ -1,35 +1,49 @@
-package com.mocredit.testcase.integral_consume;
-
+package com.mocredit.testcase.activity_synchronization;
 
 import org.testng.Assert;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+
 import com.alibaba.fastjson.JSON;
 import com.mocredit.base.util.PropertyUtil;
 import com.mocredit.integral.entity.Response;
 import com.mocredit.integral.util.HttpRequestUtil;
-
-
 /**
  * @author sc-candao-hgy
  * 
- * @Description     积分消费_销售商户号参数为最大长度30
+ * @Description     活动同步_积分参数长度过短
  * 
  * */
 
-public class Integral_consume_034_MaxShopId_Test {
-
+public class Activity_Synchronization_Import_038_ShorterIntegral_Test {
 	/**
-	 * bank 银行代码 中信：citic，民生：cmbc device 终端号 activityId 活动ID orderId 订单号
-	 * 当天、当前机具上不重复 shopId 销售商户号 shopName 销售商户名 storeId 门店ID storeName 门店名称
-	 * cardNum 卡号 integral 消费积分
+	 * 活动同步参数列表
 	 * 
+     *  activityId     活动ID
+     *  activityName   活动名
+     *  productCode    银行内部代码
+     *  operCode       操作代码， 1导入 2 更新 3 取消 4 启用 
+     *  startTime      活动开始时间，年月日时分秒yyyy-MM-dd HH:mm:ss
+     *  endTime        活动结束时间，年月日时分秒yyyy-MM-dd HH:mm:ss
+     *  selectDate     指定选择日期（周几），如果是周一和周二，则是1,2,如果是周五周六周日，则是5,6,7  使用英文字符分割
+     *  integral       积分
+     *  maxType        最大类型，暂定01代表每日，02代表每周，03代表每月，空代表不限制
+     *  maxNumber      最大次数
+     *  status         01启用，02停止
+     *  storeList      门店列表        
+     *  [ 
+     *   {
+     *   storeId       门店Id
+     *   shopId        商户Id 
+     *   } 
+     *  ] 
+     *                 其他活动信息待定 
 	 * @throws Exception
 	 */
 
 	@Parameters({ "baseUrl", "paymentUrl" })
 	@Test
-	public void IntegralConsume_MaxShopId(String baseUrl)throws Exception {
+	public void ActivitySynchronization_ShorterIntegral(String baseUrl)throws Exception {
 		String activityId = PropertyUtil.getProInfo("parmeter", "activityId");
 		String activityName = PropertyUtil.getProInfo("parmeter", "activityName");
 		String productCode = PropertyUtil.getProInfo("parmeter", "productCode");
@@ -37,12 +51,12 @@ public class Integral_consume_034_MaxShopId_Test {
 		String startTime = PropertyUtil.getProInfo("parmeter", "startTime");
 		String endTime = PropertyUtil.getProInfo("parmeter", "endTime");
 		String selectDate = PropertyUtil.getProInfo("parmeter", "selectDate");
-		String integral = PropertyUtil.getProInfo("parmeter", "integral");
+		String integral_shorter = PropertyUtil.getProInfo("parmeter", "integral_shorter");
 		String maxType_everyday = PropertyUtil.getProInfo("parmeter", "maxType_everyday");
 		String maxNumber = PropertyUtil.getProInfo("parmeter", "maxNumber");
 		String status_enable = PropertyUtil.getProInfo("parmeter", "status_enable");
 		String storeId = PropertyUtil.getProInfo("parmeter", "storeId");
-		String shopId_max = PropertyUtil.getProInfo("parmeter", "shopId_max");
+		String shopId = PropertyUtil.getProInfo("parmeter", "shopId");
 
 		// 定义一个字符串缓冲区
 		StringBuffer Buffer = new StringBuffer();
@@ -63,7 +77,7 @@ public class Integral_consume_034_MaxShopId_Test {
 		// 定义selectDate字段
 		Buffer.append("\"selectDate\"").append(":").append("\"").append(selectDate).append("\"");
 		// 定义storeNintegralame字段
-		Buffer.append("\"integral\"").append(":").append("\"").append(integral).append("\"");
+		Buffer.append("\"integral\"").append(":").append("\"").append(integral_shorter).append("\"");
 		// 定义maxType字段
 		Buffer.append("\"maxType\"").append(":").append("\"").append(maxType_everyday).append("\"");
 		// 定义maxNumber字段
@@ -75,7 +89,7 @@ public class Integral_consume_034_MaxShopId_Test {
 		// 定义storeId字段
 		Buffer.append("\"storeId\"").append(":").append("\"").append(storeId).append("\"");
 		// 定义shopId字段
-		Buffer.append("\"shopId\"").append(":").append("\"").append(shopId_max).append("\"");
+		Buffer.append("\"shopId\"").append(":").append("\"").append(shopId).append("\"");
 		// 定义storeList结束
 		Buffer.append("}").append("]");
 		// 定义缓冲区结束
@@ -86,8 +100,10 @@ public class Integral_consume_034_MaxShopId_Test {
 		String resp = HttpRequestUtil.doPostJson(baseUrl + "activityImport", jsonStr);
 		//转换为字符串
 		Response response = JSON.parseObject(resp, Response.class);
-		//返回结果判定
-		Assert.assertEquals(response.getSuccess(), true);
+		//返回异常时的结果判定
+		Assert.assertEquals(response.getSuccess(), false);
+		Assert.assertEquals(response.getErrorCode(), "505");
+		Assert.assertEquals(response.getErrorMsg(), "参数错误");
 
 	}
 }
