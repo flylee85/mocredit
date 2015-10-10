@@ -3,6 +3,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mocredit.order.persistence.OrderMapper">
+	<resultMap id="BaseResultMap" type="com.mocredit.order.entity.Order">
+		<result column="id" property="id" />
+		<result column="order_id" property="orderId" />
+		<result column="activity_id" property="activityId" />
+		<result column="activity_name" property="activityName" />
+		<result column="pub_enterprise_id" property="pubEnterpriseId" />
+		<result column="pub_enterprise_name" property="pubEnterpirseName" />
+		<result column="sup_enterpirse_id" property="supEnterpriseId" />
+		<result column="sup_enterpirse_name" property="supEnterpirseName" />
+		<result column="store_id" property="storeId" />
+		<result column="store_name" property="storeName" />
+		<result column="status" property="status" />
+		<result column="card_num" property="cardNum" />
+		<result column="code" property="code" />
+		<result column="integral" property="integral" />
+		<result column="start_time" property="startTime" />
+		<result column="end_time" property="endTime" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
 	<insert id="save" parameterType="com.mocredit.order.entity.Order">
 		insert into
 		`t_order`(order_id,activity_id,activity_name,pub_enterprise_id,pub_enterprise_name,
@@ -12,4 +31,30 @@
 		#{t.supEnterpriseId},#{t.supEnterpriseName},#{t.storeId},#{t.storeNam},#{t.status},
 		#{t.cardName},#{t.code},#{t.integral},#{t.startTime},#{t.endTime},now())
 	</insert>
+	<select id="findOrderList" parameterType="com.mocredit.order.vo.OrderVo">
+
+	</select>
+	<sql id="findOrderListCond">
+		<if test="startTime!=null">
+			and create_time>=#{tvo.startTime}
+		</if>
+		<if test="endTime!=null">
+			and create_time &lt;=#{tvo.endTime}
+		</if>
+		<if test="statuses!=null">
+			and status in(#{tvo.statuses})
+		</if>
+		<if test="pubEnterpriseIds!=null">
+			and pub_enterprise_id in(#{tvo.pubEnterpriseIds})
+		</if>
+		<if test="supEnterpriseIds!=null">
+			and sup_enterprise_id in(#{tvo.supEnterpriseIds})
+		</if>
+		<if test="storeIds!=null">
+			and store_id in(#{tvo.storeIds})
+		</if>
+		<if test="activityIds!=null">
+			and activity_id in(#{tvo.activityIds})
+		</if>
+	</sql>
 </mapper>
