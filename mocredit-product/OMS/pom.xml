@@ -1,0 +1,105 @@
+﻿<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- 继承产品设置 -->
+	<parent>
+		<groupId>com.mocredit.product</groupId>
+		<artifactId>mocredit-product</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>OMS</artifactId>
+	<packaging>war</packaging>
+	<name>OMS</name>
+
+	<dependencies>
+		<!-- 依赖server模块 -->
+		<dependency>
+			<groupId>com.mocredit.base</groupId>
+			<artifactId>mocredit-parent</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml</groupId>
+			<artifactId>jaxrpc-api</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<!-- <dependency> <groupId>org.apache.axis</groupId> <artifactId>axis</artifactId> 
+			<version>1.4</version> </dependency> <dependency> <groupId>org.apache.axis</groupId> 
+			<artifactId>axis-ssl</artifactId> <version>1.4</version> </dependency> -->
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>1.4.01</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-discovery</groupId>
+			<artifactId>commons-discovery</artifactId>
+			<version>20040218.194635</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>webservices-rt</artifactId>
+			<version>2.1-b16</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>webservices-extra</artifactId>
+			<version>2.1-b16</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-discovery</groupId>
+			<artifactId>commons-discovery</artifactId>
+			<version>20040218.194635</version>
+		</dependency>
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>1.47</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>OMS</finalName>
+		<!--<plugins>-->
+			<!--<plugin>-->
+				<!--<groupId>org.apache.maven.plugins</groupId>-->
+				<!--<artifactId>maven-surefire-plugin</artifactId>-->
+				<!--<version>2.4</version>-->
+				<!--<configuration>-->
+					<!--&lt;!&ndash; 解决用maven执行test时 日志乱码的问题，详见：http://www.cnblogs.com/discuss/archive/2010/10/27/1862225.html &ndash;&gt;-->
+					<!--<argLine>-Dfile.encoding=UTF-8</argLine>-->
+					<!--<suiteXmlFiles>-->
+						<!--<suiteXmlFile>runAll.xml</suiteXmlFile>-->
+					<!--</suiteXmlFiles>-->
+					<!--&lt;!&ndash;定义maven运行测试生成的报表路径 &ndash;&gt;-->
+					<!--<reportsDirectory>./result/test-report</reportsDirectory>-->
+				<!--</configuration>-->
+			<!--</plugin>-->
+		<!--</plugins>-->
+	</build>
+</project>
