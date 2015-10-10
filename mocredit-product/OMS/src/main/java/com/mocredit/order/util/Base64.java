@@ -66,12 +66,11 @@ import java.io.UnsupportedEncodingException;
  */
 
 /**
- * This class provides encode/decode for RFC 2045 Base64 as defined by
- * RFC 2045, N. Freed and N. Borenstein.  <a
- * href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>:
- * Multipurpose Internet Mail Extensions (MIME) Part One: Format of
+ * This class provides encode/decode for RFC 2045 Base64 as defined by RFC 2045,
+ * N. Freed and N. Borenstein. <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC
+ * 2045</a>: Multipurpose Internet Mail Extensions (MIME) Part One: Format of
  * Internet Message Bodies. Reference 1996
- *
+ * 
  * @author Jeffrey Rodriguez
  * @version $Id: Base64.java,v 1.5.2.1 2002/11/04 20:45:00 gawor Exp $
  */
@@ -81,13 +80,13 @@ public class Base64 {
 	static private final int TWENTYFOURBITGROUP = 24;
 	static private final int EIGHTBIT = 8;
 	static private final int SIXTEENBIT = 16;
-	static private final int SIXBIT = 6;
 	static private final int FOURBYTE = 4;
 	static private final int SIGN = -128;
 	static private final byte PAD = (byte) '=';
 	static private byte[] base64Alphabet = new byte[BASELENGTH];
 	static private byte[] lookUpBase64Alphabet = new byte[LOOKUPLENGTH];
-	//static private final Log log = LogSource.getInstance("org.apache.commons.util.Base64");
+	// static private final Log log =
+	// LogSource.getInstance("org.apache.commons.util.Base64");
 
 	static {
 		for (int i = 0; i < BASELENGTH; i++) {
@@ -124,7 +123,7 @@ public class Base64 {
 	}
 
 	public static boolean isBase64(byte octect) {
-		//shall we ignore white space? JEFF??
+		// shall we ignore white space? JEFF??
 		return (octect == PAD || base64Alphabet[octect] != -1);
 	}
 
@@ -155,8 +154,9 @@ public class Base64 {
 
 	/**
 	 * Encodes hex octects into Base64.
-	 *
-	 * @param binaryData Array containing binary data to encode.
+	 * 
+	 * @param binaryData
+	 *            Array containing binary data to encode.
 	 * @return Base64-encoded data.
 	 */
 	public static byte[] encode(byte[] binaryData) {
@@ -166,7 +166,7 @@ public class Base64 {
 		byte encodedData[] = null;
 
 		if (fewerThan24bits != 0) {
-			//data not divisible by 24 bit
+			// data not divisible by 24 bit
 			encodedData = new byte[(numberTriplets + 1) * 4];
 		} else {
 			// 16 or 8 bit
@@ -178,40 +178,34 @@ public class Base64 {
 		int encodedIndex = 0;
 		int dataIndex = 0;
 		int i = 0;
-		//log.debug("number of triplets = " + numberTriplets);
+		// log.debug("number of triplets = " + numberTriplets);
 		for (i = 0; i < numberTriplets; i++) {
 			dataIndex = i * 3;
 			b1 = binaryData[dataIndex];
 			b2 = binaryData[dataIndex + 1];
 			b3 = binaryData[dataIndex + 2];
 
-			//log.debug("b1= " + b1 +", b2= " + b2 + ", b3= " + b3);
+			// log.debug("b1= " + b1 +", b2= " + b2 + ", b3= " + b3);
 
 			l = (byte) (b2 & 0x0f);
 			k = (byte) (b1 & 0x03);
 
 			encodedIndex = i * 4;
-			byte val1 =
-				((b1 & SIGN) == 0)
-					? (byte) (b1 >> 2)
+			byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2)
 					: (byte) ((b1) >> 2 ^ 0xc0);
-			byte val2 =
-				((b2 & SIGN) == 0)
-					? (byte) (b2 >> 4)
+			byte val2 = ((b2 & SIGN) == 0) ? (byte) (b2 >> 4)
 					: (byte) ((b2) >> 4 ^ 0xf0);
-			byte val3 =
-				((b3 & SIGN) == 0)
-					? (byte) (b3 >> 6)
+			byte val3 = ((b3 & SIGN) == 0) ? (byte) (b3 >> 6)
 					: (byte) ((b3) >> 6 ^ 0xfc);
 
 			encodedData[encodedIndex] = lookUpBase64Alphabet[val1];
-			//log.debug( "val2 = " + val2 );
-			//log.debug( "k4   = " + (k<<4) );
-			//log.debug(  "vak  = " + (val2 | (k<<4)) );
-			encodedData[encodedIndex + 1] =
-				lookUpBase64Alphabet[val2 | (k << 4)];
-			encodedData[encodedIndex + 2] =
-				lookUpBase64Alphabet[(l << 2) | val3];
+			// log.debug( "val2 = " + val2 );
+			// log.debug( "k4   = " + (k<<4) );
+			// log.debug( "vak  = " + (val2 | (k<<4)) );
+			encodedData[encodedIndex + 1] = lookUpBase64Alphabet[val2
+					| (k << 4)];
+			encodedData[encodedIndex + 2] = lookUpBase64Alphabet[(l << 2)
+					| val3];
 			encodedData[encodedIndex + 3] = lookUpBase64Alphabet[b3 & 0x3f];
 		}
 
@@ -221,11 +215,9 @@ public class Base64 {
 		if (fewerThan24bits == EIGHTBIT) {
 			b1 = binaryData[dataIndex];
 			k = (byte) (b1 & 0x03);
-			//log.debug("b1=" + b1);
-			//log.debug("b1<<2 = " + (b1>>2) );
-			byte val1 =
-				((b1 & SIGN) == 0)
-					? (byte) (b1 >> 2)
+			// log.debug("b1=" + b1);
+			// log.debug("b1<<2 = " + (b1>>2) );
+			byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2)
 					: (byte) ((b1) >> 2 ^ 0xc0);
 			encodedData[encodedIndex] = lookUpBase64Alphabet[val1];
 			encodedData[encodedIndex + 1] = lookUpBase64Alphabet[k << 4];
@@ -238,18 +230,14 @@ public class Base64 {
 			l = (byte) (b2 & 0x0f);
 			k = (byte) (b1 & 0x03);
 
-			byte val1 =
-				((b1 & SIGN) == 0)
-					? (byte) (b1 >> 2)
+			byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2)
 					: (byte) ((b1) >> 2 ^ 0xc0);
-			byte val2 =
-				((b2 & SIGN) == 0)
-					? (byte) (b2 >> 4)
+			byte val2 = ((b2 & SIGN) == 0) ? (byte) (b2 >> 4)
 					: (byte) ((b2) >> 4 ^ 0xf0);
 
 			encodedData[encodedIndex] = lookUpBase64Alphabet[val1];
-			encodedData[encodedIndex + 1] =
-				lookUpBase64Alphabet[val2 | (k << 4)];
+			encodedData[encodedIndex + 1] = lookUpBase64Alphabet[val2
+					| (k << 4)];
 			encodedData[encodedIndex + 2] = lookUpBase64Alphabet[l << 2];
 			encodedData[encodedIndex + 3] = PAD;
 		}
@@ -270,8 +258,9 @@ public class Base64 {
 
 	/**
 	 * Decodes Base64 data into octects
-	 *
-	 * @param binaryData Byte array containing Base64 data
+	 * 
+	 * @param binaryData
+	 *            Byte array containing Base64 data
 	 * @return Array containing decoded data.
 	 */
 	public static byte[] decode(byte[] base64Data) {
@@ -309,33 +298,31 @@ public class Base64 {
 			b2 = base64Alphabet[base64Data[dataIndex + 1]];
 
 			if (marker0 != PAD && marker1 != PAD) {
-				//No PAD e.g 3cQl
+				// No PAD e.g 3cQl
 				b3 = base64Alphabet[marker0];
 				b4 = base64Alphabet[marker1];
 
 				decodedData[encodedIndex] = (byte) (b1 << 2 | b2 >> 4);
-				decodedData[encodedIndex + 1] =
-					(byte) (((b2 & 0xf) << 4) | ((b3 >> 2) & 0xf));
+				decodedData[encodedIndex + 1] = (byte) (((b2 & 0xf) << 4) | ((b3 >> 2) & 0xf));
 				decodedData[encodedIndex + 2] = (byte) (b3 << 6 | b4);
 			} else if (marker0 == PAD) {
-				//Two PAD e.g. 3c[Pad][Pad]
+				// Two PAD e.g. 3c[Pad][Pad]
 				decodedData[encodedIndex] = (byte) (b1 << 2 | b2 >> 4);
 			} else if (marker1 == PAD) {
-				//One PAD e.g. 3cQ[Pad]
+				// One PAD e.g. 3cQ[Pad]
 				b3 = base64Alphabet[marker0];
 
 				decodedData[encodedIndex] = (byte) (b1 << 2 | b2 >> 4);
-				decodedData[encodedIndex + 1] =
-					(byte) (((b2 & 0xf) << 4) | ((b3 >> 2) & 0xf));
+				decodedData[encodedIndex + 1] = (byte) (((b2 & 0xf) << 4) | ((b3 >> 2) & 0xf));
 			}
 			encodedIndex += 3;
 		}
 		return decodedData;
 	}
-	
-	public static void main(String[] args) throws UnsupportedEncodingException{
+
+	public static void main(String[] args) throws UnsupportedEncodingException {
 		String test = "<?xml version=\"1.0\" encoding=\"GBK\"?><message method=\"pareq\" type=\"request\"><merchant><merURL>demo.jifenka.com.cn</merURL><merID>GYS007</merID><token>CB9F2749949D011E84C2588576A5C580</token><terminalID>80</terminalID></merchant><purchase><posID>200901</posID><batchNo>100000</batchNo><serialNo>100001</serialNo><orderID>JFK20090101</orderID><transDate></transDate><transTime></transTime><purchAmount>0000000000200</purchAmount><productType>ssq</productType><dividedNum>1</dividedNum><currency>156</currency><timeStamp>20091102065700123</timeStamp><signature>hKrr5qBRZdCWBV54wDf9iHnCmOZ0TGPROTfp47baiKwLA/uz1VvDBlXfVZ6SKQDSc6JauBA38YIq0bVogSn8xrvtabuEzf/3hwzcgXB7zj/+qw+OXNTMTA0o6Chl/157n4aF8pbh1blFWVxtaajxdcn1ZLd/uS+oPpT3hDS6NrY=</signature><productNum>1</productNum><posTime>20091102065700</posTime><exponent>2</exponent></purchase><reserved>0</reserved></message>";
-		byte[] paReqByte=encode(test.getBytes("UTF-8"));
+		byte[] paReqByte = encode(test.getBytes("UTF-8"));
 		String entest = new String(paReqByte, "UTF-8");
 		entest = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iR0JLIj8+CjxtZXNzYWdlIG1ldGhvZD0iZXJyb3IiIHR5cGU9InJlc3BvbnNlIj4KICAgIDxkYXRlPjIwMTAwNTExPC9kYXRlPgogICAgPHRpbWU+MTQxNjEzPC90aW1lPgogICAgPHJldENvZGU+ODAwMDAwNjwvcmV0Q29kZT4KICAgIDxjb21tZW50UmVzPuivgeS5puino+WvhuaIlumqjOetvuW8guW4uO+8jOivt+ajgOafpTwvY29tbWVudFJlcz4KPC9tZXNzYWdlPgo=";
 		System.out.println(entest);

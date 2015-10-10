@@ -198,7 +198,7 @@ public class Utils {
 	 */
 	public static String doGenRamdomNum2() {
 		int numberCount = 6;
-		Set set = new TreeSet();
+		Set<String> set = new TreeSet<String>();
 		while (set.size() < numberCount) {
 			int number = (int) (Math.random() * 33) + 1;
 			if (!set.contains(number + "")) {

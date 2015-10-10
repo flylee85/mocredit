@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mocredit.order.persistence.ApiUrlMapper">
+	<insert id="save" parameterType="com.mocredit.order.entity.ApiUrl">
+		insert into
+		`t_api_url`(url,code,`status`,offset,pagesize,start_time,end_time)
+		values(#{t.url},#{t.code},#{t.status},#{t.offset},#{t.pagesize},#{t.startTime},#{t.endTime})
+	</insert>
+	<update id="updateByCode" parameterType="com.mocredit.order.entity.ApiUrl">
+		update `t_api_url`
+		set
+		modify_time=now()
+		<if test="url!=null">
+			,url=#{t.url}
+		</if>
+		<if test="code!=null">
+			,code=#{t.code}
+		</if>
+		<if test="status!=null">
+			,`status`=#{t.status}
+		</if>
+		<if test="pagesize!=null">
+			,pagesise=#{t.pagesize}
+		</if>
+		<if test="startTime!=null">
+			,start_time=#{t.startTime}
+		</if>
+		<if test="endTime!=null">
+			,end_time=#{t.endTime}
+		</if>
+		where
+		code=#{t.code}
+	</update>
+</mapper>
