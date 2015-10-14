@@ -28,4 +28,35 @@
 		`ti_order` where order_id=#{orderId} and device=#{device} and
 		trans_date=#{transDate}
 	</select>
+	<select id="synOrder" resultType="com.mocredit.integral.dto.OrderDto">
+		select
+		a.uuid as id,
+		a.order_id
+		as orderId,
+		a.activity_id as activityId,
+		b.activity_name as
+		activityName,
+		b.pub_enterprise_id as enterpriseId,
+		b.pub_enterprise_name as
+		enterpriseName,
+		a.shop_id as supEnterpriseId,
+		a.shop_name as
+		supEnterpriseName,
+		a.store_id as storeId,
+		a.store_name as
+		storeName,
+		a.status as status,
+		b.start_time as startTime,
+		b.end_time as
+		endTime,
+		a.bank as bank,
+		a.card_num as cardNum,
+		a.amount as integral,
+		a.ctime as
+		createTime
+		from ti_order a left join ti_activity b on
+		a.activity_id=b.activity_id
+		order by a.uuid asc limit
+		#{offset},#{pagesize}
+	</select>
 </mapper>

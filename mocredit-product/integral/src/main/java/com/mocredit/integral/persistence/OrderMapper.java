@@ -1,7 +1,10 @@
 package com.mocredit.integral.persistence;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
+import com.mocredit.integral.dto.OrderDto;
 import com.mocredit.integral.entity.Order;
 
 /**
@@ -55,4 +58,14 @@ public interface OrderMapper {
 	int isExistOrder(@Param(value = "device") String device,
 			@Param(value = "orderId") String orderId,
 			@Param(value = "transDate") String transDate);
+
+	/**
+	 * 给订单管理系统提供同步订单接口
+	 * 
+	 * @param offset
+	 * @param pagesize
+	 * @return
+	 */
+	List<OrderDto> synOrder(@Param(value = "offset") Integer offset,
+			@Param(value = "pagesize") Integer pagesize);
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -277,8 +278,8 @@ public class IntegralInterfaceController extends IntegralBaseController {
 			confirmInfo.setProductType(activity.getProductType());
 			saveInRequestLog(request, null, param);
 			String jsonStr = JSON.toJSONString(confirmInfo);
-			if (confirmInfoJson(getBankInterfaceUrl("confirmInfo"), jsonStr,confirmInfo,
-					resp)) {
+			if (confirmInfoJson(getBankInterfaceUrl("confirmInfo"), jsonStr,
+					confirmInfo, resp)) {
 				LOGGER.info("### confirmInfo success param={} ###", param);
 				return renderJSONString(true, "", "", "");
 			} else {
@@ -356,5 +357,15 @@ public class IntegralInterfaceController extends IntegralBaseController {
 		inRequestLog.setInterfaceUrl(request.getRequestURI());
 		inRequestLogService.save(inRequestLog);
 		request.setAttribute("request_id", inRequestLog.getUuid());
+	}
+
+	@RequestMapping(value = "/downloadOrder", produces = { "application/json;charset=UTF-8" }, method = {
+			RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public String downloadOrder(HttpServletRequest request,
+			HttpServletResponse response, Integer offset, Integer count) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("data", orderService.synOrder(offset, count));
+		return JSON.toJSONString(map);
 	}
 }
