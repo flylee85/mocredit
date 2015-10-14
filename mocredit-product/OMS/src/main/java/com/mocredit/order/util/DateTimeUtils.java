@@ -13,6 +13,11 @@ public class DateTimeUtils {
 		return sdf.format(date);
 	}
 
+	public static String parseYYYYMMDDHHmmss(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return sdf.format(date);
+	}
+
 	public static String getWeekOfDate(Date dt) {
 		String[] weekDays = { "7", "1", "2", "3", "4", "5", "6" };
 		Calendar cal = Calendar.getInstance();

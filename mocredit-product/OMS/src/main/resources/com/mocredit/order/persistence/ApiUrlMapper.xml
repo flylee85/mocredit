@@ -8,29 +8,54 @@
 		`t_api_url`(url,code,`status`,offset,pagesize,start_time,end_time)
 		values(#{t.url},#{t.code},#{t.status},#{t.offset},#{t.pagesize},#{t.startTime},#{t.endTime})
 	</insert>
+	<select id="selectByCode" resultType="com.mocredit.order.entity.ApiUrl">
+		select
+		id as id,
+		url as url,
+		code as code,
+		status as status,
+		offset as offset,
+		pagesize as pagesize,
+		offset_start_time as offsetStartTime,
+		offset_hour as offsetHour,
+		start_time as startTime,
+		end_time as endTime,
+		modify_time as modifyTime
+		from t_api_url where code=#{code}
+	</select>
 	<update id="updateByCode" parameterType="com.mocredit.order.entity.ApiUrl">
 		update `t_api_url`
 		set
 		modify_time=now()
-		<if test="url!=null">
+		<if test="t.url!=null">
 			,url=#{t.url}
 		</if>
-		<if test="code!=null">
+		<if test="t.code!=null">
 			,code=#{t.code}
 		</if>
-		<if test="status!=null">
+		<if test="t.status!=null">
 			,`status`=#{t.status}
 		</if>
-		<if test="pagesize!=null">
-			,pagesise=#{t.pagesize}
+		<if test="t.offset!=null">
+			,`offset`=#{t.offset}
 		</if>
-		<if test="startTime!=null">
+		<if test="t.pagesize!=null">
+			,pagesize=#{t.pagesize}
+		</if>
+		<if test="t.offsetStartTime!=null">
+			,offset_start_time=#{t.offsetStartTime}
+		</if>
+		<if test="t.offsetHour!=null">
+			,offset_hour=#{t.offsetHour}
+		</if>
+		<if test="t.startTime!=null">
 			,start_time=#{t.startTime}
 		</if>
-		<if test="endTime!=null">
+		<if test="t.endTime!=null">
 			,end_time=#{t.endTime}
 		</if>
 		where
 		code=#{t.code}
 	</update>
+
 </mapper>

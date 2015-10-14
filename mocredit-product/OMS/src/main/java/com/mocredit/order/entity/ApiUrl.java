@@ -15,6 +15,8 @@ public class ApiUrl {
 	private Integer status;
 	private Integer offset;
 	private Integer pagesize;
+	private Date offsetStartTime;
+	private Integer offsetHour;
 	private Date startTime;
 	private Date endTime;
 	private Date modifyTime;
@@ -49,6 +51,22 @@ public class ApiUrl {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Date getOffsetStartTime() {
+		return offsetStartTime;
+	}
+
+	public void setOffsetStartTime(Date offsetStartTime) {
+		this.offsetStartTime = offsetStartTime;
+	}
+
+	public Integer getOffsetHour() {
+		return offsetHour;
+	}
+
+	public void setOffsetHour(Integer offsetHour) {
+		this.offsetHour = offsetHour;
 	}
 
 	public Integer getOffset() {

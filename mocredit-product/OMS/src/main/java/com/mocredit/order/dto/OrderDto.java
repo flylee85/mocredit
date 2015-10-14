@@ -1,43 +1,36 @@
-/**
- * 
- */
-package com.mocredit.order.entity;
-
-import java.util.Date;
+package com.mocredit.order.dto;
 
 /**
- * 订单表
+ * 与订单管理系统数据传输
  * 
  * @author ytq
  * 
  */
-public class Order {
-	private Integer id;
+public class OrderDto {
+	private String Id;
 	private String orderId;
-	private String type;
 	private Integer activityId;
 	private String activityName;
-	private Integer pubEnterpriseId;
-	private String pubEnterpriseName;
+	private Integer enterpriseId;
+	private String enterpriseName;
 	private Integer supEnterpriseId;
 	private String supEnterpriseName;
 	private Integer storeId;
 	private String storeName;
 	private String status;
-	private String bank;
-	private String cardNum;
-	private String code;
-	private Integer integral;
 	private String startTime;
 	private String endTime;
+	private String bank;
+	private String cardNum;
+	private Integer integral;
 	private String createTime;
 
-	public Integer getId() {
-		return id;
+	public String getId() {
+		return Id;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setId(String id) {
+		Id = id;
 	}
 
 	public String getOrderId() {
@@ -46,14 +39,6 @@ public class Order {
 
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public Integer getActivityId() {
@@ -72,20 +57,20 @@ public class Order {
 		this.activityName = activityName;
 	}
 
-	public Integer getPubEnterpriseId() {
-		return pubEnterpriseId;
+	public Integer getEnterpriseId() {
+		return enterpriseId;
 	}
 
-	public void setPubEnterpriseId(Integer pubEnterpriseId) {
-		this.pubEnterpriseId = pubEnterpriseId;
+	public void setEnterpriseId(Integer enterpriseId) {
+		this.enterpriseId = enterpriseId;
 	}
 
-	public String getPubEnterpriseName() {
-		return pubEnterpriseName;
+	public String getEnterpriseName() {
+		return enterpriseName;
 	}
 
-	public void setPubEnterpriseName(String pubEnterpriseName) {
-		this.pubEnterpriseName = pubEnterpriseName;
+	public void setEnterpriseName(String enterpriseName) {
+		this.enterpriseName = enterpriseName;
 	}
 
 	public Integer getSupEnterpriseId() {
@@ -128,6 +113,28 @@ public class Order {
 		this.status = status;
 	}
 
+	public String getStartTime() {
+		if (startTime != null && startTime.endsWith(".0")) {
+			startTime = startTime.substring(0, startTime.length() - 2);
+		}
+		return startTime;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public String getEndTime() {
+		if (endTime != null && endTime.endsWith(".0")) {
+			endTime = endTime.substring(0, endTime.length() - 2);
+		}
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
 	public String getBank() {
 		return bank;
 	}
@@ -144,14 +151,6 @@ public class Order {
 		this.cardNum = cardNum;
 	}
 
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
 	public Integer getIntegral() {
 		return integral;
 	}
@@ -160,23 +159,10 @@ public class Order {
 		this.integral = integral;
 	}
 
-	public String getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
-
-	public String getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
-
 	public String getCreateTime() {
+		if (createTime != null && createTime.endsWith(".0")) {
+			createTime = createTime.substring(0, createTime.length() - 2);
+		}
 		return createTime;
 	}
 
