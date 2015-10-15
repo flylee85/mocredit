@@ -115,10 +115,8 @@ public class SyncCheckCodeOrderTask {
 		order.setStoreId(orderDto.getStoreId());
 		order.setStoreName(orderDto.getStoreName());
 		order.setType(OrderType.CHECK_CODE_ORDER.getValue());
-		order.setBank(orderDto.getBank());
-		order.setCardNum(orderDto.getCardNum());
+		order.setCode(orderDto.getCode());
 		order.setCreateTime(orderDto.getCreateTime());
-		order.setIntegral(orderDto.getIntegral());
 		order.setStatus(orderDto.getStatus());
 		order.setStartTime(orderDto.getStartTime());
 		order.setEndTime(orderDto.getEndTime());

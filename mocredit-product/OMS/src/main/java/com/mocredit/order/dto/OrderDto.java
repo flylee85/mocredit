@@ -20,6 +20,7 @@ public class OrderDto {
 	private String status;
 	private String startTime;
 	private String endTime;
+	private String code;
 	private String bank;
 	private String cardNum;
 	private Integer integral;
@@ -133,6 +134,14 @@ public class OrderDto {
 
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getBank() {
