@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	发码批次-Mybatis Mapper文件
+	作者：lishoukun
+	日期：2015/07/13
+-->
+<mapper namespace="com.mocredit.activity.dao.OrderDao">
+	<!-- ===================发码批次,开始======================== -->
+	
+	<!--  公用列,包含发码批次表所有字段     -->
+	<sql id="base_order_column_list" >
+		o.id as id,
+		o.activity_id as activityId,
+		o.batch as batch,
+		o.import_number as importNumber,
+		o.import_success_number as importSuccessNumber,
+		o.import_fail_number as importFailNumber,
+		o.pick_number as pickNumber,
+		o.pick_success_number as pickSuccessNumber,
+		o.pick_fail_number as pickFailNumber,
+		o.carry_number as carryNumber,
+		o.carry_success_number as carrySuccessNumber,
+		o.carry_fail_number as carryFailNumber,
+		o.send_number as sendNumber,
+		o.send_success_number as sendSuccessNumber,
+		o.send_fail_number as sendFailNumber,
+		o.remark as remark,
+		o.status as status,
+		o.createtime as createtime,
+		o.creator as creator
+	</sql>
+	
+	<!--  公用查询条件，包含发码批次所有字段的查询条件     -->
+	<sql id="base_order_condition" >
+			<if test="id != null" >
+				and o.id = #{id}
+			</if>
+			<if test="activityId != null" >
+				and o.activity_id = #{activityId}
+			</if>
+			<if test="batch != null" >
+				and o.batch = #{batch}
+			</if>
+			<if test="importNumber != null" >
+				and o.import_number = #{importNumber}
+			</if>
+			<if test="importSuccessNumber != null" >
+				and o.import_success_number = #{importSuccessNumber}
+			</if>
+			<if test="importFailNumber != null" >
+				and o.import_fail_number = #{importFailNumber}
+			</if>
+			<if test="pickNumber != null" >
+				and o.pick_number = #{pickNumber}
+			</if>
+			<if test="pickSuccessNumber != null" >
+				and o.pick_success_number = #{pickSuccessNumber}
+			</if>
+			<if test="pickFailNumber != null" >
+				and o.pick_fail_number = #{pickFailNumber}
+			</if>
+			<if test="carryNumber != null" >
+				and o.carry_number = #{carryNumber}
+			</if>
+			<if test="carrySuccessNumber != null" >
+				and o.carry_success_number = #{carrySuccessNumber}
+			</if>
+			<if test="carryFailNumber != null" >
+				and o.carry_fail_number = #{carryFailNumber}
+			</if>
+			<if test="sendNumber != null" >
+				and o.send_number = #{sendNumber}
+			</if>
+			<if test="sendSuccessNumber != null" >
+				and o.send_success_number = #{sendSuccessNumber}
+			</if>
+			<if test="sendFailNumber != null" >
+				and o.send_fail_number = #{sendFailNumber}
+			</if>
+			<if test="remark != null" >
+				and o.remark = #{remark}
+			</if>
+			<if test="status != null" >
+				and o.status = #{status}
+			</if>
+			<if test="createtime != null" >
+				and o.createtime = #{createtime}
+			</if>
+			<if test="creator != null" >
+				and o.creator = #{creator}
+			</if>
+	</sql>
+	
+	<!--  获取一条发码批次，根据主键    -->
+	<select id="getOrderById" resultType="com.mocredit.activity.model.Order" parameterType="java.lang.String" >
+	select 
+	<include refid="base_order_column_list" />
+	from act_order o
+	where o.id = #{id}
+	</select>
+	
+	<!--  获取一条发码批次，随机获取    -->
+	<select id="getOrderByRand" resultType="com.mocredit.activity.model.Order" >
+	select 
+	<include refid="base_order_column_list" />
+	from act_order o
+	order by rand() limit 1
+	</select>
+	
+	<!--  查询发码批次列表，根据条件    -->
+	<select id="queryOrderList" resultType="com.mocredit.activity.model.Order" parameterType="java.util.Map" >
+	select 
+	<include refid="base_order_column_list" />
+	from act_order o
+	<where>
+		<include refid="base_order_condition" />
+		<if test="activityIdList != null" >
+			and o.activity_id in 
+			<foreach collection="activityIdList" index="index" item="actId" open="(" separator="," close=")">
+   					#{actId}
+ 	 		</foreach>
+		</if>
+	</where>
+	<if test="pageInfoStart != null and pageInfoLimit != null" >
+    	limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
+    </if>
+	</select>
+	
+	<!--  获取发码批次总数量，根据条件    -->
+	<select id="getOrderTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
+	select 
+	count(o.id)
+	from act_order o
+	<where>
+		<include refid="base_order_condition" />
+	</where>
+	</select>
+	
+	<!--  添加一条发码批次记录  -->
+	<insert id="addOrder" parameterType="com.mocredit.activity.model.Order" >
+	insert into act_order
+	<trim prefix="(" suffix=")" suffixOverrides="," >
+			id,
+			activity_id,
+			batch,
+			import_number,
+			import_success_number,
+			import_fail_number,
+			pick_number,
+			pick_success_number,
+			pick_fail_number,
+			carry_number,
+			carry_success_number,
+			carry_fail_number,
+			send_number,
+			send_success_number,
+			send_fail_number,
+			remark,
+			status,
+			createtime,
+			creator,
+	</trim>
+	<trim prefix="values (" suffix=")" suffixOverrides="," >
+			#{id},
+			#{activityId},
+			#{batch},
+			#{importNumber},
+			#{importSuccessNumber},
+			#{importFailNumber},
+			#{pickNumber},
+			#{pickSuccessNumber},
+			#{pickFailNumber},
+			#{carryNumber},
+			#{carrySuccessNumber},
+			#{carryFailNumber},
+			#{sendNumber},
+			#{sendSuccessNumber},
+			#{sendFailNumber},
+			#{remark},
+			#{status},
+			#{createtime},
+			#{creator},
+	</trim>
+	</insert>
+	
+	<!--  修改一条发码批次记录  -->
+	<update id="updateOrder" parameterType="com.mocredit.activity.model.Order" >
+	update act_order
+	<set >
+		<if test="id != null" >
+		id = #{id},
+	</if>
+		<if test="activityId != null" >
+		activity_id = #{activityId},
+	</if>
+		<if test="batch != null" >
+		batch = #{batch},
+	</if>
+		<if test="importNumber != null" >
+		import_number = #{importNumber},
+	</if>
+		<if test="importSuccessNumber != null" >
+		import_success_number = #{importSuccessNumber},
+	</if>
+		<if test="importFailNumber != null" >
+		import_fail_number = #{importFailNumber},
+	</if>
+		<if test="pickNumber != null" >
+		pick_number = #{pickNumber},
+	</if>
+		<if test="pickSuccessNumber != null" >
+		pick_success_number = #{pickSuccessNumber},
+	</if>
+		<if test="pickFailNumber != null" >
+		pick_fail_number = #{pickFailNumber},
+	</if>
+		<if test="carryNumber != null" >
+		carry_number = #{carryNumber},
+	</if>
+		<if test="carrySuccessNumber != null" >
+		carry_success_number = #{carrySuccessNumber},
+	</if>
+		<if test="carryFailNumber != null" >
+		carry_fail_number = #{carryFailNumber},
+	</if>
+		<if test="sendNumber != null" >
+		send_number = #{sendNumber},
+	</if>
+		<if test="sendSuccessNumber != null" >
+		send_success_number = #{sendSuccessNumber},
+	</if>
+		<if test="sendFailNumber != null" >
+		send_fail_number = #{sendFailNumber},
+	</if>
+		<if test="remark != null" >
+		remark = #{remark},
+	</if>
+		<if test="status != null" >
+		status = #{status},
+	</if>
+		<if test="createtime != null" >
+		createtime = #{createtime},
+	</if>
+		<if test="creator != null" >
+		creator = #{creator},
+	</if>
+	</set>
+	where id = #{id}
+	</update>
+	
+	<!--  删除一条发码批次记录 ，根据主键    -->
+	<delete id="deleteOrderById" parameterType="java.lang.String" >
+	delete from act_order
+	where id = #{id}
+	</delete>
+
+	<!--  删除发码批次记录 ，根据条件    -->
+	<delete id="deleteOrder" parameterType="java.util.Map" >
+	delete from act_order
+	<where>
+		<if test="id != null" >
+			and id = #{id}
+		</if>
+		<if test="activityId != null" >
+			and activity_id = #{activityId}
+		</if>
+		<if test="batch != null" >
+			and batch = #{batch}
+		</if>
+		<if test="importNumber != null" >
+			and import_number = #{importNumber}
+		</if>
+		<if test="importSuccessNumber != null" >
+			and import_success_number = #{importSuccessNumber}
+		</if>
+		<if test="importFailNumber != null" >
+			and import_fail_number = #{importFailNumber}
+		</if>
+		<if test="pickNumber != null" >
+			and pick_number = #{pickNumber}
+		</if>
+		<if test="pickSuccessNumber != null" >
+			and pick_success_number = #{pickSuccessNumber}
+		</if>
+		<if test="pickFailNumber != null" >
+			and pick_fail_number = #{pickFailNumber}
+		</if>
+		<if test="carryNumber != null" >
+			and carry_number = #{carryNumber}
+		</if>
+		<if test="carrySuccessNumber != null" >
+			and carry_success_number = #{carrySuccessNumber}
+		</if>
+		<if test="carryFailNumber != null" >
+			and carry_fail_number = #{carryFailNumber}
+		</if>
+		<if test="sendNumber != null" >
+			and send_number = #{sendNumber}
+		</if>
+		<if test="sendSuccessNumber != null" >
+			and send_success_number = #{sendSuccessNumber}
+		</if>
+		<if test="sendFailNumber != null" >
+			and send_fail_number = #{sendFailNumber}
+		</if>
+		<if test="remark != null" >
+			and remark = #{remark}
+		</if>
+		<if test="status != null" >
+			and status = #{status}
+		</if>
+		<if test="createtime != null" >
+			and createtime = #{createtime}
+		</if>
+		<if test="creator != null" >
+			and creator = #{creator}
+		</if>
+	</where>
+</delete>
+
+<!-- ===================发码批次,结束======================== -->
+</mapper>
