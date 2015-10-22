@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	活动商户关联-Mybatis Mapper文件
+	作者：lishoukun
+	日期：2015/07/08
+-->
+<mapper namespace="com.mocredit.activity.dao.ActivityStoreDao">
+	<!-- ===================活动商户关联,开始======================== -->
+	
+	<!--  公用列,包含活动商户关联表所有字段     -->
+	<sql id="base_activityStore_column_list" >
+		a.activity_id as activityId,
+		a.store_id as storeId,
+		a.enterprise_id as enterpriseId,
+		a.shop_id as shopId
+	</sql>
+	
+	<!--  公用查询条件，包含活动商户关联所有字段的查询条件     -->
+	<sql id="base_activityStore_condition" >
+			<if test="activityId != null" >
+				and a.activity_id = #{activityId}
+			</if>
+			<if test="storeId != null" >
+				and a.store_id = #{storeId}
+			</if>
+			<if test="enterpriseId != null" >
+				and a.enterprise_id = #{enterpriseId}
+			</if>
+			<if test="shopId != null" >
+				and a.shop_id = #{shopId}
+			</if>
+	</sql>
+	
+	<!--  获取一条活动商户关联，根据主键    -->
+	<select id="getActivityStoreById" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.lang.String" >
+	select 
+	<include refid="base_activityStore_column_list" />
+	from act_activity_store a
+	where a.id = #{id}
+	</select>
+	
+	<!--  获取一条活动商户关联，随机获取    -->
+	<select id="getActivityStoreByRand" resultType="com.mocredit.activity.model.ActivityStore" >
+	select 
+	<include refid="base_activityStore_column_list" />
+	from act_activity_store a
+	order by rand() limit 1
+	</select>
+	
+	<!--  查询活动商户关联列表，根据条件    -->
+	<select id="queryActivityStoreList" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.util.Map" >
+	select 
+	<include refid="base_activityStore_column_list" />
+	,e.name as shopName
+	,s.name as storeName
+	,s.code as storeCode
+	from act_activity_store a
+	left join t_shop e on e.id = a.shop_id
+	left join t_store s on s.id = a.store_id
+	<where>
+		<include refid="base_activityStore_condition" />
+		<if test="activityIdList != null" >
+			and a.activity_id in 
+			<foreach collection="activityIdList" index="index" item="actId" open="(" separator="," close=")">
+   					#{actId}
+ 	 		</foreach>
+		</if>
+	</where>
+	order by a.activity_id asc
+	<if test="pageInfoStart != null and pageInfoLimit != null" >
+    	limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
+    </if>
+	</select>
+	
+	<!--  获取活动商户关联总数量，根据条件    -->
+	<select id="getActivityStoreTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
+	select 
+	count(a.id)
+	from act_activity_store a
+	<where>
+		<include refid="base_activityStore_condition" />
+	</where>
+	</select>
+	
+	<!--  添加一条活动商户关联记录  -->
+	<insert id="addActivityStore" parameterType="com.mocredit.activity.model.ActivityStore" >
+	insert into act_activity_store
+	<trim prefix="(" suffix=")" suffixOverrides="," >
+			activity_id,
+			store_id,
+			enterprise_id,
+			shop_id,
+	</trim>
+	<trim prefix="values (" suffix=")" suffixOverrides="," >
+			#{activityId},
+			#{storeId},
+			#{enterpriseId},
+			#{shopId},
+	</trim>
+	</insert>
+	
+	<!--  修改一条活动商户关联记录  -->
+	<update id="updateActivityStore" parameterType="com.mocredit.activity.model.ActivityStore" >
+	update act_activity_store
+	<set >
+		<if test="activityId != null" >
+			activity_id = #{activityId},
+		</if>
+		<if test="storeId != null" >
+			store_id = #{storeId},
+		</if>
+		<if test="enterpriseId != null" >
+			enterprise_id = #{enterpriseId},
+		</if>
+		<if test="shopId != null" >
+			shop_id = #{shopId},
+		</if>
+	</set>
+	where id = #{id}
+	</update>
+	
+	<!--  删除一条活动商户关联记录 ，根据主键    -->
+	<delete id="deleteActivityStoreById" parameterType="java.lang.String" >
+	delete from act_activity_store
+	where id = #{id}
+	</delete>
+
+	<!--  删除活动商户关联记录 ，根据条件    -->
+	<delete id="deleteActivityStore" parameterType="java.util.Map" >
+	delete from act_activity_store
+	<where>
+		<if test="activityId != null" >
+			and activity_id = #{activityId}
+		</if>
+		<if test="storeId != null" >
+			and store_id = #{storeId}
+		</if>
+		<if test="enterpriseId != null" >
+			and enterprise_id = #{enterpriseId}
+		</if>
+		<if test="shopId != null" >
+			shop_id = #{shopId},
+		</if>
+	</where>
+</delete>
+
+<!-- ===================活动商户关联,结束======================== -->
+</mapper>
