@@ -1,5 +1,7 @@
 package com.mocredit.order.service;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.mocredit.order.entity.ApiUrl;
 
 public interface ApiUrlService extends BaseService<ApiUrl> {
@@ -10,4 +12,6 @@ public interface ApiUrlService extends BaseService<ApiUrl> {
 	 * @return
 	 */
 	public boolean updateByCode(ApiUrl t);
+
+	ApiUrl selectByCode(String code);
 }

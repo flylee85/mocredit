@@ -29,4 +29,9 @@ public class ApiUrlServiceImpl implements ApiUrlService {
 		return apiUrlMapper.updateByCode(t) > 0;
 	}
 
+	@Override
+	public ApiUrl selectByCode(String code) {
+		return apiUrlMapper.selectByCode(code);
+	}
+
 }

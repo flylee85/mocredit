@@ -1,12 +1,14 @@
 package com.mocredit.integral.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mocredit.integral.constant.OrderStatus;
+import com.mocredit.integral.dto.OrderDto;
 import com.mocredit.integral.entity.ActivityTransRecord;
 import com.mocredit.integral.entity.Order;
 import com.mocredit.integral.persistence.ActivityMapper;
@@ -57,6 +59,11 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public boolean isExistOrder(String orderId) {
 		return orderMapper.getOrderByOrderId(orderId) > 0;
+	}
+
+	@Override
+	public List<OrderDto> synOrder(Integer offset, Integer pagesize) {
+		return orderMapper.synOrder(offset, pagesize);
 	}
 
 }

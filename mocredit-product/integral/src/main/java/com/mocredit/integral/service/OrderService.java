@@ -1,7 +1,10 @@
 package com.mocredit.integral.service;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
+import com.mocredit.integral.dto.OrderDto;
 import com.mocredit.integral.entity.Order;
 
 /**
@@ -37,4 +40,13 @@ public interface OrderService extends BaseService<Order> {
 	 * @return
 	 */
 	boolean isExistOrder(String orderId);
+
+	/**
+	 * 给订单管理系统提供同步订单接口
+	 * 
+	 * @param offset
+	 * @param pagesize
+	 * @return
+	 */
+	List<OrderDto> synOrder(Integer offset, Integer pagesize);
 }

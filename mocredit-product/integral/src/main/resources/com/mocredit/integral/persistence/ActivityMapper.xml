@@ -6,6 +6,8 @@
 	<resultMap id="BaseResultMap" type="com.mocredit.integral.entity.Activity">
 		<result column="activity_id" property="activityId" />
 		<result column="activity_name" property="activityName" />
+		<result column="pub_enterprise_id" property="pubEnterpriseId" />
+		<result column="pub_enterprise_name" property="pubEnterpriseName" />
 		<result column="product_type" property="productType" />
 		<result column="start_time" property="startTime" />
 		<result column="end_time" property="endTime" />
@@ -18,8 +20,8 @@
 
 	<insert id="save" parameterType="com.mocredit.integral.entity.Activity">
 		insert into
-		`ti_activity`(activity_id,activity_name,product_type,start_time,end_time,select_date,integral,max_type,max_number,status)
-		values(#{t.activityId},#{t.activityName},#{t.productType},#{t.startTime},#{t.endTime},#{t.selectDate},#{t.integral},#{t.maxType},#{t.maxNumber},#{t.status})
+		`ti_activity`(activity_id,activity_name,pub_enterprise_id,pub_enterprise_name,product_type,start_time,end_time,select_date,integral,max_type,max_number,status)
+		values(#{t.activityId},#{t.activityName},#{t.pubEnterpriseId},#{t.pubEnterpriseName},#{t.productType},#{t.startTime},#{t.endTime},#{t.selectDate},#{t.integral},#{t.maxType},#{t.maxNumber},#{t.status})
 	</insert>
 	<select id="getByActivityId" resultMap="BaseResultMap">
 		select * from
