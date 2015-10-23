@@ -28,7 +28,7 @@ public class BatchServiceImpl implements BatchService{
 	 * @return
 	 */
 	public Batch getOrderById(String id) {
-		Batch orderObj = orderDao.getOrderById(id);
+		Batch orderObj = orderDao.getBatchById(id);
 		return orderObj;
 	}
 	/**
@@ -36,7 +36,7 @@ public class BatchServiceImpl implements BatchService{
 	 * @return
 	 */
 	public Batch getOrderByRand() {
-		Batch orderObj = orderDao.getOrderByRand();
+		Batch orderObj = orderDao.getBatchByRand();
 		return orderObj;
 	}
 	/**
@@ -45,7 +45,7 @@ public class BatchServiceImpl implements BatchService{
 	 * @return
 	 */
 	public Batch getOrder(Map<String,Object> orderMap) {
-		List<Batch> orderList = orderDao.queryOrderList(orderMap);
+		List<Batch> orderList = orderDao.queryBatchList(orderMap);
 		if(orderList.size()>0){
 			return orderList.get(0);
 		}
@@ -57,7 +57,7 @@ public class BatchServiceImpl implements BatchService{
 	 * @return
 	 */
 	public List<Batch> queryOrderList(Map<String,Object> orderMap) {
-		List<Batch> orderList = orderDao.queryOrderList(orderMap);
+		List<Batch> orderList = orderDao.queryBatchList(orderMap);
 		return orderList;
 	}
 	/**
@@ -66,7 +66,7 @@ public class BatchServiceImpl implements BatchService{
 	 * @return
 	 */
 	public Integer getOrderTotal(Map<String,Object> orderMap) {
-		Integer orderTotal = orderDao.getOrderTotal(orderMap);
+		Integer orderTotal = orderDao.getBatchTotal(orderMap);
 		return orderTotal;
 	}
 	/**
@@ -77,7 +77,7 @@ public class BatchServiceImpl implements BatchService{
 	 * @return
 	 */
 	public PageInfo<Batch> queryOrderPage(Map<String,Object> orderMap,Integer pageNum,Integer pageSize){
-		List<Batch> orders = orderDao.queryOrderList(orderMap);
+		List<Batch> orders = orderDao.queryBatchList(orderMap);
 		return new PageInfo<>(orders);
 	}
 	/**
@@ -86,7 +86,7 @@ public class BatchServiceImpl implements BatchService{
 	 * @return
 	 */
 	public Integer addOrder(Batch order) {
-		Integer affectCount = orderDao.addOrder(order);
+		Integer affectCount = orderDao.addBatch(order);
 		return affectCount;
 	}
 	/**
@@ -95,7 +95,7 @@ public class BatchServiceImpl implements BatchService{
 	 * @return
 	 */
 	public Integer updateOrder(Batch order) {
-		Integer affectCount = orderDao.updateOrder(order);
+		Integer affectCount = orderDao.updateBatch(order);
 		return affectCount;
 	}
 	/**
@@ -104,7 +104,7 @@ public class BatchServiceImpl implements BatchService{
 	 * @return
 	 */
 	public Integer deleteOrderById(String id) {
-		Integer affectCount = orderDao.deleteOrderById(id);
+		Integer affectCount = orderDao.deleteBatchById(id);
 		return affectCount;
 	}
 	/**
@@ -116,7 +116,7 @@ public class BatchServiceImpl implements BatchService{
 		Integer affectCount = 0;
 		String[] idArray = ids.split(",");
 		for(String id : idArray){
-			affectCount += orderDao.deleteOrderById(id);
+			affectCount += orderDao.deleteBatchById(id);
 		}
 		return affectCount;
 	}
@@ -127,7 +127,7 @@ public class BatchServiceImpl implements BatchService{
 	 * @return
 	 */
 	public Integer deleteOrder(Map<String,Object> orderMap) {
-		Integer affectCount = orderDao.deleteOrder(orderMap);
+		Integer affectCount = orderDao.deleteBatch(orderMap);
 		return affectCount;
 	}
 }

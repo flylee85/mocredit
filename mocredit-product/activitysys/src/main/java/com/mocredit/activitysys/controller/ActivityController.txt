@@ -1,0 +1,185 @@
+活动-Web借口
+
+查询活动分页数据，根据条件和分页参数
+	地址：/activity/queryActivityPage
+	请求参数：
+       		id,id
+       		name,活动名称
+       		type,活动类型
+       		code,活动编码
+       		outCode,外部编码
+       		receiptTitle,小票标题
+       		receiptPrint,小票打印内容
+       		posSuccessMsg,POS验证成功提示
+       		successSmsMsg,验证成功通知短信
+       		sendSmsType,短信发码方式
+       		noticeSmsMsg,通知短信内容
+       		startTime,开始时间
+       		endTime,结束时间
+       		selectDate,选择时间
+       		amount,价格
+       		maxType,最大类型
+       		maxNumber,最大次数
+       		integralActivity,积分活动
+       		integral,积分
+       		activityIssuer,活动发行方
+       		agreement,合同
+       		status,状态
+       		createtime,创建时间
+       		modifytime,更新时间
+       		creator,创建人
+       		modifier,更新人
+           分页参数:
+           page,页数
+           rows,每页多少条
+           返回参数：
+           {
+           		success:是否成功，成功为true,失败为false
+           		errorMsg:错误信息，如果成功，该项则为空
+           		data:数据，json object对象，数据结构如下：
+           			{
+        			pageCount,总页数
+        			total，总记录数
+        			records,jsonArray列表，包含多个活动(Activity)对象，数据格式如下
+        				[
+        					{
+			        			id,id
+					       		name,活动名称
+					       		type,活动类型
+					       		code,活动编码
+					       		outCode,外部编码
+					       		receiptTitle,小票标题
+					       		receiptPrint,小票打印内容
+					       		posSuccessMsg,POS验证成功提示
+					       		successSmsMsg,验证成功通知短信
+					       		sendSmsType,短信发码方式
+					       		noticeSmsMsg,通知短信内容
+					       		startTime,开始时间
+					       		endTime,结束时间
+					       		selectDate,选择时间
+					       		amount,价格
+					       		maxType,最大类型
+					       		maxNumber,最大次数
+					       		integralActivity,积分活动
+					       		integral,积分
+					       		activityIssuer,活动发行方
+					       		agreement,合同
+					       		status,状态
+					       		createtime,创建时间
+					       		modifytime,更新时间
+					       		creator,创建人
+			    				modifier,更新人
+					       		
+			        		}
+			        		.......
+        				]
+        		}
+           }
+       
+        	
+        
+获取一条活动,根据主键
+	地址：/activity/getActivityById
+	请求参数：
+		id,主键
+	返回参数：
+           {
+           		success:是否成功，成功为true,失败为false
+           		errorMsg:错误信息，如果成功，该项则为空
+           		data:数据，json object对象，数据结构如下：
+           			{
+        			id,id
+		       		name,活动名称
+		       		type,活动类型
+		       		code,活动编码
+		       		outCode,外部编码
+		       		receiptTitle,小票标题
+		       		receiptPrint,小票打印内容
+		       		posSuccessMsg,POS验证成功提示
+		       		successSmsMsg,验证成功通知短信
+		       		sendSmsType,短信发码方式
+		       		noticeSmsMsg,通知短信内容
+		       		startTime,开始时间
+		       		endTime,结束时间
+		       		selectDate,选择时间
+		       		amount,价格
+		       		maxType,最大类型
+		       		maxNumber,最大次数
+		       		integralActivity,积分活动
+		       		integral,积分
+		       		activityIssuer,活动发行方
+		       		agreement,合同
+		       		status,状态
+		       		createtime,创建时间
+		       		modifytime,更新时间
+		       		creator,创建人
+    				modifier,更新人
+		       		storeList:[
+    					{
+    						storeId,门店id
+    						enterpriseId:商家id
+    						storeName,门店名称
+    						enterpriseName,商家名称
+    					}
+    					......
+    				] 	
+        		}
+           }     	
+     
+保存活动/更新活动
+	地址：/activity/saveActivity
+	请求参数：
+			id,id 添加时不需要传递，修改时需要传递
+    		name,活动名称
+    		type,活动类型
+    		code,活动编码
+    		outCode,外部编码
+    		receiptTitle,小票标题
+    		receiptPrint,小票打印内容
+    		posSuccessMsg,POS验证成功提示
+    		successSmsMsg,验证成功通知短信
+    		sendSmsType,短信发码方式
+    		noticeSmsMsg,通知短信内容
+    		startTime,开始时间
+    		endTime,结束时间
+    		selectDate,选择时间
+    		amount,价格
+    		maxType,最大类型
+    		maxNumber,最大次数
+    		integralActivity,积分活动
+    		integral,积分
+    		activityIssuer,活动发行方
+    		agreement,合同
+    		status,状态（启用为01，停用为02）添加时不需要传递，修改时需要传递修改的状态
+    		storeList:[
+    			{
+    				storeId,门店id
+    				enterpriseId:商家id
+    			}
+    			......
+    		]
+    		以下内容不需要传递
+    		createtime,创建时间
+    		modifytime,更新时间
+    		creator,创建人
+    		modifier,更新人
+    		
+	返回参数：
+			{
+           		success:是否成功，成功为true,失败为false
+           		errorMsg:错误信息，如果成功，该项则为空
+           		data:说明或影响行数
+           	}
+		
+删除活动,根据主键
+ 	地址：/activity/deleteActivityById
+	请求参数：
+		id,主键
+	返回参数：
+			{
+           		success:是否成功，成功为true,失败为false
+           		errorMsg:错误信息，如果成功，该项则为空
+           		data:说明或影响行数
+           	}
+
+

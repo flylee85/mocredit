@@ -1,0 +1,195 @@
+发码批次-Web借口
+
+对象说明：
+	发码批次(Order)
+    		id,id
+    		activityId,活动id
+    		batch,批次号
+    		importNumber,导入联系人数量
+    		importSuccessNumber,导入成功联系人数量
+    		importFailNumber,导入失败联系人数量
+    		pickNumber,提码数量
+    		pickSuccessNumber,提码成功数量
+    		pickFailNumber,提码失败数量
+    		carryNumber,送码数量
+    		carrySuccessNumber,送码成功数量
+    		carryFailNumber,送码失败数量
+    		sendNumber,发码数量
+    		sendSuccessNumber,发码成功数量
+    		sendFailNumber,发码失败数量
+    		remark,备注
+    		status,状态
+    		createtime,创建时间
+    		creator,创建人
+
+查询发码批次列表，根据条件
+	地址：/order/queryOrderList
+	请求参数：
+       		id,id
+       		activityId,活动id
+       		batch,批次号
+       		importNumber,导入联系人数量
+       		importSuccessNumber,导入成功联系人数量
+       		importFailNumber,导入失败联系人数量
+       		pickNumber,提码数量
+       		pickSuccessNumber,提码成功数量
+       		pickFailNumber,提码失败数量
+       		carryNumber,送码数量
+       		carrySuccessNumber,送码成功数量
+       		carryFailNumber,送码失败数量
+       		sendNumber,发码数量
+       		sendSuccessNumber,发码成功数量
+       		sendFailNumber,发码失败数量
+       		remark,备注
+       		status,状态
+       		createtime,创建时间
+       		creator,创建人
+           返回参数：
+        {
+           		success:是否成功，成功为true,失败为false
+           		errorMsg:错误信息，如果成功，该项则为空
+           		data:数据，json object对象，数据结构如下：
+           			{
+        			pageCount,总页数
+        			total，总记录数
+        			records,jsonArray列表，包含多个活动(Activity)对象，数据格式如下
+        				[
+        					{
+			        			id,id
+					       		activityId,活动id
+					       		batch,批次号
+					       		importNumber,导入联系人数量
+					       		importSuccessNumber,导入成功联系人数量
+					       		importFailNumber,导入失败联系人数量
+					       		pickNumber,提码数量
+					       		pickSuccessNumber,提码成功数量
+					       		pickFailNumber,提码失败数量
+					       		carryNumber,送码数量
+					       		carrySuccessNumber,送码成功数量
+					       		carryFailNumber,送码失败数量
+					       		sendNumber,发码数量
+					       		sendSuccessNumber,发码成功数量
+					       		sendFailNumber,发码失败数量
+					       		remark,备注
+					       		status,状态
+					       		createtime,创建时间
+					       		creator,创建人
+					       		
+			        		}
+			        		.......
+        				]
+        		}
+           }
+        
+查询发码批次分页数据，根据条件和分页参数
+	地址：/order/queryOrderPage
+	请求参数：
+       		id,id
+       		activityId,活动id
+       		batch,批次号
+       		importNumber,导入联系人数量
+       		importSuccessNumber,导入成功联系人数量
+       		importFailNumber,导入失败联系人数量
+       		pickNumber,提码数量
+       		pickSuccessNumber,提码成功数量
+       		pickFailNumber,提码失败数量
+       		carryNumber,送码数量
+       		carrySuccessNumber,送码成功数量
+       		carryFailNumber,送码失败数量
+       		sendNumber,发码数量
+       		sendSuccessNumber,发码成功数量
+       		sendFailNumber,发码失败数量
+       		remark,备注
+       		status,状态
+       		createtime,创建时间
+       		creator,创建人
+           分页参数:
+           page,页数
+           rows,每页多少条
+           返回参数：
+        json object对象，数据结构如下：
+        	{
+        		total,总页数
+        		records，总记录数
+        		rows,jsonArray列表，包含多个发码批次(Order)对象
+        	}
+        
+        	
+        	
+获取一条发码批次,根据主键
+	地址：/order/getOrderById
+	请求参数：
+		id,主键
+	返回参数：
+		json object对象，包含一条发码批次(Order)对象     	
+     
+获取一条发码批次,根据条件
+	地址：/order/getOrder
+	请求参数：
+       		id,id
+       		activityId,活动id
+       		batch,批次号
+       		importNumber,导入联系人数量
+       		importSuccessNumber,导入成功联系人数量
+       		importFailNumber,导入失败联系人数量
+       		pickNumber,提码数量
+       		pickSuccessNumber,提码成功数量
+       		pickFailNumber,提码失败数量
+       		carryNumber,送码数量
+       		carrySuccessNumber,送码成功数量
+       		carryFailNumber,送码失败数量
+       		sendNumber,发码数量
+       		sendSuccessNumber,发码成功数量
+       		sendFailNumber,发码失败数量
+       		remark,备注
+       		status,状态
+       		createtime,创建时间
+       		creator,创建人
+	返回参数：
+		json object对象，包含一条发码批次(Order)对象    
+		
+保存发码批次
+	地址：/order/saveOrder
+	请求参数：
+		发码批次(Order)对象
+	返回参数：
+		json object对象，包含success(是否成功,true或false),msg(说明) 
+		
+删除发码批次,根据主键
+ 	地址：/order/deleteOrderById
+	请求参数：
+		id,主键
+	返回参数：
+		json object对象，包含success(是否成功,true或false),msg(说明) 
+
+批量删除发码批次,根据主键集合
+ 	地址：/order/deleteOrdersByIds
+	请求参数：
+		ids,主键集合(用,分割)
+	返回参数：
+		json object对象，包含success(是否成功,true或false),msg(说明)
+
+删除发码批次,根据条件
+ 	地址：/order/deleteOrder
+	请求参数：
+       		id,id
+       		activityId,活动id
+       		batch,批次号
+       		importNumber,导入联系人数量
+       		importSuccessNumber,导入成功联系人数量
+       		importFailNumber,导入失败联系人数量
+       		pickNumber,提码数量
+       		pickSuccessNumber,提码成功数量
+       		pickFailNumber,提码失败数量
+       		carryNumber,送码数量
+       		carrySuccessNumber,送码成功数量
+       		carryFailNumber,送码失败数量
+       		sendNumber,发码数量
+       		sendSuccessNumber,发码成功数量
+       		sendFailNumber,发码失败数量
+       		remark,备注
+       		status,状态
+       		createtime,创建时间
+       		creator,创建人
+	返回参数：
+		json object对象，包含success(是否成功,true或false),msg(说明)

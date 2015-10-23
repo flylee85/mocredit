@@ -6,11 +6,11 @@
 	作者：lishoukun
 	日期：2015/07/13
 -->
-<mapper namespace="com.mocredit.activity.dao.OrderDao">
+<mapper namespace="com.mocredit.activity.persitence.BatchMapper">
 	<!-- ===================发码批次,开始======================== -->
 	
 	<!--  公用列,包含发码批次表所有字段     -->
-	<sql id="base_order_column_list" >
+	<sql id="base_batch_column_list" >
 		o.id as id,
 		o.activity_id as activityId,
 		o.batch as batch,
@@ -33,7 +33,7 @@
 	</sql>
 	
 	<!--  公用查询条件，包含发码批次所有字段的查询条件     -->
-	<sql id="base_order_condition" >
+	<sql id="base_batch_condition" >
 			<if test="id != null" >
 				and o.id = #{id}
 			</if>
@@ -94,28 +94,28 @@
 	</sql>
 	
 	<!--  获取一条发码批次，根据主键    -->
-	<select id="getOrderById" resultType="com.mocredit.activity.model.Order" parameterType="java.lang.String" >
+	<select id="getBatchById" resultType="com.mocredit.activity.model.Batch" parameterType="java.lang.String" >
 	select 
-	<include refid="base_order_column_list" />
-	from act_order o
+	<include refid="base_batch_column_list" />
+	from act_batch o
 	where o.id = #{id}
 	</select>
 	
 	<!--  获取一条发码批次，随机获取    -->
-	<select id="getOrderByRand" resultType="com.mocredit.activity.model.Order" >
+	<select id="getBatchByRand" resultType="com.mocredit.activity.model.Batch" >
 	select 
-	<include refid="base_order_column_list" />
-	from act_order o
+	<include refid="base_batch_column_list" />
+	from act_batch o
 	order by rand() limit 1
 	</select>
 	
 	<!--  查询发码批次列表，根据条件    -->
-	<select id="queryOrderList" resultType="com.mocredit.activity.model.Order" parameterType="java.util.Map" >
+	<select id="queryBatchList" resultType="com.mocredit.activity.model.Batch" parameterType="java.util.Map" >
 	select 
-	<include refid="base_order_column_list" />
-	from act_order o
+	<include refid="base_batch_column_list" />
+	from act_batch o
 	<where>
-		<include refid="base_order_condition" />
+		<include refid="base_batch_condition" />
 		<if test="activityIdList != null" >
 			and o.activity_id in 
 			<foreach collection="activityIdList" index="index" item="actId" open="(" separator="," close=")">
@@ -129,18 +129,18 @@
 	</select>
 	
 	<!--  获取发码批次总数量，根据条件    -->
-	<select id="getOrderTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
+	<select id="getBatchTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
 	select 
 	count(o.id)
-	from act_order o
+	from act_batch o
 	<where>
-		<include refid="base_order_condition" />
+		<include refid="base_batch_condition" />
 	</where>
 	</select>
 	
 	<!--  添加一条发码批次记录  -->
-	<insert id="addOrder" parameterType="com.mocredit.activity.model.Order" >
-	insert into act_order
+	<insert id="addBatch" parameterType="com.mocredit.activity.model.Batch" >
+	insert into act_batch
 	<trim prefix="(" suffix=")" suffixOverrides="," >
 			id,
 			activity_id,
@@ -186,8 +186,8 @@
 	</insert>
 	
 	<!--  修改一条发码批次记录  -->
-	<update id="updateOrder" parameterType="com.mocredit.activity.model.Order" >
-	update act_order
+	<update id="updateBatch" parameterType="com.mocredit.activity.model.Batch" >
+	update act_batch
 	<set >
 		<if test="id != null" >
 		id = #{id},
@@ -251,14 +251,14 @@
 	</update>
 	
 	<!--  删除一条发码批次记录 ，根据主键    -->
-	<delete id="deleteOrderById" parameterType="java.lang.String" >
-	delete from act_order
+	<delete id="deleteBatchById" parameterType="java.lang.String" >
+	delete from act_batch
 	where id = #{id}
 	</delete>
 
 	<!--  删除发码批次记录 ，根据条件    -->
-	<delete id="deleteOrder" parameterType="java.util.Map" >
-	delete from act_order
+	<delete id="deleteBatch" parameterType="java.util.Map" >
+	delete from act_batch
 	<where>
 		<if test="id != null" >
 			and id = #{id}

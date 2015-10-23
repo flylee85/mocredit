@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  	<meta charset="utf-8">
+	  	<title>门店</title>
+	</head>
+	<body>
+		<!-- .modal 选择门店-->
+		<div id="shopModal" class="modal fade" data-backdrop="static" data-keyboard="false" style="z-index: 9999;">
+
+			<div class="modal-dialog pos-abt modal-lger">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
+								class="icon-remove"></i></button>
+						<h4 class="modal-title">选择门店</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="row">
+								<div class="form-group">
+									<label class="col-lg-2 control-label">门店名称</label>
+									<div class="col-lg-4">
+										<input type="text" class="form-control input-small" placeholder="门店名称" id="storeName" name="storeName">
+									</div>
+									<label class="col-lg-2 control-label">终端号</label>
+
+									<div class="col-lg-4">
+										<input type="text" class="form-control input-small" placeholder="终端号" id="devCode" name="devCode">
+									</div>
+								</div>
+							</div>
+							<div class="row city">
+								<div class="form-group">
+									<label class="col-lg-2 control-label">所属地区</label>
+									<div class="col-lg-4">
+										<select class="form-control input-small" id="province" name="province">
+										</select>
+									</div>
+									<label class="col-lg-2 control-label">城市</label>
+									<div class="col-lg-4">
+										<select class="form-control input-small" name="city" id="city">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label class="col-lg-2 control-label">商家名称</label>
+									<div class="col-lg-6">
+										<input type="text" class="form-control input-small" placeholder="商家名称" id="shopName" name="shopName">
+									</div>
+									<div class="col-lg-4">
+										<button type="button" id="storeSearch" class="btn btn-primary btn-small col-lg-12">查询</button>
+									</div>
+								</div>
+							</div>
+						</form>
+						<div class="row">
+							<table class="table table-striped m-b-none" data-ride="datatables">
+								<thead>
+								<tr>
+									<th ><input type="checkbox"></th>
+									<th >商家名称</th>
+									<th >门店名称</th>
+									<th >所属地区</th>
+									<th >终端数</th>
+								</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+						<div class="row selectStore clearfix" >
+						</div>
+					</div>
+					<div class="modal-footer">
+						<div class="row">
+							<div class="col-lg-10">
+								<button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+							</div>
+							<div class="col-lg-2">
+								<button type="button" class="btn btn-primary" id="chooseShopEnter">确 认</button>
+							</div>
+						</div>
+					</div>
+				</div><!-- /.modal-content -->
+			</div>
+		</div>
+		<!-- / .modal 选择门店-->
+	<script>
+		// 选择门店 全选
+		$('#shopModal thead :checkbox').click(function () {
+			var tbody = $('#shopModal tbody');
+			tbody.find(":checkbox").prop("checked", $(this).prop("checked"));
+			if ($(this).prop("checked")) {
+				tbody.find("tr").addClass('selected');
+				tbody.find("tr").each(function () {
+					var $this = $(this);
+					var storeId = $this.find(":checkbox").attr("data-store");
+					var storeCode = $this.find(":checkbox").attr("data-storeCode");
+					var shopId = $this.find(":checkbox").attr("data-id");
+					if ($("#shopModal div.selectStore").find("span[data-store='" + storeId + "'][data-id='" + shopId + "']").length <= 0) {
+						var theSame = $("#shopModal div.selectStore").find("span[data-id='" + shopId + "']");
+						var str = '<span class="label bg-info" data-id="' + shopId + '" data-store="' + storeId + '" data-storeCode="' + storeCode + '">' + $this.find(".storeName").text() + '<i class="icon-remove"></i></span>';
+						if (theSame.length > 0) {
+							theSame.last().after(str);
+						} else {
+							$("#shopModal div.selectStore").append(str)
+						}
+					}
+				});
+
+			} else {
+				tbody.find("tr").removeClass('selected');
+				tbody.find("tr").each(function () {
+					var $this = $(this);
+					var storeId = $this.find(":checkbox").attr("data-store");
+					$("#shopModal div.selectStore").find("span[data-store='" + storeId + "']").remove();
+				});
+
+			}
+		});
+		// 选择门店
+		$('#shopModal tbody').on('click', 'tr', function () {
+			var $this = $(this);
+			$this.toggleClass('selected');
+			$this.find(":checkbox").prop("checked", $this.hasClass('selected'));
+			var storeId = $this.find(":checkbox").attr("data-store");
+			var storeCode = $this.find(":checkbox").attr("data-storeCode");
+			if ($this.hasClass('selected')) {
+				var shopId = $this.find(":checkbox").attr("data-id");
+				var theSame = $("#shopModal div.selectStore").find("span[data-id='" + shopId + "']");
+				var str = '<span class="label bg-info" data-id="' + shopId + '" data-store="' + storeId + '" data-storeCode="' + storeCode + '" >' + $this.find(".storeName").text() + '<i class="icon-remove"></i></span>';
+				if (theSame.length > 0) {
+					theSame.last().after(str);
+				} else {
+					$("#shopModal div.selectStore").append(str)
+				}
+			} else {
+				$("#shopModal div.selectStore").find("span[data-store='" + storeId + "']").remove();
+			}
+		});
+		//选择门店确认
+		$("#chooseShopEnter").click(function () {
+			$(".chooseShop").text("已选 " + $("#shopModal .selectStore").find("span").length + " 家门店").addClass('popFloat');
+			var choosedStore = $(".choosedStore").empty();
+			$("#shopModal .selectStore").clone().appendTo(choosedStore);
+			$('#shopModal').modal('hide');
+		});
+
+		// 删除已选择门店
+		$('#shopModal').on("click", ".selectStore .icon-remove", function () {
+			var $this = $(this);
+			var storeId = $this.parent().attr("data-store");
+			var shopId = $this.parent().attr("data-id");
+			$('#shopModal tbody').find(":checkbox[data-id='" + shopId + "'][data-store='" + storeId + "']").prop("checked", false).parents("tr").removeClass("selected");
+			$this.parent().remove()
+
+		})
+		var shopModal;
+		// 初始化地区
+		$(".city").province_city();
+		// 查询门店
+		$("#storeSearch").click(function () {
+			shopModal.ajax.reload(function (json) {
+				updateChooseStore();
+			});
+
+		});
+		//门店初始化
+		function initMendian() {
+			/*if ($.type(shopModal) == "object") {
+				shopModal.ajax.reload(function (json) {
+					updateChooseStore();
+				});
+
+			} else {*/
+				$('#shopModal').find('[data-ride="datatables"]').each(function () {
+					shopModal = $(this).DataTable({
+						"ajax": {
+							url: "activity/querySelectStorePage",
+							type: "post",
+							data: function (d) {
+								return $.extend({}, d, {
+									"storeName": $('#storeName').val(),
+									"storeCode": $('#storeCode').val(),
+									"devCode": $('#devCode').val(),
+									"province": $('#province').val(),
+									"city": $('#city').val(),
+									"shopName": $('#shopName').val()
+								})
+							}
+						},
+						"initComplete": function (settings, json) {
+							updateChooseStore();
+						},
+						"processing": true,
+						//"serverSide":true,
+						"paginationType": "full_numbers",
+						"pageLength": 10,
+						"autoWidth": true,
+						"ordering": false,
+						"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
+						"columns": [
+							{"data": null},
+							{"data": "shopName"},
+							{"data": "storeName", className: "storeName"},
+							{"data": null},
+							{"data": "deviceNum"}
+						],
+						"columnDefs": [
+							{
+								"targets": 0,
+								"data": null,
+								"render": function (data, type, full) {
+									return '<input type="checkbox" data-id="' + full['shopId'] + '" data-store="' + full['storeId'] + '" data-storeCode="' + full['storeCode'] + '">';
+								}
+							},
+							{
+								"targets": 3,
+								"data": null,
+								"render": function (data, type, full) {
+
+									return full['province'] + " - " + full['city'];
+								}
+							}
+
+						]
+					});
+				});
+//			}
+			//
+		}
+		// 重新选择已选择门店
+		function updateChooseStore() {
+			$('#shopModal').find(".selectStore").find('span').each(function (i, n) {
+				var storeId = $(this).attr('data-store');
+				var shopId = $(this).attr('data-id');
+				$('#shopModal').find("tbody").find(":checkbox[data-id='" + shopId + "'][data-store='" + storeId + "']").prop("checked", true).parents("tr").addClass('selected');
+			});
+		}
+		initMendian();
+	</script>
+	</body>
+</html>

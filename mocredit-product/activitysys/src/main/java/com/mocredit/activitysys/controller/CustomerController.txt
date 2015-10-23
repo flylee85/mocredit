@@ -1,0 +1,101 @@
+客户-Web借口
+
+对象说明：
+	企业(Customer)
+    		id,id
+    		name,客户名称
+    		mobile,手机号
+    		createtime,创建时间
+    		modifytime,更新时间
+    		creator,创建人
+    		modifier,更新人
+
+查询企业列表，根据条件
+	地址：/customer/queryCustomerList
+	请求参数：
+       		id,id
+       		name,客户名称
+       		mobile,手机号
+       		createtime,创建时间
+       		modifytime,更新时间
+       		creator,创建人
+       		modifier,更新人
+           返回参数：
+        json array对象，包含多条企业(Customer)对象
+        
+查询企业分页数据，根据条件和分页参数
+	地址：/customer/queryCustomerPage
+	请求参数：
+       		id,id
+       		name,客户名称
+       		mobile,手机号
+       		createtime,创建时间
+       		modifytime,更新时间
+       		creator,创建人
+       		modifier,更新人
+           分页参数:
+           page,页数
+           rows,每页多少条
+           返回参数：
+        json object对象，数据结构如下：
+        	{
+        		total,总页数
+        		records，总记录数
+        		rows,jsonArray列表，包含多个企业(Customer)对象
+        	}
+        
+        	
+        	
+获取一条企业,根据主键
+	地址：/customer/getCustomerById
+	请求参数：
+		id,主键
+	返回参数：
+		json object对象，包含一条企业(Customer)对象     	
+     
+获取一条企业,根据条件
+	地址：/customer/getCustomer
+	请求参数：
+       		id,id
+       		name,客户名称
+       		mobile,手机号
+       		createtime,创建时间
+       		modifytime,更新时间
+       		creator,创建人
+       		modifier,更新人
+	返回参数：
+		json object对象，包含一条企业(Customer)对象    
+		
+保存企业
+	地址：/customer/saveCustomer
+	请求参数：
+		企业(Customer)对象
+	返回参数：
+		json object对象，包含success(是否成功,true或false),msg(说明) 
+		
+删除企业,根据主键
+ 	地址：/customer/deleteCustomerById
+	请求参数：
+		id,主键
+	返回参数：
+		json object对象，包含success(是否成功,true或false),msg(说明) 
+
+批量删除企业,根据主键集合
+ 	地址：/customer/deleteCustomersByIds
+	请求参数：
+		ids,主键集合(用,分割)
+	返回参数：
+		json object对象，包含success(是否成功,true或false),msg(说明)
+
+删除企业,根据条件
+ 	地址：/customer/deleteCustomer
+	请求参数：
+       		id,id
+       		name,客户名称
+       		mobile,手机号
+       		createtime,创建时间
+       		modifytime,更新时间
+       		creator,创建人
+       		modifier,更新人
+	返回参数：
+		json object对象，包含success(是否成功,true或false),msg(说明)
