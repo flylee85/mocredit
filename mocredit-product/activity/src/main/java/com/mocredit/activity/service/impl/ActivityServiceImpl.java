@@ -74,7 +74,7 @@ public class ActivityServiceImpl implements ActivityService{
 		activityObj.setStoreList(storeList);
 		activityObj.setStoreCount(storeList.size());
 		//根据活动Id,查询订单列表
-		List<Batch> orderList = orderDao.queryOrderList(queryMap);
+		List<Batch> orderList = orderDao.queryBatchList(queryMap);
 		activityObj.setOrderList(orderList);
 		activityObj.setOrderCount(orderList.size());
 		return activityObj;
@@ -162,7 +162,7 @@ public class ActivityServiceImpl implements ActivityService{
 				act.setStoreCount(act.getStoreList().size());
 			}
 			//根据活动id的list查询订单列表
-			List<Batch> orderList = orderDao.queryOrderList(queryMap);
+			List<Batch> orderList = orderDao.queryBatchList(queryMap);
 			//将查询到的关联信息，添加到活动对象中
 			for(Activity act:activityList){
 				for(Batch o : orderList){
@@ -627,12 +627,12 @@ public class ActivityServiceImpl implements ActivityService{
 	    	//当该数量达到一定的数量时，批量添加数据，批量添加完成后，将临时存储数据的列表置空
 			if(i!=0&&i%batchInsertCount==0){
 				//批量添加批次码数据
-				successNumber += orderCodeDao.batchAddOrderCode(batchOrderCodeList);
+				successNumber += orderCodeDao.batchAddBatchCode(batchOrderCodeList);
 				batchOrderCodeList = new ArrayList<BatchCode>(); 
 			}
 		}
 		//添加剩余的批次码数据
-	    successNumber += orderCodeDao.batchAddOrderCode(batchOrderCodeList);
+	    successNumber += orderCodeDao.batchAddBatchCode(batchOrderCodeList);
 	    
 	    //保存导入联系人批次数据
 	    Batch od = new Batch();
@@ -644,7 +644,7 @@ public class ActivityServiceImpl implements ActivityService{
 	    od.setRemark(remark);//备注
 	    od.setStatus("01");//导入状态
 	    od.setCreatetime(new Date());
-	    orderDao.addOrder(od);
+	    orderDao.addBatch(od);
 	    
 	    //保存日志
 	    StringBuffer optInfo = new StringBuffer();
@@ -920,7 +920,7 @@ public class ActivityServiceImpl implements ActivityService{
 	    Map<String,Object> resultMap = new HashMap<String,Object>();
 	    List<Map<String,Object>> recordList = new ArrayList<Map<String,Object>>();
 	  //获取该条导入联系人批次信息
-		Batch od = orderDao.getOrderById(orderId);
+		Batch od = orderDao.getBatchById(orderId);
 		Activity activity = activityDao.getActivityById(od.getActivityId());
 		/*
 		 * 码库接口-库存查询
@@ -964,7 +964,7 @@ public class ActivityServiceImpl implements ActivityService{
 					//查询已导入的联系人列表
 					Map<String,Object> getAllMap = new HashMap<String,Object>();
 					getAllMap.put("orderId", od.getId());
-					List<BatchCode> ocList = orderCodeDao.queryOrderCodeList(getAllMap); 
+					List<BatchCode> ocList = orderCodeDao.queryBatchCodeList(getAllMap); 
 					logger.info("送码----获取所有批次码结束-----码数量："+od.getImportNumber());
 					logger.info("送码----送码开始-----码数量："+od.getImportNumber());
 					//调用送码方法，进行送码操作
@@ -982,7 +982,7 @@ public class ActivityServiceImpl implements ActivityService{
 						//删除该批次所有数据
 						Map<String,Object> delAllMap = new HashMap<String,Object>();
 						delAllMap.put("orderId", od.getId());
-						orderCodeDao.deleteOrderCode(delAllMap);
+						orderCodeDao.deleteBatchCode(delAllMap);
 						
 						//获取短信模板、价格，活动截止日期等信息
 						//String noticeSmsMsg = activity.getNoticeSmsMsg();//短信模版内容
@@ -1042,18 +1042,18 @@ public class ActivityServiceImpl implements ActivityService{
 							//当临时列表数量达到一定数值后，执行批量插入操作，然后置空该临时列表
 							if(i!=0&&i%batchInsertCount==0){
 								//批量添加批次码数据
-								orderCodeDao.batchAddOrderCode(batchOrderCodeList);
+								orderCodeDao.batchAddBatchCode(batchOrderCodeList);
 								batchOrderCodeList = new ArrayList<BatchCode>();
 							}
 						}
 						//添加剩余的批次码数据
-						orderCodeDao.batchAddOrderCode(batchOrderCodeList);
+						orderCodeDao.batchAddBatchCode(batchOrderCodeList);
 						logger.info("导出码----发码与更新批次码状态结束-----码数量："+ocList.size());
 						session.setAttribute("sendCodeProcess", 95);
 						
 						//更新发码批次的状态
 						od.setStatus("04");
-						orderDao.updateOrder(od);
+						orderDao.updateBatch(od);
 						
 						//记录创建短信Excel数据、保存发码等两个步骤的日志
 						StringBuffer optInfo1 = new StringBuffer();

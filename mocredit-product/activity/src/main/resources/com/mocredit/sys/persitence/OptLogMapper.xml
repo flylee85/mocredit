@@ -6,7 +6,7 @@
 	作者：lishoukun
 	日期：2015/07/18
 -->
-<mapper namespace="com.mocredit.sys.dao.OptLogDao">
+<mapper namespace="com.mocredit.sys.persitence.OptLogMapper">
 	<!-- ===================操作日志,开始======================== -->
 	
 	<!--  公用列,包含操作日志表所有字段     -->

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <meta charset="utf-8">
+	  <title>合同管理</title>
+	  <link rel="stylesheet" href="common/js/file-input/fileinput.css">
+	</head>
+	<body>
+	   <section class="main padder">
+	   		<div class="clearfix">
+	        	<h4><i class="icon-edit"></i> 合同列表</h4>
+      		</div>
+	    	<div class="clearfix">
+		        <ul class="breadcrumb">
+		           <li><a href="#"><i class="icon-home"></i>首页</a></li>
+		           <li class=""><a href="#"><i class="icon-th"></i>企业管理</a></li>
+		           <li class="active">合同列表</li>
+		       	</ul>
+	      	</div>
+	        <section class="panel">
+	          <div class="m-t-small">
+	       		<a href="#addContract" data-toggle="modal" class="btn btn-primary addActivity btn-info">
+	       			<i class="icon-plus"></i> 添加合同
+				</a>
+	       	</div>
+	       	<div class="row">
+		        <div class="col-lg-12">
+		          <section class="panel">
+		            <div class="pull-out">
+		              <table class="table table-striped m-b-none" data-ride="datatables">
+		                <thead>
+		                  <tr>
+		                    <th width="20%">合同编号</th>
+		                    <th width="15%">合同名称</th>
+		                    <th width="15%">所属企业</th>
+		                    <th width="15%">合同签署人</th>
+		                    <th width="25%">操作</th>
+		                  </tr>
+		                </thead>
+		                <tbody>
+		                </tbody>
+		              </table>
+		            </div>
+		          </section>
+		        </div>
+		      </div>
+	        </section>
+	    </section>
+      	<!-- .modal 上传合同 -->
+	  	<div id="addContract" class="modal fade" data-backdrop="static">
+		    <form class="form-horizontal">
+		      <div class="modal-dialog pos-abt modal-lger" style="margin-top:-235px; top:50%">
+		        <div class="modal-content">
+		          <div class="modal-header">
+		            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+		            <h4 class="modal-title" >上传合同</h4>
+		          </div>
+		          <div class="modal-body">     
+		           	<div class="row">
+			            <div class="form-group">
+			                <label class="col-lg-2 control-label">合同编号</label>
+			                <div class="col-lg-4">
+			                  <input type="text" class="form-control input-small parsley-validated" placeholder="合同编号" name="username">
+			                </div>
+		              		<label class="col-lg-2 control-label">合同名称</label>
+			                <div class="col-lg-4">
+			                  <input type="text" class="form-control input-small parsley-validated" placeholder="合同名称" name="username">
+			                </div>
+		              	</div>
+		          	</div>
+		           	<div class="row">
+			            <div class="form-group">
+			                <label class="col-lg-2 control-label">合同签署人</label>
+			                <div class="col-lg-4">
+			                  <input type="text" class="form-control input-small parsley-validated" placeholder="合同签署人" name="username">
+			                </div>
+		              		<label class="col-lg-2 control-label">选择合同文件</label>
+			                <div class="col-lg-4">
+			                  <input id="importContract" type="file" class="file-loading">
+			                </div>
+		              	</div>
+		          	</div>
+		           	<div class="row">
+		           		<div class="col-lg-12">
+				            <div class="">
+				                <div id="kv-upload-progress">
+								</div>
+			              	</div>
+		           		</div>
+		          	</div>
+		          	<div class="row">
+		           		<div class="col-lg-12" id="uploadState">
+		           		</div>
+		          	</div>
+		          </div>
+		          <div class="modal-footer">
+		            <div class="row">
+			            <div class="col-lg-10">
+				            <button type="button" class="btn btn-default" data-dismiss="modal">取  消</button>
+			          	</div>
+			          	<div class="col-lg-2">
+				            <button type="submit" class="btn btn-primary" >确  认</button>
+			          	</div>
+			          </div>
+		          </div>
+		        </div><!-- /.modal-content -->
+		      </div>
+		    </form>
+	  	</div>
+	  	<!-- / .modal -->
+	    <!-- .modal 结算-->
+	  <div id="contractAccount" class="modal fade" data-backdrop="static">
+	    <form class="form-horizontal" >
+	      <div class="modal-dialog pos-abt modal-lger" style="margin-top:-235px; top:50%; width:900px;">
+	        <div class="modal-content">
+	          <div class="modal-header">
+	            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+	            <h4 class="modal-title" id="myModalLabel">合同结算</h4>
+	          </div>
+	          <div class="modal-body">     
+	          	<div class="accordion" id="accordion">
+		            <div class="accordion-group undisposed">
+		              <div class="accordion-heading">
+		                <a href="#collapseOne" data-parent="#accordion2" data-toggle="collapse" class="accordion-toggle">
+		                  2015年4月
+	                	<span class="label bg-danger pull-right">未处理</span>
+		                </a>
+		              </div>
+		              <div style="height: auto;" class="accordion-body in" id="collapseOne">
+		                  <section class="panel">
+				            <div class="pull-out">
+				              <table class="table table-striped m-b-none text-small">
+				                <thead>
+				                  <tr>
+				                    <th width="150px">活动名称</th>
+				                    <th>码价格</th>                    
+				                    <th>发码数</th>
+				                    <th>码验证次数</th>
+				                    <th width="100px">计算应收</th>
+				                    <th width="100px">确认应收</th>
+				                    <th width="120px">码验证次数误差</th>
+				                  </tr>
+				                </thead>
+				                <tbody>
+				                  <tr>                    
+				                    <td>面包新语面包兑换</td>
+				                    <td>30</td>
+				                    <td>10000</td>
+				                    <td>200</td>
+				                     <td class="clickEdit"><input value="10000"></td>
+				                    <td class="clickEdit"><input value="8000"></td>
+				                    <td class="clickEdit"><input value="-2"></td>
+				                  </tr>
+				                  <tr>                    
+				                    <td>面包新语面包兑换</td>
+				                    <td>30</td>
+				                    <td>10000</td>
+				                    <td>200</td>
+				                    <td class="clickEdit"><input value="10000"></td>
+				                    <td class="clickEdit"><input value="8000"></td>
+				                    <td class="clickEdit"><input value="-2"></td>
+				                  </tr>
+				                  <tr>                    
+				                    <th>合计</th>
+				                    <td colspan="5">
+				                    	<div class="row">
+				                    		<div class="col-lg-3">验证次数<span class="badge bg-info">210</span></div>
+				                    		<div class="col-lg-3">计算应收<span class="badge bg-info">21000</span></div>
+				                    		<div class="col-lg-3">确认应收<span class="badge bg-info">21000</span></div>
+				                    		<div class="col-lg-3">误差<span class="badge bg-info">-4</span></div>
+				                    	</div>
+				                    </td>
+				                    <td>
+				                    	<button class="btn btn-success btn-mini opera" type="button">确认并保存</button>
+				                    </td>
+				                  </tr>
+				                </tbody>
+				              </table>
+				            </div>
+				          </section>
+		              </div>
+		            </div>
+		            <div class="accordion-group">
+		              <div class="accordion-heading">
+		                <a href="#collapseTwo" data-parent="#accordion2" data-toggle="collapse" class="accordion-toggle collapsed">
+		                  2015年3月
+		                  <span class="label bg-success pull-right">已处理</span>
+		                </a>
+		              </div>
+		              <div style="height: 0px;" class="accordion-body collapse" id="collapseTwo">
+		                 <section class="panel">
+				            <div class="pull-out">
+				              <table class="table table-striped m-b-none text-small">
+				                <thead>
+				                  <tr>
+				                    <th width="150px">活动名称</th>
+				                    <th>码价格</th>                    
+				                    <th>发码数</th>
+				                    <th>码验证次数</th>
+				                    <th width="100px">计算应收</th>
+				                    <th width="100px">确认应收</th>
+				                    <th width="120px">码验证次数误差</th>
+				                  </tr>
+				                </thead>
+				                <tbody>
+				                  <tr>                    
+				                    <td>面包新语面包兑换</td>
+				                    <td>30</td>
+				                    <td>10000</td>
+				                    <td>200</td>
+			                      	<td class="clickEdit">10000</td>
+				                    <td class="clickEdit">8000</td>
+				                    <td class="clickEdit">-2</td>
+				                  </tr>
+				                  <tr>                    
+				                    <td>面包新语面包兑换</td>
+				                    <td>30</td>
+				                    <td>10000</td>
+				                    <td>200</td>
+				                    <td class="clickEdit">10000</td>
+				                    <td class="clickEdit">8000</td>
+				                    <td class="clickEdit">-2</td>
+				                  </tr>
+				                  <tr>                    
+				                    <th>合计</th>
+				                    <td colspan="5">
+				                    	<div class="row">
+				                    		<div class="col-lg-3">验证次数<span class="badge bg-info">210</span></div>
+				                    		<div class="col-lg-3">计算应收<span class="badge bg-info">21000</span></div>
+				                    		<div class="col-lg-3">确认应收<span class="badge bg-info">21000</span></div>
+				                    		<div class="col-lg-3">误差<span class="badge bg-info">-4</span></div>
+				                    	</div>
+				                    </td>
+				                    <td>
+				                    	<button class="btn btn-success btn-mini opera" type="button">编&nbsp;&nbsp;辑</button>
+				                    </td>
+				                  </tr>
+				                </tbody>
+				              </table>
+				            </div>
+				          </section>
+		              </div>
+		            </div>
+		           
+		          </div> 		
+	          </div>
+	          <div class="modal-footer">
+		          <div class="row">
+		          	<div class="col-lg-10">
+			            <button type="button" class="btn btn-default" data-dismiss="modal">取  消</button>
+		          	</div>
+		          	<div class="col-lg-2">
+			            <button type="submit" class="btn btn-primary" >确  认</button>
+		          	</div>
+		          </div>
+	            
+	          </div>
+	        </div><!-- /.modal-content -->
+	      </div>
+	    </form>
+	  </div>
+	  <!-- / .modal -->
+	  <script src="common/js/file-input/fileinput.js"></script>
+	  <script src="common/js/own/contract.js"></script>
+	</body>
+</html>

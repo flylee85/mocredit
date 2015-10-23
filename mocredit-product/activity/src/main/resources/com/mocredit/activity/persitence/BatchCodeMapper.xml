@@ -6,13 +6,13 @@
 	作者：lishoukun
 	日期：2015/07/13
 -->
-<mapper namespace="com.mocredit.activity.dao.OrderCodeDao">
+<mapper namespace="com.mocredit.activity.persitence.BatchCodeMapper">
 	<!-- ===================发码批次码,开始======================== -->
 	
 	<!--  公用列,包含发码批次码表所有字段     -->
-	<sql id="base_orderCode_column_list" >
+	<sql id="base_batchCode_column_list" >
 		oc.id as id,
-		oc.order_id as orderId,
+		oc.batch_id as batchId,
 		oc.code as code,
 		oc.code_id as codeId,
 		oc.customer_mobile as customerMobile,
@@ -21,12 +21,12 @@
 	</sql>
 	
 	<!--  公用查询条件，包含发码批次码所有字段的查询条件     -->
-	<sql id="base_orderCode_condition" >
+	<sql id="base_batchCode_condition" >
 			<if test="id != null" >
 				and oc.id = #{id}
 			</if>
-			<if test="orderId != null" >
-				and oc.order_id = #{orderId}
+			<if test="batchId != null" >
+				and oc.batch_id = #{batchId}
 			</if>
 			<if test="code != null" >
 				and oc.code = #{code}
@@ -46,28 +46,28 @@
 	</sql>
 	
 	<!--  获取一条发码批次码，根据主键    -->
-	<select id="getOrderCodeById" resultType="com.mocredit.activity.model.OrderCode" parameterType="java.lang.String" >
+	<select id="getBatchCodeById" resultType="com.mocredit.activity.model.BatchCode" parameterType="java.lang.String" >
 	select 
-	<include refid="base_orderCode_column_list" />
-	from act_order_code oc
+	<include refid="base_batchCode_column_list" />
+	from act_batch_code oc
 	where oc.id = #{id}
 	</select>
 	
 	<!--  获取一条发码批次码，随机获取    -->
-	<select id="getOrderCodeByRand" resultType="com.mocredit.activity.model.OrderCode" >
+	<select id="getBatchCodeByRand" resultType="com.mocredit.activity.model.BatchCode" >
 	select 
-	<include refid="base_orderCode_column_list" />
-	from act_order_code oc
+	<include refid="base_batchCode_column_list" />
+	from act_batch_code oc
 	order by rand() limit 1
 	</select>
 	
 	<!--  查询发码批次码列表，根据条件    -->
-	<select id="queryOrderCodeList" resultType="com.mocredit.activity.model.OrderCode" parameterType="java.util.Map" >
+	<select id="queryBatchCodeList" resultType="com.mocredit.activity.model.BatchCode" parameterType="java.util.Map" >
 	select 
-	<include refid="base_orderCode_column_list" />
-	from act_order_code oc
+	<include refid="base_batchCode_column_list" />
+	from act_batch_code oc
 	<where>
-		<include refid="base_orderCode_condition" />
+		<include refid="base_batchCode_condition" />
 	</where>
 	<if test="pageInfoStart != null and pageInfoLimit != null" >
     	limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
@@ -75,21 +75,21 @@
 	</select>
 	
 	<!--  获取发码批次码总数量，根据条件    -->
-	<select id="getOrderCodeTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
+	<select id="getBatchCodeTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
 	select 
 	count(oc.id)
-	from act_order_code oc
+	from act_batch_code oc
 	<where>
-		<include refid="base_orderCode_condition" />
+		<include refid="base_batchCode_condition" />
 	</where>
 	</select>
 	
 	<!--  添加一条发码批次码记录  -->
-	<insert id="addOrderCode" parameterType="com.mocredit.activity.model.OrderCode" >
-	insert into act_order_code
+	<insert id="addBatchCode" parameterType="com.mocredit.activity.model.BatchCode" >
+	insert into act_batch_code
 	<trim prefix="(" suffix=")" suffixOverrides="," >
 			id,
-			order_id,
+			batch_id,
 			code,
 			code_id,
 			customer_mobile,
@@ -98,7 +98,7 @@
 	</trim>
 	<trim prefix="values (" suffix=")" suffixOverrides="," >
 			#{id},
-			#{orderId},
+			#{batchId},
 			#{code},
 			#{codeId},
 			#{customerMobile},
@@ -108,11 +108,11 @@
 	</insert>
 	
 	<!--  批量添加批次码记录  -->
-	<insert id="batchAddOrderCode" parameterType="java.util.List">
-			insert into act_order_code
+	<insert id="batchAddBatchCode" parameterType="java.util.List">
+			insert into act_batch_code
 			<trim prefix="(" suffix=")" suffixOverrides="," >
 				id,
-				order_id,
+				batch_id,
 				code,
 				code_id,
 				customer_mobile,
@@ -123,7 +123,7 @@
 		<foreach collection="list" item="item" index="index" separator=",">
 			<trim prefix="(" suffix=")" suffixOverrides="," >
 				#{item.id},
-				#{item.orderId},
+				#{item.batchId},
 				#{item.code},
 				#{item.codeId},
 				#{item.customerMobile},
@@ -134,14 +134,14 @@
 	</insert>
 			
 	<!--  修改一条发码批次码记录  -->
-	<update id="updateOrderCode" parameterType="com.mocredit.activity.model.OrderCode" >
-	update act_order_code
+	<update id="updateBatchCode" parameterType="com.mocredit.activity.model.BatchCode" >
+	update act_batch_code
 	<set >
 		<if test="id != null" >
 		id = #{id},
 	</if>
-		<if test="orderId != null" >
-		order_id = #{orderId},
+		<if test="batchId != null" >
+		batch_id = #{batchId},
 	</if>
 		<if test="code != null" >
 		code = #{code},
@@ -163,20 +163,20 @@
 	</update>
 	
 	<!--  删除一条发码批次码记录 ，根据主键    -->
-	<delete id="deleteOrderCodeById" parameterType="java.lang.String" >
-	delete from act_order_code
+	<delete id="deleteBatchCodeById" parameterType="java.lang.String" >
+	delete from act_batch_code
 	where id = #{id}
 	</delete>
 
 	<!--  删除发码批次码记录 ，根据条件    -->
-	<delete id="deleteOrderCode" parameterType="java.util.Map" >
-	delete from act_order_code
+	<delete id="deleteBatchCode" parameterType="java.util.Map" >
+	delete from act_batch_code
 	<where>
 		<if test="id != null" >
 			and id = #{id}
 		</if>
-		<if test="orderId != null" >
-			and order_id = #{orderId}
+		<if test="batchId != null" >
+			and batch_id = #{batchId}
 		</if>
 		<if test="code != null" >
 			and code = #{code}

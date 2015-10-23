@@ -6,7 +6,7 @@
 	作者：lishoukun
 	日期：2015/07/08
 -->
-<mapper namespace="com.mocredit.activity.dao.ActivityDao">
+<mapper namespace="com.mocredit.activity.persitence.ActivityMapper">
 	<!-- ===================活动,开始======================== -->
 	
 	<!--  公用列,包含活动表所有字段     -->

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  	<meta charset="utf-8">
+	  	<title>积分活动</title>
+		<link rel="stylesheet" href="common/js/datepicker/bootstrap-datepicker.css">
+	</head>
+	<body>   
+	   <section class="main padder">
+	   		<div class="clearfix">
+	        	<h4><i class="icon-list-ul"></i> 积分活动</h4>
+      		</div>
+	    	<div class="clearfix">
+		        <ul class="breadcrumb">
+		           <li><a href="#"><i class="icon-home"></i>首页</a></li>
+		           <li class="backToList"><a href="#"><i class="icon-list-ul"></i>活动管理</a></li>
+		           <li class="active">积分活动</li>
+		       	</ul>
+	      	</div>
+		   <form id="addActivityJifenForm" class="form-horizontal activityDetail">
+			   <div class="row" style="margin:0;">
+				   <div class="panel clearfix">
+					   <header class="panel-heading bg-white">活动内容</header>
+					   <input type="hidden" name="id">
+					   <input type="hidden" name="type" value="01">
+
+					   <div class="form-group">
+						   <label class="col-lg-2 control-label">活动名称</label>
+
+						   <div class="col-lg-4">
+							   <input type="text" class="form-control input-small parsley-validated"
+									  data-parsley-required="true" data-parsley-maxlength="30" placeholder="活动名称" name="name" tabindex="1">
+						   </div>
+						   <label class="col-lg-2 control-label">产品编码</label>
+
+						   <div class="col-lg-4">
+							   <input type="text" class="form-control input-small parsley-validated"
+									  data-parsley-required="true" data-parsley-maxlength="30" placeholder="产品编码" name="code" tabindex="2" data-parsley-type="alphanum">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label class="col-lg-2 control-label">外部编码</label>
+
+						   <div class="col-lg-4">
+							   <input type="text" class="form-control input-small parsley-validated"
+									  data-parsley-required="true" data-parsley-maxlength="30" placeholder="外部编码" name="outCode"  tabindex="3" data-parsley-type="alphanum">
+						   </div>
+					   </div>
+				   </div>
+				   <div class="panel clearfix">
+					   <header class="panel-heading bg-white">活动发行方及合同</header>
+					   <div class="form-group">
+						   <label class="col-lg-2 control-label">活动发行方</label>
+
+						   <div class="col-lg-4">
+							   <select class="form-control input-small" data-parsley-required="true" tabindex="4" name="enterpriseId" code="ENTERPRISE">
+								   <option value="" selected>请选择活动发行方</option>
+							   </select>
+						   </div>
+						   <label class="col-lg-2 control-label">选择合同</label>
+
+						   <div class="col-lg-4">
+							   <select class="form-control input-small" data-parsley-required="true" tabindex="5" name="contractId" code="CONTRACT">
+								   <option value="" selected>请选择活动对应的合同编号</option>
+							   </select>
+						   </div>
+					   </div>
+				   </div>
+				   <div class="panel clearfix">
+					   <header class="panel-heading bg-white">积分设定</header>
+					   <div class="form-group">
+						   <label class="col-lg-2 control-label">选择积分活动</label>
+
+						   <div class="col-lg-4">
+							   <select class="form-control input-small" data-parsley-required="true" tabindex="6" name="integralActivity"
+									   code="INTEGRAL_ACTIVITY">
+								   <option value="" selected>请选择积分活动</option>
+							   </select>
+						   </div>
+						   <label class="col-lg-2 control-label">积分</label>
+
+						   <div class="col-lg-4">
+							   <input type="text" class="form-control input-small parsley-validated"
+									  data-parsley-required="true" data-parsley-type="integer" data-parsley-min="1" placeholder="积分" tabindex="7" name="integral">
+						   </div>
+					   </div>
+
+				   </div>
+				   <div class="panel clearfix">
+					   <header class="panel-heading bg-white">小票内容</header>
+
+					   <div class="form-group">
+						   <label class="col-lg-2 control-label">小票标题</label>
+
+						   <div class="col-lg-4">
+							   <input type="text" class="form-control input-small parsley-validated"
+									  data-parsley-required="true" placeholder="小票标题" name="receiptTitle" tabindex="8">
+						   </div>
+						   <label class="col-lg-2 control-label">小票打印内容</label>
+
+						   <div class="col-lg-4">
+                                <textarea class="form-control parsley-validated" data-parsley-rangelength="[10,200]"
+										  data-parsley-trigger="keyup" rows="3" placeholder="小票打印内容"
+										  name="receiptPrint" tabindex="9" data-parsley-required="true"></textarea>
+						   </div>
+					   </div>
+				   </div>
+				   <div class="panel clearfix">
+					   <header class="panel-heading bg-white">信息设定</header>
+					   <div class="form-group">
+						   <label class="col-lg-2 control-label">POS验证成功提示</label>
+
+						   <div class="col-lg-4">
+							   <input type="text" class="form-control input-small parsley-validated"
+									  data-parsley-required="true" placeholder="POS验证成功提示" tabindex="10" name="posSuccessMsg">
+						   </div>
+						   <label class="col-lg-2 control-label">验证成功通知短信</label>
+
+						   <div class="col-lg-4">
+							   <input type="text" class="form-control input-small parsley-validated"
+									  data-parsley-required="true" placeholder="验证成功通知短信" tabindex="11" name="successSmsMsg">
+						   </div>
+					   </div>
+
+				   </div>
+				   <div class="panel clearfix">
+					   <header class="panel-heading bg-white">日期设定</header>
+					   <div class="form-group">
+						   <label class="col-lg-2 control-label">活动开始日期</label>
+
+						   <div class="col-lg-4">
+							   <input id="date3" data-parsley-required="true" data-parsley-trigger="change" tabindex="12" class="input-small form-control datepicker" type="text"
+									  value="" name="startTime">
+						   </div>
+						   <label class="col-lg-2 control-label">活动截止日期</label>
+
+						   <div class="col-lg-4">
+							   <input id="date4" data-parsley-required="true" data-parsley-trigger="change" tabindex="13" class="input-small form-control datepicker" type="text"
+									  value="" name="endTime">
+						   </div>
+					   </div>
+					   <div id="selectDateJifenCheckboxFormGroup" class="form-group">
+						   <label class="col-lg-2 control-label">活动日期选择</label>
+
+						   <div class="col-lg-8 weekCheck clearfix">
+							   <div class="checkbox">
+								   <label class="checkbox-custom">
+									   <input type="checkbox" value="1" >
+									   <i class="icon-unchecked "></i>
+									   星期一
+								   </label>
+							   </div>
+							   <div class="checkbox">
+								   <label class="checkbox-custom">
+									   <input type="checkbox" value="2">
+									   <i class="icon-unchecked "></i>
+									   星期二
+								   </label>
+							   </div>
+							   <div class="checkbox">
+								   <label class="checkbox-custom">
+									   <input type="checkbox" value="3">
+									   <i class="icon-unchecked "></i>
+									   星期三
+								   </label>
+							   </div>
+							   <div class="checkbox">
+								   <label class="checkbox-custom">
+									   <input type="checkbox" value="4">
+									   <i class="icon-unchecked "></i>
+									   星期四
+								   </label>
+							   </div>
+							   <div class="checkbox">
+								   <label class="checkbox-custom">
+									   <input type="checkbox" value="5">
+									   <i class="icon-unchecked "></i>
+									   星期五
+								   </label>
+							   </div>
+							   <div class="checkbox">
+								   <label class="checkbox-custom">
+									   <input type="checkbox" value="6">
+									   <i class="icon-unchecked "></i>
+									   星期六
+								   </label>
+							   </div>
+							   <div class="checkbox">
+								   <label class="checkbox-custom">
+									   <input type="checkbox" value="7">
+									   <i class="icon-unchecked "></i>
+									   星期日
+								   </label>
+							   </div>
+						   </div>
+
+					   </div>
+				   </div>
+				   <div class="panel clearfix">
+					   <header class="panel-heading bg-white">其他设定</header>
+					   <div class="form-group">
+						   <label class="col-lg-2 control-label">活动次数限制</label>
+
+						   <div class="col-lg-2">
+							   <select name="maxType" tabindex="14" onchange="cishuLimite(this)" class="day form-control input-small " style="width: auto;">
+								   <option value="01">每日</option>
+								   <option value="02">每周</option>
+								   <option value="03">每月</option>
+								   <option value="">不限制</option>
+							   </select>
+						   </div>
+						   <div class="col-lg-6" id="maxTypeText">
+							   <input type="text" tabindex="15" class="form-control input-small parsley-validated"
+									 data-parsley-type="integer" data-parsley-min="1" name="maxNumber" data-parsley-required="true">
+						   </div>
+					   </div>
+				   </div>
+				   <div class="panel clearfix" style="position:relative;">
+					   <header class="panel-heading bg-white">适用于门店</header>
+					   <button type="button" class="btn btn-default col-lg-12 chooseShop popEnter" href="#">选择门店</button>
+					   <div class="popover top choosedPop">
+						   <div class="arrow"></div>
+						   <h3 class="popover-title">已选门店</h3>
+						   <div class="popover-content choosedStore">
+
+						   </div>
+					   </div>
+				   </div>
+			   </div>
+			   <div class="row add">
+				   <button type="button" class="btn btn-default backToList">取 消</button>
+				   <button id="addActivityJifenSubmitButton" type="button" class="btn btn-primary">确 认</button>
+			   </div>
+			   <div class="row look">
+				   <button type="button" class="btn btn-default backToList">返回</button>
+				   <button type="button" class="btn btn-info toModify">编辑</button>
+			   </div>
+		   </form>
+		</section>
+	   <div id="shopWrap"></div>
+	   <script src="common/js/own/city.js" type="text/javascript"></script>
+	   <script src="common/js/datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
+	   <script src="common/js/datepicker/bootstrap-datepicker.zh-CN.min.js" type="text/javascript"></script>
+	   <script src="common/js/own/jifen.js" type="text/javascript"></script>
+	</body>
+</html>
