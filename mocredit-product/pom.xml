@@ -17,6 +17,7 @@
         <module>citicserver</module>
         <module>OMS</module>
         <module>activity</module>
+        <module>activitysys</module>
     </modules>
 
     <build>

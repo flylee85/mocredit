@@ -6,7 +6,7 @@ $(function(){
 		if($.type(jifenTable) != 'object'){
 			jifenTable = $('#jifen').find('table[data-ride="datatables"]').DataTable( {
 				"ajax": {
-					url : "activity/queryActivityPage?type=01",
+					url : "activitysys/queryActivityPage?type=01",
 					type: "post",
 				},
 				"processing": true,
@@ -72,7 +72,7 @@ $(function(){
 		if($.type(famaTable) != 'object') {
 			famaTable = $('#fama').find('table[data-ride="datatables"]').DataTable({
 				"ajax": {
-					url: "activity/queryActivityPage?type=02",
+					url: "activitysys/queryActivityPage?type=02",
 					type: "post",
 				},
 				"processing": true,
