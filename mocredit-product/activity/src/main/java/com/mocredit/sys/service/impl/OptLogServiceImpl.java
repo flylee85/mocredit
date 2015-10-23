@@ -13,8 +13,8 @@ import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.sys.model.OptLog;
+import com.mocredit.sys.persitence.OptLogMapper;
 import com.mocredit.sys.service.OptLogService;
-import com.mocredit.sys.dao.OptLogDao;
 
 /**
  * 
@@ -26,7 +26,7 @@ import com.mocredit.sys.dao.OptLogDao;
 public class OptLogServiceImpl implements OptLogService{
 	
 	@Autowired
-	private OptLogDao optLogDao;
+	private OptLogMapper optLogDao;
 	/**
 	 * 获取一条操作日志，根据主键
 	 * @param id

@@ -31,7 +31,9 @@
 		a.integral_activity as integralActivity,
 		a.integral as integral,
 		a.enterprise_id as enterpriseId,
+		a.enterprise_name as enterpriseName,
 		a.contract_id as contractId,
+		a.contract_name as contractName,
 		a.status as status,
 		a.createtime as createtime,
 		a.modifytime as modifytime,
@@ -138,12 +140,8 @@
 	<select id="getActivityById" resultType="com.mocredit.activity.model.Activity" parameterType="java.lang.String" >
 	select 
 	<include refid="base_activity_column_list" />
-	,e.name as enterpriseName
-	,c.name as contractName
 	from act_activity a
-	left join t_enterprise e on e.id = a.enterprise_id
-	left join t_contract c on c.id = a.contract_id
-	where a.id = #{id}
+	where a.id = #{id} limit 1
 	</select>
 	
 	<!--  获取一条活动，随机获取    -->
@@ -205,74 +203,6 @@
 	</where>
 	</select>
 	
-	<!--  查询活动管理相关选择门店列表，根据条件    -->
-	<select id="querySelectStoreList" resultType="com.mocredit.activity.model.SelectStoreVO" parameterType="java.util.Map" >
-	select 
-		o.id as storeId,
-		o.name as storeName,
-		o.code as storeCode,
-		o.province,
-		o.city,
-		p.id as shopId,
-		p.name as shopName,
-		ifnull(tmp1.num,0) as deviceNum
-	from t_store o
-	left join t_shop p on o.shop_id = p.id
-	left join ( select store_id,count(id) as num from t_device group by store_id ) tmp1 on o.id = tmp1.store_id
-	<where>
-		<if test="storeName != null and storeName != ''" >
-			and o.name = #{storeName}
-		</if>
-		<if test="storeCode != null and storeCode != ''" >
-			and o.code = #{storeCode}
-		</if>
-		<if test="devCode != null and devCode != ''" >
-			and o.id in (select store_id from t_device where dev_code = #{devCode})
-		</if>
-		<if test="province != null and province != ''" >
-			and o.province = #{province}
-		</if>
-		<if test="city != null and city != ''" >
-			and o.city = #{city}
-		</if>
-		<if test="shopName != null and shopName != ''" >
-			and p.name = #{shopName}
-		</if>
-	</where>
-	order by p.id asc,o.id asc
-	<if test="pageInfoStart != null and pageInfoLimit != null" >
-    	limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
-    </if>
-	</select>
-	
-	<!--  获取活动管理相关选择门店总数量，根据条件    -->
-	<select id="getSelectStoreTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
-	select count(*)
-	from t_store o
-	left join t_shop p on o.shop_id = p.id
-	left join ( select store_id,count(id) as num from t_device group by store_id ) tmp1 on o.id = tmp1.store_id
-	<where>
-		<if test="storeName != null and storeName != ''" >
-			and o.name = #{storeName}
-		</if>
-		<if test="storeCode != null and storeCode != ''" >
-			and o.code = #{storeCode}
-		</if>
-		<if test="devCode != null and devCode != ''" >
-			and o.id in (select store_id from t_device where dev_code = #{devCode})
-		</if>
-		<if test="province != null and province != ''" >
-			and o.province = #{province}
-		</if>
-		<if test="city != null and city != ''" >
-			and o.city = #{city}
-		</if>
-		<if test="shopName != null and shopName != ''" >
-			and p.name = #{shopName}
-		</if>
-	</where>
-	</select>
-	
 	<!--  添加一条活动记录  -->
 	<insert id="addActivity" parameterType="com.mocredit.activity.model.Activity" >
 	insert into act_activity
@@ -297,7 +227,9 @@
 			integral_activity,
 			integral,
 			enterprise_id,
+			enterprise_name,
 			contract_id,
+			contract_name,
 			status,
 			createtime,
 			modifytime,
@@ -325,7 +257,9 @@
 			#{integralActivity},
 			#{integral},
 			#{enterpriseId},
+			#{enterpriseName},
 			#{contractId},
+			#{contractName},
 			#{status},
 			#{createtime},
 			#{modifytime},
@@ -395,11 +329,17 @@
 		<if test="integral != null" >
 		integral = #{integral},
 	</if>
-		<if test="enterpriseId != null" >
+	<if test="enterpriseId != null" >
 		enterprise_id = #{enterpriseId},
+	</if>
+	<if test="enterpriseName != null" >
+		enterprise_name = #{enterpriseName},
 	</if>
 		<if test="contractId != null" >
 		contract_id = #{contractId},
+	</if>
+	<if test="contractName != null" >
+		contract_name = #{contractName},
 	</if>
 		<if test="status != null" >
 		status = #{status},

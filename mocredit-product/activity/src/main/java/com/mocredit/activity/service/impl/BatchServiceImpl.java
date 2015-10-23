@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.mocredit.activity.model.Batch;
 import com.mocredit.activity.persitence.BatchMapper;
-import com.mocredit.activity.service.OrderService;
+import com.mocredit.activity.service.BatchService;
 import com.mocredit.base.pagehelper.PageInfo;
 
 /**
@@ -18,7 +18,7 @@ import com.mocredit.base.pagehelper.PageInfo;
  * @date 2015/07/13
  */
 @Service
-public class OrderServiceImpl implements OrderService{
+public class BatchServiceImpl implements BatchService{
 	
 	@Autowired
 	private BatchMapper orderDao;

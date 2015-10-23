@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	操作日志-Mybatis Mapper文件
+	作者：lishoukun
+	日期：2015/07/18
+-->
+<mapper namespace="com.mocredit.sys.dao.OptLogDao">
+	<!-- ===================操作日志,开始======================== -->
+	
+	<!--  公用列,包含操作日志表所有字段     -->
+	<sql id="base_optLog_column_list" >
+		ol.id as id,
+		ol.opt_code as optCode,
+		ol.operator as operator,
+		ol.opt_time as optTime,
+		ol.opt_info as optInfo
+	</sql>
+	
+	<!--  公用查询条件，包含操作日志所有字段的查询条件     -->
+	<sql id="base_optLog_condition" >
+			<if test="id != null" >
+				and ol.id = #{id}
+			</if>
+			<if test="optCode != null" >
+				and ol.opt_code = #{optCode}
+			</if>
+			<if test="operator != null" >
+				and ol.operator = #{operator}
+			</if>
+			<if test="optTime != null" >
+				and ol.opt_time = #{optTime}
+			</if>
+			<if test="optInfo != null" >
+				and ol.opt_info = #{optInfo}
+			</if>
+	</sql>
+	
+	<!--  获取一条操作日志，根据主键    -->
+	<select id="getOptLogById" resultType="com.mocredit.sys.model.OptLog" parameterType="java.lang.String" >
+	select 
+	<include refid="base_optLog_column_list" />
+	from t_opt_log ol
+	where ol.id = #{id}
+	</select>
+	
+	<!--  获取一条操作日志，随机获取    -->
+	<select id="getOptLogByRand" resultType="com.mocredit.sys.model.OptLog" >
+	select 
+	<include refid="base_optLog_column_list" />
+	from t_opt_log ol
+	order by rand() limit 1
+	</select>
+	
+	<!--  查询操作日志列表，根据条件    -->
+	<select id="queryOptLogList" resultType="com.mocredit.sys.model.OptLog" parameterType="java.util.Map" >
+	select 
+	<include refid="base_optLog_column_list" />
+	from t_opt_log ol
+	<where>
+		<include refid="base_optLog_condition" />
+	</where>
+	<if test="pageInfoStart != null and pageInfoLimit != null" >
+    	limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
+    </if>
+	</select>
+	
+	<!--  获取操作日志总数量，根据条件    -->
+	<select id="getOptLogTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
+	select 
+	count(ol.id)
+	from t_opt_log ol
+	<where>
+		<include refid="base_optLog_condition" />
+	</where>
+	</select>
+	
+	<!--  添加一条操作日志记录  -->
+	<insert id="addOptLog" parameterType="com.mocredit.sys.model.OptLog" >
+	insert into t_opt_log
+	<trim prefix="(" suffix=")" suffixOverrides="," >
+			id,
+			opt_code,
+			operator,
+			opt_time,
+			opt_info,
+	</trim>
+	<trim prefix="values (" suffix=")" suffixOverrides="," >
+			#{id},
+			#{optCode},
+			#{operator},
+			#{optTime},
+			#{optInfo},
+	</trim>
+	</insert>
+	
+	<!--  修改一条操作日志记录  -->
+	<update id="updateOptLog" parameterType="com.mocredit.sys.model.OptLog" >
+	update t_opt_log
+	<set >
+		<if test="id != null" >
+		id = #{id},
+	</if>
+		<if test="optCode != null" >
+		opt_code = #{optCode},
+	</if>
+		<if test="operator != null" >
+		operator = #{operator},
+	</if>
+		<if test="optTime != null" >
+		opt_time = #{optTime},
+	</if>
+		<if test="optInfo != null" >
+		opt_info = #{optInfo},
+	</if>
+	</set>
+	where id = #{id}
+	</update>
+	
+	<!--  删除一条操作日志记录 ，根据主键    -->
+	<delete id="deleteOptLogById" parameterType="java.lang.String" >
+	delete from t_opt_log
+	where id = #{id}
+	</delete>
+
+	<!--  删除操作日志记录 ，根据条件    -->
+	<delete id="deleteOptLog" parameterType="java.util.Map" >
+	delete from t_opt_log
+	<where>
+		<if test="id != null" >
+			and id = #{id}
+		</if>
+		<if test="optCode != null" >
+			and opt_code = #{optCode}
+		</if>
+		<if test="operator != null" >
+			and operator = #{operator}
+		</if>
+		<if test="optTime != null" >
+			and opt_time = #{optTime}
+		</if>
+		<if test="optInfo != null" >
+			and opt_info = #{optInfo}
+		</if>
+	</where>
+</delete>
+
+<!-- ===================操作日志,结束======================== -->
+</mapper>
