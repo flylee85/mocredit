@@ -15,7 +15,7 @@ import com.mocredit.base.pagehelper.PageInfo;
  * @date 2015/07/13
  */
 @Service
-public interface OrderService {
+public interface BatchService {
 	/**
 	 * 获取一条发码批次，根据主键
 	 * @param id

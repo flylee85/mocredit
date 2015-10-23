@@ -1,4 +1,4 @@
-package com.mocredit.sys.dao;
+package com.mocredit.sys.persitence;
 
 import java.util.List;
 import java.util.Map;
@@ -11,8 +11,8 @@ import com.mocredit.sys.model.OptLog;
  * @author lishoukun
  * @date 2015/07/18
  */
-public interface OptLogDao {
-	public final static String PREFIX = OptLogDao.class.getName();
+public interface OptLogMapper {
+	public final static String PREFIX = OptLogMapper.class.getName();
 	/*
 	 * 操作日志
 	 */
