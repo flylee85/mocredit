@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 
 /**
  * 
@@ -39,8 +41,10 @@ public class Activity implements Serializable{
 	//通知短信内容,notice_sms_msg
 	private String noticeSmsMsg ;
 	//开始时间,start_time
+	@JSONField (format="yyyy-MM-dd HH:mm:ss")  
 	private Date startTime ;
 	//结束时间,end_time
+	@JSONField (format="yyyy-MM-dd HH:mm:ss")  
 	private Date endTime ;
 	//选择时间,select_date,选择日期，用英文逗号分隔
 	private String selectDate ;
@@ -61,8 +65,10 @@ public class Activity implements Serializable{
 	//状态,status，01启用，02停止
 	private String status ;
 	//创建时间,createtime
+	@JSONField (format="yyyy-MM-dd HH:mm:ss")  
 	private Date createtime ;
 	//更新时间,modifytime
+	@JSONField (format="yyyy-MM-dd HH:mm:ss")  
 	private Date modifytime ;
 	//创建人,creator
 	private String creator ;

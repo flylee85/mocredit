@@ -147,32 +147,32 @@ public class ActivityServiceImpl implements ActivityService{
 			idList.add(act.getId());
 		}
 		//根据活动id的list查询列表
-		Map<String,Object> queryMap = new HashMap<String,Object>();
-		if(idList.size()>0){
-			queryMap.put("activityIdList", idList);
-			List<ActivityStore> storeList = activityStoreMapper.queryActivityStoreList(queryMap);
-			
-			//将查询到的关联信息，添加到活动对象中
-			for(Activity act:activityList){
-				for(ActivityStore as : storeList){
-					if(act.getId().equals(as.getActivityId())){
-						act.getStoreList().add(as);
-					}
-				}
-				act.setStoreCount(act.getStoreList().size());
-			}
-			//根据活动id的list查询订单列表
-			List<Batch> orderList = batchMapper.queryBatchList(queryMap);
-			//将查询到的关联信息，添加到活动对象中
-			for(Activity act:activityList){
-				for(Batch o : orderList){
-					if(act.getId().equals(o.getActivityId())){
-						act.getOrderList().add(o);
-					}
-				}
-				act.setOrderCount(act.getOrderList().size());
-			}
-		}
+//		Map<String,Object> queryMap = new HashMap<String,Object>();
+//		if(idList.size()>0){
+//			queryMap.put("activityIdList", idList);
+////			int storeCount = activityStoreMapper.getActivityStoreCount(queryMap);
+//			
+//			//将查询到的关联信息，添加到活动对象中
+//			for(Activity act:activityList){
+//				for(ActivityStore as : storeList){
+//					if(act.getId().equals(as.getActivityId())){
+//						act.getStoreList().add(as);
+//					}
+//				}
+//				act.setStoreCount(act.getStoreList().size());
+//			}
+//			//根据活动id的list查询订单列表
+//			List<Batch> orderList = batchMapper.queryBatchList(queryMap);
+//			//将查询到的关联信息，添加到活动对象中
+//			for(Activity act:activityList){
+//				for(Batch o : orderList){
+//					if(act.getId().equals(o.getActivityId())){
+//						act.getOrderList().add(o);
+//					}
+//				}
+//				act.setOrderCount(act.getOrderList().size());
+//			}
+//		}
 		return page;
 	}
 	/**

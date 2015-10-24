@@ -31,4 +31,5 @@ public interface ActivityStoreMapper {
 	int deleteActivityStoreById(String id);
 	//删除活动商户关联记录 ，根据条件
 	int deleteActivityStore(Map<String,Object> activityStoreMap);
+	int getActivityStoreCount(Map<String,Object> activityStoreMap);
 }
