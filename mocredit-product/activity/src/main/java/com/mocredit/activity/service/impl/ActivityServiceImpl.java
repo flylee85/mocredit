@@ -50,13 +50,13 @@ public class ActivityServiceImpl implements ActivityService{
 	//日志对象
 	private static Logger logger = Logger.getLogger(ActivityServiceImpl.class);  
 	@Autowired
-	private ActivityMapper activityDao;//活动dao对象
+	private ActivityMapper activityMapper;//活动dao对象
 	@Autowired
-	private ActivityStoreMapper activityStoreDao; //活动关联门店dao对象
+	private ActivityStoreMapper activityStoreMapper; //活动关联门店dao对象
 	@Autowired
-	private BatchMapper orderDao;//发码批次dao对象
+	private BatchMapper batchMapper;//发码批次dao对象
 	@Autowired
-	private BatchCodeMapper orderCodeDao;//发码批次码dao对象
+	private BatchCodeMapper batchCodeMapper;//发码批次码dao对象
 	@Autowired
 	private OptLogService optLogService;//操作日志service对象
 	/**
@@ -66,15 +66,15 @@ public class ActivityServiceImpl implements ActivityService{
 	 */
 	public Activity getActivityById(String id) {
 		//获取活动对象
-		Activity activityObj = activityDao.getActivityById(id);
+		Activity activityObj = activityMapper.getActivityById(id);
 		//根据活动Id,获取关联门店信息，并将相关数据设置到活动对象
 		Map<String,Object> queryMap = new HashMap<String,Object>();
 		queryMap.put("activityId", id);
-		List<ActivityStore> storeList = activityStoreDao.queryActivityStoreList(queryMap);
+		List<ActivityStore> storeList = activityStoreMapper.queryActivityStoreList(queryMap);
 		activityObj.setStoreList(storeList);
 		activityObj.setStoreCount(storeList.size());
 		//根据活动Id,查询订单列表
-		List<Batch> orderList = orderDao.queryBatchList(queryMap);
+		List<Batch> orderList = batchMapper.queryBatchList(queryMap);
 		activityObj.setOrderList(orderList);
 		activityObj.setOrderCount(orderList.size());
 		return activityObj;
@@ -84,7 +84,7 @@ public class ActivityServiceImpl implements ActivityService{
 	 * @return
 	 */
 	public Activity getActivityByRand() {
-		Activity activityObj = activityDao.getActivityByRand();
+		Activity activityObj = activityMapper.getActivityByRand();
 		return activityObj;
 	}
 	/**
@@ -93,7 +93,7 @@ public class ActivityServiceImpl implements ActivityService{
 	 * @return
 	 */
 	public Activity getActivity(Map<String,Object> activityMap) {
-		List<Activity> activityList = activityDao.queryActivityList(activityMap);
+		List<Activity> activityList = activityMapper.queryActivityList(activityMap);
 		if(activityList.size()>0){
 			return activityList.get(0);
 		}
@@ -105,7 +105,7 @@ public class ActivityServiceImpl implements ActivityService{
 	 * @return
 	 */
 	public List<Activity> queryActivityList(Map<String,Object> activityMap) {
-		List<Activity> activityList = activityDao.queryActivityList(activityMap);
+		List<Activity> activityList = activityMapper.queryActivityList(activityMap);
 		return activityList;
 	}
 	/**
@@ -114,7 +114,7 @@ public class ActivityServiceImpl implements ActivityService{
 	 * @return
 	 */
 	public Integer getActivityTotal(Map<String,Object> activityMap) {
-		Integer activityTotal = activityDao.getActivityTotal(activityMap);
+		Integer activityTotal = activityMapper.getActivityTotal(activityMap);
 		return activityTotal;
 	}
 	/**
@@ -138,7 +138,7 @@ public class ActivityServiceImpl implements ActivityService{
 			}
 		}
 		PageHelper.startPage(pageNum, pageSize);
-		List<Activity> activityList = activityDao.queryActivityList(activityMap);
+		List<Activity> activityList = activityMapper.queryActivityList(activityMap);
 		PageInfo<Activity> page = new PageInfo<Activity>(activityList);
 		//获取分页对象
 		//拼装存放活动id的list
@@ -147,32 +147,32 @@ public class ActivityServiceImpl implements ActivityService{
 			idList.add(act.getId());
 		}
 		//根据活动id的list查询列表
-		Map<String,Object> queryMap = new HashMap<String,Object>();
-		if(idList.size()>0){
-			queryMap.put("activityIdList", idList);
-			List<ActivityStore> storeList = activityStoreDao.queryActivityStoreList(queryMap);
-			
-			//将查询到的关联信息，添加到活动对象中
-			for(Activity act:activityList){
-				for(ActivityStore as : storeList){
-					if(act.getId().equals(as.getActivityId())){
-						act.getStoreList().add(as);
-					}
-				}
-				act.setStoreCount(act.getStoreList().size());
-			}
-			//根据活动id的list查询订单列表
-			List<Batch> orderList = orderDao.queryBatchList(queryMap);
-			//将查询到的关联信息，添加到活动对象中
-			for(Activity act:activityList){
-				for(Batch o : orderList){
-					if(act.getId().equals(o.getActivityId())){
-						act.getOrderList().add(o);
-					}
-				}
-				act.setOrderCount(act.getOrderList().size());
-			}
-		}
+//		Map<String,Object> queryMap = new HashMap<String,Object>();
+//		if(idList.size()>0){
+//			queryMap.put("activityIdList", idList);
+////			int storeCount = activityStoreMapper.getActivityStoreCount(queryMap);
+//			
+//			//将查询到的关联信息，添加到活动对象中
+//			for(Activity act:activityList){
+//				for(ActivityStore as : storeList){
+//					if(act.getId().equals(as.getActivityId())){
+//						act.getStoreList().add(as);
+//					}
+//				}
+//				act.setStoreCount(act.getStoreList().size());
+//			}
+//			//根据活动id的list查询订单列表
+//			List<Batch> orderList = batchMapper.queryBatchList(queryMap);
+//			//将查询到的关联信息，添加到活动对象中
+//			for(Activity act:activityList){
+//				for(Batch o : orderList){
+//					if(act.getId().equals(o.getActivityId())){
+//						act.getOrderList().add(o);
+//					}
+//				}
+//				act.setOrderCount(act.getOrderList().size());
+//			}
+//		}
 		return page;
 	}
 	/**
@@ -184,7 +184,7 @@ public class ActivityServiceImpl implements ActivityService{
 	 */
 	public PageInfo<SelectStoreVO> querySelectStorePage(Map<String,Object> activityMap,Integer pageNum,Integer pageSize){
 		PageHelper.startPage(pageNum, pageSize);
-		 List<SelectStoreVO> stores = activityDao.querySelectStore(activityMap);
+		 List<SelectStoreVO> stores = activityMapper.querySelectStore(activityMap);
 		return new PageInfo<>(stores);
 	}
 	/**
@@ -201,7 +201,7 @@ public class ActivityServiceImpl implements ActivityService{
 		if(activity.getName()!=null){
 			Map<String,Object> existQueryMap = new HashMap<String,Object>();
 			existQueryMap.put("name", activity.getName());
-			Integer existCount = activityDao.getActivityTotal(existQueryMap);
+			Integer existCount = activityMapper.getActivityTotal(existQueryMap);
 			if(existCount>0){
 				throw new BusinessException("已存在重复的活动名称");
 			}
@@ -210,7 +210,7 @@ public class ActivityServiceImpl implements ActivityService{
 		if(activity.getCode()!=null){
 			Map<String,Object> existQueryMap = new HashMap<String,Object>();
 			existQueryMap.put("code", activity.getCode());
-			Integer existCount = activityDao.getActivityTotal(existQueryMap);
+			Integer existCount = activityMapper.getActivityTotal(existQueryMap);
 			if(existCount>0){
 				throw new BusinessException("已存在重复的活动编码");
 			}
@@ -219,18 +219,18 @@ public class ActivityServiceImpl implements ActivityService{
 		if(activity.getOutCode()!=null){
 			Map<String,Object> existQueryMap = new HashMap<String,Object>();
 			existQueryMap.put("outCode", activity.getOutCode());
-			Integer existCount = activityDao.getActivityTotal(existQueryMap);
+			Integer existCount = activityMapper.getActivityTotal(existQueryMap);
 			if(existCount>0){
 				throw new BusinessException("已存在重复的外部编码");
 			}
 		}
 		//添加活动
-		Integer affectCount = activityDao.addActivity(activity);
+		Integer affectCount = activityMapper.addActivity(activity);
 		//添加活动关联的门店信息
 		List<ActivityStore> storeList = activity.getStoreList();
 		for(ActivityStore as : storeList){
 			as.setActivityId(activity.getId());
-			activityStoreDao.addActivityStore(as);
+			activityStoreMapper.addActivityStore(as);
 		}
 		/*
 		 * 积分同步活动
@@ -309,12 +309,12 @@ public class ActivityServiceImpl implements ActivityService{
 	@Transactional()
 	public Integer updateActivity(Activity activity) {
 		//获取原活动对象
-		Activity oldActivity = activityDao.getActivityById(activity.getId());
+		Activity oldActivity = activityMapper.getActivityById(activity.getId());
 		//查询已存在活动名称
 		if(activity.getName()!=null&&!activity.getName().equals(oldActivity.getName())){
 			Map<String,Object> existQueryMap = new HashMap<String,Object>();
 			existQueryMap.put("name", activity.getName());
-			Integer existCount = activityDao.getActivityTotal(existQueryMap);
+			Integer existCount = activityMapper.getActivityTotal(existQueryMap);
 			if(existCount>0){
 				throw new BusinessException("已存在重复的活动名称");
 			}
@@ -323,7 +323,7 @@ public class ActivityServiceImpl implements ActivityService{
 		if(activity.getCode()!=null&&!activity.getCode().equals(oldActivity.getCode())){
 			Map<String,Object> existQueryMap = new HashMap<String,Object>();
 			existQueryMap.put("code", activity.getCode());
-			Integer existCount = activityDao.getActivityTotal(existQueryMap);
+			Integer existCount = activityMapper.getActivityTotal(existQueryMap);
 			if(existCount>0){
 				throw new BusinessException("已存在重复的活动编码");
 			}
@@ -332,22 +332,22 @@ public class ActivityServiceImpl implements ActivityService{
 		if(activity.getOutCode()!=null&&!activity.getOutCode().equals(oldActivity.getOutCode())){
 			Map<String,Object> existQueryMap = new HashMap<String,Object>();
 			existQueryMap.put("outCode", activity.getOutCode());
-			Integer existCount = activityDao.getActivityTotal(existQueryMap);
+			Integer existCount = activityMapper.getActivityTotal(existQueryMap);
 			if(existCount>0){
 				throw new BusinessException("已存在重复的外部编码");
 			}
 		}
 		//更新活动
-		Integer affectCount = activityDao.updateActivity(activity);
+		Integer affectCount = activityMapper.updateActivity(activity);
 		//删除原有的活动门店关联
 		Map<String,Object> delMap = new HashMap<String,Object>();
 		delMap.put("activityId",activity.getId());
-		activityStoreDao.deleteActivityStore(delMap);
+		activityStoreMapper.deleteActivityStore(delMap);
 		//添加新的活动门店关联
 		List<ActivityStore> storeList = activity.getStoreList();
 		for(ActivityStore as : storeList){
 			as.setActivityId(activity.getId());
-			activityStoreDao.addActivityStore(as);
+			activityStoreMapper.addActivityStore(as);
 		}
 		/*
 		 * 同步接口
@@ -627,12 +627,12 @@ public class ActivityServiceImpl implements ActivityService{
 	    	//当该数量达到一定的数量时，批量添加数据，批量添加完成后，将临时存储数据的列表置空
 			if(i!=0&&i%batchInsertCount==0){
 				//批量添加批次码数据
-				successNumber += orderCodeDao.batchAddBatchCode(batchOrderCodeList);
+				successNumber += batchCodeMapper.batchAddBatchCode(batchOrderCodeList);
 				batchOrderCodeList = new ArrayList<BatchCode>(); 
 			}
 		}
 		//添加剩余的批次码数据
-	    successNumber += orderCodeDao.batchAddBatchCode(batchOrderCodeList);
+	    successNumber += batchCodeMapper.batchAddBatchCode(batchOrderCodeList);
 	    
 	    //保存导入联系人批次数据
 	    Batch od = new Batch();
@@ -644,7 +644,7 @@ public class ActivityServiceImpl implements ActivityService{
 	    od.setRemark(remark);//备注
 	    od.setStatus("01");//导入状态
 	    od.setCreatetime(new Date());
-	    orderDao.addBatch(od);
+	    batchMapper.addBatch(od);
 	    
 	    //保存日志
 	    StringBuffer optInfo = new StringBuffer();
@@ -785,7 +785,7 @@ public class ActivityServiceImpl implements ActivityService{
 		//获取并设置关联门店数据
 		Map<String,Object> queryMap = new HashMap<String,Object>();
 		queryMap.put("activityId", act.getId());
-		List<ActivityStore> storeList = activityStoreDao.queryActivityStoreList(queryMap);
+		List<ActivityStore> storeList = activityStoreMapper.queryActivityStoreList(queryMap);
 		orderVO.setActActivityStores(storeList);
 		//解析并设置码数据
 		List<BatchCodeVO> carryList = new ArrayList<BatchCodeVO>();//定义送码的列表
@@ -920,8 +920,8 @@ public class ActivityServiceImpl implements ActivityService{
 	    Map<String,Object> resultMap = new HashMap<String,Object>();
 	    List<Map<String,Object>> recordList = new ArrayList<Map<String,Object>>();
 	  //获取该条导入联系人批次信息
-		Batch od = orderDao.getBatchById(orderId);
-		Activity activity = activityDao.getActivityById(od.getActivityId());
+		Batch od = batchMapper.getBatchById(orderId);
+		Activity activity = activityMapper.getActivityById(od.getActivityId());
 		/*
 		 * 码库接口-库存查询
 		 */
@@ -964,7 +964,7 @@ public class ActivityServiceImpl implements ActivityService{
 					//查询已导入的联系人列表
 					Map<String,Object> getAllMap = new HashMap<String,Object>();
 					getAllMap.put("orderId", od.getId());
-					List<BatchCode> ocList = orderCodeDao.queryBatchCodeList(getAllMap); 
+					List<BatchCode> ocList = batchCodeMapper.queryBatchCodeList(getAllMap); 
 					logger.info("送码----获取所有批次码结束-----码数量："+od.getImportNumber());
 					logger.info("送码----送码开始-----码数量："+od.getImportNumber());
 					//调用送码方法，进行送码操作
@@ -982,7 +982,7 @@ public class ActivityServiceImpl implements ActivityService{
 						//删除该批次所有数据
 						Map<String,Object> delAllMap = new HashMap<String,Object>();
 						delAllMap.put("orderId", od.getId());
-						orderCodeDao.deleteBatchCode(delAllMap);
+						batchCodeMapper.deleteBatchCode(delAllMap);
 						
 						//获取短信模板、价格，活动截止日期等信息
 						//String noticeSmsMsg = activity.getNoticeSmsMsg();//短信模版内容
@@ -1042,18 +1042,18 @@ public class ActivityServiceImpl implements ActivityService{
 							//当临时列表数量达到一定数值后，执行批量插入操作，然后置空该临时列表
 							if(i!=0&&i%batchInsertCount==0){
 								//批量添加批次码数据
-								orderCodeDao.batchAddBatchCode(batchOrderCodeList);
+								batchCodeMapper.batchAddBatchCode(batchOrderCodeList);
 								batchOrderCodeList = new ArrayList<BatchCode>();
 							}
 						}
 						//添加剩余的批次码数据
-						orderCodeDao.batchAddBatchCode(batchOrderCodeList);
+						batchCodeMapper.batchAddBatchCode(batchOrderCodeList);
 						logger.info("导出码----发码与更新批次码状态结束-----码数量："+ocList.size());
 						session.setAttribute("sendCodeProcess", 95);
 						
 						//更新发码批次的状态
 						od.setStatus("04");
-						orderDao.updateBatch(od);
+						batchMapper.updateBatch(od);
 						
 						//记录创建短信Excel数据、保存发码等两个步骤的日志
 						StringBuffer optInfo1 = new StringBuffer();
@@ -1085,7 +1085,7 @@ public class ActivityServiceImpl implements ActivityService{
 	 * @return
 	 */
 	public Integer deleteActivityById(String id) {
-		Integer affectCount = activityDao.deleteActivityById(id);
+		Integer affectCount = activityMapper.deleteActivityById(id);
 		return affectCount;
 	}
 	/**
@@ -1097,7 +1097,7 @@ public class ActivityServiceImpl implements ActivityService{
 		Integer affectCount = 0;
 		String[] idArray = ids.split(",");
 		for(String id : idArray){
-			affectCount += activityDao.deleteActivityById(id);
+			affectCount += activityMapper.deleteActivityById(id);
 		}
 		return affectCount;
 	}
@@ -1108,7 +1108,7 @@ public class ActivityServiceImpl implements ActivityService{
 	 * @return
 	 */
 	public Integer deleteActivity(Map<String,Object> activityMap) {
-		Integer affectCount = activityDao.deleteActivity(activityMap);
+		Integer affectCount = activityMapper.deleteActivity(activityMap);
 		return affectCount;
 	}
 }

@@ -12,7 +12,6 @@ import com.mocredit.sys.model.OptLog;
  * @date 2015/07/18
  */
 public interface OptLogMapper {
-	public final static String PREFIX = OptLogMapper.class.getName();
 	/*
 	 * 操作日志
 	 */

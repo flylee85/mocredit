@@ -156,9 +156,12 @@
 	<select id="queryActivityList" resultType="com.mocredit.activity.model.Activity" parameterType="java.util.Map" >
 	select 
 	<include refid="base_activity_column_list" />
-	,tmp1.store_count as storeCount
+	,(SELECT
+				count(1)
+			FROM
+				act_activity_store where activity_id=a.id)  as storeCount
+	, (select count(id) from act_batch where activity_id=a.id) as orderCount
 	from act_activity a
-	left join ( select activity_id,count(*) as store_count from act_activity_store  group by activity_id ) tmp1 on a.id = tmp1.activity_id
 	<where>
 		<include refid="base_activity_condition" />
 		<if test="searchInfoContent != null" >

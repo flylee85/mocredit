@@ -199,7 +199,7 @@ $(function(){
 	// 查询发码进度
 	function intervalUpdate() {
 		$.ajax({
-			'url': 'activity/getProcessNumber',
+			'url': 'activitysys/getProcessNumber',
 			'timeout':9999999,
 		}).done(function(msg){
 			if(msg.result){// 失败
@@ -234,7 +234,7 @@ $(function(){
 	var jiexiTimer, famaTimer,famaTimer1,famaTimer2;
 	var $input = $("#importExcel");
 	$input.fileinput({
-		uploadUrl: "activity/importCustomerFile", // server upload action
+		uploadUrl: "activitysys/importCustomerFile", // server upload action
 		language: 'zh',
 		uploadAsync: true,
 		showUpload: false, // hide upload button
@@ -297,7 +297,7 @@ $(function(){
 		var proWrap = $("#kv-upload-progress");
 		proWrap.attr('data-id', response.data);
 		$.ajax({
-			url : 'activity/parseCustomerFile',
+			url : 'activitysys/parseCustomerFile',
 			type: 'post',
 			data : {'activityId':$("#timaModal").find("input[name='activityId']").val(),'remark':$("#remark").val(),'importId':response.data},
 			dataType : 'json',
@@ -604,7 +604,7 @@ $(function(){
 		var famaErrorStr = $this.parents('section.panel-content').find('article.famaError');
 		$.ajax({
 			type: "get",
-			url : "activity/sendCode",
+			url : "activitysys/sendCode",
 			dataType:'json',
 			timeout : 300000,
 			data:  {orderId:orderId},
@@ -680,7 +680,7 @@ $(function(){
 		var contentTitle = $(obj).parent().prevAll(".name").text();
 		$.confirmDailog({
 			confirm : function(){
-				$.get("activity/deleteActivityById", {"id" : id}, function (msg) {
+				$.get("activitysys/deleteActivityById", {"id" : id}, function (msg) {
 					if(msg.success){
 						sendMsg(true, "删除成功");
 						if($('#jifen').hasClass('active')){
@@ -740,7 +740,7 @@ $(function(){
 			type: "POST",
 			dataType: "json",
 			contentType: "application/json; charset=utf-8",
-        	url: "activity/saveActivity",
+        	url: "activitysys/saveActivity",
         	data: JSON.stringify({id:activityId,status:status}),
         	success: function (result, textStuts) {
 				if(result.success){
@@ -862,7 +862,7 @@ $(function(){
 		var famaErrorStr = $this.parents('section.panel-content').find('article.famaError');
 		$.ajax({
 			type: "get",
-			url : "activity/createSendSmsExcel",
+			url : "activitysys/createSendSmsExcel",
 			dataType:'json',
 			timeout : 300000,
 			data:  {orderId:orderId},
@@ -890,7 +890,7 @@ $(function(){
 					famaErrorStr.remove();
 					//导出成功后隐藏导出按钮
 					famaSucStr.find('button').text("已导出").prop('disabled', true);
-					window.location.href = 'activity/exportSendSmsExcel?orderId='+orderId;
+					window.location.href = 'activitysys/exportSendSmsExcel?orderId='+orderId;
 				}else{
 					either.addClass('progress-bar-danger');
 					tipsText = "导出失败";

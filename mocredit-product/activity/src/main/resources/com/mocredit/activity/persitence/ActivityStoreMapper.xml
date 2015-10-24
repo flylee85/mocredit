@@ -48,17 +48,28 @@
 	from act_activity_store a
 	order by rand() limit 1
 	</select>
-	
+	<!--  获取活动商户关联总数量，根据条件    -->
+	<select id="getActivityStoreCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+	select 
+	count(a.id)
+	from act_activity_store a
+	<where>
+		<include refid="base_activityStore_condition" />
+		<if test="activityIdList != null" >
+			and a.activity_id in 
+			<foreach collection="activityIdList" index="index" item="actId" open="(" separator="," close=")">
+   					#{actId}
+ 	 		</foreach>
+		</if>
+	</where>
+	</select>
 	<!--  查询活动商户关联列表，根据条件    -->
 	<select id="queryActivityStoreList" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.util.Map" >
 	select 
 	<include refid="base_activityStore_column_list" />
-	,e.name as shopName
-	,s.name as storeName
-	,s.code as storeCode
+	shop_name as shopName
+	store_name as storeName
 	from act_activity_store a
-	left join t_shop e on e.id = a.shop_id
-	left join t_store s on s.id = a.store_id
 	<where>
 		<include refid="base_activityStore_condition" />
 		<if test="activityIdList != null" >

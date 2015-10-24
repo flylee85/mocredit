@@ -12,7 +12,6 @@ import com.mocredit.activity.model.BatchCode;
  * @date 2015/07/13
  */
 public interface BatchCodeMapper {
-	public final static String PREFIX = BatchCodeMapper.class.getName();
 	/*
 	 * 发码批次码
 	 */

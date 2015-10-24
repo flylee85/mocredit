@@ -110,12 +110,12 @@ public class ActivityController{
 			//根据参数查询分页信息对象
 			PageInfo<Activity> pageMap = activityService.queryActivityPage(reqMap, draw,currentPage, length);
 			//重构新的分页对象，为适应前端分页插件
-//			Map<String,Object> newMap = new HashMap<String,Object>();
-//			newMap.put("draw", draw);//查询标示,原值返回
-//			newMap.put("recordsTotal", pageMap.getTotal());//总数量
-//			newMap.put("recordsFiltered", pageMap.getTotal());//过滤后的总数量，暂未用到
-//			newMap.put("data", pageMap.getRows());//数据列表
-			String resultStr = JSON.toJSONString(pageMap);//将新的分页对象返回页面
+			Map<String,Object> newMap = new HashMap<String,Object>();
+			newMap.put("draw", draw);//查询标示,原值返回
+			newMap.put("recordsTotal", pageMap.getTotal());//总数量
+			newMap.put("recordsFiltered", pageMap.getTotal());//过滤后的总数量，暂未用到
+			newMap.put("data", pageMap.getList());//数据列表
+			String resultStr = JSON.toJSONString(newMap);//将新的分页对象返回页面
 			//返回页面数据
 			return resultStr;
 		}catch(Exception e){
