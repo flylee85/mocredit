@@ -11,9 +11,8 @@
 
 	<!-- 定义产品模块组件 -->
   <modules>
-    <module>integral</module>
-	<module>bank</module>
-	<module>citicserver</module>
+	<module>activity</module>
+	<module>activitysys</module>
   </modules>
   
   <build>
