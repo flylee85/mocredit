@@ -3,12 +3,17 @@
 	<head>
 	  	<meta charset="utf-8">
 	  	<title>门店</title>
+	  	<style type="text/css">
+	  	.dataTables_wrapper .row{
+	  		display:none;
+	  	}
+	  	</style>
 	</head>
 	<body>
 		<!-- .modal 选择门店-->
 		<div id="shopModal" class="modal fade" data-backdrop="static" data-keyboard="false" style="z-index: 9999;">
 
-			<div class="modal-dialog pos-abt modal-lger">
+			<div class="modal-dialog pos-abt modal-lger select-store-dg">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
@@ -16,23 +21,20 @@
 						<h4 class="modal-title">选择门店</h4>
 					</div>
 					<div class="modal-body">
-						<form class="form-horizontal">
+					<div class="row">
+					<div class="col-5 to-select">
+					<form class="form-horizontal">
 							<div class="row">
 								<div class="form-group">
-									<label class="col-lg-2 control-label">门店名称</label>
-									<div class="col-lg-4">
+									<label class="col-lg-2 control-label">商户</label>
+									<div class="col-lg-10">
 										<input type="text" class="form-control input-small" placeholder="门店名称" id="storeName" name="storeName">
-									</div>
-									<label class="col-lg-2 control-label">终端号</label>
-
-									<div class="col-lg-4">
-										<input type="text" class="form-control input-small" placeholder="终端号" id="devCode" name="devCode">
 									</div>
 								</div>
 							</div>
 							<div class="row city">
 								<div class="form-group">
-									<label class="col-lg-2 control-label">所属地区</label>
+									<label class="col-lg-2 control-label">地区</label>
 									<div class="col-lg-4">
 										<select class="form-control input-small" id="province" name="province">
 										</select>
@@ -46,8 +48,67 @@
 							</div>
 							<div class="row">
 								<div class="form-group">
-									<label class="col-lg-2 control-label">商家名称</label>
-									<div class="col-lg-6">
+									<div class="col-lg-8">
+										<input type="text" class="form-control input-small" placeholder="商家名称" id="shopName" name="shopName">
+									</div>
+									<div class="col-lg-4">
+										<button type="button" id="storeSearch" class="btn btn-primary btn-small col-lg-12">查询</button>
+									</div>
+								</div>
+							</div>
+						</form>
+						<div class="row">
+							<table class="table table-striped m-b-none" data-ride="datatables">
+								<thead>
+								<tr>
+									<th class="col-lg-2" ><input type="checkbox"></th>
+									<th class="col-lg-3">商家名称</th>
+									<th class="col-lg-3" >门店名称</th>
+									<th class="col-lg-4" >所属地区</th>
+								</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+						<div class="row selectStore clearfix" >
+						</div>
+						</div>
+						<div class="col-2">
+						<div class="row" style="margin-top: 150px;">
+							<div class="col-5" style="margin-left: 20px;">
+							<button type="button" class="btn btn-primary" id="leftToRight">&gt;&gt;</button>
+							<button type="button" class="btn btn-primary" id="rightToLeft"  style="margin-top: 10px;">&lt;&lt;</button>
+							</div>
+						</div>
+						</div>
+						<div class="col-5 has-selected">
+						<form class="form-horizontal">
+							<div class="row">
+								<div class="form-group">
+									<label class="col-lg-2 control-label">商户</label>
+									<div class="col-lg-10">
+										<input type="text" class="form-control input-small" placeholder="门店名称" id="storeName" name="storeName">
+									</div>
+								</div>
+							</div>
+							<div class="row city">
+								<div class="form-group">
+									<label class="col-lg-2 control-label">地区</label>
+									<div class="col-lg-4">
+										<select class="form-control input-small" id="province" name="province">
+										</select>
+									</div>
+									<label class="col-lg-2 control-label">城市</label>
+									<div class="col-lg-4">
+										<select class="form-control input-small" name="city" id="city">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<div class="col-lg-8">
 										<input type="text" class="form-control input-small" placeholder="商家名称" id="shopName" name="shopName">
 									</div>
 									<div class="col-lg-4">
@@ -64,7 +125,6 @@
 									<th >商家名称</th>
 									<th >门店名称</th>
 									<th >所属地区</th>
-									<th >终端数</th>
 								</tr>
 								</thead>
 								<tbody>
@@ -73,6 +133,8 @@
 						</div>
 						<div class="row selectStore clearfix" >
 						</div>
+						</div>
+					</div>
 					</div>
 					<div class="modal-footer">
 						<div class="row">
@@ -91,141 +153,140 @@
 	<script>
 		// 选择门店 全选
 		$('#shopModal thead :checkbox').click(function () {
-			var tbody = $('#shopModal tbody');
-			tbody.find(":checkbox").prop("checked", $(this).prop("checked"));
-			if ($(this).prop("checked")) {
-				tbody.find("tr").addClass('selected');
-				tbody.find("tr").each(function () {
-					var $this = $(this);
-					var storeId = $this.find(":checkbox").attr("data-store");
-					var storeCode = $this.find(":checkbox").attr("data-storeCode");
-					var shopId = $this.find(":checkbox").attr("data-id");
-					if ($("#shopModal div.selectStore").find("span[data-store='" + storeId + "'][data-id='" + shopId + "']").length <= 0) {
-						var theSame = $("#shopModal div.selectStore").find("span[data-id='" + shopId + "']");
-						var str = '<span class="label bg-info" data-id="' + shopId + '" data-store="' + storeId + '" data-storeCode="' + storeCode + '">' + $this.find(".storeName").text() + '<i class="icon-remove"></i></span>';
-						if (theSame.length > 0) {
-							theSame.last().after(str);
-						} else {
-							$("#shopModal div.selectStore").append(str)
-						}
-					}
-				});
-
-			} else {
-				tbody.find("tr").removeClass('selected');
-				tbody.find("tr").each(function () {
-					var $this = $(this);
-					var storeId = $this.find(":checkbox").attr("data-store");
-					$("#shopModal div.selectStore").find("span[data-store='" + storeId + "']").remove();
-				});
-
-			}
-		});
-		// 选择门店
-		$('#shopModal tbody').on('click', 'tr', function () {
-			var $this = $(this);
-			$this.toggleClass('selected');
-			$this.find(":checkbox").prop("checked", $this.hasClass('selected'));
-			var storeId = $this.find(":checkbox").attr("data-store");
-			var storeCode = $this.find(":checkbox").attr("data-storeCode");
-			if ($this.hasClass('selected')) {
-				var shopId = $this.find(":checkbox").attr("data-id");
-				var theSame = $("#shopModal div.selectStore").find("span[data-id='" + shopId + "']");
-				var str = '<span class="label bg-info" data-id="' + shopId + '" data-store="' + storeId + '" data-storeCode="' + storeCode + '" >' + $this.find(".storeName").text() + '<i class="icon-remove"></i></span>';
-				if (theSame.length > 0) {
-					theSame.last().after(str);
-				} else {
-					$("#shopModal div.selectStore").append(str)
-				}
-			} else {
-				$("#shopModal div.selectStore").find("span[data-store='" + storeId + "']").remove();
-			}
+			$(this).parents(".dataTables_wrapper").find("tbody :checkbox").prop("checked", $(this).prop("checked"));
 		});
 		//选择门店确认
 		$("#chooseShopEnter").click(function () {
-			$(".chooseShop").text("已选 " + $("#shopModal .selectStore").find("span").length + " 家门店").addClass('popFloat');
+			$(".chooseShop").text("已选 " + $("#shopModal .has-selected tbody tr").length + " 家门店");
 			var choosedStore = $(".choosedStore").empty();
-			$("#shopModal .selectStore").clone().appendTo(choosedStore);
+			var str = '<div class="row selectStore clearfix">';
+			$("#shopModal .has-selected tbody tr :checkbox").each(function(){
+				str += '<span data-id="'+ $(this).attr("data-id") +'" data-storeName="'+$(this).attr("data-storeName")+'" data-shopId="'+ $(this).attr("data-shopId")+'" data-shopName='+$(this).attr("data-shopName")+' class="label bg-info">'+ $(this).attr("data-storeName")+'<i class="icon-remove"></i></span>';
+			})
+			str += '</div>';
+			$("#addActivityFamaForm .choosedStore").empty().append(str);
 			$('#shopModal').modal('hide');
 		});
-
-		// 删除已选择门店
-		$('#shopModal').on("click", ".selectStore .icon-remove", function () {
-			var $this = $(this);
-			var storeId = $this.parent().attr("data-store");
-			var shopId = $this.parent().attr("data-id");
-			$('#shopModal tbody').find(":checkbox[data-id='" + shopId + "'][data-store='" + storeId + "']").prop("checked", false).parents("tr").removeClass("selected");
-			$this.parent().remove()
-
-		})
-		var shopModal;
+		var toSelectModal;
+		var selectedModal;
+		//>>
+		$("#leftToRight").click(function(){
+			$('#shopModal .to-select tbody :checkbox:checked').each(function(){
+				var _this=$(this);
+				if($("#shopModal .has-selected tbody :checkbox[data-id="+_this.attr("data-id")+"]").length==0){
+					$("#shopModal .has-selected tbody .dataTables_empty").parent().remove();
+					$("#shopModal .has-selected tbody").append($(this).click().parent().parent());
+				}
+			})
+		});
+		//<<
+		$("#rightToLeft").click(function(){
+			$('#shopModal .has-selected tbody :checkbox:checked').each(function(){
+				var _this=$(this);
+				if($("#shopModal .to-select tbody :checkbox[data-id="+_this.attr("data-id")+"]").length==0){
+					$("#shopModal .to-select tbody .dataTables_empty").parent().remove();
+					$("#shopModal .to-select tbody").append($(this).click().parent().parent());
+				}
+			})
+		});
 		// 初始化地区
 		$(".city").province_city();
 		// 查询门店
 		$("#storeSearch").click(function () {
-			shopModal.ajax.reload(function (json) {
+			toSelectModal.ajax.reload(function (json) {
 				updateChooseStore();
 			});
 
 		});
 		//门店初始化
-		function initMendian() {
-			/*if ($.type(shopModal) == "object") {
-				shopModal.ajax.reload(function (json) {
-					updateChooseStore();
-				});
-
-			} else {*/
-				$('#shopModal').find('[data-ride="datatables"]').each(function () {
-					shopModal = $(this).DataTable({
+		function initToSelectMendian() {
+				$('#shopModal .to-select').find('[data-ride="datatables"]').each(function () {
+					toSelectModal = $(this).DataTable({
 						"ajax": {
-							url: "activity/querySelectStorePage",
+							url: "third/getStores",
 							type: "post",
 							data: function (d) {
 								return $.extend({}, d, {
-									"storeName": $('#storeName').val(),
-									"storeCode": $('#storeCode').val(),
-									"devCode": $('#devCode').val(),
-									"province": $('#province').val(),
-									"city": $('#city').val(),
-									"shopName": $('#shopName').val()
+									"storeName": $('.to-select [name=storeName]').val(),
+									"province": $('.to-select [name=province]').val(),
+									"city": $('.to-select [name=city]').val(),
+									"shopId": $('.to-select [name=shopId]').val(),
+									"contractId":$("select[name=contractId]").val()
 								})
 							}
 						},
 						"initComplete": function (settings, json) {
-							updateChooseStore();
+							initSelectedMendian();
 						},
 						"processing": true,
 						//"serverSide":true,
-						"paginationType": "full_numbers",
-						"pageLength": 10,
 						"autoWidth": true,
 						"ordering": false,
+						"paging":false,
+						"scrollY": "200px",
 						"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
 						"columns": [
 							{"data": null},
 							{"data": "shopName"},
 							{"data": "storeName", className: "storeName"},
-							{"data": null},
-							{"data": "deviceNum"}
+							{"data": "area"}
 						],
 						"columnDefs": [
 							{
 								"targets": 0,
 								"data": null,
 								"render": function (data, type, full) {
-									return '<input type="checkbox" data-id="' + full['shopId'] + '" data-store="' + full['storeId'] + '" data-storeCode="' + full['storeCode'] + '">';
-								}
-							},
-							{
-								"targets": 3,
-								"data": null,
-								"render": function (data, type, full) {
-
-									return full['province'] + " - " + full['city'];
+									return '<input type="checkbox" data-id="' + full['id'] + '" data-shopId="' + full['shopId'] + '" data-storeName="' + full['storeName'] + '" data-shopName="' + full['shopName'] + '">';
 								}
 							}
-
+						]
+					});
+				});
+//			}
+			//
+		}
+		//已选门店初始化
+		function initSelectedMendian() {
+				$('#shopModal .has-selected').find('[data-ride="datatables"]').each(function () {
+					selectedModal = $(this).DataTable({
+						"ajax": {
+							url: "activitysys/getSelectedStores",
+							type: "post",
+							data: function (d) {
+								return $.extend({}, d, {
+									"activityId":$("#activityCurrentId").val(),
+									"storeName": $('.to-selecthas-selected [name=storeName]').val(),
+									"province": $('.has-selected [name=province]').val(),
+									"city": $('.has-selected [name=city]').val(),
+									"shopId": $('.has-selected [name=shopId]').val()
+								})
+							}
+						},
+						"initComplete": function (settings, json) {
+							flashSelectedData();
+							updateChooseStore();
+						},
+						"processing": true,
+						//"serverSide":true,
+						"autoWidth": true,
+						"ordering": false,
+						"paging":false,
+						"scrollY": "200px",
+						"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
+						"columns": [
+							{"data": null},
+							{"data": "shopName"},
+							{"data": "storeName", className: "storeName"},
+							{"data": null}
+						],
+						"columnDefs": [
+							{
+								"targets": 0,
+								"data": null,
+								"render": function (data, type, full) {
+									return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId'] + '" data-storeName="' + full['storeName'] + '" data-shopName="' + full['shopName'] + '">';
+								}
+							}
 						]
 					});
 				});
@@ -234,13 +295,30 @@
 		}
 		// 重新选择已选择门店
 		function updateChooseStore() {
-			$('#shopModal').find(".selectStore").find('span').each(function (i, n) {
-				var storeId = $(this).attr('data-store');
-				var shopId = $(this).attr('data-id');
-				$('#shopModal').find("tbody").find(":checkbox[data-id='" + shopId + "'][data-store='" + storeId + "']").prop("checked", true).parents("tr").addClass('selected');
+			$('#shopModal .has-selected tbody tr :checkbox').each(function (i, n) {
+				var storeId = $(this).attr('data-id');
+				$('#shopModal .to-select tbody :checkbox[data-id=' + storeId +']').parent().parent().remove();
 			});
 		}
-		initMendian();
+		
+		function flashSelectedData(){
+			var storeId="";
+			var checkebox=$('#shopModal .has-selected tbody tr :checkbox');
+			checkebox.each(function(){
+				storeId+= $(this).attr('data-id')+"_";
+			})
+			if(storeId.length>0){
+				storeId=storeId.substr(0,storeId.length-1);
+				$.get("third/getData?field=STORE|id="+storeId,null,function(data){
+					var list=data.data.STORE;
+					console.log(list);
+					for(var i in list){
+						$(checkebox).filter("[data-id="+list[i].id+"]").parent().siblings(":last").text(list[i].area);
+					}
+				},'json')
+			}
+		}
+		initToSelectMendian();
 	</script>
 	</body>
 </html>

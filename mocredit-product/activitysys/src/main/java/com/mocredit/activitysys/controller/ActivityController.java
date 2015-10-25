@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -41,7 +42,7 @@ import com.mocredit.base.util.PropertiesUtil;
  * @author lishoukun
  * @date 2015/07/08
  */
-@Controller
+@RestController
 @RequestMapping("/activitysys/")
 public class ActivityController{
 	//引入活动Service类
@@ -136,30 +137,13 @@ public class ActivityController{
 	  * @param length 查询数
 	  * @return json object string
 	  */
-	 @RequestMapping("/querySelectStorePage")
-	 @ResponseBody
-	 public String querySelectStorePage(@RequestParam Map<String, Object> reqMap,Integer draw, Integer start, Integer length){
+	 @RequestMapping("/getSelectedStores")
+	 public String getSelectedStores(@RequestParam Map<String, Object> reqMap){
 		//定义返回页面的对象
 		ResponseData responseData = new AjaxResponseData();
-		//简单计算页数，当前页数=开始条数/搜索条数+1
-		if(start==null){
-			start = 0;
-		}
-		if(length==null){
-			length = 10;
-		}
-		int currentPage = start/length+1;
 		try{
-			//根据参数查询分页信息对象
-			PageInfo<SelectStoreVO> pageMap = activityService.querySelectStorePage(reqMap, currentPage, length);
-			//重构新的分页对象，为适应前端分页插件
-//			Map<String,Object> newMap = new HashMap<String,Object>();
-//			newMap.put("draw", draw);//查询标示,原值返回
-//			newMap.put("recordsTotal", pageMap.getTotal());//总数量
-//			newMap.put("recordsFiltered", pageMap.getTotal());//过滤后的总数量，暂未用到
-//			newMap.put("data", pageMap.getRows());//数据列表
-			String resultStr =JSON.toJSONString(pageMap);//将新的分页对象返回页面
-			//返回页面数据
+			responseData.setData(activityService.querySelectStores(reqMap));
+			String resultStr =JSON.toJSONString(responseData);
 			return resultStr;
 		}catch(Exception e){
 			//如果抛出异常，则将返回页面的对象设置为false
@@ -242,6 +226,7 @@ public class ActivityController{
 				//生成一个32位的UUID,并添加活动对象
 				String id = IDUtil.getID();
 				activity.setId(id);
+				activity.setMaxNumber(1);
 				affectCount = activityService.addActivity(activity);
 			}
 			//如果活动对象中id存在且不为空，则执行更新操作

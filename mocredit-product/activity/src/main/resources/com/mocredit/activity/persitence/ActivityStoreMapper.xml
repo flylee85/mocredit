@@ -67,8 +67,8 @@
 	<select id="queryActivityStoreList" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.util.Map" >
 	select 
 	<include refid="base_activityStore_column_list" />
-	shop_name as shopName
-	store_name as storeName
+	,shop_name as shopName
+	,store_name as storeName
 	from act_activity_store a
 	<where>
 		<include refid="base_activityStore_condition" />
@@ -77,6 +77,9 @@
 			<foreach collection="activityIdList" index="index" item="actId" open="(" separator="," close=")">
    					#{actId}
  	 		</foreach>
+		</if>
+		<if test="storeName != null" >
+		 and a.store_name=#{storeName}
 		</if>
 	</where>
 	order by a.activity_id asc
@@ -103,12 +106,16 @@
 			store_id,
 			enterprise_id,
 			shop_id,
+			store_name,
+			shop_name
 	</trim>
 	<trim prefix="values (" suffix=")" suffixOverrides="," >
 			#{activityId},
 			#{storeId},
 			#{enterpriseId},
 			#{shopId},
+			#{storeName},
+			#{shopName},
 	</trim>
 	</insert>
 	
@@ -127,6 +134,12 @@
 		</if>
 		<if test="shopId != null" >
 			shop_id = #{shopId},
+		</if>
+		<if test="shopName != null" >
+			shop_name = #{shopName},
+		</if>
+		<if test="storeName != null" >
+			store_name = #{storeName},
 		</if>
 	</set>
 	where id = #{id}

@@ -140,6 +140,7 @@
 	<select id="getActivityById" resultType="com.mocredit.activity.model.Activity" parameterType="java.lang.String" >
 	select 
 	<include refid="base_activity_column_list" />
+	,(select count(1) from act_activity_store where activity_id=a.id) as storeCount
 	from act_activity a
 	where a.id = #{id} limit 1
 	</select>
