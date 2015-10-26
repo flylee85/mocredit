@@ -9,6 +9,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 import com.mocredit.activity.model.Activity;
+import com.mocredit.activity.model.ActivityStore;
+import com.mocredit.activity.model.BatchCode;
 import com.mocredit.activity.model.SelectStoreVO;
 import com.mocredit.base.pagehelper.PageInfo;
 
@@ -68,6 +70,14 @@ public interface ActivityService {
 	 */
 	public PageInfo<SelectStoreVO> querySelectStorePage(Map<String,Object> activityMap,Integer currentPage,Integer pageSize);
 	/**
+	 * 查询活动管理相关选择门店分页信息，根据条件
+	 * @param activityMap 请求参数
+	 * @param currentPage  当前页
+	 * @param pageSize	每页条数
+	 * @return
+	 */
+	public List<ActivityStore> querySelectStores(Map<String,Object> activityMap);
+	/**
 	 * 添加活动
 	 * @param activity
 	 * @return
@@ -110,4 +120,11 @@ public interface ActivityService {
 	 * @return
 	 */
 	public Integer deleteActivity(Map<String,Object> activityMap);
+	/**
+	 * 提取一个批次的码
+	 * @param activityId
+	 * @param count
+	 * @return 批次ID
+	 */
+	public String extractedCode(String activityId,String batchName,int count);
 }

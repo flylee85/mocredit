@@ -89,13 +89,13 @@
 		formObject.noticeSmsMsg = noticeSmsMsg;
 
 		formObject.storeList = [];
-		$("#addActivityFamaForm").find('.choosedStore').find('span').each(function () {
+		$("#addActivityFamaForm .choosedStore span").each(function () {
 			var $this = $(this);
 			var obj = new Object();
-			obj.storeName = $this.text();
-			obj.storeId = $this.attr('data-store') + "";
-			obj.storeCode = $this.attr('data-storeCode') + "";
-			obj.shopId = $this.attr('data-id') + "";
+			obj.storeName =  $this.attr('data-storeName');
+			obj.shopName =  $this.attr('data-shopName');
+			obj.storeId = $this.attr('data-id');
+			obj.shopId = $this.attr('data-shopId');
 			formObject.storeList.push(obj)
 		});
 		//获取表单特殊元素---选择日期
@@ -112,10 +112,12 @@
 		//整理开始日期和结束日期
 		formObject.startTime = formObject.startTime+' 00:00:00';
 		formObject.endTime = formObject.endTime+' 23:59:59';
+		formObject.enterpriseName=$("#addActivityFamaForm select[name=enterpriseId] option:selected").text();
+		formObject.contractName=$("#addActivityFamaForm select[name=contractId] option:selected").text();
 		//提交
 		$.ajax({
 			type: "post",
-			url: "activity/saveActivity",
+			url: "activitysys/saveActivity",
 			contentType: "application/json; charset=utf-8",
 			data: JSON.stringify(formObject),
 			dataType: "json",
@@ -153,13 +155,6 @@
 		var $this = $(this);
 		if ($this.hasClass("popEnter")) {
 			$('#shopWrap').load('mendian.html', function () {
-				var mbody = $("#shopModal .modal-body");
-
-				var selectStore = $this.next('.choosedPop').find('.selectStore');
-				if (selectStore.length > 0) {
-					$("#shopModal .selectStore").remove();
-					selectStore.clone().appendTo(mbody);
-				}
 				$("#shopModal").modal('show');
 			});
 		}
@@ -175,7 +170,7 @@
 		var type = $("#activityDetailType").val();
 
 		var addActivityFamaForm = $("#addActivityFamaForm");
-		$.get("activity/getActivityById",{id:activityId},function(result){
+		$.get("activitysys/getActivityById",{id:activityId},function(result){
 			if(result.success){
 
 				var dataObject = result.data;
@@ -186,21 +181,21 @@
 				addActivityFamaForm.find("select[name='enterpriseId']").val(dataObject.enterpriseId);
 				addActivityFamaForm.find("select[name='enterpriseId']").attr('data-val',dataObject.enterpriseId);
 				addActivityFamaForm.find("select[name='contractId']").val(dataObject.contractId);
-				addActivityFamaForm.find("select[name='contractId']").attr('data-val',dataObject.enterpriseId);
+				addActivityFamaForm.find("select[name='contractId']").attr('data-val',dataObject.contractId);
 				addActivityFamaForm.find("input[name='amount']").val(dataObject.amount);
 				addActivityFamaForm.find("input[name='receiptTitle']").val(dataObject.receiptTitle);
 				addActivityFamaForm.find("textarea[name='receiptPrint']").val(dataObject.receiptPrint);
 				addActivityFamaForm.find("input[name='posSuccessMsg']").val(dataObject.posSuccessMsg);
 				addActivityFamaForm.find("input[name='successSmsMsg']").val(dataObject.successSmsMsg);
-				if(dataObject.storeList.length != 0){
-					addActivityFamaForm.find(".chooseShop").addClass('popFloat').text("已选择 " + dataObject.storeList.length + " 家门店");
+				if(dataObject.storeCount != 0){
+					addActivityFamaForm.find(".chooseShop").addClass('popFloat').text("已选择 " + dataObject.storeCount + " 家门店");
 				}else{
 					addActivityFamaForm.find(".chooseShop").removeClass('popFloat').text("已选择 0 家门店")
 				}
 				var str = '<div class="row selectStore clearfix">';
 
 				$.each(dataObject.storeList, function (i, n) {
-					str += '<span data-store="'+ n.storeId +'" data-storeCode="'+n.storeCode+'" data-id="'+ n.shopId+'" class="label bg-info">'+ n.storeName+'<i class="icon-remove"></i></span>';
+					str += '<span data-id='+ n.storeId +'" data-storeName="'+n.storeName+'" data-shopId="'+ n.shopId+'" data-shopName='+n.shopName+' class="label bg-info">'+ n.storeName+'<i class="icon-remove"></i></span>';
 				});
 				str += '</div>'
 				addActivityFamaForm.find(".choosedStore").empty().append(str);
@@ -223,14 +218,13 @@
 
 				addActivityFamaForm.find("input[name='startTime']").val(dataObject.startTime);
 				addActivityFamaForm.find("input[name='endTime']").val(dataObject.endTime);
-				var selectDateArray = dataObject.selectDate.split(",");
-				for(var i=0;i<selectDateArray.length;i++){
-					var value = selectDateArray[i];
-					$("#selectDateFamaCheckboxFormGroup").find("input[value='"+value+"']").prop('checked', true).next('i').addClass('checked');
+				if( dataObject.selectDate){
+					var selectDateArray = dataObject.selectDate.split(",");
+					for(var i=0;i<selectDateArray.length;i++){
+						var value = selectDateArray[i];
+						$("#selectDateFamaCheckboxFormGroup").find("input[value='"+value+"']").prop('checked', true).next('i').addClass('checked');
+					}
 				}
-				addActivityFamaForm.find("input[name='maxNumber']").val(dataObject.maxNumber);
-
-
 			}else{
 				alert('失败！' + result.errorMsg);
 			}
@@ -259,12 +253,12 @@
 	 * 加载字典数据
 	 */
 	function loadDictionary() {
-		$.get("code/queryCodeListForCombo?field=CONTRACT,INTEGRAL_ACTIVITY,ENTERPRISE", function (data) {
+		$.get("third/getData?field=CONTRACT,INTEGRAL_ACTIVITY,ENTERPRISE", function (data) {
 			if (data.success) {
 				$.each(data.data, function (i, n) {
 					var thisSelect = $("select[code='" + i + "']");
 					$.each(n, function (j, o) {
-						var optionNode = $("<option>").attr("value", o.value).text(o.text);
+						var optionNode = $("<option>").attr("value", o.id).text(o.name);
 						thisSelect.append(optionNode);
 					});
 					if($.type(thisSelect.attr('data-val')) != "undefined"){
@@ -283,6 +277,9 @@
 		} else {
 			$(obj).parent().next().find(':text').prop("disabled", false).attr('data-parsley-required', 'true');
 		}
+	}
+	function addmark(value){
+		$("#duanxinFama textarea").val($("#duanxinFama textarea").val()+value);
 	}
 	openUpdateFamaActivity();
 	loadDictionary();
