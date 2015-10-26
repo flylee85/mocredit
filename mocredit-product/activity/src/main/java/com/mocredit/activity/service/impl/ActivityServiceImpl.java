@@ -1288,15 +1288,21 @@ public class ActivityServiceImpl implements ActivityService {
 						oc.setOrderId(batch.getId());
 						oc.setCodeId(String.valueOf(codeMap.get("id")));
 						oc.setCode(String.valueOf(codeMap.get("code")));
-						oc.setOrderId(batch.getId());
 						oc.setStatus("01");// 01：已提码
 
 						batchOrderCodeList.add(oc);
 					}
 					batchCodeMapper.batchAddBatchCode(batchOrderCodeList);
+					/*修改批次导出数量*/
+					Batch updateBatch = new Batch();
+					updateBatch.setId(batch.getId());
+					updateBatch.setPickSuccessNumber(batchOrderCodeList.size());
+					updateBatch.setPickFailNumber(0);
+					batchMapper.updateBatch(updateBatch);
 				}
 			}
 		}
+		
 		return batch.getId();
 	}
 }

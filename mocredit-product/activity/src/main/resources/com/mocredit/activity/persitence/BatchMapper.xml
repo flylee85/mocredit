@@ -189,9 +189,6 @@
 	<update id="updateBatch" parameterType="com.mocredit.activity.model.Batch" >
 	update act_batch
 	<set >
-		<if test="id != null" >
-		id = #{id},
-	</if>
 		<if test="activityId != null" >
 		activity_id = #{activityId},
 	</if>
