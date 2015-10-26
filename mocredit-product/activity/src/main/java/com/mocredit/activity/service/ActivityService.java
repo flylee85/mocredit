@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.mocredit.activity.model.Activity;
 import com.mocredit.activity.model.ActivityStore;
+import com.mocredit.activity.model.BatchCode;
 import com.mocredit.activity.model.SelectStoreVO;
 import com.mocredit.base.pagehelper.PageInfo;
 
@@ -119,4 +120,11 @@ public interface ActivityService {
 	 * @return
 	 */
 	public Integer deleteActivity(Map<String,Object> activityMap);
+	/**
+	 * 提取一个批次的码
+	 * @param activityId
+	 * @param count
+	 * @return 批次ID
+	 */
+	public String extractedCode(String activityId,String batchName,int count);
 }
