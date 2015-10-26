@@ -1,8 +1,11 @@
 package com.mocredit.sendcode.service;
 
+import com.mocredit.activity.model.BatchBvo;
 import com.mocredit.sendcode.BaseService;
 
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ytq on 2015/10/23.
@@ -18,7 +21,7 @@ public interface SendCodeService extends BaseService {
      * @param codeCount 提码数量
      * @return
      */
-    List<Object> downloadList(String type, String id, Integer codeCount);
+    List<String> downloadList(String type, String id, Integer codeCount);
 
     /**
      * 查询活动id的批次列表
@@ -28,7 +31,7 @@ public interface SendCodeService extends BaseService {
      * @param pageSize 页面数量
      * @return
      */
-    List<Object> getActBatchList(String actId, Integer pageNum, Integer pageSize);
+    List<BatchBvo> getActBatchList(Map<String, Object> activityMap, Integer draw, Integer pageNum, Integer pageSize);
 
     /**
      * 查询指定批次的详情信息
@@ -57,4 +60,12 @@ public interface SendCodeService extends BaseService {
      * @return
      */
     Object sendCode(String type, String id);
+
+    /**
+     * 导入联系人，通过Excel数据
+     * InputStream in 导入的流
+     *
+     * @return 影响行数
+     */
+    Map<String, Object> importCustomor(String activityId, String batchId, String name, String type, InputStream in);
 }
