@@ -123,7 +123,7 @@
 		<foreach collection="list" item="item" index="index" separator=",">
 			<trim prefix="(" suffix=")" suffixOverrides="," >
 				#{item.id},
-				#{item.batchId},
+				#{item.orderId},
 				#{item.code},
 				#{item.codeId},
 				#{item.customerMobile},
