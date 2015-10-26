@@ -1,6 +1,7 @@
 package com.mocredit.sendcode.service;
 
 import com.mocredit.activity.model.BatchBvo;
+import com.mocredit.activity.model.BatchCode;
 import com.mocredit.activity.model.BatchCodeBvo;
 import com.mocredit.sendcode.BaseService;
 
@@ -22,7 +23,7 @@ public interface SendCodeService extends BaseService {
      * @param codeCount 提码数量
      * @return
      */
-    List<String> downloadList(String type, String id, Integer codeCount);
+    List<BatchCode> downloadList(String type, String name, String id, Integer codeCount);
 
     /**
      * 查询活动id的批次列表
@@ -81,6 +82,7 @@ public interface SendCodeService extends BaseService {
 
     /**
      * 按照批次id逻辑删除批次
+     *
      * @param batchId
      * @return
      */

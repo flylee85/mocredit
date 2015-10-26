@@ -8,4 +8,5 @@ import org.apache.log4j.Logger;
  */
 public interface BaseService {
     Logger logger = Logger.getLogger("send_code_log");
+    Integer pageSize = 1000;
 }

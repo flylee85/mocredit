@@ -80,10 +80,11 @@ public class SendCodeController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            List<String> codeList = sendCodeService.downloadList(type, id, count);
-            for (String code : codeList) {
+            List<BatchCode> codeList = sendCodeService.downloadList(type, name, id, count);
+            for (BatchCode batchCode : codeList) {
                 Map dataMap = new HashMap();
-                dataMap.put("码", code);
+                dataMap.put("手机号", batchCode.getCustomerMobile());
+                dataMap.put("码", batchCode.getCode());
                 codeMap.add(dataMap);
             }
             try {
@@ -107,7 +108,9 @@ public class SendCodeController {
     }
 
     public void setTitleAndKey(List<String> titleList, List<String> keyList) {
+        titleList.add("手机号");
         titleList.add("码");
+        keyList.add("手机号");
         keyList.add("码");
     }
 

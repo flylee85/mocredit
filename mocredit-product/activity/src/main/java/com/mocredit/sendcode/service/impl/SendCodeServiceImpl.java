@@ -42,11 +42,32 @@ public class SendCodeServiceImpl implements SendCodeService {
     private ActivityService activityService;
 
     @Override
-    public List<String> downloadList(String type, String id, Integer codeCount) {
-        List<String> a = new ArrayList<>();
-        a.add("aa");
-        a.add("bb");
-        return a;
+    public List<BatchCode> downloadList(String type, String name, String id, Integer codeCount) {
+        //    CODE("01", "验码"), BATCH("02", "批次"), ACTIVITY("03", "活动");
+        Map<String, Object> batchMap = new HashMap<>();
+        switch (type) {
+            case "03": {
+                String batchId = activityService.extractedCode(id, name, codeCount);
+                batchMap.put("batchId", batchId);
+            }
+            case "02": {
+                batchMap.put("batchId", id);
+            }
+        }
+        List<BatchCode> batchCodeAllList = new ArrayList<>();
+        int pageNum = 1;
+        boolean isFinish = false;
+        while (!isFinish) {
+            PageHelper.startPage(pageNum, pageSize);
+            List<BatchCode> batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
+            if (batchCodeList.isEmpty()) {
+                isFinish = true;
+            } else {
+                batchCodeAllList.addAll(batchCodeList);
+                pageNum += 1;
+            }
+        }
+        return batchCodeAllList;
     }
 
     @Override

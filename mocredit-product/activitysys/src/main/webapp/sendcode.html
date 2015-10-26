@@ -172,47 +172,6 @@
         }
     }
 </script>
-
-<script>
-    /**
-     * 添加发码活动确认按钮
-     */
-    $("#uploadAndSend").click(function () {
-        var formUpLoadAndSend = $("#uploadAndSendForm").parsley();
-        if (!formUpLoadAndSend.validate()) {
-            return false;
-        }
-        //获取表单基本元素对象
-        var formArray = $("#uploadAndSendForm").serializeArray();
-        var formObject = new Object();
-        $.each(formArray, function (index) {
-            if (formObject[this['name']]) {
-                formObject[this['name']] = formObject[this['name']] + "," + this['value'];
-            } else {
-                formObject[this['name']] = this['value'];
-            }
-        });
-        $.ajax({
-            type: "post",
-            url: "sendCode/importCustomer",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(formObject),
-            dataType: "json",
-            success: function (result) {
-                if (result.success) {
-//                    sendMsg(true, "成功");
-//                    $('#activityCurrentPage').val(1);
-//                    $('#content').load('activity.html');
-                } else {
-//                    sendMsg(false, result.errorMsg);
-                }
-            },
-            error: function (result) {
-//                sendMsg(false, result.errorMsg);
-            }
-        });
-    });
-</script>
 <script>
     function delBatch(id) {
 
@@ -222,7 +181,7 @@
                 window.location.reload();
             } else {
                 alert("删除失败");
-                window.location.reload()
+                window.location.reload();
             }
         }, 'json');
     }
