@@ -8,7 +8,7 @@
 -->
 <mapper namespace="com.mocredit.activity.persitence.BatchMapper">
 	<!-- ===================发码批次,开始======================== -->
-	
+	　
 	<!--  公用列,包含发码批次表所有字段     -->
 	<sql id="base_batch_column_list" >
 		o.id as id,
