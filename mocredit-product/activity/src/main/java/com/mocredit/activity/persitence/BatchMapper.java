@@ -2,6 +2,7 @@ package com.mocredit.activity.persitence;
 
 import com.mocredit.activity.model.Batch;
 import com.mocredit.activity.model.BatchBvo;
+import com.mocredit.activity.model.BatchCodeBvo;
 
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,13 @@ public interface BatchMapper {
 
     //删除发码批次记录 ，根据条件
     int deleteBatch(Map<String, Object> batchMap);
-    //
+
+    //按照活动id查询批次列表
     List<BatchBvo> getActBatchList(Map<String, Object> batchMap);
+
+    //按照批次id查询码
+    List<BatchCodeBvo> getActBatchCodeList(Map<String, Object> batchMap);
+
+    //按照批次id删除批次
+    int delBatchById(Map<String, Object> batchMap);
 }

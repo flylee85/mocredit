@@ -1,18 +1,26 @@
 package com.mocredit.sendcode.service.impl;
 
-import com.mocredit.activity.model.Activity;
-import com.mocredit.activity.model.Batch;
-import com.mocredit.activity.model.BatchBvo;
-import com.mocredit.activity.model.BatchCode;
+import com.mocredit.activity.model.*;
 import com.mocredit.activity.persitence.BatchCodeMapper;
 import com.mocredit.activity.persitence.BatchMapper;
+import com.mocredit.activity.service.ActivityService;
+import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.util.*;
+import com.mocredit.common.MMSBO;
 import com.mocredit.sendcode.service.SendCodeService;
 import com.mocredit.sys.service.OptLogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import java.util.*;
 
@@ -28,6 +36,10 @@ public class SendCodeServiceImpl implements SendCodeService {
     private BatchCodeMapper batchCodeMapper;
     @Autowired
     private OptLogService optLogService;
+    @Autowired
+    private JmsTemplate jmsTemplate;
+    @Autowired
+    private ActivityService activityService;
 
     @Override
     public List<String> downloadList(String type, String id, Integer codeCount) {
@@ -62,6 +74,26 @@ public class SendCodeServiceImpl implements SendCodeService {
     @Override
     public Object sendCode(String type, String id) {
         return null;
+    }
+
+    @Override
+    public boolean delBatchById(String batchId) {
+        Map<String, Object> batchMap = new HashMap<>();
+        batchMap.put("batchId", batchId);
+        batchMap.put("status", "00");
+        return batchMapper.delBatchById(batchMap) > 0;
+    }
+
+    @Override
+    public List<BatchCodeBvo> getActBatchCodeList(Map<String, Object> batchMap, Integer draw, Integer pageNum, Integer pageSize) {
+        if (draw != null && draw != 1) {
+            String searchContent = String.valueOf(batchMap.get("search[value]"));
+            if (searchContent != null && !"".equals(searchContent)) {
+                batchMap.put("searchInfoContent", searchContent);
+            }
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        return batchMapper.getActBatchCodeList(batchMap);
     }
 
     @Override
@@ -151,5 +183,51 @@ public class SendCodeServiceImpl implements SendCodeService {
         resultMap.put("successNumber", successNumber);//成功数
         resultMap.put("importNumber", successNumber);//导入数量
         return resultMap;
+    }
+
+    @Transactional()
+    public void sendCode(String actId, List<BatchCode> batchCodeList) {
+        //定义短信内容对象
+        MMSBO duanxin = new MMSBO();
+        Activity activity = activityService.getActivityById(actId);
+        String noticeSmsMsg = activity.getNoticeSmsMsg();
+        ;//短信模版内容
+        //获取是否推送短信开关
+        boolean isPushSms = Boolean.parseBoolean(PropertiesUtil.getValue("isPushSms"));
+        if (isPushSms) {
+            //如果推送短信开关开启，为短信内容对象设置一些固定信息
+            jmsTemplate.setPubSubDomain(false);
+            jmsTemplate.setDeliveryPersistent(true);
+            duanxin.setBarcodeno(3);
+            duanxin.setEitemid(1995L);
+            duanxin.setEntid(46L);
+            duanxin.setIsresend(1);
+            duanxin.setMttype(1);
+            duanxin.setPackageid(25898810);
+            duanxin.setStatus(0);
+            duanxin.setStatuscode("NYYH");
+            duanxin.setType(0);
+
+            duanxin.setEorderid(5115538L);
+            duanxin.setBarcodeid(73349609L);
+            duanxin.setCharcode("E1073SCP70");
+            duanxin.setNumberpwd("010073787632");
+            duanxin.setTid("20150428111444117862");
+            //duanxin.setCreatetime(activity.getEndTime());
+
+        }
+        for (BatchCode batchCode : batchCodeList) {
+            duanxin.setMobile(batchCode.getCustomerMobile());
+            String content = null;//批量替换
+            duanxin.setContent(content);
+            final MMSBO sendMsg = duanxin;
+            logger.info("短信内容==电话：" + sendMsg.getMobile() + "名称:" + sendMsg.getCustomer() + "内容：" + sendMsg.getContent());
+            jmsTemplate.send("subject", new MessageCreator() {
+                public Message createMessage(Session session) throws JMSException {
+                    ObjectMessage msg = session.createObjectMessage(sendMsg);
+                    return msg;
+                }
+            });
+        }
     }
 }

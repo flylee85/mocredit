@@ -338,4 +338,19 @@
         </if>
         order by a.createtime desc
     </select>
+    <!--获取批次列表-->
+    <select id="getActBatchCodeList" resultType="com.mocredit.activity.model.BatchCodeBvo"
+            parameterType="java.util.Map">
+        select a.`code`,a.customer_mobile as customerMobile, b.createtime,b.`status`,b.remark from act_batch_code a LEFT
+        JOIN act_batch b on a.batch_id=b.id where 1=1 and a.batch_id=#{batchId}
+        <if test="searchInfoContent != null">
+            and a.customer_mobile like '%${searchInfoContent}%'
+        </if>
+        order by b.createtime desc
+    </select>
+    <!--  删除一条发码批次记录 ，根据主键    -->
+    <update id="delBatchById" parameterType="java.util.Map">
+        update act_batch  SET  `status`=#{status}
+        where id = #{batchId}
+    </update>
 </mapper>

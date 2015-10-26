@@ -1,6 +1,7 @@
 package com.mocredit.sendcode.service;
 
 import com.mocredit.activity.model.BatchBvo;
+import com.mocredit.activity.model.BatchCodeBvo;
 import com.mocredit.sendcode.BaseService;
 
 import java.io.InputStream;
@@ -68,4 +69,20 @@ public interface SendCodeService extends BaseService {
      * @return 影响行数
      */
     Map<String, Object> importCustomor(String activityId, String batchId, String name, String type, InputStream in);
+
+    /**
+     * 查询活动id的批次列表
+     *
+     * @param pageNum  页数
+     * @param pageSize 页面数量
+     * @return
+     */
+    List<BatchCodeBvo> getActBatchCodeList(Map<String, Object> batchMap, Integer draw, Integer pageNum, Integer pageSize);
+
+    /**
+     * 按照批次id逻辑删除批次
+     * @param batchId
+     * @return
+     */
+    boolean delBatchById(String batchId);
 }

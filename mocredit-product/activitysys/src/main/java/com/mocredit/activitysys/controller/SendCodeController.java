@@ -2,6 +2,8 @@ package com.mocredit.activitysys.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.mocredit.activity.model.BatchBvo;
+import com.mocredit.activity.model.BatchCode;
+import com.mocredit.activity.model.BatchCodeBvo;
 import com.mocredit.base.datastructure.ResponseData;
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
 import com.mocredit.base.pagehelper.PageInfo;
@@ -32,6 +34,13 @@ import java.util.Map;
 public class SendCodeController {
     @Autowired
     private SendCodeService sendCodeService;
+
+    @RequestMapping("/delBatchById")
+    @ResponseBody
+    public String delBatchById(String batchId) {
+        sendCodeService.delBatchById(batchId);
+        return JSON.toJSONString(new AjaxResponseData());
+    }
 
     @RequestMapping("/downloadTemplate")
     @ResponseBody
@@ -113,7 +122,7 @@ public class SendCodeController {
      */
     @RequestMapping("/queryPickCodePage")
     @ResponseBody
-    public String queryActivityPage(@RequestParam Map<String, Object> reqMap, String actId, Integer draw, Integer start, Integer length) {
+    public String queryPickCodePage(@RequestParam Map<String, Object> reqMap, String actId, Integer draw, Integer start, Integer length) {
         //定义返回页面的对象
         ResponseData responseData = new AjaxResponseData();
         //简单计算页数，当前页数=开始条数/搜索条数+1
@@ -128,6 +137,51 @@ public class SendCodeController {
             //根据参数查询分页信息对象
             reqMap.put("actId", actId);
             PageInfo<BatchBvo> pageMap = new PageInfo<BatchBvo>(sendCodeService.getActBatchList(reqMap, draw, currentPage, length));
+            //重构新的分页对象，为适应前端分页插件
+            Map<String, Object> newMap = new HashMap<String, Object>();
+            newMap.put("draw", draw);//查询标示,原值返回
+            newMap.put("recordsTotal", pageMap.getTotal());//总数量
+            newMap.put("recordsFiltered", pageMap.getTotal());//过滤后的总数量，暂未用到
+            newMap.put("data", pageMap.getList());//数据列表
+            String resultStr = JSON.toJSONString(newMap);//将新的分页对象返回页面
+            //返回页面数据
+            return resultStr;
+        } catch (Exception e) {
+            //如果抛出异常，则将返回页面的对象设置为false
+            e.printStackTrace();
+            responseData.setSuccess(false);
+            responseData.setErrorMsg(e.getMessage(), e);
+        }
+        //返回页面数据
+        return JSON.toJSONString(responseData);
+    }
+
+    /**
+     * 提码列表页
+     *
+     * @param reqMap
+     * @param draw
+     * @param start
+     * @param length
+     * @return
+     */
+    @RequestMapping("/queryBatchDetailPage")
+    @ResponseBody
+    public String queryBatchDetailPage(@RequestParam Map<String, Object> reqMap, String batchId, Integer draw, Integer start, Integer length) {
+        //定义返回页面的对象
+        ResponseData responseData = new AjaxResponseData();
+        //简单计算页数，当前页数=开始条数/搜索条数+1
+        if (start == null) {
+            start = 0;
+        }
+        if (length == null) {
+            length = 10;
+        }
+        int currentPage = start / length + 1;
+        try {
+            //根据参数查询分页信息对象
+            reqMap.put("batchId", batchId);
+            PageInfo<BatchCodeBvo> pageMap = new PageInfo<BatchCodeBvo>(sendCodeService.getActBatchCodeList(reqMap, draw, currentPage, length));
             //重构新的分页对象，为适应前端分页插件
             Map<String, Object> newMap = new HashMap<String, Object>();
             newMap.put("draw", draw);//查询标示,原值返回

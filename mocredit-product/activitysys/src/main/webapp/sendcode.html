@@ -25,7 +25,8 @@
     <section class="panel">
         <div class="tab-content">
             <div id="tima" class="tab-pane fade active in">
-                <form id="uploadAndSendForm" action="sendCode/importCustomer" method="post" class="form-horizontal form-inline"
+                <form id="uploadAndSendForm" action="sendCode/importCustomer" method="post"
+                      class="form-horizontal form-inline"
                       enctype="multipart/form-data">
                     <div class="form-group">
                         <label class="col-lg-3">
@@ -161,7 +162,7 @@
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
-                            return '<a href="sendCode/download?type=02&id=' + data['id'] + '&name=' + data[name] + '"target="_blank" >下载</a>' +
+                            return '<a href="sendCode/download?type=02&id=' + data['id'] + '&name=' + data['batch'] + '"target="_blank" >下载</a>' +
                                     '<a href="codedetail.html?' + data['id'] + '"target="_blank" >详情</a>' +
                                     '<a href="javascript:delBatch(\'' + data['id'] + '\')" >删除</a>';
                         }
@@ -214,17 +215,16 @@
 </script>
 <script>
     function delBatch(id) {
-        $.confirmDailog({
-            confirm: function () {
-                $.get("sendCode/delBatch", {"id": id}, function (msg) {
-                    if (msg.success) {
-                        sendMsg(true, "删除成功");
-                    } else {
-                        sendMsg(false, "删除失败，请重试");
-                    }
-                }, 'json');
+
+        $.get("sendCode/delBatchById", {"batchId": id}, function (msg) {
+            if (msg.success) {
+                alert("删除成功")
+                window.location.reload();
+            } else {
+                alert("删除失败");
+                window.location.reload()
             }
-        });
+        }, 'json');
     }
 </script>
 </body>
