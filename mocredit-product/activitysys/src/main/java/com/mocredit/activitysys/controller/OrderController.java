@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/order/")
 public class OrderController{
-//
+
 //	@Autowired
 //	private OrderService orderService;
-//	
+//
 //	/**
 //	 * 跳转至发码批次管理页面
 //	 * @return model and view
@@ -139,7 +139,7 @@ public class OrderController{
 //		}
 //		return JacksonJsonMapper.objectToJson(responseData);
 //	}
-//	
+//
 //	/**
 //	 * 删除发码批次,根据主键
 //	 * @param id 主键
@@ -158,7 +158,7 @@ public class OrderController{
 //		}
 //		return JacksonJsonMapper.objectToJson(responseData);
 //	}
-//	
+//
 //	/**
 //	 * 批量删除发码批次,根据主键集合
 //	 * @param ids 主键集合
@@ -177,7 +177,7 @@ public class OrderController{
 //		}
 //		return JacksonJsonMapper.objectToJson(responseData);
 //	}
-//	
+//
 //	/**
 //	 * 删除发码批次,根据条件
 //	 * @param reqMap   请求参数
