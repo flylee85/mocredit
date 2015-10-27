@@ -51,7 +51,7 @@ public class SendCodeController {
         ResponseData responseData = new AjaxResponseData();
         if (!sendCodeService.sendCodeById(actId, id)) {
             responseData.setSuccess(false);
-            responseData.setErrorMsg("链接消息队列失败");
+            responseData.setErrorMsg("发送消息队列失败或送码失败");
         }
         return JSON.toJSONString(responseData);
     }
@@ -62,7 +62,7 @@ public class SendCodeController {
         ResponseData responseData = new AjaxResponseData();
         if (!sendCodeService.sendCodeByBatchId(actId, batchId)) {
             responseData.setSuccess(false);
-            responseData.setErrorMsg("链接消息队列失败");
+            responseData.setErrorMsg("发送消息队列失败或送码失败");
         }
         return JSON.toJSONString(responseData);
     }
@@ -73,7 +73,7 @@ public class SendCodeController {
         ResponseData responseData = new AjaxResponseData();
         if (!sendCodeService.delBatchById(batchId)) {
             responseData.setSuccess(false);
-            responseData.setErrorMsg("链接消息队列失败");
+            responseData.setErrorMsg("删除批次失败");
         }
         return JSON.toJSONString(responseData);
     }

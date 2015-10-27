@@ -22,29 +22,29 @@ public class Batch implements Serializable {
     //批次号,batch
     private String batch;
     //导入联系人数量,import_number
-    private int importNumber;
+    private Integer importNumber;
     //导入成功联系人数量,import_success_number
-    private int importSuccessNumber;
+    private Integer importSuccessNumber;
     //导入失败联系人数量,import_fail_number
-    private int importFailNumber;
+    private Integer importFailNumber;
     //提码数量,pick_number
-    private int pickNumber;
+    private Integer pickNumber;
     //提码成功数量,pick_success_number
-    private int pickSuccessNumber;
+    private Integer pickSuccessNumber;
     //提码失败数量,pick_fail_number
-    private int pickFailNumber;
+    private Integer pickFailNumber;
     //送码数量,carry_number
-    private int carryNumber;
+    private Integer carryNumber;
     //送码成功数量,carry_success_number
-    private int carrySuccessNumber;
+    private Integer carrySuccessNumber;
     //送码失败数量,carray_fail_number
-    private int carryFailNumber;
+    private Integer carryFailNumber;
     //发码数量,send_number
-    private int sendNumber;
+    private Integer sendNumber;
     //发码成功数量,send_success_number
-    private int sendSuccessNumber;
+    private Integer sendSuccessNumber;
     //发码失败数量,send_fail_number
-    private int sendFailNumber;
+    private Integer sendFailNumber;
     //备注,remark
     private String remark;
     //状态,status,暂时定为   00：未导入联系人，01：已导入联系人，待提码  02：已提码，待送码  03：已送码，待发码 04：已发码
@@ -79,99 +79,99 @@ public class Batch implements Serializable {
         this.batch = batch;
     }
 
-    public int getImportNumber() {
+    public Integer getImportNumber() {
         return importNumber;
     }
 
-    public void setImportNumber(int importNumber) {
+    public void setImportNumber(Integer importNumber) {
         this.importNumber = importNumber;
     }
 
-    public int getImportSuccessNumber() {
+    public Integer getImportSuccessNumber() {
         return importSuccessNumber;
     }
 
-    public void setImportSuccessNumber(int importSuccessNumber) {
+    public void setImportSuccessNumber(Integer importSuccessNumber) {
         this.importSuccessNumber = importSuccessNumber;
     }
 
-    public int getImportFailNumber() {
+    public Integer getImportFailNumber() {
         return importFailNumber;
     }
 
-    public void setImportFailNumber(int importFailNumber) {
+    public void setImportFailNumber(Integer importFailNumber) {
         this.importFailNumber = importFailNumber;
     }
 
-    public int getPickNumber() {
+    public Integer getPickNumber() {
         return pickNumber;
     }
 
-    public void setPickNumber(int pickNumber) {
+    public void setPickNumber(Integer pickNumber) {
         this.pickNumber = pickNumber;
     }
 
-    public int getPickSuccessNumber() {
+    public Integer getPickSuccessNumber() {
         return pickSuccessNumber;
     }
 
-    public void setPickSuccessNumber(int pickSuccessNumber) {
+    public void setPickSuccessNumber(Integer pickSuccessNumber) {
         this.pickSuccessNumber = pickSuccessNumber;
     }
 
-    public int getPickFailNumber() {
+    public Integer getPickFailNumber() {
         return pickFailNumber;
     }
 
-    public void setPickFailNumber(int pickFailNumber) {
+    public void setPickFailNumber(Integer pickFailNumber) {
         this.pickFailNumber = pickFailNumber;
     }
 
-    public int getCarryNumber() {
+    public Integer getCarryNumber() {
         return carryNumber;
     }
 
-    public void setCarryNumber(int carryNumber) {
+    public void setCarryNumber(Integer carryNumber) {
         this.carryNumber = carryNumber;
     }
 
-    public int getCarrySuccessNumber() {
+    public Integer getCarrySuccessNumber() {
         return carrySuccessNumber;
     }
 
-    public void setCarrySuccessNumber(int carrySuccessNumber) {
+    public void setCarrySuccessNumber(Integer carrySuccessNumber) {
         this.carrySuccessNumber = carrySuccessNumber;
     }
 
-    public int getCarryFailNumber() {
+    public Integer getCarryFailNumber() {
         return carryFailNumber;
     }
 
-    public void setCarryFailNumber(int carryFailNumber) {
+    public void setCarryFailNumber(Integer carryFailNumber) {
         this.carryFailNumber = carryFailNumber;
     }
 
-    public int getSendNumber() {
+    public Integer getSendNumber() {
         return sendNumber;
     }
 
-    public void setSendNumber(int sendNumber) {
+    public void setSendNumber(Integer sendNumber) {
         this.sendNumber = sendNumber;
     }
 
-    public int getSendSuccessNumber() {
+    public Integer getSendSuccessNumber() {
         return sendSuccessNumber;
     }
 
-    public void setSendSuccessNumber(int sendSuccessNumber) {
+    public void setSendSuccessNumber(Integer sendSuccessNumber) {
         this.sendSuccessNumber = sendSuccessNumber;
     }
 
-    public int getSendFailNumber() {
+    public Integer getSendFailNumber() {
         return sendFailNumber;
     }
 
-    public void setSendFailNumber(int sendFailNumber) {
+    public void setSendFailNumber(Integer sendFailNumber) {
         this.sendFailNumber = sendFailNumber;
     }
 

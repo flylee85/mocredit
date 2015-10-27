@@ -10,6 +10,8 @@ import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.util.*;
 import cn.m.mt.common.MMSBO;
+import com.mocredit.sendcode.constant.BatchCodeStatus;
+import com.mocredit.sendcode.constant.BatchStatus;
 import com.mocredit.sendcode.constant.DownloadType;
 import com.mocredit.sendcode.service.SendCodeService;
 import com.mocredit.sys.service.OptLogService;
@@ -103,7 +105,7 @@ public class SendCodeServiceImpl implements SendCodeService {
     public boolean delBatchById(String batchId) {
         Map<String, Object> batchMap = new HashMap<>();
         batchMap.put("batchId", batchId);
-        batchMap.put("status", "00");
+        batchMap.put("status", BatchStatus.DEL.getValue());
         return batchMapper.delBatchById(batchMap) > 0;
     }
 
@@ -114,6 +116,8 @@ public class SendCodeServiceImpl implements SendCodeService {
             BatchCode batchCode = batchCodeMapper.getBatchCodeById(id);
             batchCodeAllList.add(batchCode);
             sendCode(actId, batchCode.getBatchId(), batchCodeAllList);
+            //todo 单次发送短信需要更新批次发送成功数
+
             //记录发送短信和保存发码两个步骤的日志
             StringBuffer optInfo1 = new StringBuffer();
             optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
@@ -126,10 +130,10 @@ public class SendCodeServiceImpl implements SendCodeService {
 
     @Override
     public boolean sendCodeByBatchId(String actId, String batchId) {
+        boolean sendSuccessFlag = true;
         try {
             Map<String, Object> batchMap = new HashMap<>();
             batchMap.put("batchId", batchId);
-            batchMap.put("status", "02");
             List<BatchCode> batchCodeAllList = new ArrayList<>();
             int pageNum = 1;
             boolean isFinish = false;
@@ -143,23 +147,41 @@ public class SendCodeServiceImpl implements SendCodeService {
                     pageNum += 1;
                 }
             }
-            sendCode(actId, batchId, batchCodeAllList);
+            //更新批次导入数量和成功数量
+            Batch batchOri = batchMapper.getBatchById(batchId);
             //更新批次导入数量和成功数量
             Batch batch = new Batch();
             batch.setId(batchId);
-            batch.setImportNumber(batchCodeAllList.size());
-            batch.setImportSuccessNumber(batchCodeAllList.size());
-            batch.setStatus("04");
-            batchMapper.updateBatch(batch);
             //记录发送短信和保存发码两个步骤的日志
             StringBuffer optInfo1 = new StringBuffer();
             optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
-            optLogService.addOptLog("活动Id:" + actId + ",批次Id:" + batchId, "", "发送短信并保存发码记录-----" + optInfo1.toString());
-            return true;
+            try {
+                sendCode(actId, batchId, batchCodeAllList);
+                if (batchOri.getSendSuccessNumber() != null) {
+                    batch.setSendSuccessNumber(batchOri.getSendSuccessNumber() + batchCodeAllList.size());
+                } else {
+                    batch.setSendSuccessNumber(batchCodeAllList.size());
+                }
+                batch.setImportSuccessNumber(batchCodeAllList.size() + batchOri.getImportSuccessNumber());
+                batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
+                optInfo1.append("成功数量：" + batchCodeAllList.size() + ";");
+            } catch (Exception e) {
+                if (batchOri.getSendFailNumber() != null) {
+                    batch.setSendFailNumber(batchOri.getSendFailNumber() + batchCodeAllList.size());
+                } else {
+                    batch.setSendFailNumber(batchCodeAllList.size());
 
+                }
+                batch.setStatus(BatchStatus.IMPORT_NOT_CARRY.getValue());
+                optInfo1.append("失败数量：" + batchCodeAllList.size() + ";");
+                sendSuccessFlag = false;
+            }
+            batchMapper.updateBatch(batch);
+            optLogService.addOptLog("活动Id:" + actId + ",批次Id:" + batchId, "", "发送短信并保存发码记录-----" + optInfo1.toString());
         } catch (Exception e) {
-            return false;
+            sendSuccessFlag = false;
         }
+        return sendSuccessFlag;
     }
 
     @Override
@@ -182,53 +204,10 @@ public class SendCodeServiceImpl implements SendCodeService {
         Map<String, String> resultMap = new HashMap<String, String>();
         //解析excel流,并生成list
         List<List<Object>> excelList = ExcelUtil.excel2List(in);
-        //获取标题和字段在excel中的对应关系，并存放在一个Map中
-        List<Object> titleList = excelList.get(0);
-        String actBatchId = null;
-        if ("01".equals(type)) {
-            for (int i = 1; i < excelList.size(); i++) {
-                String customerMobile = excelList.get(i).get(0) + "";
-                String customerName = excelList.get(i).get(1) + "";
-                resultMap.put(customerMobile, customerName);
-                //如果不是正确的手机格式，则返回错误信息
-                if (!ValidatorUtil.isMobile(customerMobile)) {
-                    msgMap.put("success", false);
-                    msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
-                    throw new BusinessException(msgMap.get("msg") + "");
-                }
-            }
-            actBatchId = activityService.extractedCode(activityId, name, resultMap.size());
-            for (String key : resultMap.keySet()) {
-                String customerMobile = key;
-                String customerName = resultMap.get(key);
-                Map<String, Object> batchMap = new HashMap<>();
-                batchMap.put("batchId", actBatchId);
-                batchMap.put("customerMobile", customerMobile);
-                batchMap.put("customerName", customerName);
-                batchCodeMapper.updateBatchCodeByBatchId(batchMap);
-            }
-        }
-        if ("02".equals(type)) {
-            actBatchId = activityService.extractedCode(activityId, name, excelList.size() - 1);
-            for (int i = 1; i < excelList.size(); i++) {
-                String customerMobile = excelList.get(i).get(0) + "";
-                String customerName = excelList.get(i).get(1) + "";
-                //如果不是正确的手机格式，则返回错误信息
-                if (!ValidatorUtil.isMobile(customerMobile)) {
-                    msgMap.put("success", false);
-                    msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
-                    throw new BusinessException(msgMap.get("msg") + "");
-                }
-                Map<String, Object> batchMap = new HashMap<>();
-                batchMap.put("batchId", actBatchId);
-                batchMap.put("customerMobile", customerMobile);
-                batchMap.put("customerName", customerName);
-                batchCodeMapper.updateBatchCodeByBatchId(batchMap);
-            }
-        }
+        String actBatchId = validatorMobile(activityId, name, type, msgMap, resultMap, excelList);
         Map<String, Object> batchMap = new HashMap<>();
         batchMap.put("batchId", actBatchId);
-        batchMap.put("status", "02");
+        batchMap.put("status", BatchStatus.IMPORT_NOT_CARRY.getValue());
         List<BatchCode> batchCodeAllList = new ArrayList<>();
         int pageNum = 1;
         boolean isFinish = false;
@@ -242,25 +221,35 @@ public class SendCodeServiceImpl implements SendCodeService {
                 pageNum += 1;
             }
         }
-        sendCode(activityId, actBatchId, batchCodeAllList);
         //更新批次导入数量和成功数量
         Batch batch = new Batch();
         batch.setId(actBatchId);
         batch.setImportNumber(batchCodeAllList.size());
-        batch.setImportFailNumber(0);
         batch.setImportSuccessNumber(batchCodeAllList.size());
-        batch.setStatus("04");
-        batchMapper.updateBatch(batch);
+        batch.setImportFailNumber(0);
+        batch.setSendNumber(batchCodeAllList.size());
         //记录发送短信和保存发码两个步骤的日志
         StringBuffer optInfo1 = new StringBuffer();
         optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
-        optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + actBatchId, "", "发送短信并保存发码记录-----" + optInfo1.toString());
+        try {
+            sendCode(activityId, actBatchId, batchCodeAllList);
+            batch.setSendSuccessNumber(batchCodeAllList.size());
+            batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
+            optInfo1.append("成功数量：" + batchCodeAllList.size() + ";");
+            msgMap.put("success", true);
+            msgMap.put("msg", "上传并发送成功" + batchCodeAllList.size() + "条");
 
+        } catch (Exception e) {
+            batch.setSendSuccessNumber(0);
+            batch.setSendFailNumber(batchCodeAllList.size());
+            batch.setStatus(BatchStatus.IMPORT_NOT_CARRY.getValue());
+            optInfo1.append("失败数量：" + batchCodeAllList.size() + ";");
+            msgMap.put("success", false);
+            msgMap.put("msg", "发送失败" + batchCodeAllList.size() + "条");
+        }
+        batchMapper.updateBatch(batch);
+        optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + actBatchId, "", "发送短信并保存发码记录-----" + optInfo1.toString());
         //返回数据
-        msgMap.put("success", true);
-        msgMap.put("msg", "上传成功" + batchCodeAllList.size() + "条");
-        msgMap.put("successNumber", batchCodeAllList.size());//成功数
-        msgMap.put("importNumber", batchCodeAllList.size());//导入数量
         return msgMap;
     }
 
@@ -316,8 +305,9 @@ public class SendCodeServiceImpl implements SendCodeService {
                 // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
                 Map<String, Object> batchCodeMap = new HashMap<>();
                 batchCodeMap.put("id", batchCode.getId());
-                batchCodeMap.put("status", "04");
+                batchCodeMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
                 batchCodeMap.put("startTime", DateUtil.getLongCurDate());
+                batchCode.setStartTime(new Date());
                 batchCodeMapper.updateBatchCodeById(batchCodeMap);
             }
         }
@@ -367,7 +357,7 @@ public class SendCodeServiceImpl implements SendCodeService {
             codeVO.setIssueEnterpriseName(act.getEnterpriseName());// 所属活动发行方名称
             codeVO.setContractId(act.getContractId());// 合同
             codeVO.setMaxNum(String.valueOf(act.getMaxNumber()));// 最大次数
-            codeVO.setBatchId(batchId);// 发码批次Id
+            codeVO.setOrderId(batchId);// 发码批次Id
             codeVO.setReleaseTime(DateUtil.dateToStr(new Date(), "yyyy-MM-dd HH:mm:ss"));// 发布时间，当然时间
             codeVO.setStartTime(DateUtil.dateToStr(oc.getStartTime(), "yyyy-MM-dd HH:mm:ss"));// 活动开始时间
             codeVO.setEndTime(DateUtil.dateToStr(oc.getEndTime(), "yyyy-MM-dd HH:mm:ss"));// 活动结束时间
@@ -401,5 +391,51 @@ public class SendCodeServiceImpl implements SendCodeService {
         // 将返回对象的success设置为true,并返回数据对象
         resultMap.put("success", true);
         return resultMap;
+    }
+
+    public String validatorMobile(String activityId, String name, String type, Map<String, Object> msgMap, Map<String, String> resultMap, List<List<Object>> excelList) {
+        String actBatchId = null;
+        if ("01".equals(type)) {
+            for (int i = 1; i < excelList.size(); i++) {
+                String customerMobile = excelList.get(i).get(0) + "";
+                String customerName = excelList.get(i).get(1) + "";
+                resultMap.put(customerMobile, customerName);
+                //如果不是正确的手机格式，则返回错误信息
+                if (!ValidatorUtil.isMobile(customerMobile)) {
+                    msgMap.put("success", false);
+                    msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
+                    throw new BusinessException(msgMap.get("msg") + "");
+                }
+            }
+            actBatchId = activityService.extractedCode(activityId, name, resultMap.size());
+            for (String key : resultMap.keySet()) {
+                String customerMobile = key;
+                String customerName = resultMap.get(key);
+                Map<String, Object> batchMap = new HashMap<>();
+                batchMap.put("batchId", actBatchId);
+                batchMap.put("customerMobile", customerMobile);
+                batchMap.put("customerName", customerName);
+                batchCodeMapper.updateBatchCodeByBatchId(batchMap);
+            }
+        }
+        if ("02".equals(type)) {
+            actBatchId = activityService.extractedCode(activityId, name, excelList.size() - 1);
+            for (int i = 1; i < excelList.size(); i++) {
+                String customerMobile = excelList.get(i).get(0) + "";
+                String customerName = excelList.get(i).get(1) + "";
+                //如果不是正确的手机格式，则返回错误信息
+                if (!ValidatorUtil.isMobile(customerMobile)) {
+                    msgMap.put("success", false);
+                    msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
+                    throw new BusinessException(msgMap.get("msg") + "");
+                }
+                Map<String, Object> batchMap = new HashMap<>();
+                batchMap.put("batchId", actBatchId);
+                batchMap.put("customerMobile", customerMobile);
+                batchMap.put("customerName", customerName);
+                batchCodeMapper.updateBatchCodeByBatchId(batchMap);
+            }
+        }
+        return actBatchId;
     }
 }
