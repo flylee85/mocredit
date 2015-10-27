@@ -211,6 +211,9 @@
 	</update>
     <update id="updateBatchCodeById" parameterType="java.util.Map">
         update act_batch_code SET  `status`=#{status}
+        <if test="startTime != null">
+             ,start_time = #{startTime}
+        </if>
         where  id=#{id}
     </update>
     <!-- ===================发码批次码,结束======================== -->

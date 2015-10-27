@@ -1,4 +1,4 @@
-package com.mocredit.common;
+package cn.m.mt.common;
 
 import java.io.Serializable;
 

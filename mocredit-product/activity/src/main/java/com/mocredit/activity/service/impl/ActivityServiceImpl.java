@@ -920,7 +920,7 @@ public class ActivityServiceImpl implements ActivityService {
 			codeVO.setIssueEnterpriseName(act.getEnterpriseName());// 所属活动发行方名称
 			codeVO.setContractId(act.getContractId());// 合同
 			codeVO.setMaxNum(String.valueOf(act.getMaxNumber()));// 最大次数
-			codeVO.setOrderId(order.getId());// 发码批次Id
+			codeVO.setBatchId(order.getId());// 发码批次Id
 			codeVO.setReleaseTime(DateUtil.dateToStr(new Date(), "yyyy-MM-dd HH:mm:ss"));// 发布时间，当然时间
 			codeVO.setStartTime(DateUtil.dateToStr(act.getStartTime(), "yyyy-MM-dd HH:mm:ss"));// 活动开始时间
 			codeVO.setEndTime(DateUtil.dateToStr(act.getEndTime(), "yyyy-MM-dd HH:mm:ss"));// 活动结束时间
