@@ -17,7 +17,9 @@
 		oc.code_id as codeId,
 		oc.customer_mobile as customerMobile,
 		oc.customer_name as customerName,
-		oc.status as status
+		oc.status as status,
+		oc.start_time as startTime,
+		oc.end_time as endTime
 	</sql>
 
     <!--  公用查询条件，包含发码批次码所有字段的查询条件     -->
@@ -95,6 +97,8 @@
             customer_mobile,
             customer_name,
             status,
+            start_time,
+            end_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             #{id},
@@ -104,6 +108,8 @@
             #{customerMobile},
             #{customerName},
             #{status},
+            #{startTime},
+            #{endTime}
         </trim>
     </insert>
 
@@ -117,18 +123,22 @@
             code_id,
             customer_mobile,
             customer_name,
-            status
+            status,
+            start_time,
+            end_time
         </trim>
         values
         <foreach collection="list" item="item" index="index" separator=",">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{item.id},
-                #{item.orderId},
+                #{item.batchId},
                 #{item.code},
                 #{item.codeId},
                 #{item.customerMobile},
                 #{item.customerName},
-                #{item.status}
+                #{item.status},
+                #{item.startTime},
+                #{item.endTime}
             </trim>
         </foreach>
     </insert>

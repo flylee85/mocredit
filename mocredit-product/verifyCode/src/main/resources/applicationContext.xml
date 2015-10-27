@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+
+       default-init-method="init" default-destroy-method="cleanUp" >
+
+       <mvc:annotation-driven >
+              <mvc:message-converters>
+                     <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                            <property name="supportedMediaTypes">
+                                   <list>
+                                          <value>text/plain;charset=UTF-8</value>
+                                          <value>text/html;charset=UTF-8</value>
+                                   </list>
+                            </property>
+                     </bean>
+              </mvc:message-converters>
+       </mvc:annotation-driven>
+       <context:component-scan base-package="com.mocredit"/>
+       <context:property-placeholder location="classpath:jdbc.properties"/>
+
+       <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+              <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+              <property name="prefix" value="/WEB-INF/jsp/"></property>
+              <property name="suffix" value=".jsp"></property>
+       </bean>
+
+       <!--<bean id="stringHttpMessageConverter"    class="org.springframework.http.converter.StringHttpMessageConverter">-->
+       <!--<property name="supportedMediaTypes">-->
+       <!--<list>-->
+       <!--<value>text/html;charset=UTF-8</value>-->
+       <!--<value>text/plain;charset=UTF-8</value>-->
+       <!--<value>application/json;charset=UTF-8</value>-->
+       <!--</list>-->
+       <!--</property>-->
+       <!--</bean>-->
+
+       <!-- 配置数据源-->
+       <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+              <property name="driverClassName" value="${jdbc.driver}" />
+              <property name="url" value="${jdbc.url}" />
+              <property name="username" value="${jdbc.username}" />
+              <property name="password" value="${jdbc.password}" />
+       </bean>
+
+
+       <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+              <property name="dataSource" ref="dataSource" />
+              <property name="typeAliasesPackage" value="classpath:com.mocredit.**.model" />
+       </bean>
+
+       <!-- 扫描 mapper -->
+       <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+              <property name="basePackage" value="com.mocredit.**.dao"></property>
+       </bean>
+
+
+       <!-- ================================事务相关控制=================================================    -->
+       <bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+              <property name="dataSource" ref="dataSource"></property>
+
+       </bean>
+
+       <!-- 单独定义一种匹配模式，有时候服务接口要按照功能描述，没办法包含关键字段。所以加上后缀 -->
+
+       <tx:advice id="userTxAdvice" transaction-manager="transactionManager">
+              <tx:attributes>
+                     <tx:method name="delete*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" no-rollback-for="java.lang.RuntimeException"/>
+                     <tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.RuntimeException" />
+                     <tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" />
+                     <tx:method name="*WithTran" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" />
+                     <tx:method name="find*" propagation="SUPPORTS"/>
+                     <tx:method name="get*" propagation="SUPPORTS"/>
+                     <tx:method name="select*" propagation="SUPPORTS"/>
+
+              </tx:attributes>
+       </tx:advice>
+
+       <aop:config>
+              <aop:pointcut id="pc" expression="execution(public * com.mocredit.verifyCode.service.*.*(..))" />
+
+              <aop:advisor pointcut-ref="pc" advice-ref="userTxAdvice" />
+       </aop:config>
+
+       <!-- 定时任务扫描 -->
+       <task:annotation-driven scheduler="myScheduler"/>
+       <task:scheduler id="myScheduler" pool-size="1000"/>
+</beans>

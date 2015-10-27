@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.mocredit.verifyCode.dao.VerifiedCodeMapper">
+    <resultMap id="baseResultMap" type="com.mocredit.verifyCode.model.TVerifiedCode">
+        <id column="id" property="id" jdbcType="VARCHAR" ></id>
+        <result column="activity_id" property="activityId" jdbcType="VARCHAR" ></result>
+        <result column="activity_name" property="activityName" jdbcType="VARCHAR" ></result>
+        <result column="amount" property="amount" jdbcType="DECIMAL" ></result>
+        <result column="code" property="code" jdbcType="VARCHAR" ></result>
+        <result column="code_serial_number" property="codeSerialNumber" jdbcType="VARCHAR" ></result>
+        <result column="device" property="device" jdbcType="VARCHAR" ></result>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" ></result>
+        <result column="shop_id" property="shopId" jdbcType="VARCHAR" ></result>
+        <result column="shop_name" property="shopName" jdbcType="VARCHAR" ></result>
+        <result column="issue_enterprise_id" property="issueEnterpriseId" jdbcType="VARCHAR" ></result>
+        <result column="issue_enterprise_name" property="issueEnterpriseName" jdbcType="VARCHAR" ></result>
+        <result column="number" property="number" jdbcType="INTEGER" ></result>
+        <result column="request_serial_number" property="requestSerialNumber" jdbcType="VARCHAR" ></result>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" ></result>
+        <result column="store_id" property="storeId" jdbcType="VARCHAR" ></result>
+        <result column="store_name" property="storeName" jdbcType="VARCHAR" ></result>
+        <result column="verify_time" property="verifyTime" jdbcType="TIMESTAMP" ></result>
+        <result column="verify_type" property="verifyType" jdbcType="INTEGER" ></result>
+        <result column="contract_id" property="contractId" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+
+    <!-- 根据券码查询券码验证记录 -->
+    <select id="findVerifiedCodesByCode" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="java.lang.String" >
+        <![CDATA[
+          SELECT * FROM  t_verified_code where code=#{code}
+        ]]>
+    </select>
+
+    <select id="findVerifiedCodesByCodeAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="map">
+        <![CDATA[
+          SELECT * FROM  t_verified_code where code=#{code} and request_serial_number=#{request_serial_number}
+        ]]>
+    </select>
+
+    <select id="findVerifiedCodesByDeviceAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="map">
+        <![CDATA[
+          SELECT * FROM  t_verified_code where device=#{device} and request_serial_number=#{request_serial_number} and DATE_FORMAT( verify_time,'%Y%m%d')= DATE_FORMAT( #{date},'%Y%m%d')
+        ]]>
+    </select>
+    <!-- 根据券码序列号（券码ID）查询券码验证记录 -->
+    <select id="findVerifiedCodesByActiveCodeId" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="java.lang.String" >
+        <![CDATA[
+          SELECT * FROM  t_verified_code where code_serial_number=#{codeSerialNumber}
+        ]]>
+    </select>
+
+    <!-- 插入记录 -->
+    <insert id="insertVerifiedCode" parameterType="com.mocredit.verifyCode.model.TVerifiedCode">
+        <![CDATA[
+        INSERT  INTO t_verified_code (
+          id,code,code_serial_number,verify_time,activity_id,activity_name,
+          amount,device,store_id,store_name,start_time,end_time,
+          number,request_serial_number,issue_enterprise_id,issue_enterprise_name,
+          shop_id,shop_name,verify_type,contract_id
+        )VALUES (
+          #{id},#{code},#{codeSerialNumber},#{verifyTime},#{activityId},#{activityName},
+          #{amount},#{device},#{storeId},#{storeName},#{startTime},#{endTime},
+          #{number},#{requestSerialNumber},#{issueEnterpriseId},#{issueEnterpriseName},
+          #{shopId},#{shopName},#{verifyType},#{contractId}
+        )
+        ]]>
+    </insert>
+
+</mapper>

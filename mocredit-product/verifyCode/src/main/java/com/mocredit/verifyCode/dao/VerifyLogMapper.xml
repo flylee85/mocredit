@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.mocredit.verifyCode.dao.VerifyLogMapper">
+
+    <resultMap id="baseResultMap" type="com.mocredit.verifyCode.model.TVerifyLog">
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="code" property="code" jdbcType="VARCHAR"></result>
+        <result column="code_serial_number" property="codeSerialNumber" jdbcType="VARCHAR"></result>
+        <result column="activity_id" property="activityId" jdbcType="VARCHAR"></result>
+        <result column="activity_name" property="activityName" jdbcType="VARCHAR"></result>
+        <result column="device" property="device" jdbcType="VARCHAR"></result>
+        <result column="store_id" property="storeId" jdbcType="VARCHAR"></result>
+        <result column="store_name" property="storeName" jdbcType="VARCHAR"></result>
+        <result column="verify_time" property="verifyTime" jdbcType="TIMESTAMP"></result>
+        <result column="success" property="success" jdbcType="BOOLEAN"></result>
+        <result column="error_code" property="errorCode" jdbcType="VARCHAR"></result>
+        <result column="message" property="message" jdbcType="VARCHAR"></result>
+        <result column="request_serial_number" property="request_serial_number" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+
+    <insert id="save" parameterType="com.mocredit.verifyCode.model.TVerifyLog" >
+        INSERT  INTO t_verify_log
+        (id,code,code_serial_number,activity_id,activity_name,device,store_id,store_name,verify_time,success,error_code,message,request_serial_number)
+        VALUES
+        (#{id},#{code},#{codeSerialNumber},#{activityId},#{activityName},#{device},#{storeId},#{storeName},#{verifyTime},#{success},#{errorCode},#{message},#{requestSerialNumber})
+    </insert>
+
+    <!-- 批量保存券码 -->
+    <insert id="batchSave" parameterType="java.util.List">
+        <choose>
+            <when test=" null !=list and list.size >0 ">
+                INSERT INTO t_verify_log
+                (id,code,code_serial_number,activity_id,activity_name,device,store_id,store_name,verify_time,success,error_code,message,request_serial_number)
+                VALUES
+                <foreach collection="list" item="item" index="index" separator=",">
+                    (
+                    #{item.id},#{item.code},#{item.codeSerialNumber},#{item.activityId},#{item.activityName},#{item.device},#{item.storeId},#{item.storeName},#{item.verifyTime},#{item.success},#{item.errorCode},#{item.message},#{item.requestSerialNumber})
+                </foreach>
+            </when>
+            <otherwise>
+                select 1 from act_activity_store where 1=0
+            </otherwise>
+        </choose>
+    </insert>
+</mapper>

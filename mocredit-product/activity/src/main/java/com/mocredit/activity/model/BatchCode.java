@@ -16,7 +16,7 @@ public class BatchCode implements Serializable{
 	//id,id
 	private String id ;
 	//发码批次id,order_id
-	private String orderId ;
+	private String batchId ;
 	//码号,code
 	private String code ;
 	//码id,code_id
@@ -35,11 +35,11 @@ public class BatchCode implements Serializable{
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getOrderId(){
-		return orderId;
+	public String getBatchId(){
+		return batchId;
 	}
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
+	public void setBatchId(String batchId) {
+		this.batchId = batchId;
 	}
 	public String getCode(){
 		return code;

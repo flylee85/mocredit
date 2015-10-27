@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.mocredit.verifyCode.dao.ActivityCodeMapper">
+
+    <resultMap id="baseResultMap" type="com.mocredit.verifyCode.model.TActivityCode">
+        <id column="id" property="id" jdbcType="VARCHAR" ></id>
+        <result column="code" property="code" jdbcType="VARCHAR" ></result>
+        <result column="code_serial_number" property="codeSerialNumber" jdbcType="VARCHAR" ></result>
+        <result column="activity_id" property="activityId" jdbcType="VARCHAR" ></result>
+        <result column="activity_name" property="activityName" jdbcType="VARCHAR" ></result>
+        <result column="max_num" property="maxNum" jdbcType="INTEGER" ></result>
+        <result column="amount" property="amount" jdbcType="DECIMAL" ></result>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" ></result>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" ></result>
+        <result column="order_id" property="orderId" jdbcType="VARCHAR" ></result>
+        <result column="createtime" property="createTime" jdbcType="TIMESTAMP" ></result>
+        <result column="issue_enterprise_id" property="issueEnterpriseId" jdbcType="VARCHAR" ></result>
+        <result column="issue_enterprise_name" property="issueEnterpriseName" jdbcType="VARCHAR" ></result>
+        <result column="custom_mobile" property="customMobile" jdbcType="VARCHAR" ></result>
+        <result column="release_time" property="releaseTime" jdbcType="TIMESTAMP" ></result>
+        <result column="contract_id" property="contractId" jdbcType="VARCHAR"></result>
+        <result column="select_date" property="selectDate" jdbcType="VARCHAR"></result>
+    </resultMap>
+    <!-- 插入码 -->
+    <insert id="insertActivityCode" parameterType="com.mocredit.verifyCode.model.TActivityCode">
+        <![CDATA[
+        INSERT  INTO t_activity_code (
+          id,code,code_serial_number,activity_id,activity_name,max_num,
+          amount,start_time,end_time,order_id,createtime,
+          issue_enterprise_id,issue_enterprise_name,custom_mobile,release_time,contract_id
+        )VALUES (
+          #{id},#{code},#{codeSerialNumber},#{activityId},#{activityName},#{maxNum},
+          #{amount},#{startTime},#{endTime},#{orderId},#{createTime},
+          #{issueEnterpriseId},#{issueEnterpriseName},#{customMobile},#{releaseTime},#{contractId}
+        )
+        ]]>
+    </insert>
+
+    <!-- 根据编码查询码记录 -->
+    <select id="findActivityCodeByCode" resultType="com.mocredit.verifyCode.model.TActivityCode" resultMap="baseResultMap" parameterType="java.lang.String" >
+        <![CDATA[
+          SELECT * FROM  t_activity_code where code=#{code}
+        ]]>
+    </select>
+
+
+    <select id="findActivityCodeById" resultType="com.mocredit.verifyCode.model.TActivityCode" resultMap="baseResultMap" parameterType="java.lang.String" >
+        <![CDATA[
+          SELECT * FROM  t_activity_code where id=#{id}
+        ]]>
+    </select>
+
+
+    <!-- 采用for update的方式锁定 行 -->
+    <select id="selectActivityCodeForUpdateById" resultType="com.mocredit.verifyCode.model.TActivityCode" resultMap="baseResultMap" parameterType="java.lang.String">
+        <![CDATA[
+         select * from t_activity_code where id=#{id} for update
+         ]]>
+    </select>
+
+    <!-- 更新券码 -->
+    <update id="updateActivityCode" parameterType="com.mocredit.verifyCode.model.TActivityCode">
+
+          UPDATE t_activity_code
+          <set>
+            <if test=" null != code">  code=#{code}, </if>
+            <if test=" null != codeSerialNumber">  code_serial_number=#{codeSerialNumber}, </if>
+            <if test=" null != activityId">  activity_id=#{activityId} ,</if>
+            <if test=" null != activityName">  activity_name=#{activityName} ,</if>
+            <if test=" null != maxNum">  max_num=#{maxNum}, </if>
+            <if test=" null != amount">  amount=#{amount} ,</if>
+            <if test=" null != startTime">  start_time=#{startTime} ,</if>
+            <if test=" null != endTime">  end_time=#{endTime} ,</if>
+            <if test=" null != orderId">  order_id=#{orderId} ,</if>
+            <if test=" null != createTime">  createtime=#{createTime} ,</if>
+            <if test=" null != issueEnterpriseId">  issue_enterprise_id=#{issueEnterpriseId} ,</if>
+            <if test=" null != issueEnterpriseName">  issue_enterprise_name=#{issueEnterpriseName} ,</if>
+            <if test=" null != customMobile">  custom_mobile=#{customMobile} ,</if>
+            <if test=" null != releaseTime">  release_time=#{releaseTime} ,</if>
+            <if test=" null != contractId">  contract_id=#{contractId} ,</if>
+            <if test=" null != selectDate">  select_date=#{selectDate} ,</if>
+          </set>
+          where id=#{id}
+
+    </update>
+
+    <!-- 批量保存券码 -->
+    <insert id="batchSave" parameterType="java.util.List">
+        <choose>
+            <when test=" null !=activityCodes and activityCodes.size >0 ">
+                INSERT INTO t_activity_code (
+                id,code,code_serial_number,activity_id,activity_name,max_num,
+                amount,start_time,end_time,order_id,createtime,
+                issue_enterprise_id,issue_enterprise_name,custom_mobile,release_time,contract_id,select_date
+                )VALUES
+                <foreach collection="activityCodes" item="item" index="index" separator=",">
+                    (#{item.id},#{item.code},#{item.codeSerialNumber},#{item.activityId},#{item.activityName},#{item.maxNum},
+                    #{item.amount},#{item.startTime},#{item.endTime},#{item.orderId},#{item.createTime},
+                    #{item.issueEnterpriseId},#{item.issueEnterpriseName},#{item.customMobile},#{item.releaseTime},#{item.contractId},#{item.selectDate})
+                </foreach>
+            </when>
+            <otherwise>
+                select 1 from act_activity_store where 1=0
+            </otherwise>
+        </choose>
+    </insert>
+
+    <update id="updateActActivity" parameterType="map">
+        UPDATE t_activity_code
+        <set>
+            <if test=" null!=activityName">activity_name=#{activityName}</if>
+            <if test=" null != maxNum">  max_num=#{maxNum}, </if>
+            <if test=" null != amount">  amount=#{amount} ,</if>
+            <if test=" null != startTime">  start_time=#{startTime} ,</if>
+            <if test=" null != endTime">  end_time=#{endTime} ,</if>
+            <if test=" null != issueEnterpriseId">  issue_enterprise_id=#{issueEnterpriseId} ,</if>
+            <if test=" null != issueEnterpriseName">  issue_enterprise_name=#{issueEnterpriseName} ,</if>
+            <if test=" null != contractId">  contract_id=#{contractId} ,</if>
+            <if test=" null != selectDate">  select_date=#{selectDate} ,</if>
+        </set>
+        where activity_id=#{activityId}
+    </update>
+
+</mapper>

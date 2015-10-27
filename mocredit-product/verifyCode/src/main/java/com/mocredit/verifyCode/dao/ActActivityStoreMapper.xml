@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.mocredit.verifyCode.dao.ActActivityStoreMapper">
+
+    <resultMap id="baseResultMap" type="com.mocredit.verifyCode.model.ActActivityStore">
+        <result column="activity_id" property="activityId" jdbcType="VARCHAR" ></result>
+        <result column="enterprise_id" property="enterpriseId" jdbcType="VARCHAR" ></result>
+        <result column="shop_id" property="shopId" jdbcType="VARCHAR" ></result>
+        <result column="store_id" property="storeId" jdbcType="VARCHAR" ></result>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.mocredit.verifyCode.model.ActActivityStore">
+        <![CDATA[
+        INSERT  INTO act_activity_store (
+           activity_id,store_id,enterprise_id,shop_id
+        )VALUES (
+          #{activityId},#{storeId},#{enterpriseId},#{shopId}
+        )
+        ]]>
+    </insert>
+
+    <!-- 根据活动主键获取记录 -->
+    <select id="findByActivityId" parameterType="java.lang.String" resultMap="baseResultMap">
+        <![CDATA[
+          select * from act_activity_store where activity_id=#{activity_id}
+        ]]>
+    </select>
+
+    <!-- 批量保存 -->
+    <insert id="batchSave" parameterType="java.util.List">
+        <choose>
+            <when test=" null !=actActivityStores and actActivityStores.size >0 ">
+                INSERT  INTO act_activity_store (
+                activity_id,store_id,enterprise_id,shop_id,store_code
+                )
+                VALUES
+                <foreach collection="actActivityStores" item="item" index="index" separator=",">
+                    ( #{item.activityId},#{item.storeId},#{item.enterpriseId},#{item.shopId},#{item.storeCode})
+                </foreach>
+            </when>
+            <otherwise>
+                select 1 from act_activity_store where 1=0
+            </otherwise>
+        </choose>
+    </insert>
+
+    <delete id="deleteByActivityId" parameterType="java.lang.String">
+        DELETE  from act_activity_store WHERE activity_id=#{activity_id}
+    </delete>
+
+</mapper>
