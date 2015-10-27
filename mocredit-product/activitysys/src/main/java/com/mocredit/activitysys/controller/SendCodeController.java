@@ -35,6 +35,20 @@ public class SendCodeController {
     @Autowired
     private SendCodeService sendCodeService;
 
+    @RequestMapping("/sendCodeById")
+    @ResponseBody
+    public String sendCodeById(String actId, String id) {
+        sendCodeService.sendCodeById(actId, id);
+        return JSON.toJSONString(new AjaxResponseData());
+    }
+
+    @RequestMapping("/sendCodeByBatchId")
+    @ResponseBody
+    public String sendCodeByBatchId(String actId, String batchId) {
+        sendCodeService.sendCodeByBatchId(actId, batchId);
+        return JSON.toJSONString(new AjaxResponseData());
+    }
+
     @RequestMapping("/delBatchById")
     @ResponseBody
     public String delBatchById(String batchId) {
@@ -61,8 +75,10 @@ public class SendCodeController {
 
     }
 
+
     @RequestMapping("/download")
     @ResponseBody
+
     public String download(String type, String id, String name, Integer count, HttpServletResponse response) {
         //定义返回页面的对象
         ResponseData responseData = new AjaxResponseData();
@@ -80,10 +96,11 @@ public class SendCodeController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            List<String> codeList = sendCodeService.downloadList(type, id, count);
-            for (String code : codeList) {
+            List<BatchCode> codeList = sendCodeService.downloadList(type, name, id, count);
+            for (BatchCode batchCode : codeList) {
                 Map dataMap = new HashMap();
-                dataMap.put("码", code);
+                dataMap.put("手机号", batchCode.getCustomerMobile());
+                dataMap.put("码", batchCode.getCode());
                 codeMap.add(dataMap);
             }
             try {
@@ -107,7 +124,9 @@ public class SendCodeController {
     }
 
     public void setTitleAndKey(List<String> titleList, List<String> keyList) {
+        titleList.add("手机号");
         titleList.add("码");
+        keyList.add("手机号");
         keyList.add("码");
     }
 
@@ -224,15 +243,15 @@ public class SendCodeController {
             //调用导入联系人方法
             Map<String, Object> operMap = sendCodeService.importCustomor(actId, IDUtil.getID(), name, downloadChannel, selectExcel.getInputStream());
             ;
-            //获取导入联系人方法执行结果
-            if (Boolean.parseBoolean(String.valueOf(operMap.get("success")))) {
-                //如果导入结果为true，则只需要将导入消息设置为data就可以，因为返回页面的对象中，默认为true。
-                responseData.setData(operMap.get("msg"));
-            } else {
-                //如果导入结果为false，则需要将返回页面的对象中设置为false，并且需要将导入消息设置为data就可以。
-                responseData.setSuccess(false);
-                responseData.setData(operMap.get("msg"));
-            }
+//            //获取导入联系人方法执行结果
+//            if (Boolean.parseBoolean(String.valueOf(operMap.get("success")))) {
+//                //如果导入结果为true，则只需要将导入消息设置为data就可以，因为返回页面的对象中，默认为true。
+//                responseData.setData(operMap.get("msg"));
+//            } else {
+//                //如果导入结果为false，则需要将返回页面的对象中设置为false，并且需要将导入消息设置为data就可以。
+//                responseData.setSuccess(false);
+//                responseData.setData(operMap.get("msg"));
+//            }
         } else {
             //如果文件大小为0，则将返回页面的对象设置为false
             responseData.setSuccess(false);

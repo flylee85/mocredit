@@ -148,22 +148,56 @@
                 "columns": [
                     {"data": "id", "name": "id", "width": "100px"},
                     {"data": "batch", "name": "batch", "width": "90px", "sortable": false},
-                    {"data": "pickNumber", "name": "pickNumber", "width": "90px", "sortable": false},
-                    {"data": "sendSuccessNumber", "name": "sendSuccessNumber", "className": "name", "width": "100px"},
+                    {"data": "importNumber", "name": "pickNumber", "width": "90px", "sortable": false},
+                    {"data": "importSuccessNumber", "name": "sendSuccessNumber", "className": "name", "width": "100px"},
                     {"data": "createtime", "name": "createtime", "width": "180px"},
-                    {"data": "status", "name": "status", "width": "130px"},
-                    {"data": "sendSmsType", "name": "sendSmsType", "width": "170px"},
+                    {"data": "status", "name": "status", "width": "170px"},
+                    {"data": "sendSmsType", "name": "sendSmsType", "width": "100px"},
                     {"data": null, "width": "170px"}
                 ],
                 "columnDefs": [
                     {"searchable": false, "targets": [2]},
                     {
+                        "targets": 5,
+                        "data": "status",
+                        "sortable": false,
+                        "render": function (data, type, full) {
+                            //  batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
+                            var statusText;
+                            if (data == "01") {
+                                statusText = "已提码，未导入联系人";
+                            }
+                            if (data == "02") {
+                                statusText = "已导入联系人，待送码";
+                            }
+                            if (data == "03") {
+                                statusText = "已送码，待发码";
+                            }
+                            if (data == "04") {
+                                statusText = "已发码";
+                            }
+                            return statusText;
+                        }
+                    },
+                    {
+                        "targets": 6,
+                        "data": "sendSmsType",
+                        "sortable": false,
+                        "render": function (data, type, full) {
+                            var sendSmsTypeText;
+                            if (data == "01") {
+                                sendSmsTypeText = "短信";
+                            }
+                            return sendSmsTypeText;
+                        }
+                    },
+                    {
                         "targets": 7,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
-                            return '<a href="sendCode/download?type=02&id=' + data['id'] + '&name=' + data['batch'] + '"target="_blank" >下载</a>' +
-                                    '<a href="codedetail.html?' + data['id'] + '"target="_blank" >详情</a>' +
+                            return '<a href="javascript:sendCode(\'' + data['id'] + '\')" >发码</a>' +
+                                    '<a href="codedetail.html?' + data['id'] + '-' + actId + '"target="_blank" >详情</a>' +
                                     '<a href="javascript:delBatch(\'' + data['id'] + '\')" >删除</a>';
                         }
                     }
@@ -172,48 +206,19 @@
         }
     }
 </script>
+<script>
+    function sendCode(id) {
 
-<script>
-    /**
-     * 添加发码活动确认按钮
-     */
-    $("#uploadAndSend").click(function () {
-        var formUpLoadAndSend = $("#uploadAndSendForm").parsley();
-        if (!formUpLoadAndSend.validate()) {
-            return false;
-        }
-        //获取表单基本元素对象
-        var formArray = $("#uploadAndSendForm").serializeArray();
-        var formObject = new Object();
-        $.each(formArray, function (index) {
-            if (formObject[this['name']]) {
-                formObject[this['name']] = formObject[this['name']] + "," + this['value'];
+        $.get("sendCode/sendCodeByBatchId", {"actId": actId, "batchId": id}, function (msg) {
+            if (msg.success) {
+                alert("发送成功")
+                window.location.reload();
             } else {
-                formObject[this['name']] = this['value'];
+                alert("发送失败");
+                window.location.reload();
             }
-        });
-        $.ajax({
-            type: "post",
-            url: "sendCode/importCustomer",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(formObject),
-            dataType: "json",
-            success: function (result) {
-                if (result.success) {
-//                    sendMsg(true, "成功");
-//                    $('#activityCurrentPage').val(1);
-//                    $('#content').load('activity.html');
-                } else {
-//                    sendMsg(false, result.errorMsg);
-                }
-            },
-            error: function (result) {
-//                sendMsg(false, result.errorMsg);
-            }
-        });
-    });
-</script>
-<script>
+        }, 'json');
+    }
     function delBatch(id) {
 
         $.get("sendCode/delBatchById", {"batchId": id}, function (msg) {
@@ -222,7 +227,7 @@
                 window.location.reload();
             } else {
                 alert("删除失败");
-                window.location.reload()
+                window.location.reload();
             }
         }, 'json');
     }

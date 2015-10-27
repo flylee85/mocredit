@@ -133,9 +133,16 @@ $(function () {
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
-                            return '<a href="tima.html?' + data['id'] + '"target="_blank" >提码</a>' +
-                                '<a href="sendcode.html?' + data['id'] + '"target="_blank" >发码</a>' +
-                                '<a href="sendcode.html?' + data['id'] + '"target="_blank" >批次管理</a>';
+                            var href;
+                            if (data['sendSmsType'] == "01") {
+                                href = '<a href="tima.html?' + data['id'] + '"target="_blank" >提码</a>' +
+                                    '<a href="tima.html?' + data['id'] + '"target="_blank" >批次管理</a>';
+                            }
+                            if (data['sendSmsType'] == "02") {
+                                href = '<a href="sendcode.html?' + data['id'] + '"target="_blank" >发码</a>' +
+                                    '<a href="sendcode.html?' + data['id'] + '"target="_blank" >批次管理</a>';
+                            }
+                            return href;
                         }
                     }
                 ]

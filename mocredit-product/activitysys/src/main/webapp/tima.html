@@ -92,7 +92,7 @@
 <script src="common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
 <script>
     var url = window.location.search;
-    var actId;
+    var actId
     if (url.lastIndexOf("?") != -1) {
         actId = url.substring(url.lastIndexOf("?") + 1, url.length);
 
@@ -122,19 +122,53 @@
                     {"data": "pickNumber", "name": "pickNumber", "width": "90px", "sortable": false},
                     {"data": "sendSuccessNumber", "name": "sendSuccessNumber", "className": "name", "width": "100px"},
                     {"data": "createtime", "name": "createtime", "width": "180px"},
-                    {"data": "status", "name": "status", "width": "130px"},
-                    {"data": "sendSmsType", "name": "sendSmsType", "width": "170px"},
+                    {"data": "status", "name": "status", "width": "170px"},
+                    {"data": "sendSmsType", "name": "sendSmsType", "width": "100px"},
                     {"data": null, "width": "170px"}
                 ],
                 "columnDefs": [
                     {"searchable": false, "targets": [2]},
                     {
+                        "targets": 5,
+                        "data": "status",
+                        "sortable": false,
+                        "render": function (data, type, full) {
+                            //  batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
+                            var statusText;
+                            if (data == "01") {
+                                statusText = "已提码，未导入联系人";
+                            }
+                            if (data == "02") {
+                                statusText = "已导入联系人，待送码";
+                            }
+                            if (data == "03") {
+                                statusText = "已送码，待发码";
+                            }
+                            if (data == "04") {
+                                statusText = "已发码";
+                            }
+                            return statusText;
+                        }
+                    },
+                    {
+                        "targets": 6,
+                        "data": "sendSmsType",
+                        "sortable": false,
+                        "render": function (data, type, full) {
+                            var sendSmsTypeText;
+                            if (data == "01") {
+                                sendSmsTypeText = "下载";
+                            }
+                            return sendSmsTypeText;
+                        }
+                    },
+                    {
                         "targets": 7,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
-                            return '<a href="sendCode/download?type=02&id=' + data['id'] + '&name=' + data[name] + '"target="_blank" >下载</a>' +
-                                    '<a href="codedetail.html?' + data['id'] + '"target="_blank" >详情</a>' +
+                            return '<a href="sendCode/download?type=02&id=' + data['id'] + '&name=' + data['batch'] + '"target="_blank" >下载</a>' +
+                                    '<a href="codedetail.html?' + data['id'] + '-' + actId + '"target="_blank" >详情</a>' +
                                     '<a href="javascript:delBatch(\'' + data['id'] + '\')" >删除</a>';
                         }
                     }
@@ -168,17 +202,15 @@
 </script>
 <script>
     function delBatch(id) {
-        $.confirmDailog({
-            confirm: function () {
-                $.get("sendCode/delBatch", {"id": id}, function (msg) {
-                    if (msg.success) {
-                        sendMsg(true, "删除成功");
-                    } else {
-                        sendMsg(false, "删除失败，请重试");
-                    }
-                }, 'json');
+        $.get("sendCode/delBatchById", {"batchId": id}, function (msg) {
+            if (msg.success) {
+                alert("删除成功")
+                window.location.reload();
+            } else {
+                alert("删除失败");
+                window.location.reload();
             }
-        });
+        }, 'json');
     }
 </script>
 </body>
