@@ -706,7 +706,7 @@ public class ActivityServiceImpl implements ActivityService {
 			oc.setCustomerName(name);
 			oc.setCustomerMobile(mobile);
 			oc.setId(IDUtil.getID());
-			oc.setOrderId(orderId);
+			oc.setBatchId(orderId);
 			oc.setStatus("01");// 01：已导入，未提码
 
 			batchOrderCodeList.add(oc);
@@ -1286,7 +1286,7 @@ public class ActivityServiceImpl implements ActivityService {
 					for (Map<String, Object> codeMap:codeList) {
 						BatchCode oc = new BatchCode();
 						oc.setId(IDUtil.getID());
-						oc.setOrderId(batch.getId());
+						oc.setBatchId(batch.getId());
 						oc.setCodeId(String.valueOf(codeMap.get("id")));
 						oc.setCode(String.valueOf(codeMap.get("code")));
 						oc.setStartTime(activity.getStartTime());

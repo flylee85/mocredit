@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.mocredit.verifyCode.dao.ActivityCodeBlackListsMapper">
+
+    <resultMap id="baseResultMap" type="com.mocredit.verifyCode.model.ActivityCodeBlackLists">
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="code" property="code" jdbcType="VARCHAR" ></result>
+        <result column="activity_id" property="activityId" jdbcType="VARCHAR" ></result>
+        <result column="activity_code_id" property="activityCodeId" jdbcType="VARCHAR" ></result>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" ></result>
+        <result column="blacklists_type" property="blacklistsType" jdbcType="INTEGER" ></result>
+        <result column="blacklists_desc" property="blacklistsDesc" jdbcType="VARCHAR" ></result>
+     </resultMap>
+
+    <!-- 通过活动ID，将全码表中对应的 券码，加入到黑名单 -->
+    <insert id="addBlackListsByActivityId" parameterType="map">
+        insert into t_activity_code_blacklists
+          (id,code,activity_id,activity_code_id,create_time,blacklists_type,blacklists_desc)
+        select replace(uuid(),'-','') ,code, activity_id,id,NOW(),#{type},#{desc}
+        from t_activity_code where activity_id=#{activity_id}
+
+    </insert>
+
+    <!-- 根据券码号查询 黑名单中匹配的记录-->
+    <select id="findBlackListsByCode" resultMap="baseResultMap" resultType="com.mocredit.verifyCode.model.ActivityCodeBlackLists" parameterType="java.lang.String">
+        select  *  from t_activity_code_blacklists where code=#{code}
+    </select>
+
+    <!-- 根据活动 删除黑名单中锁定的券码 -->
+    <delete id="deleteBlackListsByActivityId" parameterType="java.lang.String">
+        DELETE  from t_activity_code_blacklists where activity_id=#{activity_id}
+    </delete>
+
+</mapper>

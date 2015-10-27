@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.mocredit.verifyCode.dao.ActivityInfoMapper">
+
+    <resultMap id="baseResultMap" type="com.mocredit.verifyCode.model.TActivityInfo">
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="activity_id" property="activityId" jdbcType="VARCHAR"></result>
+        <result column="ticket_title" property="ticketTitle" jdbcType="VARCHAR"></result>
+        <result column="ticket_content" property="ticketContent" jdbcType="VARCHAR"></result>
+        <result column="pos_success_msg" property="posSuccessMsg" jdbcType="VARCHAR"></result>
+        <result column="success_sms_msg" property="successSmsMsg" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+    <!-- 保存 -->
+    <insert id="save" parameterType="com.mocredit.verifyCode.model.TActivityInfo">
+      INSERT  INTO  t_activity_info
+        (id,activity_id,ticket_title,ticket_content,pos_success_msg,success_sms_msg)
+        VALUES
+        (#{id},#{activityId},#{ticketTitle},#{ticketContent},#{posSuccessMsg},#{successSmsMsg})
+    </insert>
+    
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE  from t_activity_info WHERE  id=#{id}
+    </delete>
+
+    <!-- 根据活动id删除活动信息-->
+    <delete id="deleteByActivityId" parameterType="java.lang.String">
+        DELETE  FROM  t_activity_info WHERE  activity_id=#{activity_id}
+    </delete>
+
+    <!-- 根据活动ID，获取对应的活动信息 -->
+    <select id="findByActivityId" parameterType="java.lang.String" resultType="com.mocredit.verifyCode.model.TActivityInfo" resultMap="baseResultMap">
+        SELECT  * from t_activity_info WHERE  activity_id=#{activity_id}
+    </select>
+
+</mapper>

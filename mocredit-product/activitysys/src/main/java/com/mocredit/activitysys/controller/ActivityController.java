@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -639,9 +640,9 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	}
-//	@RequestMapping("/test")
-//	public String test(){
-//		return activityService.extractedCode("c6efb2223be54cbe944a3f4afbdd0023", "批次"+new Random().nextInt(), 10)+"";
-//	
-//	}
+	@RequestMapping("/test")
+	public String test(){
+		return activityService.extractedCode("c6efb2223be54cbe944a3f4afbdd0023", "批次"+new Random().nextInt(), 10)+"";
+	
+	}
 }
