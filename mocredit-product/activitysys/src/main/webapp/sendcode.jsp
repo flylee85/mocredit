@@ -169,8 +169,8 @@
                 "columns": [
                     {"data": "id", "name": "id", "width": "100px"},
                     {"data": "batch", "name": "batch", "width": "90px", "sortable": false},
-                    {"data": "importNumber", "name": "pickNumber", "width": "90px", "sortable": false},
-                    {"data": "importSuccessNumber", "name": "sendSuccessNumber", "className": "name", "width": "100px"},
+                    {"data": "importNumber", "name": "importNumber", "width": "90px", "sortable": false},
+                    {"data": "importSuccessNumber", "name": "importSuccessNumber", "className": "name", "width": "100px"},
                     {"data": "createtime", "name": "createtime", "width": "180px"},
                     {"data": "status", "name": "status", "width": "170px"},
                     {"data": "sendSmsType", "name": "sendSmsType", "width": "100px"},
