@@ -87,4 +87,22 @@ public interface SendCodeService extends BaseService {
      * @return
      */
     boolean delBatchById(String batchId);
+
+    /**
+     * 查询活动id和批次id并且状态为导入状态的数据并发送短信到队列
+     *
+     * @param actId
+     * @param batchId
+     * @return
+     */
+    boolean sendCodeByBatchId(String actId, String batchId);
+
+    /**
+     * 查询活动id和商品码id并发送短信到队列
+     *
+     * @param actId
+     * @param id
+     * @return
+     */
+    boolean sendCodeById(String actId, String id);
 }

@@ -10,7 +10,7 @@ import java.util.Date;
 public class BatchCodeBvo extends BatchCode {
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createtime;
-    private String remark;
+    private String remark = "";
 
     public String getRemark() {
         return remark;
