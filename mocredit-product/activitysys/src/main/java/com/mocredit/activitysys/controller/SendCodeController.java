@@ -16,7 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,11 +31,19 @@ import java.util.Map;
 /**
  * Created by ytq on 2015/10/24.
  */
-@Controller
+@RestController
 @RequestMapping("/sendCode/")
 public class SendCodeController {
     @Autowired
     private SendCodeService sendCodeService;
+
+    @RequestMapping("/sendcode")
+    public ModelAndView sendCode(String id) {
+        //定义页面对象，用来跳转指定页面，下面一句代码的意思是：跳转到Web容器中的index.jsp页面
+        ModelAndView mav = new ModelAndView("sendcode");
+        mav.addObject("actId", id);
+        return mav;
+    }
 
     @RequestMapping("/sendCodeById")
     @ResponseBody
@@ -240,7 +250,7 @@ public class SendCodeController {
      */
     @RequestMapping("/importCustomer")
     @ResponseBody
-    public String importCustomer(@RequestParam MultipartFile selectExcel, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ModelAndView importCustomer(@RequestParam MultipartFile selectExcel, HttpServletRequest request, HttpServletResponse response) throws IOException {
         //获取前端传递过来的活动id，和导入联系人备注
         String actId = request.getParameter("actId");
         String downloadChannel = request.getParameter("downloadChannel");
@@ -274,8 +284,11 @@ public class SendCodeController {
             responseData.setSuccess(false);
             responseData.setData(e.getMessage());
         }
-        //返回页面数据
-        return JSON.toJSONString(responseData);
+        ModelAndView mav = new ModelAndView("sendcode");
+        mav.addObject("actId", actId);
+        mav.addObject("success", responseData.getSuccess());
+        mav.addObject("msg", responseData.getData());
+        return mav;
     }
 
     public static byte[] getBytes(String filePath) {

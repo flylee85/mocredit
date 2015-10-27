@@ -140,6 +140,13 @@ public class SendCodeServiceImpl implements SendCodeService {
                 }
             }
             sendCode(actId, batchCodeAllList);
+            //更新批次导入数量和成功数量
+            Batch batch = new Batch();
+            batch.setId(batchId);
+            batch.setImportFailNumber(batchCodeAllList.size());
+            batch.setImportSuccessNumber(batchCodeAllList.size());
+            batch.setStatus("04");
+            batchMapper.updateBatch(batch);
             //记录发送短信和保存发码两个步骤的日志
             StringBuffer optInfo1 = new StringBuffer();
             optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
@@ -240,6 +247,7 @@ public class SendCodeServiceImpl implements SendCodeService {
         batch.setId(actBatchId);
         batch.setImportFailNumber(importNumber);
         batch.setImportSuccessNumber(importNumber);
+        batch.setStatus("04");
         batchMapper.updateBatch(batch);
         //记录发送短信和保存发码两个步骤的日志
         StringBuffer optInfo1 = new StringBuffer();

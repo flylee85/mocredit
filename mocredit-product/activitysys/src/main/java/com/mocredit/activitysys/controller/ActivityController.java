@@ -34,7 +34,7 @@ import com.mocredit.base.util.IDUtil;
 import com.mocredit.base.util.PropertiesUtil;
 
 /**
- * 
+ *
  * 活动-控制类
  * 活动管理的入口类，所有活动管理相关的后台入口方法，都是在此类中
  * @author lishoukun
@@ -46,7 +46,7 @@ public class ActivityController{
 	//引入活动Service类
 	@Autowired
 	private ActivityService activityService;
-	
+
 	/**
 	 * 跳转至活动管理页面
 	 * @return model and view
@@ -73,7 +73,7 @@ public class ActivityController{
 			 * 如果程序执行到这里没有发生异常，则证明该操作成功执行,将获取到的数据放到返回页面的对象中
 			 */
 			List<Activity> activityList = activityService.queryActivityList(reqMap);
-			
+
 			responseData.setData(activityList);
 		}catch(Exception e){
 			//如果抛出异常，则将返回页面的对象设置为false
@@ -126,7 +126,7 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	 }
-	 
+
 	 /**
 	  * 查询活动管理相关选择门店分页数据，根据条件和分页参数
 	  * @param reqMap 请求参数
@@ -243,13 +243,13 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	}
-	
+
 	/**
 	 * 导入联系人(客户)
-	 * @param selectExcel，前端传递到后台的文件流对象，在form表单中，name必须是selectExcel 
+	 * @param selectExcel，前端传递到后台的文件流对象，在form表单中，name必须是selectExcel
 	 * @param activityId,活动id
 	 * @param remark,导入联系人备注
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@RequestMapping("/importCustomer")
 	@ResponseBody
@@ -257,7 +257,7 @@ public class ActivityController{
 		//获取前端传递过来的活动id，和导入联系人备注
 		String activityId = request.getParameter("activityId");
 		String remark = request.getParameter("remark");
-		
+
 		//定义返回页面的对象
 		ResponseData responseData = new AjaxResponseData();
 		/*
@@ -284,11 +284,11 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	}
-	
+
 	/**
 	 * 导入联系人Excel文件
-	 * @param selectExcel，前端传递到后台的文件流对象，在form表单中，name必须是selectExcel 
-	 * @throws IOException 
+	 * @param selectExcel，前端传递到后台的文件流对象，在form表单中，name必须是selectExcel
+	 * @throws IOException
 	 */
 	@RequestMapping("/importCustomerFile")
 	@ResponseBody
@@ -330,7 +330,7 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	}
-	
+
 	/**
 	 * 解析联系人Excel文件
 	 * @param activityId,活动id
@@ -350,10 +350,10 @@ public class ActivityController{
 			String importId = request.getParameter("importId");
 			String remark = request.getParameter("remark");
 			//获取项目Web的基础路径，获取项目Web基础路径下的importxlstmp文件夹路径，因为该文件夹是存放新上传文件的路径
-			String basePath = request.getSession().getServletContext().getRealPath("/")+ "/"; 
+			String basePath = request.getSession().getServletContext().getRealPath("/")+ "/";
 			String allPath = basePath+"/"+PropertiesUtil.getValue("activity.importXlsPath");;
 			//拼凑新上传文件保存的文件（包括文件名，使用文件夹路径+导入联系人Id+.xls这样的形式）
-			File file = new File(allPath+"/" + importId + ".xls");  
+			File file = new File(allPath+"/" + importId + ".xls");
 			//判断该新上传的文件是否存在
 	    	if(file.exists()){
 	    		//如果该新上传的文件存在,则解析该文件
@@ -386,7 +386,7 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	}
-	
+
 	/**
 	 * 短信发码
 	 * @param orderId 发码批次id，也就是导入联系人的id
@@ -424,7 +424,7 @@ public class ActivityController{
 	/**
 	   * 生成短信发码excel
 	   * @param orderId 发码批次id，也就是导入联系人的id
-	   * @throws IOException 
+	   * @throws IOException
 	   */
 	  @RequestMapping("/createSendSmsExcel")
 	  @ResponseBody
@@ -495,8 +495,8 @@ public class ActivityController{
 	  }
 	  /**
 	   * 导出短信发码excel
-	   * @param orderId 发码批次id，也就是导入联系人的id 
-	   * @throws IOException 
+	   * @param orderId 发码批次id，也就是导入联系人的id
+	   * @throws IOException
 	   */
 	  @RequestMapping("/exportSendSmsExcel")
 	  public void exportSendSmsExcel(@RequestParam String orderId,HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -567,7 +567,7 @@ public class ActivityController{
 		  //返回页面数据
 		  return JSON.toJSONString(responseData);
 	  }
-	
+
 	/**
 	 * 删除活动,根据主键
 	 * @param id 主键
@@ -591,7 +591,7 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	}
-	
+
 	/**
 	 * 批量删除活动,根据主键集合
 	 * @param ids 主键集合
@@ -615,7 +615,7 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	}
-	
+
 	/**
 	 * 删除活动,根据条件
 	 * @param reqMap   请求参数

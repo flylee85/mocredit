@@ -139,8 +139,8 @@ $(function () {
                                     '<a href="tima.html?' + data['id'] + '"target="_blank" >批次管理</a>';
                             }
                             if (data['sendSmsType'] == "02") {
-                                href = '<a href="sendcode.html?' + data['id'] + '"target="_blank" >发码</a>' +
-                                    '<a href="sendcode.html?' + data['id'] + '"target="_blank" >批次管理</a>';
+                                href = '<a href="sendCode/sendcode?id=' + data['id'] + '"target="_blank" >发码</a>' +
+                                    '<a href="sendCode/sendcode?id=' + data['id'] + '"target="_blank" >批次管理</a>';
                             }
                             return href;
                         }

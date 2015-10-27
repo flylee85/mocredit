@@ -16,7 +16,20 @@
     <![endif]-->
 </head>
 <body onload="initFamaTab()">
+<!-- .modal 发送提示 -->
+<div class="modal fade operaState in " data-keyboard="false" id="operaState">
+    <div class="modal-dialog modal-sm" style="margin-left:-150px;">
+        <div class="modal-content">
+            <div class="modal-body pop-div-content">
+                <p><i class="icon-success"></i></p>
 
+                <p class="tipP">
+                    <label id="promptMsg"></label>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 <section class="main padder">
     <div class="clearfix">
         <h4><i class="icon-list"></i> 提码列表</h4>
@@ -202,12 +215,12 @@
 </script>
 <script>
     function delBatch(id) {
-        $.get("sendCode/delBatchById", {"batchId": id}, function (msg) {
-            if (msg.success) {
-                alert("删除成功")
+        $.get("sendCode/delBatchById", {"batchId": id}, function (result) {
+            if (result.success) {
+                sendMsg(true, "删除批次成功");
                 window.location.reload();
             } else {
-                alert("删除失败");
+                sendMsg(false, result.errorMsg);
                 window.location.reload();
             }
         }, 'json');
