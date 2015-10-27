@@ -338,7 +338,7 @@
     <!--获取批次列表-->
     <select id="getActBatchCodeList" resultType="com.mocredit.activity.model.BatchCodeBvo"
             parameterType="java.util.Map">
-        select a.id, a.`code`,a.customer_mobile as customerMobile, b.createtime,b.`status`,b.remark from act_batch_code
+        select a.id, a.`code`,a.customer_mobile as customerMobile, b.createtime,a.`status`,b.remark from act_batch_code
         a LEFT
         JOIN act_batch b on a.batch_id=b.id where 1=1 and a.batch_id=#{batchId}
         <if test="searchInfoContent != null">

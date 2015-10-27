@@ -106,32 +106,49 @@ public class SendCodeServiceImpl implements SendCodeService {
 
     @Override
     public boolean sendCodeById(String actId, String id) {
-        List<BatchCode> batchCodeAllList = new ArrayList<>();
-        batchCodeAllList.add(batchCodeMapper.getBatchCodeById(id));
-        sendCode(actId, batchCodeAllList);
-        return true;
+        try {
+            List<BatchCode> batchCodeAllList = new ArrayList<>();
+            batchCodeAllList.add(batchCodeMapper.getBatchCodeById(id));
+            sendCode(actId, batchCodeAllList);
+            //记录发送短信和保存发码两个步骤的日志
+            StringBuffer optInfo1 = new StringBuffer();
+            optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
+            optLogService.addOptLog("活动Id:" + actId + ",码Id:" + id, "", "发送短信并保存发码记录-----" + optInfo1.toString());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     public boolean sendCodeByBatchId(String actId, String batchId) {
-        Map<String, Object> batchMap = new HashMap<>();
-        batchMap.put("batchId", batchId);
-        batchMap.put("status", "02");
-        List<BatchCode> batchCodeAllList = new ArrayList<>();
-        int pageNum = 1;
-        boolean isFinish = false;
-        while (!isFinish) {
-            PageHelper.startPage(pageNum, pageSize);
-            List<BatchCode> batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
-            if (batchCodeList.isEmpty()) {
-                isFinish = true;
-            } else {
-                batchCodeAllList.addAll(batchCodeList);
-                pageNum += 1;
+        try {
+            Map<String, Object> batchMap = new HashMap<>();
+            batchMap.put("batchId", batchId);
+            batchMap.put("status", "02");
+            List<BatchCode> batchCodeAllList = new ArrayList<>();
+            int pageNum = 1;
+            boolean isFinish = false;
+            while (!isFinish) {
+                PageHelper.startPage(pageNum, pageSize);
+                List<BatchCode> batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
+                if (batchCodeList.isEmpty()) {
+                    isFinish = true;
+                } else {
+                    batchCodeAllList.addAll(batchCodeList);
+                    pageNum += 1;
+                }
             }
+            sendCode(actId, batchCodeAllList);
+            //记录发送短信和保存发码两个步骤的日志
+            StringBuffer optInfo1 = new StringBuffer();
+            optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
+            optLogService.addOptLog("活动Id:" + actId + ",批次Id:" + batchId, "", "发送短信并保存发码记录-----" + optInfo1.toString());
+            return true;
+
+        } catch (Exception e) {
+            return false;
         }
-        sendCode(actId, batchCodeAllList);
-        return true;
     }
 
     @Override
@@ -148,8 +165,9 @@ public class SendCodeServiceImpl implements SendCodeService {
 
     @Override
     @Transactional
-    public Map<String, Object> importCustomor(String activityId, String batchId, String name, String type, InputStream in) {
+    public Map<String, Object> importCustomor(String activityId, String name, String type, InputStream in) {
         //定义一个返回Map
+        Map<String, Object> msgMap = new HashMap<String, Object>();
         Map<String, String> resultMap = new HashMap<String, String>();
         //解析excel流,并生成list
         List<List<Object>> excelList = ExcelUtil.excel2List(in);
@@ -159,7 +177,15 @@ public class SendCodeServiceImpl implements SendCodeService {
         Integer importNumber = null;
         if ("01".equals(type)) {
             for (int i = 1; i < excelList.size(); i++) {
-                resultMap.put(excelList.get(i).get(0) + "", excelList.get(i).get(1) + "");
+                String customerMobile = excelList.get(i).get(0) + "";
+                String customerName = excelList.get(i).get(1) + "";
+                resultMap.put(customerMobile, customerName);
+                //如果不是正确的手机格式，则返回错误信息
+                if (!ValidatorUtil.isMobile(customerMobile)) {
+                    msgMap.put("success", false);
+                    msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
+                    throw new BusinessException(msgMap.get("msg") + "");
+                }
             }
             actBatchId = activityService.extractedCode(activityId, name, resultMap.size());
             importNumber = resultMap.size();
@@ -179,6 +205,12 @@ public class SendCodeServiceImpl implements SendCodeService {
             for (int i = 1; i < excelList.size(); i++) {
                 String customerMobile = excelList.get(i).get(0) + "";
                 String customerName = excelList.get(i).get(1) + "";
+                //如果不是正确的手机格式，则返回错误信息
+                if (!ValidatorUtil.isMobile(customerMobile)) {
+                    msgMap.put("success", false);
+                    msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
+                    throw new BusinessException(msgMap.get("msg") + "");
+                }
                 Map<String, Object> batchMap = new HashMap<>();
                 batchMap.put("batchId", actBatchId);
                 batchMap.put("customerMobile", customerMobile);
@@ -209,7 +241,17 @@ public class SendCodeServiceImpl implements SendCodeService {
         batch.setImportFailNumber(importNumber);
         batch.setImportSuccessNumber(importNumber);
         batchMapper.updateBatch(batch);
-        return new HashMap<>();
+        //记录发送短信和保存发码两个步骤的日志
+        StringBuffer optInfo1 = new StringBuffer();
+        optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
+        optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + actBatchId, "", "发送短信并保存发码记录-----" + optInfo1.toString());
+
+        //返回数据
+        msgMap.put("success", true);
+        msgMap.put("msg", "上传成功" + batchCodeAllList.size() + "条");
+        msgMap.put("successNumber", batchCodeAllList.size());//成功数
+        msgMap.put("importNumber", batchCodeAllList.size());//导入数量
+        return msgMap;
     }
 
     @Transactional()
@@ -249,12 +291,12 @@ public class SendCodeServiceImpl implements SendCodeService {
             duanxin.setContent(content);
             final MMSBO sendMsg = duanxin;
             logger.info("短信内容==电话：" + sendMsg.getMobile() + "名称:" + sendMsg.getCustomer() + "内容：" + sendMsg.getContent());
-            jmsTemplate.send("subject", new MessageCreator() {
-                public Message createMessage(Session session) throws JMSException {
-                    ObjectMessage msg = session.createObjectMessage(sendMsg);
-                    return msg;
-                }
-            });
+//            jmsTemplate.send("subject", new MessageCreator() {
+//                public Message createMessage(Session session) throws JMSException {
+//                    ObjectMessage msg = session.createObjectMessage(sendMsg);
+//                    return msg;
+//                }
+//            });
 
             //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
             // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码

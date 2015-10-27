@@ -69,7 +69,7 @@ public interface SendCodeService extends BaseService {
      *
      * @return 影响行数
      */
-    Map<String, Object> importCustomor(String activityId, String batchId, String name, String type, InputStream in);
+    Map<String, Object> importCustomor(String activityId, String name, String type, InputStream in);
 
     /**
      * 查询活动id的批次列表
