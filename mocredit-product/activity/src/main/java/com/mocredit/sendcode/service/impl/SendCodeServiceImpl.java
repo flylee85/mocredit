@@ -147,7 +147,7 @@ public class SendCodeServiceImpl implements SendCodeService {
             //更新批次导入数量和成功数量
             Batch batch = new Batch();
             batch.setId(batchId);
-            batch.setImportFailNumber(batchCodeAllList.size());
+            batch.setImportNumber(batchCodeAllList.size());
             batch.setImportSuccessNumber(batchCodeAllList.size());
             batch.setStatus("04");
             batchMapper.updateBatch(batch);
@@ -295,29 +295,31 @@ public class SendCodeServiceImpl implements SendCodeService {
             //duanxin.setCreatetime(activity.getEndTime());
 
         }
-        for (BatchCode batchCode : batchCodeList) {
-            duanxin.setMobile(batchCode.getCustomerMobile());
-            duanxin.setCustomer(batchCode.getCustomerName());
-            if (noticeSmsMsg != null) {
-                String content = noticeSmsMsg.replace("$name", batchCode.getCustomerName()).replace("$pwd", batchCode.getCode());//批量替换
-                duanxin.setContent(content);
-            }
-            final MMSBO sendMsg = duanxin;
-            logger.info("短信内容==电话：" + sendMsg.getMobile() + "名称:" + sendMsg.getCustomer() + "内容：" + sendMsg.getContent());
-            jmsTemplate.send("subject", new MessageCreator() {
-                public Message createMessage(Session session) throws JMSException {
-                    ObjectMessage msg = session.createObjectMessage(sendMsg);
-                    return msg;
+        if (isPushSms) {
+            for (BatchCode batchCode : batchCodeList) {
+                duanxin.setMobile(batchCode.getCustomerMobile());
+                duanxin.setCustomer(batchCode.getCustomerName());
+                if (noticeSmsMsg != null) {
+                    String content = noticeSmsMsg.replace("$name", batchCode.getCustomerName()).replace("$pwd", batchCode.getCode());//批量替换
+                    duanxin.setContent(content);
                 }
-            });
+                final MMSBO sendMsg = duanxin;
+                logger.info("短信内容==电话：" + sendMsg.getMobile() + "名称:" + sendMsg.getCustomer() + "内容：" + sendMsg.getContent());
+                jmsTemplate.send("subject", new MessageCreator() {
+                    public Message createMessage(Session session) throws JMSException {
+                        ObjectMessage msg = session.createObjectMessage(sendMsg);
+                        return msg;
+                    }
+                });
 
-            //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
-            // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
-            Map<String, Object> batchCodeMap = new HashMap<>();
-            batchCodeMap.put("id", batchCode.getId());
-            batchCodeMap.put("status", "04");
-            batchCodeMap.put("startTime", DateUtil.getLongCurDate());
-            batchCodeMapper.updateBatchCodeById(batchCodeMap);
+                //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
+                // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
+                Map<String, Object> batchCodeMap = new HashMap<>();
+                batchCodeMap.put("id", batchCode.getId());
+                batchCodeMap.put("status", "04");
+                batchCodeMap.put("startTime", DateUtil.getLongCurDate());
+                batchCodeMapper.updateBatchCodeById(batchCodeMap);
+            }
         }
         //送码
         carryVerifyCode(activity, batchId, batchCodeList);
@@ -367,8 +369,8 @@ public class SendCodeServiceImpl implements SendCodeService {
             codeVO.setMaxNum(String.valueOf(act.getMaxNumber()));// 最大次数
             codeVO.setBatchId(batchId);// 发码批次Id
             codeVO.setReleaseTime(DateUtil.dateToStr(new Date(), "yyyy-MM-dd HH:mm:ss"));// 发布时间，当然时间
-            codeVO.setStartTime(DateUtil.dateToStr(act.getStartTime(), "yyyy-MM-dd HH:mm:ss"));// 活动开始时间
-            codeVO.setEndTime(DateUtil.dateToStr(act.getEndTime(), "yyyy-MM-dd HH:mm:ss"));// 活动结束时间
+            codeVO.setStartTime(DateUtil.dateToStr(oc.getStartTime(), "yyyy-MM-dd HH:mm:ss"));// 活动开始时间
+            codeVO.setEndTime(DateUtil.dateToStr(oc.getEndTime(), "yyyy-MM-dd HH:mm:ss"));// 活动结束时间
             codeVO.setSelectDate(act.getSelectDate());// 活动指定日期
             // 将新组建的码对象添加到列表中
             carryList.add(codeVO);
