@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
@@ -40,7 +41,7 @@ import com.mocredit.verifyCode.vo.ActActivityCodeVO;
  * @package com.mocredit.verifyCode.controller
  * @email yanghongli@mocredit.cn
  */
-@Controller
+@RestController
 @RequestMapping("/ActivityCode")
 public class ActivityCodeController {
 
@@ -416,7 +417,6 @@ public class ActivityCodeController {
      * @param param
      * @return
      */
-    @ResponseBody
     @RequestMapping(value="/updateActivity",produces = {"application/json;charset=UTF-8"})
     public String updateActivity(HttpServletRequest request, HttpServletResponse response,
                                  @RequestBody String param ) {
@@ -462,7 +462,8 @@ public class ActivityCodeController {
         VerifyCodeLogTask.actActivitySynLogList.add( this.buildActActivitySynLog(ard,actActivityCodeVO));
 
 
-        return JSON.toJSONStringWithDateFormat(ard ,DateUtil.FORMAT_YYYYMMDD_HHMMSS);
+        String json = JSON.toJSONStringWithDateFormat(ard ,DateUtil.FORMAT_YYYYMMDD_HHMMSS);
+		return json;
     }
 
 
