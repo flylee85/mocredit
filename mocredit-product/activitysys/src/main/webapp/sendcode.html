@@ -207,8 +207,24 @@
     }
 </script>
 <script>
+    $("#uploadAndSend").click(function () {
+        var formUpLoadAndSend = $("#uploadAndSendForm").parsley();
+        if (!formUpLoadAndSend.validate()) {
+            return false;
+        }
+        //获取表单基本元素对象
+        var formArray = $("#uploadAndSendForm").serializeArray();
+        var formObject = new Object();
+        $.each(formArray, function (index) {
+            if (formObject[this['name']]) {
+                formObject[this['name']] = formObject[this['name']] + "," + this['value'];
+            } else {
+                formObject[this['name']] = this['value'];
+            }
+        });
+        document.location.href = "sendCode/download?type=03&id=" + actId + "&name=" + formObject["name"] + "&count=" + formObject["count"]
+    });
     function sendCode(id) {
-
         $.get("sendCode/sendCodeByBatchId", {"actId": actId, "batchId": id}, function (msg) {
             if (msg.success) {
                 alert("发送成功")
@@ -220,7 +236,6 @@
         }, 'json');
     }
     function delBatch(id) {
-
         $.get("sendCode/delBatchById", {"batchId": id}, function (msg) {
             if (msg.success) {
                 alert("删除成功")
