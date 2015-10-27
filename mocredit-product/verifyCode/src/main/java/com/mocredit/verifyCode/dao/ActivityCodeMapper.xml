@@ -109,7 +109,7 @@
     <update id="updateActActivity" parameterType="map">
         UPDATE t_activity_code
         <set>
-            <if test=" null!=activityName">activity_name=#{activityName}</if>
+            <if test=" null!=activityName">activity_name=#{activityName},</if>
             <if test=" null != maxNum">  max_num=#{maxNum}, </if>
             <if test=" null != amount">  amount=#{amount} ,</if>
             <if test=" null != startTime">  start_time=#{startTime} ,</if>
