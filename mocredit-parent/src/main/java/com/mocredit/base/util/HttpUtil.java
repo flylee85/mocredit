@@ -7,11 +7,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -120,13 +122,13 @@ public class HttpUtil {
 		    httpConnection.setRequestMethod("POST");
 		    httpConnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");//头文件必须这样写，否则无效
 		   
-//		    printWriter = new PrintWriter(new OutputStreamWriter(httpConnection.getOutputStream(),"utf-8")); 
-//		    printWriter.write(jsonStr);
-//		    //flush输出流的缓冲  
-//          printWriter.flush();  
-		    OutputStream out = httpConnection.getOutputStream();
-		    out.write(jsonStr.getBytes("utf-8"));
-		    out.flush();
+		    printWriter = new PrintWriter(new OutputStreamWriter(httpConnection.getOutputStream(),"UTF-8")); 
+		    printWriter.write(jsonStr);
+		    //flush输出流的缓冲  
+          printWriter.flush();  
+//		    OutputStream out = httpConnection.getOutputStream();
+//		    out.write(jsonStr.getBytes("utf-8"));
+//		    out.flush();
 //		    OutputStreamWriter out = new OutputStreamWriter(httpConnection.getOutputStream());
 //		    out.write(jsonStr);
 //		    out.flush();
@@ -142,7 +144,7 @@ public class HttpUtil {
 		    //读取返回结果
 		    char[] b = new char[1024];
 		    for (int n; (n = responseBuffer.read(b)) != -1;) {
-		    	output.append(new String(b));
+		    	output.append(new String(b, 0, n));
 		    }
 		    httpConnection.disconnect();
 		} catch (MalformedURLException e) {
