@@ -74,11 +74,11 @@ function enterP(){
 <jsp:include page="common/header.jsp" />
     <div class="container">
 
-      <form class="form-signin" action="${path}/login" role="form" onsubmit="return enter_();" method="post">
+      <form class="form-signin" action="${path}/user/login" role="form" onsubmit="return enter_();" method="post">
         <h2 class="form-signin-heading">请登录</h2>
-        <input type="text" id="user" name ="name" value="${user.username}" class="form-control" placeholder="用户名" onblur="enterU()"  autofocus>
-        <label id="u" > </label>
-        <input type="password" name="passwd"  class="form-control" placeholder="密码" onblur="enterP()" >
+        <input type="text" id="user" name ="username" value="${user.username}" class="form-control" placeholder="用户名" onblur="enterU()"  autofocus>
+        <label id="u" >${unameMsg}</label>
+        <input type="password" name="password"  class="form-control" placeholder="密码" onblur="enterP()" >
         <label id="p" > </label>
 <!--         <label class="checkbox"> -->
 <!--           <input type="checkbox" value="remember-me"> 自动登录 -->

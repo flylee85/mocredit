@@ -90,8 +90,8 @@ public class Variable {
 	public static final String ZXTRUSTSTOREPWD = "changeit";
 	public static final String ZXTRUSTSTORETYPE = "jks";
 //	public static final String TEST_ZXWSURL = "http://202.108.57.21/Payment/services/PaymentServices";
-//	public static final String ZXWSURL="https://pay.test.bank.ecitic.com/Payment/services/PaymentServices";
-	public static final String ZXWSURL="http://127.0.0.1:8081/citicserver/payment";
+	public static final String ZXWSURL="https://pay.test.bank.ecitic.com/Payment/services/PaymentServices";
+//	public static final String ZXWSURL="http://127.0.0.1:8081/citicserver/payment";
 	public static final String ZXMERCHANTTYPE = "2";
 	public static final String TEST_ZXMERCHANTID = "YMTEST";
 	public static final String TEST_ZXMERCHANTNAME = "亿美测试";

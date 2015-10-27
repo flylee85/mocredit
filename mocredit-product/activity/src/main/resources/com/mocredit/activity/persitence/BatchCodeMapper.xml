@@ -7,211 +7,195 @@
 	日期：2015/07/13
 -->
 <mapper namespace="com.mocredit.activity.persitence.BatchCodeMapper">
-	<!-- ===================发码批次码,开始======================== -->
-	
-	<!--  公用列,包含发码批次码表所有字段     -->
-	<sql id="base_batchCode_column_list" >
+    <!-- ===================发码批次码,开始======================== -->
+
+    <!--  公用列,包含发码批次码表所有字段     -->
+    <sql id="base_batchCode_column_list">
 		oc.id as id,
 		oc.batch_id as batchId,
 		oc.code as code,
 		oc.code_id as codeId,
 		oc.customer_mobile as customerMobile,
 		oc.customer_name as customerName,
-		oc.status as status,
-		oc.start_time as startTime,
-		oc.end_time as endTime
+		oc.status as status
 	</sql>
-	
-	<!--  公用查询条件，包含发码批次码所有字段的查询条件     -->
-	<sql id="base_batchCode_condition" >
-			<if test="id != null" >
-				and oc.id = #{id}
-			</if>
-			<if test="batchId != null" >
-				and oc.batch_id = #{batchId}
-			</if>
-			<if test="code != null" >
-				and oc.code = #{code}
-			</if>
-			<if test="codeId != null" >
-				and oc.code_id = #{codeId}
-			</if>
-			<if test="customerMobile != null" >
-				and oc.customer_mobile = #{customerMobile}
-			</if>
-			<if test="customerName != null" >
-				and oc.customer_name = #{customerName}
-			</if>
-			<if test="status != null" >
-				and oc.status = #{status}
-			</if>
-	</sql>
-	
-	<!--  获取一条发码批次码，根据主键    -->
-	<select id="getBatchCodeById" resultType="com.mocredit.activity.model.BatchCode" parameterType="java.lang.String" >
-	select 
-	<include refid="base_batchCode_column_list" />
-	from act_batch_code oc
-	where oc.id = #{id}
-	</select>
-	
-	<!--  获取一条发码批次码，随机获取    -->
-	<select id="getBatchCodeByRand" resultType="com.mocredit.activity.model.BatchCode" >
-	select 
-	<include refid="base_batchCode_column_list" />
-	from act_batch_code oc
-	order by rand() limit 1
-	</select>
-	
-	<!--  查询发码批次码列表，根据条件    -->
-	<select id="queryBatchCodeList" resultType="com.mocredit.activity.model.BatchCode" parameterType="java.util.Map" >
-	select 
-	<include refid="base_batchCode_column_list" />
-	from act_batch_code oc
-	<where>
-		<include refid="base_batchCode_condition" />
-	</where>
-	<if test="pageInfoStart != null and pageInfoLimit != null" >
-    	limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
-    </if>
-	</select>
-	
-	<!--  获取发码批次码总数量，根据条件    -->
-	<select id="getBatchCodeTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
-	select 
-	count(oc.id)
-	from act_batch_code oc
-	<where>
-		<include refid="base_batchCode_condition" />
-	</where>
-	</select>
-	
-	<!--  添加一条发码批次码记录  -->
-	<insert id="addBatchCode" parameterType="com.mocredit.activity.model.BatchCode" >
-	insert into act_batch_code
-	<trim prefix="(" suffix=")" suffixOverrides="," >
-			id,
-			batch_id,
-			code,
-			code_id,
-			customer_mobile,
-			customer_name,
-			status,
-			start_time,
-			end_time
-	</trim>
-	<trim prefix="values (" suffix=")" suffixOverrides="," >
-			#{id},
-			#{batchId},
-			#{code},
-			#{codeId},
-			#{customerMobile},
-			#{customerName},
-			#{status},
-			#{startTime},
-			#{endTime}
-	</trim>
-	</insert>
-	
-	<!--  批量添加批次码记录  -->
-	<insert id="batchAddBatchCode" parameterType="java.util.List">
-			insert into act_batch_code
-			<trim prefix="(" suffix=")" suffixOverrides="," >
-				id,
-				batch_id,
-				code,
-				code_id,
-				customer_mobile,
-				customer_name,
-				status,
-				start_time,
-				end_time
-			</trim>
-			values
-		<foreach collection="list" item="item" index="index" separator=",">
-			<trim prefix="(" suffix=")" suffixOverrides="," >
-				#{item.id},
-				#{item.orderId},
-				#{item.code},
-				#{item.codeId},
-				#{item.customerMobile},
-				#{item.customerName},
-				#{item.status},
-				#{startTime},
-				#{endTime}
-			</trim>
-		</foreach>
-	</insert>
-			
-	<!--  修改一条发码批次码记录  -->
-	<update id="updateBatchCode" parameterType="com.mocredit.activity.model.BatchCode" >
-	update act_batch_code
-	<set >
-		<if test="id != null" >
-		id = #{id},
-	</if>
-		<if test="batchId != null" >
-		batch_id = #{batchId},
-	</if>
-		<if test="code != null" >
-		code = #{code},
-	</if>
-		<if test="codeId != null" >
-		code_id = #{codeId},
-	</if>
-		<if test="customerMobile != null" >
-		customer_mobile = #{customerMobile},
-	</if>
-		<if test="customerName != null" >
-		customer_name = #{customerName},
-	</if>
-		<if test="status != null" >
-		status = #{status},
-	</if>
-	<if test="startTime != null" >
-		start_time = #{startTime},
-	</if>
-	<if test="endTime != null" >
-		end_time = #{endTime},
-	</if>
-	</set>
-	where id = #{id}
-	</update>
-	
-	<!--  删除一条发码批次码记录 ，根据主键    -->
-	<delete id="deleteBatchCodeById" parameterType="java.lang.String" >
+
+    <!--  公用查询条件，包含发码批次码所有字段的查询条件     -->
+    <sql id="base_batchCode_condition">
+        <if test="id != null">
+            and oc.id = #{id}
+        </if>
+        <if test="batchId != null">
+            and oc.batch_id = #{batchId}
+        </if>
+        <if test="code != null">
+            and oc.code = #{code}
+        </if>
+        <if test="codeId != null">
+            and oc.code_id = #{codeId}
+        </if>
+        <if test="customerMobile != null">
+            and oc.customer_mobile = #{customerMobile}
+        </if>
+        <if test="customerName != null">
+            and oc.customer_name = #{customerName}
+        </if>
+        <if test="status != null">
+            and oc.status = #{status}
+        </if>
+    </sql>
+
+    <!--  获取一条发码批次码，根据主键    -->
+    <select id="getBatchCodeById" resultType="com.mocredit.activity.model.BatchCode" parameterType="java.lang.String">
+        select
+        <include refid="base_batchCode_column_list"/>
+        from act_batch_code oc
+        where oc.id = #{id}
+    </select>
+
+    <!--  获取一条发码批次码，随机获取    -->
+    <select id="getBatchCodeByRand" resultType="com.mocredit.activity.model.BatchCode">
+        select
+        <include refid="base_batchCode_column_list"/>
+        from act_batch_code oc
+        order by rand() limit 1
+    </select>
+
+    <!--  查询发码批次码列表，根据条件    -->
+    <select id="queryBatchCodeList" resultType="com.mocredit.activity.model.BatchCode" parameterType="java.util.Map">
+        select
+        <include refid="base_batchCode_column_list"/>
+        from act_batch_code oc
+        <where>
+            <include refid="base_batchCode_condition"/>
+        </where>
+        <if test="pageInfoStart != null and pageInfoLimit != null">
+            limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!--  获取发码批次码总数量，根据条件    -->
+    <select id="getBatchCodeTotal" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(oc.id)
+        from act_batch_code oc
+        <where>
+            <include refid="base_batchCode_condition"/>
+        </where>
+    </select>
+
+    <!--  添加一条发码批次码记录  -->
+    <insert id="addBatchCode" parameterType="com.mocredit.activity.model.BatchCode">
+        insert into act_batch_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            batch_id,
+            code,
+            code_id,
+            customer_mobile,
+            customer_name,
+            status,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},
+            #{batchId},
+            #{code},
+            #{codeId},
+            #{customerMobile},
+            #{customerName},
+            #{status},
+        </trim>
+    </insert>
+
+    <!--  批量添加批次码记录  -->
+    <insert id="batchAddBatchCode" parameterType="java.util.List">
+        insert into act_batch_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            batch_id,
+            code,
+            code_id,
+            customer_mobile,
+            customer_name,
+            status
+        </trim>
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{item.id},
+                #{item.orderId},
+                #{item.code},
+                #{item.codeId},
+                #{item.customerMobile},
+                #{item.customerName},
+                #{item.status}
+            </trim>
+        </foreach>
+    </insert>
+
+    <!--  修改一条发码批次码记录  -->
+    <update id="updateBatchCode" parameterType="com.mocredit.activity.model.BatchCode">
+        update act_batch_code
+        <set>
+            <if test="id != null">
+                id = #{id},
+            </if>
+            <if test="batchId != null">
+                batch_id = #{batchId},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="codeId != null">
+                code_id = #{codeId},
+            </if>
+            <if test="customerMobile != null">
+                customer_mobile = #{customerMobile},
+            </if>
+            <if test="customerName != null">
+                customer_name = #{customerName},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--  删除一条发码批次码记录 ，根据主键    -->
+    <delete id="deleteBatchCodeById" parameterType="java.lang.String">
 	delete from act_batch_code
 	where id = #{id}
 	</delete>
 
-	<!--  删除发码批次码记录 ，根据条件    -->
-	<delete id="deleteBatchCode" parameterType="java.util.Map" >
-	delete from act_batch_code
-	<where>
-		<if test="id != null" >
-			and id = #{id}
-		</if>
-		<if test="batchId != null" >
-			and batch_id = #{batchId}
-		</if>
-		<if test="code != null" >
-			and code = #{code}
-		</if>
-		<if test="codeId != null" >
-			and code_id = #{codeId}
-		</if>
-		<if test="customerMobile != null" >
-			and customer_mobile = #{customerMobile}
-		</if>
-		<if test="customerName != null" >
-			and customer_name = #{customerName}
-		</if>
-		<if test="status != null" >
-			and status = #{status}
-		</if>
-	</where>
-</delete>
-<update id="updateBatchCodeByBatchId" parameterType="java.util.Map">
+    <!--  删除发码批次码记录 ，根据条件    -->
+    <delete id="deleteBatchCode" parameterType="java.util.Map">
+        delete from act_batch_code
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="batchId != null">
+                and batch_id = #{batchId}
+            </if>
+            <if test="code != null">
+                and code = #{code}
+            </if>
+            <if test="codeId != null">
+                and code_id = #{codeId}
+            </if>
+            <if test="customerMobile != null">
+                and customer_mobile = #{customerMobile}
+            </if>
+            <if test="customerName != null">
+                and customer_name = #{customerName}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </delete>
+    <update id="updateBatchCodeByBatchId" parameterType="java.util.Map">
 		update act_batch_code SET  `status`='02',customer_mobile=#{customerMobile},customer_name=#{customerName}
 		where  batch_id=#{batchId} AND `status`='01' limit 1
 	</update>
@@ -219,5 +203,5 @@
         update act_batch_code SET  `status`=#{status}
         where  id=#{id}
     </update>
-<!-- ===================发码批次码,结束======================== -->
+    <!-- ===================发码批次码,结束======================== -->
 </mapper>
