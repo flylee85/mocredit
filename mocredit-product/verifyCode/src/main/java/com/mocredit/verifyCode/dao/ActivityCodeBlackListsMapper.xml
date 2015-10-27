@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="GBK"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- namespaceå’Œå®šä¹‰çš„MapperæŽ¥å£å¯¹åº”ï¼Œå¹¶å®žçŽ°å…¶ä¸­çš„æ–¹æ³• -->
+<!-- namespaceºÍ¶¨ÒåµÄMapper½Ó¿Ú¶ÔÓ¦£¬²¢ÊµÏÖÆäÖÐµÄ·½·¨ -->
 <mapper namespace="com.mocredit.verifyCode.dao.ActivityCodeBlackListsMapper">
 
     <resultMap id="baseResultMap" type="com.mocredit.verifyCode.model.ActivityCodeBlackLists">
@@ -13,7 +13,7 @@
         <result column="blacklists_desc" property="blacklistsDesc" jdbcType="VARCHAR" ></result>
      </resultMap>
 
-    <!-- é€šè¿‡æ´»åŠ¨IDï¼Œå°†å…¨ç è¡¨ä¸­å¯¹åº”çš„ åˆ¸ç ï¼ŒåŠ å…¥åˆ°é»‘åå• -->
+    <!-- Í¨¹ý»î¶¯ID£¬½«È«Âë±íÖÐ¶ÔÓ¦µÄ È¯Âë£¬¼ÓÈëµ½ºÚÃûµ¥ -->
     <insert id="addBlackListsByActivityId" parameterType="map">
         insert into t_activity_code_blacklists
           (id,code,activity_id,activity_code_id,create_time,blacklists_type,blacklists_desc)
@@ -22,12 +22,12 @@
 
     </insert>
 
-    <!-- æ ¹æ®åˆ¸ç å·æŸ¥è¯¢ é»‘åå•ä¸­åŒ¹é…çš„è®°å½•-->
+    <!-- ¸ù¾ÝÈ¯ÂëºÅ²éÑ¯ ºÚÃûµ¥ÖÐÆ¥ÅäµÄ¼ÇÂ¼-->
     <select id="findBlackListsByCode" resultMap="baseResultMap" resultType="com.mocredit.verifyCode.model.ActivityCodeBlackLists" parameterType="java.lang.String">
         select  *  from t_activity_code_blacklists where code=#{code}
     </select>
 
-    <!-- æ ¹æ®æ´»åŠ¨ åˆ é™¤é»‘åå•ä¸­é”å®šçš„åˆ¸ç  -->
+    <!-- ¸ù¾Ý»î¶¯ É¾³ýºÚÃûµ¥ÖÐËø¶¨µÄÈ¯Âë -->
     <delete id="deleteBlackListsByActivityId" parameterType="java.lang.String">
         DELETE  from t_activity_code_blacklists where activity_id=#{activity_id}
     </delete>

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="GBK"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- namespaceå’Œå®šä¹‰çš„MapperæŽ¥å£å¯¹åº”ï¼Œå¹¶å®žçŽ°å…¶ä¸­çš„æ–¹æ³• -->
+<!-- namespaceºÍ¶¨ÒåµÄMapper½Ó¿Ú¶ÔÓ¦£¬²¢ÊµÏÖÆäÖÐµÄ·½·¨ -->
 <mapper namespace="com.mocredit.verifyCode.dao.ActActivitySynLogMapper">
 
     <resultMap id="baseResultMap" type="com.mocredit.verifyCode.model.TVerifyLog">
@@ -23,7 +23,7 @@
         (#{id},#{activityId},#{activityName},#{operType},#{operTime},#{success},#{errorCode},#{message},#{synNum})
     </insert>
 
-    <!-- æ‰¹é‡ä¿å­˜åˆ¸ç  -->
+    <!-- ÅúÁ¿±£´æÈ¯Âë -->
     <insert id="batchSave" parameterType="java.util.List">
         <choose>
 

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="GBK"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- namespaceå’Œå®šä¹‰çš„MapperæŽ¥å£å¯¹åº”ï¼Œå¹¶å®žçŽ°å…¶ä¸­çš„æ–¹æ³• -->
+<!-- namespaceºÍ¶¨ÒåµÄMapper½Ó¿Ú¶ÔÓ¦£¬²¢ÊµÏÖÆäÖÐµÄ·½·¨ -->
 <mapper namespace="com.mocredit.verifyCode.dao.ActActivityStoreMapper">
 
     <resultMap id="baseResultMap" type="com.mocredit.verifyCode.model.ActActivityStore">
@@ -20,14 +20,14 @@
         ]]>
     </insert>
 
-    <!-- æ ¹æ®æ´»åŠ¨ä¸»é”®èŽ·å–è®°å½• -->
+    <!-- ¸ù¾Ý»î¶¯Ö÷¼ü»ñÈ¡¼ÇÂ¼ -->
     <select id="findByActivityId" parameterType="java.lang.String" resultMap="baseResultMap">
         <![CDATA[
           select * from act_activity_store where activity_id=#{activity_id}
         ]]>
     </select>
 
-    <!-- æ‰¹é‡ä¿å­˜ -->
+    <!-- ÅúÁ¿±£´æ -->
     <insert id="batchSave" parameterType="java.util.List">
         <choose>
             <when test=" null !=actActivityStores and actActivityStores.size >0 ">
