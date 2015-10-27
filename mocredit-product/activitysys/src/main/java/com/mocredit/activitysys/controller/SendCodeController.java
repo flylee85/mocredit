@@ -261,7 +261,7 @@ public class SendCodeController {
          * 处理文件,处理excel数据
 		 */
         try {
-            if (selectExcel.getSize() > 0) {
+            if (!"".equals(name) && selectExcel.getSize() > 0) {
                 //如果文件大小大于0，说明文件上传成功
                 //调用导入联系人方法
 
@@ -276,9 +276,14 @@ public class SendCodeController {
                     responseData.setData(operMap.get("msg"));
                 }
             } else {
-                //如果文件大小为0，则将返回页面的对象设置为false
-                responseData.setSuccess(false);
-                responseData.setData("请上传格式正确的文件！");
+                if ("".equals(name)) {
+                    //如果文件大小为0，则将返回页面的对象设置为false
+                    responseData.setSuccess(false);
+                    responseData.setData("请填写批次名称！");
+                } else {
+                    responseData.setSuccess(false);
+                    responseData.setData("请上传格式正确的文件！");
+                }
             }
         } catch (Exception e) {
             responseData.setSuccess(false);

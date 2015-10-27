@@ -395,46 +395,52 @@ public class SendCodeServiceImpl implements SendCodeService {
 
     public String validatorMobile(String activityId, String name, String type, Map<String, Object> msgMap, Map<String, String> resultMap, List<List<Object>> excelList) {
         String actBatchId = null;
-        if ("01".equals(type)) {
-            for (int i = 1; i < excelList.size(); i++) {
-                String customerMobile = excelList.get(i).get(0) + "";
-                String customerName = excelList.get(i).get(1) + "";
-                resultMap.put(customerMobile, customerName);
-                //如果不是正确的手机格式，则返回错误信息
-                if (!ValidatorUtil.isMobile(customerMobile)) {
-                    msgMap.put("success", false);
-                    msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
-                    throw new BusinessException(msgMap.get("msg") + "");
+        try {
+            if ("01".equals(type)) {
+                for (int i = 1; i < excelList.size(); i++) {
+                    String customerMobile = excelList.get(i).get(0) + "";
+                    String customerName = excelList.get(i).get(1) + "";
+                    resultMap.put(customerMobile, customerName);
+                    //如果不是正确的手机格式，则返回错误信息
+                    if (!ValidatorUtil.isMobile(customerMobile)) {
+                        msgMap.put("success", false);
+                        msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
+                        throw new BusinessException(msgMap.get("msg") + "");
+                    }
+                }
+                actBatchId = activityService.extractedCode(activityId, name, resultMap.size());
+                for (String key : resultMap.keySet()) {
+                    String customerMobile = key;
+                    String customerName = resultMap.get(key);
+                    Map<String, Object> batchMap = new HashMap<>();
+                    batchMap.put("batchId", actBatchId);
+                    batchMap.put("customerMobile", customerMobile);
+                    batchMap.put("customerName", customerName);
+                    batchCodeMapper.updateBatchCodeByBatchId(batchMap);
                 }
             }
-            actBatchId = activityService.extractedCode(activityId, name, resultMap.size());
-            for (String key : resultMap.keySet()) {
-                String customerMobile = key;
-                String customerName = resultMap.get(key);
-                Map<String, Object> batchMap = new HashMap<>();
-                batchMap.put("batchId", actBatchId);
-                batchMap.put("customerMobile", customerMobile);
-                batchMap.put("customerName", customerName);
-                batchCodeMapper.updateBatchCodeByBatchId(batchMap);
-            }
-        }
-        if ("02".equals(type)) {
-            actBatchId = activityService.extractedCode(activityId, name, excelList.size() - 1);
-            for (int i = 1; i < excelList.size(); i++) {
-                String customerMobile = excelList.get(i).get(0) + "";
-                String customerName = excelList.get(i).get(1) + "";
-                //如果不是正确的手机格式，则返回错误信息
-                if (!ValidatorUtil.isMobile(customerMobile)) {
-                    msgMap.put("success", false);
-                    msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
-                    throw new BusinessException(msgMap.get("msg") + "");
+            if ("02".equals(type)) {
+                actBatchId = activityService.extractedCode(activityId, name, excelList.size() - 1);
+                for (int i = 1; i < excelList.size(); i++) {
+                    String customerMobile = excelList.get(i).get(0) + "";
+                    String customerName = excelList.get(i).get(1) + "";
+                    //如果不是正确的手机格式，则返回错误信息
+                    if (!ValidatorUtil.isMobile(customerMobile)) {
+                        msgMap.put("success", false);
+                        msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
+                        throw new BusinessException(msgMap.get("msg") + "");
+                    }
+                    Map<String, Object> batchMap = new HashMap<>();
+                    batchMap.put("batchId", actBatchId);
+                    batchMap.put("customerMobile", customerMobile);
+                    batchMap.put("customerName", customerName);
+                    batchCodeMapper.updateBatchCodeByBatchId(batchMap);
                 }
-                Map<String, Object> batchMap = new HashMap<>();
-                batchMap.put("batchId", actBatchId);
-                batchMap.put("customerMobile", customerMobile);
-                batchMap.put("customerName", customerName);
-                batchCodeMapper.updateBatchCodeByBatchId(batchMap);
             }
+        } catch (BusinessException be) {
+            throw be;
+        } catch (Exception e) {
+            throw new BusinessException("请求码库接口失败");
         }
         return actBatchId;
     }
