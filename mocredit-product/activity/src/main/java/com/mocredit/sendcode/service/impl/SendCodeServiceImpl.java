@@ -8,6 +8,7 @@ import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.util.*;
 import com.mocredit.common.MMSBO;
+import com.mocredit.sendcode.constant.DownloadType;
 import com.mocredit.sendcode.service.SendCodeService;
 import com.mocredit.sys.service.OptLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +43,30 @@ public class SendCodeServiceImpl implements SendCodeService {
     private ActivityService activityService;
 
     @Override
-    public List<String> downloadList(String type, String id, Integer codeCount) {
-        List<String> a = new ArrayList<>();
-        a.add("aa");
-        a.add("bb");
-        return a;
+    public List<BatchCode> downloadList(String type, String name, String id, Integer codeCount) {
+        //    CODE("01", "验码"), BATCH("02", "批次"), ACTIVITY("03", "活动");
+        Map<String, Object> batchMap = new HashMap<>();
+        if (DownloadType.ACTIVITY.getValue().equals(type)) {
+            String batchId = activityService.extractedCode(id, name, codeCount);
+            batchMap.put("batchId", batchId);
+        }
+        if (DownloadType.BATCH.getValue().equals(type)) {
+            batchMap.put("batchId", id);
+        }
+        List<BatchCode> batchCodeAllList = new ArrayList<>();
+        int pageNum = 1;
+        boolean isFinish = false;
+        while (!isFinish) {
+            PageHelper.startPage(pageNum, pageSize);
+            List<BatchCode> batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
+            if (batchCodeList.isEmpty()) {
+                isFinish = true;
+            } else {
+                batchCodeAllList.addAll(batchCodeList);
+                pageNum += 1;
+            }
+        }
+        return batchCodeAllList;
     }
 
     @Override
@@ -85,6 +105,36 @@ public class SendCodeServiceImpl implements SendCodeService {
     }
 
     @Override
+    public boolean sendCodeById(String actId, String id) {
+        List<BatchCode> batchCodeAllList = new ArrayList<>();
+        batchCodeAllList.add(batchCodeMapper.getBatchCodeById(id));
+        sendCode(actId, batchCodeAllList);
+        return true;
+    }
+
+    @Override
+    public boolean sendCodeByBatchId(String actId, String batchId) {
+        Map<String, Object> batchMap = new HashMap<>();
+        batchMap.put("batchId", batchId);
+        batchMap.put("status", "02");
+        List<BatchCode> batchCodeAllList = new ArrayList<>();
+        int pageNum = 1;
+        boolean isFinish = false;
+        while (!isFinish) {
+            PageHelper.startPage(pageNum, pageSize);
+            List<BatchCode> batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
+            if (batchCodeList.isEmpty()) {
+                isFinish = true;
+            } else {
+                batchCodeAllList.addAll(batchCodeList);
+                pageNum += 1;
+            }
+        }
+        sendCode(actId, batchCodeAllList);
+        return true;
+    }
+
+    @Override
     public List<BatchCodeBvo> getActBatchCodeList(Map<String, Object> batchMap, Integer draw, Integer pageNum, Integer pageSize) {
         if (draw != null && draw != 1) {
             String searchContent = String.valueOf(batchMap.get("search[value]"));
@@ -97,92 +147,69 @@ public class SendCodeServiceImpl implements SendCodeService {
     }
 
     @Override
+    @Transactional
     public Map<String, Object> importCustomor(String activityId, String batchId, String name, String type, InputStream in) {
         //定义一个返回Map
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
+        Map<String, String> resultMap = new HashMap<String, String>();
         //解析excel流,并生成list
         List<List<Object>> excelList = ExcelUtil.excel2List(in);
-
         //获取标题和字段在excel中的对应关系，并存放在一个Map中
         List<Object> titleList = excelList.get(0);
-        Map<String, Integer> titleColumnMap = new HashMap<String, Integer>();
-        for (int i = 0; i < titleList.size(); i++) {
-            String titleStr = String.valueOf(titleList.get(i));
-            if ("手机号".equals(titleStr)) {
-                titleColumnMap.put("mobile", i);
-            } else if ("姓名".equals(titleStr)) {
-                titleColumnMap.put("name", i);
+        String actBatchId = null;
+        Integer importNumber = null;
+        if ("01".equals(type)) {
+            for (int i = 1; i < excelList.size(); i++) {
+                resultMap.put(excelList.get(i).get(0) + "", excelList.get(i).get(1) + "");
+            }
+            actBatchId = activityService.extractedCode(activityId, name, resultMap.size());
+            importNumber = resultMap.size();
+            for (String key : resultMap.keySet()) {
+                String customerMobile = key;
+                String customerName = resultMap.get(key);
+                Map<String, Object> batchMap = new HashMap<>();
+                batchMap.put("batchId", actBatchId);
+                batchMap.put("customerMobile", customerMobile);
+                batchMap.put("customerName", customerName);
+                batchCodeMapper.updateBatchCodeByBatchId(batchMap);
             }
         }
-        //遍历每一条数据，根据上一段代码中获取到的对应关系，获取手机号，并验证是否为正确的手机格式，如果是非法格式，则返回错误
-        for (int i = 1; i < excelList.size(); i++) {
-            List<Object> oneRowList = excelList.get(i);
-            String mobile = String.valueOf(oneRowList.get(titleColumnMap.get("mobile")));
-            //如果不是正确的手机格式，则返回错误信息
-            if (!ValidatorUtil.isMobile(mobile)) {
-                resultMap.put("success", false);
-                resultMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
-                return resultMap;
+        if ("02".equals(type)) {
+            actBatchId = activityService.extractedCode(activityId, name, excelList.size() - 1);
+            importNumber = excelList.size() - 1;
+            for (int i = 1; i < excelList.size(); i++) {
+                String customerMobile = excelList.get(i).get(0) + "";
+                String customerName = excelList.get(i).get(1) + "";
+                Map<String, Object> batchMap = new HashMap<>();
+                batchMap.put("batchId", actBatchId);
+                batchMap.put("customerMobile", customerMobile);
+                batchMap.put("customerName", customerName);
+                batchCodeMapper.updateBatchCodeByBatchId(batchMap);
             }
         }
-
-	    /*
-         * 遍历每一条数据，执行批量添加方法
-	     */
-        //获取一次添加数量
-        Integer batchInsertCount = Integer.valueOf(PropertiesUtil.getValue("activity.batchInsertCount"));
-        Integer successNumber = 0;
-        //定义一个空的列表，用于临时存放联系人数据，当列表数量达到一定数量时，就批量添加数据。
-        List<BatchCode> batchOrderCodeList = new ArrayList<BatchCode>();
-        //遍历列表，将列表中的数据拼装后放入到临时列表中
-        for (int i = 1; i < excelList.size(); i++) {
-            List<Object> oneRowList = excelList.get(i);
-            String mobile = String.valueOf(oneRowList.get(titleColumnMap.get("mobile")));
-            String n = String.valueOf(oneRowList.get(titleColumnMap.get("name")));
-
-            BatchCode oc = new BatchCode();
-            oc.setCustomerName(n);
-            oc.setCustomerMobile(mobile);
-            oc.setId(IDUtil.getID());
-            oc.setOrderId(batchId);
-            oc.setStatus("01");//01：已导入，未提码
-
-            batchOrderCodeList.add(oc);
-
-            //当该数量达到一定的数量时，批量添加数据，批量添加完成后，将临时存储数据的列表置空
-            if (i != 0 && i % batchInsertCount == 0) {
-                //批量添加批次码数据
-                successNumber += batchCodeMapper.batchAddBatchCode(batchOrderCodeList);
-                batchOrderCodeList = new ArrayList<BatchCode>();
+        Map<String, Object> batchMap = new HashMap<>();
+        batchMap.put("batchId", actBatchId);
+        batchMap.put("status", "02");
+        List<BatchCode> batchCodeAllList = new ArrayList<>();
+        int pageNum = 1;
+        boolean isFinish = false;
+        while (!isFinish) {
+            PageHelper.startPage(pageNum, pageSize);
+            List<BatchCode> batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
+            if (batchCodeList.isEmpty()) {
+                isFinish = true;
+            } else {
+                batchCodeAllList.addAll(batchCodeList);
+                pageNum += 1;
             }
         }
-        //添加剩余的批次码数据
-        successNumber += batchCodeMapper.batchAddBatchCode(batchOrderCodeList);
-
-        //保存导入联系人批次数据
-        Batch od = new Batch();
-        od.setId(batchId);
-        od.setActivityId(activityId);
-        od.setBatch("");
-        od.setImportNumber(successNumber);//导入联系人数量
-        od.setImportSuccessNumber(successNumber);//导入成功数量
-//        od.setRemark(remark);//备注
-        od.setStatus("01");//导入状态
-        od.setCreatetime(new Date());
-        batchMapper.addBatch(od);
-
-        //保存日志
-        StringBuffer optInfo = new StringBuffer();
-        optInfo.append("批次：" + od.getBatch() + ";导入数量:" + od.getImportNumber() + ";导入成功数量:" + od.getImportSuccessNumber() + ";备注：" + od.getRemark());
-        optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + batchId, "", "导入联系人-----" + optInfo.toString());
-
-        //返回数据
-        resultMap.put("success", true);
-        resultMap.put("msg", "上传成功" + successNumber + "条");
-        resultMap.put("successNumber", successNumber);//成功数
-        resultMap.put("importNumber", successNumber);//导入数量
-        return resultMap;
+        sendCode(activityId, batchCodeAllList);
+        //更新批次导入数量和成功数量
+        Batch batch = new Batch();
+        batch.setId(actBatchId);
+        batch.setImportFailNumber(importNumber);
+        batch.setImportSuccessNumber(importNumber);
+        batchMapper.updateBatch(batch);
+        return new HashMap<>();
     }
 
     @Transactional()
@@ -218,7 +245,7 @@ public class SendCodeServiceImpl implements SendCodeService {
         }
         for (BatchCode batchCode : batchCodeList) {
             duanxin.setMobile(batchCode.getCustomerMobile());
-            String content = null;//批量替换
+            String content = noticeSmsMsg.replace("$name", batchCode.getCustomerName()).replace("$pwd", batchCode.getCode());//批量替换
             duanxin.setContent(content);
             final MMSBO sendMsg = duanxin;
             logger.info("短信内容==电话：" + sendMsg.getMobile() + "名称:" + sendMsg.getCustomer() + "内容：" + sendMsg.getContent());
@@ -228,6 +255,13 @@ public class SendCodeServiceImpl implements SendCodeService {
                     return msg;
                 }
             });
+
+            //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
+            // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
+            Map<String, Object> batchCodeMap = new HashMap<>();
+            batchCodeMap.put("id", batchCode.getId());
+            batchCodeMap.put("status", "04");
+            batchCodeMapper.updateBatchCodeById(batchCodeMap);
         }
     }
 }

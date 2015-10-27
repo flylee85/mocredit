@@ -1,6 +1,7 @@
 package com.mocredit.activity.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -26,6 +27,8 @@ public class BatchCode implements Serializable{
 	private String customerName ;
 	//状态,status,暂定为01：已导入，未送码，02：已送码，未发码，03：已发码'
 	private String status ;
+	private Date startTime; //码有效期开始时间
+	private Date endTime;//码有效期结束时间
 	public String getId(){
 		return id;
 	}
@@ -67,5 +70,17 @@ public class BatchCode implements Serializable{
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public Date getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+	public Date getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 }

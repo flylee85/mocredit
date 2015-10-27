@@ -1280,6 +1280,7 @@ public class ActivityServiceImpl implements ActivityService {
 				List<Map<String, Object>> codeList = (List<Map<String, Object>>) codesMap.get("data");
 				logger.info("码库接口----提码结束-----提码数量：" + count);
 				if(pickIsSuccess){
+					Activity activity = activityMapper.getActivityById(activityId);
 					List<BatchCode> batchOrderCodeList = new ArrayList<>();
 					// 遍历列表，将列表中的数据拼装后放入到临时列表中
 					for (Map<String, Object> codeMap:codeList) {
@@ -1288,6 +1289,8 @@ public class ActivityServiceImpl implements ActivityService {
 						oc.setOrderId(batch.getId());
 						oc.setCodeId(String.valueOf(codeMap.get("id")));
 						oc.setCode(String.valueOf(codeMap.get("code")));
+						oc.setStartTime(activity.getStartTime());
+						oc.setEndTime(activity.getEndTime());
 						oc.setStatus("01");// 01：已提码
 
 						batchOrderCodeList.add(oc);
