@@ -17,7 +17,9 @@
 		oc.code_id as codeId,
 		oc.customer_mobile as customerMobile,
 		oc.customer_name as customerName,
-		oc.status as status
+		oc.status as status,
+		oc.start_time as startTime,
+		oc.end_time as endTime
 	</sql>
 	
 	<!--  公用查询条件，包含发码批次码所有字段的查询条件     -->
@@ -95,6 +97,8 @@
 			customer_mobile,
 			customer_name,
 			status,
+			start_time,
+			end_time
 	</trim>
 	<trim prefix="values (" suffix=")" suffixOverrides="," >
 			#{id},
@@ -104,6 +108,8 @@
 			#{customerMobile},
 			#{customerName},
 			#{status},
+			#{startTime},
+			#{endTime}
 	</trim>
 	</insert>
 	
@@ -117,7 +123,9 @@
 				code_id,
 				customer_mobile,
 				customer_name,
-				status
+				status,
+				start_time,
+				end_time
 			</trim>
 			values
 		<foreach collection="list" item="item" index="index" separator=",">
@@ -128,7 +136,9 @@
 				#{item.codeId},
 				#{item.customerMobile},
 				#{item.customerName},
-				#{item.status}
+				#{item.status},
+				#{startTime},
+				#{endTime}
 			</trim>
 		</foreach>
 	</insert>
@@ -157,6 +167,12 @@
 	</if>
 		<if test="status != null" >
 		status = #{status},
+	</if>
+	<if test="startTime != null" >
+		start_time = #{startTime},
+	</if>
+	<if test="endTime != null" >
+		end_time = #{endTime},
 	</if>
 	</set>
 	where id = #{id}
@@ -195,6 +211,13 @@
 		</if>
 	</where>
 </delete>
-
+<update id="updateBatchCodeByBatchId" parameterType="java.util.Map">
+		update act_batch_code SET  `status`='02',customer_mobile=#{customerMobile},customer_name=#{customerName}
+		where  batch_id=#{batchId} AND `status`='01' limit 1
+	</update>
+    <update id="updateBatchCodeById" parameterType="java.util.Map">
+        update act_batch_code SET  `status`=#{status}
+        where  id=#{id}
+    </update>
 <!-- ===================发码批次码,结束======================== -->
 </mapper>
