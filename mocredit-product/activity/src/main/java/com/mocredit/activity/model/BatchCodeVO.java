@@ -13,7 +13,7 @@ public class BatchCodeVO implements Serializable{
 	//序列化
 	private static final long serialVersionUID = 6905308258132311722L;
 	//发码批次Id
-	private String batchId ;
+	private String orderId ;
 	//联系人名称
 	private String customName ;
 	//码
@@ -47,13 +47,14 @@ public class BatchCodeVO implements Serializable{
 	//指定时间
 	private String selectDate ;
 
-	public String getBatchId() {
-		return batchId;
+	public String getOrderId() {
+		return orderId;
 	}
 
-	public void setBatchId(String batchId) {
-		this.batchId = batchId;
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
+
 
 	public String getCustomName() {
 		return customName;

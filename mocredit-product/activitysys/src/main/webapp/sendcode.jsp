@@ -50,7 +50,7 @@
                         <label class="col-lg-3">
                             <div class="radio">
                                 <label class="radio-custom">
-                                    <input type="radio" id="merger" name="downloadChannel" value="01">
+                                    <input type="radio" id="merger" checked="checked" name="downloadChannel" value="01">
                                     <i class="icon-circle-blank"></i>
                                     合并重复号码，并只发一个码
                                 </label>
@@ -170,7 +170,12 @@
                     {"data": "id", "name": "id", "width": "100px"},
                     {"data": "batch", "name": "batch", "width": "90px", "sortable": false},
                     {"data": "importNumber", "name": "importNumber", "width": "90px", "sortable": false},
-                    {"data": "importSuccessNumber", "name": "importSuccessNumber", "className": "name", "width": "100px"},
+                    {
+                        "data": "importSuccessNumber",
+                        "name": "importSuccessNumber",
+                        "className": "name",
+                        "width": "100px"
+                    },
                     {"data": "createtime", "name": "createtime", "width": "180px"},
                     {"data": "status", "name": "status", "width": "170px"},
                     {"data": "sendSmsType", "name": "sendSmsType", "width": "100px"},
