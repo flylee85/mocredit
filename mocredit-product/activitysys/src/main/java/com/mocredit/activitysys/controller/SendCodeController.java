@@ -1,6 +1,7 @@
 package com.mocredit.activitysys.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mocredit.activity.model.BatchBvo;
 import com.mocredit.activity.model.BatchCode;
 import com.mocredit.activity.model.BatchCodeBvo;
@@ -53,7 +54,7 @@ public class SendCodeController {
             responseData.setSuccess(false);
             responseData.setErrorMsg("发送消息队列失败或送码失败");
         }
-        return JSON.toJSONString(responseData);
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
     }
 
     @RequestMapping("/sendCodeByBatchId")
@@ -64,7 +65,7 @@ public class SendCodeController {
             responseData.setSuccess(false);
             responseData.setErrorMsg("发送消息队列失败或送码失败");
         }
-        return JSON.toJSONString(responseData);
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
     }
 
     @RequestMapping("/delBatchById")
@@ -75,7 +76,7 @@ public class SendCodeController {
             responseData.setSuccess(false);
             responseData.setErrorMsg("删除批次失败");
         }
-        return JSON.toJSONString(responseData);
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
     }
 
     @RequestMapping("/downloadTemplate")
@@ -142,7 +143,7 @@ public class SendCodeController {
             responseData.setErrorMsg(e.getMessage(), e);
         }
         //返回页面数据
-        return JSON.toJSONString(responseData);
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
     }
 
     public void setTitleAndKey(List<String> titleList, List<String> keyList) {
@@ -184,7 +185,7 @@ public class SendCodeController {
             newMap.put("recordsTotal", pageMap.getTotal());//总数量
             newMap.put("recordsFiltered", pageMap.getTotal());//过滤后的总数量，暂未用到
             newMap.put("data", pageMap.getList());//数据列表
-            String resultStr = JSON.toJSONString(newMap);//将新的分页对象返回页面
+            String resultStr = JSON.toJSONString(newMap, SerializerFeature.WriteMapNullValue);//将新的分页对象返回页面
             //返回页面数据
             return resultStr;
         } catch (Exception e) {
@@ -194,7 +195,7 @@ public class SendCodeController {
             responseData.setErrorMsg(e.getMessage(), e);
         }
         //返回页面数据
-        return JSON.toJSONString(responseData);
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -229,7 +230,7 @@ public class SendCodeController {
             newMap.put("recordsTotal", pageMap.getTotal());//总数量
             newMap.put("recordsFiltered", pageMap.getTotal());//过滤后的总数量，暂未用到
             newMap.put("data", pageMap.getList());//数据列表
-            String resultStr = JSON.toJSONString(newMap);//将新的分页对象返回页面
+            String resultStr = JSON.toJSONString(newMap, SerializerFeature.WriteMapNullValue);//将新的分页对象返回页面
             //返回页面数据
             return resultStr;
         } catch (Exception e) {
@@ -239,7 +240,7 @@ public class SendCodeController {
             responseData.setErrorMsg(e.getMessage(), e);
         }
         //返回页面数据
-        return JSON.toJSONString(responseData);
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
     }
 
     /**

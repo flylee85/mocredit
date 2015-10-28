@@ -294,12 +294,12 @@ public class SendCodeServiceImpl implements SendCodeService {
                 }
                 final MMSBO sendMsg = duanxin;
                 logger.info("短信内容==电话：" + sendMsg.getMobile() + "名称:" + sendMsg.getCustomer() + "内容：" + sendMsg.getContent());
-                jmsTemplate.send("subject", new MessageCreator() {
-                    public Message createMessage(Session session) throws JMSException {
-                        ObjectMessage msg = session.createObjectMessage(sendMsg);
-                        return msg;
-                    }
-                });
+//                jmsTemplate.send("subject", new MessageCreator() {
+//                    public Message createMessage(Session session) throws JMSException {
+//                        ObjectMessage msg = session.createObjectMessage(sendMsg);
+//                        return msg;
+//                    }
+//                });
 
                 //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
                 // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码

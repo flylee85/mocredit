@@ -15,6 +15,11 @@
     <name>activitysys</name>
 
     <dependencies>
+        <dependency>
+            <groupId>com.mocredit</groupId>
+            <version>1.0-SNAPSHOT</version>
+            <artifactId>mocredit-security-client</artifactId>
+        </dependency>
         <!-- 依赖server模块 -->
         <dependency>
             <groupId>com.mocredit.base</groupId>
@@ -44,6 +49,12 @@
                     <webAppConfig>
                         <contextPath>/${project.build.finalName}</contextPath>
                     </webAppConfig>
+                    <connectors>
+                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>8081</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>
                 </configuration>
             </plugin>
 
