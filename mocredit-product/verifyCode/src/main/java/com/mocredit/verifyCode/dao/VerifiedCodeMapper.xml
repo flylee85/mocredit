@@ -50,7 +50,12 @@
           SELECT * FROM  t_verified_code where code_serial_number=#{codeSerialNumber}
         ]]>
     </select>
-
+<!-- 根据券码序列号（券码ID）查询券码验证记录 -->
+    <select id="findVerifiedCodesByCodeAndType" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="java.util.Map" >
+        <![CDATA[
+          SELECT * FROM  t_verified_code where code=#{code} and verify_type=#{verifyType}
+        ]]>
+    </select>
     <!-- 插入记录 -->
     <insert id="insertVerifiedCode" parameterType="com.mocredit.verifyCode.model.TVerifiedCode">
         <![CDATA[

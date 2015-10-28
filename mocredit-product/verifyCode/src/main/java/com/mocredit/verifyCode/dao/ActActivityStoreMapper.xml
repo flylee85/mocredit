@@ -8,6 +8,7 @@
         <result column="enterprise_id" property="enterpriseId" jdbcType="VARCHAR" ></result>
         <result column="shop_id" property="shopId" jdbcType="VARCHAR" ></result>
         <result column="store_id" property="storeId" jdbcType="VARCHAR" ></result>
+        <result column="store_code" property="storeCode" jdbcType="VARCHAR" ></result>
     </resultMap>
 
     <insert id="insert" parameterType="com.mocredit.verifyCode.model.ActActivityStore">
