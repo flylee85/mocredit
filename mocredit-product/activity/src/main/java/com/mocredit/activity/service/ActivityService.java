@@ -127,4 +127,9 @@ public interface ActivityService {
 	 * @return 批次ID
 	 */
 	public String extractedCode(String activityId,String batchName,int count);
+	/**
+	 * 更新活动状态
+	 * @return
+	 */
+	public Integer updateStatus(Activity activity);
 }

@@ -244,7 +244,34 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	}
-
+	/**
+	 * 保存活动
+	 * @param activity 保存的对象
+	 * @return json obj string
+	 */
+	@RequestMapping("/updateStatus")
+	@ResponseBody
+	public String updateStatus(@RequestBody String body){
+		//定义返回页面的对象
+		ResponseData responseData = new AjaxResponseData();
+		try{
+			//将前端传递过来的字符串数据解析为活动对象
+			Activity activity = JSON.parseObject(body, Activity.class);
+			//定义影响行数为0
+			Integer affectCount = 0;
+			//更新活动对象
+			affectCount = activityService.updateStatus(activity);
+			//如果程序执行到这里没有发生异常，则证明该操作成功执行,将获取到的数据放到返回页面的对象中
+			responseData.setData(affectCount);
+		}catch(Exception e){
+			//如果抛出异常，则将返回页面的对象设置为false
+			e.printStackTrace();
+			responseData.setSuccess(false);
+			responseData.setErrorMsg(e.getMessage(), e);
+		}
+		//返回页面数据
+		return JSON.toJSONString(responseData);
+	}
 	/**
 	 * 导入联系人(客户)
 	 * @param selectExcel，前端传递到后台的文件流对象，在form表单中，name必须是selectExcel

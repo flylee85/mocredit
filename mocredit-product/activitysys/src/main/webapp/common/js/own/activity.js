@@ -754,7 +754,7 @@ function changeActivityStatus(activityId, status) {
         type: "POST",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
-        url: "activitysys/saveActivity",
+        url: "activitysys/updateStatus",
         data: JSON.stringify({id: activityId, status: status}),
         success: function (result, textStuts) {
             if (result.success) {
