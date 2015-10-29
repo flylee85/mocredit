@@ -37,13 +37,13 @@
   <!--  公用查询条件，包含活动所有字段的查询条件     -->
 	<sql id="base_enterprise_condition" >
 			<if test="id != null" >
-				and a.id = #{id}
+				and id = #{id}
 			</if>
 			<if test="name != null" >
-				and a.name = #{name}
+				and name = #{name}
 			</if>
 			<if test="code != null" >
-				and a.code = #{code}
+				and code = #{code}
 			</if>
 	</sql>
   <select id="selectAll" resultMap="BaseResultMap" parameterType="com.mocredit.manage.model.Enterprise" >
