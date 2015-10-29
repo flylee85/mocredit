@@ -10,6 +10,8 @@ import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.util.*;
 import cn.m.mt.common.MMSBO;
+import com.mocredit.manage.model.Enterprise;
+import com.mocredit.manage.persitence.EnterpriseMapper;
 import com.mocredit.sendcode.constant.BatchCodeStatus;
 import com.mocredit.sendcode.constant.BatchStatus;
 import com.mocredit.sendcode.constant.DownloadType;
@@ -45,7 +47,9 @@ public class SendCodeServiceImpl implements SendCodeService {
     @Autowired
     private ActivityService activityService;
     @Autowired
-    private ActivityStoreMapper activityStoreMapper; // 活动关联门店dao对象
+    private ActivityStoreMapper activityStoreMapper;
+    @Autowired
+    private EnterpriseMapper enterpriseMapper;
 
     @Override
     @Transactional
@@ -390,10 +394,15 @@ public class SendCodeServiceImpl implements SendCodeService {
             codeVO.setStartTime(DateUtil.dateToStr(oc.getStartTime(), "yyyy-MM-dd HH:mm:ss"));// 活动开始时间
             codeVO.setEndTime(DateUtil.dateToStr(oc.getEndTime(), "yyyy-MM-dd HH:mm:ss"));// 活动结束时间
             codeVO.setSelectDate(act.getSelectDate());// 活动指定日期
-            
+
             codeVO.setOutCode(act.getOutCode());
-            codeVO.setOrderCode("");
-            codeVO.setEnterpriseCode("");
+            codeVO.setOrderCode(batchId);
+            Enterprise enterprise = new Enterprise();
+            enterprise.setId(act.getEnterpriseId());
+            Enterprise enterpriseOri = enterpriseMapper.selectOne(enterprise);
+            if (enterpriseOri != null) {
+                codeVO.setEnterpriseCode(enterpriseOri.getCode());
+            }
             // 将新组建的码对象添加到列表中
             carryList.add(codeVO);
         }
