@@ -1359,10 +1359,10 @@ public class ActivityServiceImpl implements ActivityService {
 	@Override
 	public Map<String, Object> getComb(String activityId) {
 		Map<String,Object> map=new HashMap<>();
-		if(activityId==null||!activityId.equals("")){
-		}else{
+		if(activityId==null||activityId.equals("")){
 			map.put("ENTERPRISE", enterpriseMapper.selectAll(null));
 			map.put("CONTRACT", contractMapper.selectAll(null));
+		}else{
 		}
 		return map;
 	}
