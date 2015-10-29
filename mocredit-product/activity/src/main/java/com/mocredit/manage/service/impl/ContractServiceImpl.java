@@ -11,17 +11,17 @@ import com.mocredit.manage.service.ContractService;
 public class ContractServiceImpl implements ContractService {
 	@Autowired
 	private ContractMapper contractMapper;
-	
+
 	@Override
 	public List<Contract> getAllContract() {
-		
-		return null;
+		return contractMapper.selectAll(null);
 	}
 
 	@Override
 	public List<Contract> getEnterpriseContract(String enterpriseId) {
-		// TODO Auto-generated method stub
-		return null;
+		Contract contract=new Contract();
+		contract.setEnterpriseId(enterpriseId);
+		return contractMapper.selectAll(contract);
 	}
 
 }

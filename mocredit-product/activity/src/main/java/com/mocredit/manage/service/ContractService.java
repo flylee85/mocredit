@@ -11,7 +11,7 @@ public interface ContractService {
 	 */
      List<Contract> getAllContract();
      /**
-      * 获得企业的合同列表
+      * 获得企业所有的合同
       * @param enterpriseId
       * @return
       */

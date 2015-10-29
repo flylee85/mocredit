@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.mocredit.activity.model.Activity;
 import com.mocredit.activity.model.ActivityStore;
-import com.mocredit.activity.model.BatchCode;
 import com.mocredit.activity.model.SelectStoreVO;
 import com.mocredit.base.pagehelper.PageInfo;
 
@@ -132,4 +131,6 @@ public interface ActivityService {
 	 * @return
 	 */
 	public Integer updateStatus(Activity activity);
+	
+	public Map<String,Object> getComb(String activityId);
 }

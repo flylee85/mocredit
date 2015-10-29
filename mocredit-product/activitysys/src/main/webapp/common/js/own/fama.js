@@ -253,7 +253,7 @@
 	 * 加载字典数据
 	 */
 	function loadDictionary() {
-		$.get("third/getData?field=CONTRACT,INTEGRAL_ACTIVITY,ENTERPRISE", function (data) {
+		$.get("activitysys/getComb", function (data) {
 			if (data.success) {
 				$.each(data.data, function (i, n) {
 					var thisSelect = $("select[code='" + i + "']");

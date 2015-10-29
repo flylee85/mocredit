@@ -10,4 +10,10 @@ public interface EnterpriseService {
 	 * @return
 	 */
      List<Enterprise> getAll();
+     /**
+      * 根据ID获得企业
+      * @param id
+      * @return
+      */
+     Enterprise getEnterpriseById(String id);
 }

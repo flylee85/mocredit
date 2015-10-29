@@ -667,6 +667,7 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	}
+<<<<<<< HEAD
 	@RequestMapping("getComb")
 	public String getComb(String activityid){//定义返回页面的对象
 		ResponseData responseData = new AjaxResponseData();
@@ -681,6 +682,12 @@ public class ActivityController{
 		}
 		//返回页面数据
 		return JSON.toJSONString(responseData);}
+=======
+	@RequestMapping("getCombs")
+	public String getComb(){
+		return "";
+	}
+>>>>>>> branch 'master' of https://github.com/incito/mocredit.git
 	@RequestMapping("/test")
 	public String test(){
 		return activityService.extractedCode("c6efb2223be54cbe944a3f4afbdd0023", "批次"+new Random().nextInt(), 10)+"";
