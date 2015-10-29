@@ -48,14 +48,19 @@ public class SendCodeServiceImpl implements SendCodeService {
     private ActivityStoreMapper activityStoreMapper; // 活动关联门店dao对象
 
     @Override
+    @Transactional
     public List<BatchCode> downloadList(String type, String name, String id, Integer codeCount) {
         //    CODE("01", "验码"), BATCH("02", "批次"), ACTIVITY("03", "活动");
         Map<String, Object> batchMap = new HashMap<>();
+        Activity activity = null;
         if (DownloadType.ACTIVITY.getValue().equals(type)) {
+            activity = activityService.getActivityById(id);
             String batchId = activityService.extractedCode(id, name, codeCount);
             batchMap.put("batchId", batchId);
         }
         if (DownloadType.BATCH.getValue().equals(type)) {
+            String actId = batchMapper.getBatchById(id).getActivityId();
+            activity = activityService.getActivityById(actId);
             batchMap.put("batchId", id);
         }
         List<BatchCode> batchCodeAllList = new ArrayList<>();
@@ -71,6 +76,12 @@ public class SendCodeServiceImpl implements SendCodeService {
                 pageNum += 1;
             }
         }
+        for (BatchCode batchCode : batchCodeAllList) {
+            batchCode.setStatus(BatchCodeStatus.ALREADY_SEND.getValue());
+            batchCode.setStartTime(new Date());
+            batchCodeMapper.updateBatchCode(batchCode);
+        }
+        carryVerifyCode(activity, batchMap.get("batchId") + "", batchCodeAllList);
         return batchCodeAllList;
     }
 

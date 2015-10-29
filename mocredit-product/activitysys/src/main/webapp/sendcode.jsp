@@ -8,17 +8,17 @@
 <head>
     <meta charset="utf-8">
     <title>发码管理</title>
-    <link rel="stylesheet" href="${path}/activitysys/common/js/file-input/fileinput.css">
-    <link rel="stylesheet" href="${path}/activitysys/common/css/switchery/style.css">
-    <link rel="stylesheet" href="${path}/activitysys/common/css/bootstrap.css">
-    <link rel="stylesheet" href="${path}/activitysys/common/css/font-awesome.min.css">
-    <link rel="stylesheet" href="${path}/activitysys/common/css/style.css">
-    <link rel="stylesheet" href="${path}/activitysys/common/css/plugin.css">
-    <script src="${path}/activitysys/common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
-    <script src="${path}/activitysys/common/js/file-input/fileinput.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="${path}/common/js/file-input/fileinput.css">
+    <link rel="stylesheet" href="${path}/common/css/switchery/style.css">
+    <link rel="stylesheet" href="${path}/common/css/bootstrap.css">
+    <link rel="stylesheet" href="${path}/common/css/font-awesome.min.css">
+    <link rel="stylesheet" href="${path}/common/css/style.css">
+    <link rel="stylesheet" href="${path}/common/css/plugin.css">
+    <script src="${path}/common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="${path}/common/js/file-input/fileinput.js" type="text/javascript"></script>
     <!--[if lt IE 9]>
-    <script src="${path}/activitysys/common/js/ie/respond.min.js"></script>
-    <script src="${path}/activitysys/common/js/ie/html5.js"></script>
+    <script src="${path}/common/js/ie/respond.min.js"></script>
+    <script src="${path}/common/js/ie/html5.js"></script>
     <![endif]-->
 </head>
 <body>
@@ -127,24 +127,24 @@
 
 
 <!-- /.modal 发送提示 -->
-<script src="${path}/activitysys/common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
-<script src="${path}/activitysys/common/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="${path}/activitysys/common/js/index.js" type="text/javascript"></script>
+<script src="${path}/common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="${path}/common/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="${path}/common/js/index.js" type="text/javascript"></script>
 <!-- 验证 -->
-<script src="${path}/activitysys/common/js/parsley/parsley.js" type="text/javascript"></script>
+<script src="${path}/common/js/parsley/parsley.js" type="text/javascript"></script>
 <!-- checkbox -->
-<script src="${path}/activitysys/common/js/fuelux/fuelux.js" type="text/javascript"></script>
+<script src="${path}/common/js/fuelux/fuelux.js" type="text/javascript"></script>
 
 <!-- datatables -->
-<script src="${path}/activitysys/common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
+<script src="${path}/common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
 <script>
     if ("${success}" == "true") {
         sendMsg(true, "上传并发送成功");
-        window.location.href = "${path}/activitysys/sendCode/sendcode?id=${actId}"
+        window.location.href = "${path}/sendCode/sendcode?id=${actId}"
     }
     if ("${success}" == "false" && "${msg}" != "") {
         sendMsg(false, "${msg}");
-        window.location.href = "${path}/activitysys/sendCode/sendcode?id=${actId}"
+        window.location.href = "${path}/sendCode/sendcode?id=${actId}"
     }
 </script>
 <script>
@@ -154,7 +154,7 @@
         if ($.type(famaTable) != 'object') {
             famaTable = $('#tima').find('table[data-ride="datatables"]').DataTable({
                 "ajax": {
-                    url: "${path}/activitysys/sendCode/queryPickCodePage?actId=${actId}",
+                    url: "${path}/sendCode/queryPickCodePage?actId=${actId}",
                     type: "post",
                 },
                 "processing": true,
@@ -223,7 +223,7 @@
                         "sortable": false,
                         "render": function (data, type, full) {
                             return '<a href="javascript:sendCode(\'' + data['id'] + '\')">发码</a>' +
-                                    '<a href="${path}/activitysys/codedetail.html?' + data['id'] + '-${actId}' + '" target="_blank">详情</a>' +
+                                    '<a href="${path}/codedetail.html?' + data['id'] + '-${actId}' + '" target="_blank">详情</a>' +
                                     '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>';
                         }
                     }
@@ -234,27 +234,27 @@
 </script>
 <script>
     function sendCode(id) {
-        $.get("${path}/activitysys/sendCode/sendCodeByBatchId", {
+        $.get("${path}/sendCode/sendCodeByBatchId", {
             "actId": "${actId}",
             "batchId": id
         }, function (result) {
             if (result.success) {
                 sendMsg(true, "发送短信成功");
-                window.location.href = "${path}/activitysys/sendCode/sendcode?id=${actId}"
+                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
             } else {
                 sendMsg(false, result.errorMsg);
-                window.location.href = "${path}/activitysys/sendCode/sendcode?id=${actId}"
+                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
             }
         }, 'json');
     }
     function delBatch(id) {
-        $.get("${path}/activitysys/sendCode/delBatchById", {"batchId": id}, function (result) {
+        $.get("${path}/sendCode/delBatchById", {"batchId": id}, function (result) {
             if (result.success) {
                 sendMsg(true, "删除批次成功");
-                window.location.href = "${path}/activitysys/sendCode/sendcode?id=${actId}"
+                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
             } else {
                 sendMsg(false, result.errorMsg);
-                window.location.href = "${path}/activitysys/sendCode/sendcode?id=${actId}"
+                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
             }
         }, 'json');
     }

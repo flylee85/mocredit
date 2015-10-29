@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -41,7 +42,7 @@
                 <li><a href="#"><span class="badge bg-danger pull-right">3</span>消息</a></li>
                 <li class="divider"></li>
                 <li><a href="docs.html">帮助</a></li>
-                <li><a href="/activitysys/logout">退出</a></li>
+                <li><a href="logout">退出</a></li>
             </ul>
         </li>
     </ul>
@@ -127,28 +128,33 @@
 <!-- nav -->
 <nav id="nav" class="nav-primary visible-lg nav-vertical">
     <ul class="nav" data-spy="affix" data-offset-top="50">
-        <li class="dropdown-submenu">
-            <a href="activity.html" class="changePage"><i class="icon-list icon-xlarge"></i>活动管理</a>
-        </li>
-        <li class="dropdown-submenu">
-            <a href="enterprise.html" class="changePage"><i class="icon-th icon-xlarge"></i>企业管理</a>
-            <ul class="dropdown-menu">
-                <li><a href="enterprise.html" class="changePage">企业列表</a></li>
-                <li><a href="contract.html" class="changePage">合同管理</a></li>
-                <li><a href="accountTable.html" class="changePage">结算统计表</a></li>
-                <li><a href="payment.html" class="changePage">收据单</a></li>
-            </ul>
-        </li>
-        <li><a href="business.html" class="changePage"><i class="icon-signal icon-xlarge"></i>商家管理</a></li>
+        <%--  <li class="dropdown-submenu">
+              <a href="activity.html" class="changePage"><i class="icon-list icon-xlarge"></i>活动管理</a>
+          </li>
+          <li class="dropdown-submenu">
+              <a href="enterprise.html" class="changePage"><i class="icon-th icon-xlarge"></i>企业管理</a>
+              <ul class="dropdown-menu">
+                  <li><a href="enterprise.html" class="changePage">企业列表</a></li>
+                  <li><a href="contract.html" class="changePage">合同管理</a></li>
+                  <li><a href="accountTable.html" class="changePage">结算统计表</a></li>
+                  <li><a href="payment.html" class="changePage">收据单</a></li>
+              </ul>
+          </li>
+          <li><a href="business.html" class="changePage"><i class="icon-signal icon-xlarge"></i>商家管理</a></li>
 
-        <li class="dropdown-submenu">
-            <a href="#"><i class="icon-link icon-xlarge"></i>其他</a>
-            <ul class="dropdown-menu">
-                <li><a href="signin.html" class="changePage">登录页面</a></li>
-                <li><a href="signup.html" class="changePage">注册页面</a></li>
-                <li><a href="404.html" class="changePage">404页面</a></li>
-            </ul>
-        </li>
+          <li class="dropdown-submenu">
+              <a href="#"><i class="icon-link icon-xlarge"></i>其他</a>
+              <ul class="dropdown-menu">
+                  <li><a href="signin.html" class="changePage">登录页面</a></li>
+                  <li><a href="signup.html" class="changePage">注册页面</a></li>
+                  <li><a href="404.html" class="changePage">404页面</a></li>
+              </ul>
+          </li>--%>
+        <c:forEach items="${menus}" var="m">
+            <li class="dropdown-submenu">
+                <a href="${m.url}" class="changePage"><i class="icon-list icon-xlarge"></i>${m.name}</a>
+            </li>
+        </c:forEach>
     </ul>
 </nav>
 <!-- / nav -->
