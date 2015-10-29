@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 提供已验证码的表的操作
@@ -49,14 +50,17 @@ public interface VerifiedCodeMapper {
 
 
     /**
-     * 根据
-     * @param device  机具号
-     * @param requestSeriaNumber   流水号
-     * @param date 某个时间。这里 指某天
+     * 根据码序列号（券码ID）获取券码的验证记录列表
+     * @param codeSerialNumber
      * @return
      */
     public List<TVerifiedCode> findVerifiedCodesByDeviceAndRequestSerialNumber(@Param("device") String device, @Param("request_serial_number") String requestSeriaNumber , @Param("date")Date date);
 
-
+    /**
+     * 根据码和校验类型获取验证记录列表
+     * @param code
+     * @return
+     */
+    public List<TVerifiedCode> findVerifiedCodesByCodeAndType(Map<String, Object> param);
 
 }

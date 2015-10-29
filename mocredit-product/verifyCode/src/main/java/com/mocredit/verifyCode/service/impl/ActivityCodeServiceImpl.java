@@ -1,6 +1,16 @@
 package com.mocredit.verifyCode.service.impl;
 
-import com.mocredit.base.constant.Constant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
 import com.mocredit.base.enums.ActivityBlackListsType;
 import com.mocredit.base.enums.ErrorCode;
@@ -10,19 +20,19 @@ import com.mocredit.base.util.DateUtil;
 import com.mocredit.base.util.TemplateUtil;
 import com.mocredit.base.util.UUIDUtils;
 import com.mocredit.log.task.SmsSendTask;
-import com.mocredit.verifyCode.dao.*;
-import com.mocredit.verifyCode.model.*;
+import com.mocredit.verifyCode.dao.ActActivityStoreMapper;
+import com.mocredit.verifyCode.dao.ActivityCodeBlackListsMapper;
+import com.mocredit.verifyCode.dao.ActivityCodeMapper;
+import com.mocredit.verifyCode.dao.ActivityInfoMapper;
+import com.mocredit.verifyCode.dao.VerifiedCodeMapper;
+import com.mocredit.verifyCode.model.ActActivityStore;
+import com.mocredit.verifyCode.model.ActivityCodeBlackLists;
+import com.mocredit.verifyCode.model.TActivityCode;
+import com.mocredit.verifyCode.model.TActivityInfo;
+import com.mocredit.verifyCode.model.TVerifiedCode;
 import com.mocredit.verifyCode.service.ActivityCodeService;
 import com.mocredit.verifyCode.vo.ActActivityCodeVO;
 import com.mocredit.verifyCode.vo.SmsVO;
-import org.apache.log4j.Logger;
-import org.omg.IOP.TAG_CODE_SETS;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.math.BigDecimal;
-import java.util.*;
 
 /**
  * Created by YHL on 2015/7/7 13:54 .
@@ -108,7 +118,17 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 //        int a=actActivityStoreMapper.insert(aa);
 //
 //        System.out.println("######插入结果："+a);
-
+        /**判断码是否已经使用过**/
+        Map<String, Object> param=new HashMap<String, Object>();
+        param.put("code", code);
+        param.put("verifyType", VerifyCodeStatus.VERIFYCODE.getValue());
+		List<TVerifiedCode> verifiedCode = vcm.findVerifiedCodesByCodeAndType(param);
+		if(null!=verifiedCode&&verifiedCode.size()>1){
+			 ard.setSuccess(false);
+             ard.setErrorMsg("当前券码已经使用过!");
+             ard.setErrorCode(ErrorCode.CODE_51.getCode());
+             return ard ;
+		}
         //判断是否在黑名单表中（黑名单表为 删除或者撤销活动的）
         List<ActivityCodeBlackLists> activityCodeBlackListses = this.activityCodeBlackListsMapper.findBlackListsByCode(code);
         if( null!=activityCodeBlackListses && activityCodeBlackListses.size()>0){
@@ -146,9 +166,10 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 
         //编码不为空，优先适用门店编码获取
         boolean canUse=false;
+//        store_code=null;//TODO 暂时store_code不能用
         if( !StringUtils.isEmpty(store_code) ){
             for (ActActivityStore aas : actActivityStores) {
-                if (aas.getStoreCode().equals(store_code)) {
+                if (store_code.equals(aas.getStoreCode())) {
                     canUse = true;
                     break;
                 }

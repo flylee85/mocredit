@@ -1280,58 +1280,61 @@ public class ActivityServiceImpl implements ActivityService {
 		batch.setCreatetime(new Date());
 		batchMapper.addBatch(batch);
 
+		// /*
+		// * 码库接口-库存查询
+		// */
+		// logger.info("码库接口----库存查询开始");
+		// // 调用库存查询方法，获取库存查询返回的数据
+		// Map<String, Object> stockMap = getCodeCountStock(activityId,
+		// batch.getId());
+		// boolean isCountStockSuccess =
+		// Boolean.parseBoolean(String.valueOf(stockMap.get("is_success")));
+		// logger.info("码库接口----库存查询结束");
+		// // 判断此次库存查询请求是否成功
+		// if (isCountStockSuccess) {
+		// // 如果此次库存查询成功，则再获取库存数量
+		// Integer number =
+		// Integer.valueOf(String.valueOf(stockMap.get("number")));
+		// // 如果库存不足，则返回错误信息
+		// if (number < count) {
+		// throw new BusinessException("提码失败！码库现有的码数量不足，只有" + number + "条码。");
+		// }
+		// // 如果库存足够，则进行提码操作
+		// else {
 		/*
-		 * 码库接口-库存查询
+		 * 码库接口-提码
 		 */
-		logger.info("码库接口----库存查询开始");
-		// 调用库存查询方法，获取库存查询返回的数据
-		Map<String, Object> stockMap = getCodeCountStock(activityId, batch.getId());
-		boolean isCountStockSuccess = Boolean.parseBoolean(String.valueOf(stockMap.get("is_success")));
-		logger.info("码库接口----库存查询结束");
-		// 判断此次库存查询请求是否成功
-		if (isCountStockSuccess) {
-			// 如果此次库存查询成功，则再获取库存数量
-			Integer number = Integer.valueOf(String.valueOf(stockMap.get("number")));
-			// 如果库存不足，则返回错误信息
-			if (number < count) {
-				throw new BusinessException("提码失败！码库现有的码数量不足，只有" + number + "条码。");
-			}
-			// 如果库存足够，则进行提码操作
-			else {
-				/*
-				 * 码库接口-提码
-				 */
-				logger.info("码库接口----提码开始-----提码数量：" + count);
-				// 调用提码方法，进行提码操作
-				Map<String, Object> codesMap = getCodeCodes(activityId, batch.getId(), count);
-				boolean pickIsSuccess = Boolean.parseBoolean(String.valueOf(codesMap.get("is_success")));
-				List<Map<String, Object>> codeList = (List<Map<String, Object>>) codesMap.get("data");
-				logger.info("码库接口----提码结束-----提码数量：" + count);
-				if (pickIsSuccess) {
-					Activity activity = activityMapper.getActivityById(activityId);
-					List<BatchCode> batchOrderCodeList = new ArrayList<>();
-					// 遍历列表，将列表中的数据拼装后放入到临时列表中
-					for (Map<String, Object> codeMap : codeList) {
-						BatchCode oc = new BatchCode();
-						oc.setId(IDUtil.getID());
-						oc.setBatchId(batch.getId());
-						oc.setCodeId(String.valueOf(codeMap.get("id")));
-						oc.setCode(String.valueOf(codeMap.get("code")));
-						oc.setEndTime(activity.getEndTime());
-						oc.setStatus("01");// 01：已提码
+		logger.info("码库接口----提码开始-----提码数量：" + count);
+		// 调用提码方法，进行提码操作
+		Map<String, Object> codesMap = getCodeCodes(activityId, batch.getId(), count);
+		boolean pickIsSuccess = Boolean.parseBoolean(String.valueOf(codesMap.get("is_success")));
+		List<Map<String, Object>> codeList = (List<Map<String, Object>>) codesMap.get("data");
+		logger.info("码库接口----提码结束-----提码数量：" + count);
+		if (pickIsSuccess) {
+			Activity activity = activityMapper.getActivityById(activityId);
+			List<BatchCode> batchOrderCodeList = new ArrayList<>();
+			// 遍历列表，将列表中的数据拼装后放入到临时列表中
+			for (Map<String, Object> codeMap : codeList) {
+				BatchCode oc = new BatchCode();
+				oc.setId(IDUtil.getID());
+				oc.setBatchId(batch.getId());
+				oc.setCodeId(String.valueOf(codeMap.get("id")));
+				oc.setCode(String.valueOf(codeMap.get("code")));
+				oc.setEndTime(activity.getEndTime());
+				oc.setStatus("01");// 01：已提码
 
-						batchOrderCodeList.add(oc);
-					}
-					batchCodeMapper.batchAddBatchCode(batchOrderCodeList);
-					/* 修改批次导出数量 */
-					Batch updateBatch = new Batch();
-					updateBatch.setId(batch.getId());
-					updateBatch.setPickSuccessNumber(batchOrderCodeList.size());
-					updateBatch.setPickFailNumber(0);
-					batchMapper.updateBatch(updateBatch);
-				}
+				batchOrderCodeList.add(oc);
 			}
+			batchCodeMapper.batchAddBatchCode(batchOrderCodeList);
+			/* 修改批次导出数量 */
+			Batch updateBatch = new Batch();
+			updateBatch.setId(batch.getId());
+			updateBatch.setPickSuccessNumber(batchOrderCodeList.size());
+			updateBatch.setPickFailNumber(0);
+			batchMapper.updateBatch(updateBatch);
 		}
+		// }
+		// }
 
 		return batch.getId();
 	}
