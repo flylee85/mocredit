@@ -47,6 +47,9 @@ public class BatchCodeVO implements Serializable{
 	//指定时间
 	private String selectDate ;
 
+	private String outCode;//活动外部编码
+    private String enterpriseCode;
+    private String orderCode;//发码批次
 	public String getOrderId() {
 		return orderId;
 	}
@@ -183,4 +186,29 @@ public class BatchCodeVO implements Serializable{
 	public void setSelectDate(String selectDate) {
 		this.selectDate = selectDate;
 	}
+
+	public String getOutCode() {
+		return outCode;
+	}
+
+	public void setOutCode(String outCode) {
+		this.outCode = outCode;
+	}
+
+	public String getEnterpriseCode() {
+		return enterpriseCode;
+	}
+
+	public void setEnterpriseCode(String enterpriseCode) {
+		this.enterpriseCode = enterpriseCode;
+	}
+
+	public String getOrderCode() {
+		return orderCode;
+	}
+
+	public void setOrderCode(String orderCode) {
+		this.orderCode = orderCode;
+	}
+	
 }

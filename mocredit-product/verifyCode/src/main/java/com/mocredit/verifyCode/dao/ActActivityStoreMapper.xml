@@ -9,14 +9,17 @@
         <result column="shop_id" property="shopId" jdbcType="VARCHAR" ></result>
         <result column="store_id" property="storeId" jdbcType="VARCHAR" ></result>
         <result column="store_code" property="storeCode" jdbcType="VARCHAR" ></result>
+        <result column="store_name" property="storeName" jdbcType="VARCHAR" ></result>
+        <result column="shop_code" property="shopCode" jdbcType="VARCHAR" ></result>
+        <result column="shop_name" property="shopName" jdbcType="VARCHAR" ></result>
     </resultMap>
 
     <insert id="insert" parameterType="com.mocredit.verifyCode.model.ActActivityStore">
         <![CDATA[
         INSERT  INTO act_activity_store (
-           activity_id,store_id,enterprise_id,shop_id
+           activity_id,store_id,enterprise_id,shop_id,shop_name,shop_code,store_name,store_code
         )VALUES (
-          #{activityId},#{storeId},#{enterpriseId},#{shopId}
+          #{activityId},#{storeId},#{enterpriseId},#{shopId},#{shopName},#{shopCode},#{storeName},#{storeCode}
         )
         ]]>
     </insert>
@@ -33,11 +36,11 @@
         <choose>
             <when test=" null !=actActivityStores and actActivityStores.size >0 ">
                 INSERT  INTO act_activity_store (
-                activity_id,store_id,enterprise_id,shop_id,store_code
+                activity_id,store_id,enterprise_id,shop_id,shop_name,shop_code,store_name,store_code
                 )
                 VALUES
                 <foreach collection="actActivityStores" item="item" index="index" separator=",">
-                    ( #{item.activityId},#{item.storeId},#{item.enterpriseId},#{item.shopId},#{item.storeCode})
+                    ( #{item.activityId},#{item.storeId},#{item.enterpriseId},#{item.shopId},#{shopName},#{shopCode},#{storeName},#{storeCode})
                 </foreach>
             </when>
             <otherwise>

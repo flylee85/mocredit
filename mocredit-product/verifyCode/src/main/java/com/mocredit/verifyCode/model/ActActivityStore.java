@@ -27,6 +27,9 @@ public class ActActivityStore {
      * 门店编码
      */
     public String storeCode;
+    public String storeName;
+    public String shopName;
+    public String shopCode;
 
     //-----------GETTER/SETTER------------\\
 
@@ -69,4 +72,29 @@ public class ActActivityStore {
     public void setStoreCode(String storeCode) {
         this.storeCode = storeCode;
     }
+
+	public String getStoreName() {
+		return storeName;
+	}
+
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public String getShopCode() {
+		return shopCode;
+	}
+
+	public void setShopCode(String shopCode) {
+		this.shopCode = shopCode;
+	}
+    
 }

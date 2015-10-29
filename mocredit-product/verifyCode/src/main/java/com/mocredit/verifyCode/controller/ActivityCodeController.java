@@ -237,6 +237,11 @@ public class ActivityCodeController {
                          "enterpriseId": "222222",  //活动所属企业的ID
                          "shopId": "4444",          //门店
                          "storeId": "11111"        //门店所属商户ID
+                         *****新增字段
+                         "shopName", 商户名
+                         "shopCode", 商户编码
+                         "storeName":"", 门店名
+                         "storeCode":"" 门店编码
                      },
                      {
                          "activityId": "3333333",
@@ -262,6 +267,11 @@ public class ActivityCodeController {
                          "releaseTime": "2015-07-17 14:36:53" , //发布时间
                          "startTime": "2015-07-17 14:36:53",    //有效期开始时间
                          "contractId": "HT0001"           //合同id
+                          *****新增字段
+                         "out_code", //外部编码
+                         "order_code",//发码批次
+                         "enterprise_code",//发行企业编码
+                         "custom_name"//客户名
                      },
                     ......
                  ]
@@ -606,4 +616,11 @@ public class ActivityCodeController {
 
         return actActivitySynLog;
     }
+    
+    public static void main(String[] args) {
+		char[] c=new char[100];
+		c[0]='a';
+		c[1]='b';
+		System.out.println(new String(c));
+	}
 }

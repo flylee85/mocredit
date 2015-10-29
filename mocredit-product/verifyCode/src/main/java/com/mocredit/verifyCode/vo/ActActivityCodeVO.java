@@ -55,7 +55,11 @@ public class ActActivityCodeVO {
 
     /** 最大次数 **/
     private Integer maxNumber;
-
+    
+    private String outCode;//活动外部编码
+    private String enterpriseCode;
+    private String customName;
+    private String orderCode;//发码批次
     //-----------------------------
 
     /** 操作类型 **/
@@ -203,4 +207,37 @@ public class ActActivityCodeVO {
     public void setSuccessSmsMsg(String successSmsMsg) {
         this.successSmsMsg = successSmsMsg;
     }
+
+	public String getOutCode() {
+		return outCode;
+	}
+
+	public void setOutCode(String outCode) {
+		this.outCode = outCode;
+	}
+
+	public String getEnterpriseCode() {
+		return enterpriseCode;
+	}
+
+	public void setEnterpriseCode(String enterpriseCode) {
+		this.enterpriseCode = enterpriseCode;
+	}
+
+	public String getCustomName() {
+		return customName;
+	}
+
+	public void setCustomName(String customName) {
+		this.customName = customName;
+	}
+
+	public String getOrderCode() {
+		return orderCode;
+	}
+
+	public void setOrderCode(String orderCode) {
+		this.orderCode = orderCode;
+	}
+    
 }
