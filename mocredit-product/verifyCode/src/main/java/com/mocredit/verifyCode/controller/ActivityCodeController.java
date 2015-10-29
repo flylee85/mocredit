@@ -408,6 +408,11 @@ public class ActivityCodeController {
                      "enterpriseId": "QY0001",//发行企业ID ，冗余字段
                      "shopId": "SHOP001",    //商户ID  ，冗余字段
                      "storeId": "STORE001"    //门店ID
+                     *****新增字段
+                     "shopName", 商户名
+                     "shopCode", 商户编码
+                     "storeName":"", 门店名
+                     "storeCode":"" 门店编码
                  }
              ],
              "activityId": "0001",  //活动ID
@@ -418,6 +423,9 @@ public class ActivityCodeController {
              "enterpriseId": "QY0001", //发行企业ID
              "enterpriseName": "企业1", //发行企业名称，冗余字段
              "selectDate": "6,7" //选择的日期
+             *****新增字段
+             "out_code", //外部编码
+             "enterprise_code",//发行企业编码
              }
 
      *

@@ -36,6 +36,8 @@ import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.base.util.ValidatorUtil;
+import com.mocredit.manage.model.Enterprise;
+import com.mocredit.manage.persitence.EnterpriseMapper;
 import com.mocredit.sys.service.OptLogService;
 
 /**
@@ -57,6 +59,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private BatchMapper batchMapper;// 发码批次dao对象
 	@Autowired
 	private BatchCodeMapper batchCodeMapper;// 发码批次码dao对象
+	private EnterpriseMapper enterpriseMapper;//企业操作
 	@Autowired
 	private OptLogService optLogService;// 操作日志service对象
 
@@ -592,28 +595,6 @@ public class ActivityServiceImpl implements ActivityService {
 							"验码接口启用活动-----" + changeDescribe.toString());
 				}
 			} else {
-				// 活动开始时间或者结束时间修改
-				// if ((oldActivity.getStartTime() != null &&
-				// activity.getStartTime() != null
-				// && oldActivity.getStartTime().getTime() !=
-				// activity.getStartTime().getTime())
-				// || (oldActivity.getEndTime() != null && activity.getEndTime()
-				// != null
-				// && oldActivity.getEndTime().getTime() !=
-				// activity.getEndTime().getTime())) {
-				// // 如果活动时间修改，则通知验码模块所有未消费的码的使用时长
-				// httpPostMap.put("startTime",
-				// DateUtil.dateToStr(activity.getStartTime(), "yyyy-MM-dd
-				// HH:mm:ss"));// 开始时间
-				// httpPostMap.put("endTime",
-				// DateUtil.dateToStr(activity.getEndTime(), "yyyy-MM-dd
-				// HH:mm:ss"));// 结束时间
-				// changeDescribe.append("开始时间：" + httpPostMap.get("startTime")
-				// + ";");
-				// changeDescribe.append("结束时间：" + httpPostMap.get("endTime") +
-				// ";");
-				// }
-
 				// 活动指定日期修改，该处临时这样判断
 				if (oldActivity.getSelectDate() != null && activity.getSelectDate() != null
 						&& !oldActivity.getSelectDate().equals(activity.getSelectDate())) {
@@ -648,6 +629,20 @@ public class ActivityServiceImpl implements ActivityService {
 					httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
 					changeDescribe.append("使用次数：" + activity.getMaxNumber() + ";");
 				}
+				
+				//外部编码
+				if (oldActivity.getOutCode()!= null && activity.getOutCode() != null
+						&& !oldActivity.getOutCode().equals(activity.getOutCode())) {
+					httpPostMap.put("outCode", activity.getOutCode().toString());
+					changeDescribe.append("外部编码：" + activity.getOutCode() + ";");
+				}
+				//企业编码
+				Enterprise param=new Enterprise();
+				param.setId(activity.getEnterpriseId());
+				Enterprise enterprise = enterpriseMapper.selectOne(param);
+				httpPostMap.put("enterpriseCode", enterprise.getCode());
+				changeDescribe.append("企业编码：" + enterprise.getCode() + ";");
+				
 				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 				httpPostMap.put("storeList", activity.getStoreList());
 				changeDescribe.append("门店信息：[");
