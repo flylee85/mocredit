@@ -344,7 +344,7 @@
         a LEFT
         JOIN act_batch b on a.batch_id=b.id where 1=1 and a.batch_id=#{batchId}
         <if test="searchInfoContent != null">
-            and a.customer_mobile like '%${searchInfoContent}%'
+            and (a.customer_mobile like '%${searchInfoContent}%' or a.`code` like '%${searchInfoContent}%')
         </if>
         order by b.createtime desc
     </select>

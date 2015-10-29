@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>发码管理</title>
+    <title>提码管理</title>
     <link rel="stylesheet" href="common/js/file-input/fileinput.css">
     <link rel="stylesheet" href="common/css/switchery/style.css">
     <link rel="stylesheet" href="common/css/bootstrap.css">
@@ -50,7 +50,9 @@
 
                         <div class="col-lg-2 text-left">
                             <input type="text" tabindex="2" class="form-control input-small parsley-validated"
-                                   data-parsley-required="true" placeholder="导出数量" data-parsley-maxlength="30"
+                                   data-parsley-required="true" data-parsley-type="number" data-parsley-min="1"
+                                   placeholder="导出数量" data-parsley-max="100000"
+                                   data-parsley-maxlength="30"
                                    name="count" data-parsley-type="alphanum">
                         </div>
                         <label class="col-lg-2 text-left">一次不能超过100000行</label>
@@ -105,7 +107,7 @@
 <script src="common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
 <script>
     var url = window.location.search;
-    var actId
+    var actId;
     if (url.lastIndexOf("?") != -1) {
         actId = url.substring(url.lastIndexOf("?") + 1, url.length);
 
@@ -149,7 +151,7 @@
                             //  batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
                             var statusText;
                             if (data == "01") {
-                                statusText = "已提码，未导入联系人";
+                                statusText = "已提码";
                             }
                             if (data == "02") {
                                 statusText = "已导入联系人，待送码";
@@ -181,7 +183,7 @@
                         "sortable": false,
                         "render": function (data, type, full) {
                             return '<a href="sendCode/download?type=02&id=' + data['id'] + '&name=' + data['batch'] + '"target="_blank" >下载</a>' +
-                                    '<a href="codedetail.html?' + data['id'] + '-' + actId + '"target="_blank" >详情</a>' +
+                                    '<a href="timadetail.html?' + data['id'] + '-' + actId + '"target="_blank" >详情</a>' +
                                     '<a href="javascript:delBatch(\'' + data['id'] + '\')" >删除</a>';
                         }
                     }
@@ -190,7 +192,6 @@
         }
     }
 </script>
-
 <script>
     /**
      * 添加发码活动确认按钮
@@ -210,7 +211,13 @@
                 formObject[this['name']] = this['value'];
             }
         });
-        document.location.href = "sendCode/download?type=03&id=" + actId + "&name=" + formObject["name"] + "&count=" + formObject["count"]
+        $.post("sendCode/isExistName", {"actId": actId, "name": formObject["name"]}, function (result) {
+            if (result.success) {
+                window.location.href = "sendCode/download?type=03&id=" + actId + "&name=" + formObject["name"] + "&count=" + formObject["count"]
+            } else {
+                sendMsg(false, result.errorMsg);
+            }
+        }, 'json');
     });
 </script>
 <script>

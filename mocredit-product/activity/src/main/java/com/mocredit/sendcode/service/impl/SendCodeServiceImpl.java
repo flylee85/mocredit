@@ -10,6 +10,8 @@ import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.util.*;
 import cn.m.mt.common.MMSBO;
+import com.mocredit.manage.model.Enterprise;
+import com.mocredit.manage.persitence.EnterpriseMapper;
 import com.mocredit.sendcode.constant.BatchCodeStatus;
 import com.mocredit.sendcode.constant.BatchStatus;
 import com.mocredit.sendcode.constant.DownloadType;
@@ -45,17 +47,24 @@ public class SendCodeServiceImpl implements SendCodeService {
     @Autowired
     private ActivityService activityService;
     @Autowired
-    private ActivityStoreMapper activityStoreMapper; // 活动关联门店dao对象
+    private ActivityStoreMapper activityStoreMapper;
+    @Autowired
+    private EnterpriseMapper enterpriseMapper;
 
     @Override
+    @Transactional
     public List<BatchCode> downloadList(String type, String name, String id, Integer codeCount) {
         //    CODE("01", "验码"), BATCH("02", "批次"), ACTIVITY("03", "活动");
         Map<String, Object> batchMap = new HashMap<>();
+        Activity activity = null;
         if (DownloadType.ACTIVITY.getValue().equals(type)) {
+            activity = activityService.getActivityById(id);
             String batchId = activityService.extractedCode(id, name, codeCount);
             batchMap.put("batchId", batchId);
         }
         if (DownloadType.BATCH.getValue().equals(type)) {
+            String actId = batchMapper.getBatchById(id).getActivityId();
+            activity = activityService.getActivityById(actId);
             batchMap.put("batchId", id);
         }
         List<BatchCode> batchCodeAllList = new ArrayList<>();
@@ -71,6 +80,20 @@ public class SendCodeServiceImpl implements SendCodeService {
                 pageNum += 1;
             }
         }
+        for (BatchCode batchCode : batchCodeAllList) {
+            batchCode.setStatus(BatchCodeStatus.ALREADY_SEND.getValue());
+            batchCode.setStartTime(new Date());
+            batchCodeMapper.updateBatchCode(batchCode);
+        }
+        Batch batch = new Batch();
+        batch.setId(batchMap.get("batchId") + "");
+        batch.setPickNumber(batchCodeAllList.size());
+        batch.setPickSuccessNumber(batchCodeAllList.size());
+        batch.setSendNumber(batchCodeAllList.size());
+        batch.setSendSuccessNumber(batchCodeAllList.size());
+        batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
+        batchMapper.updateBatch(batch);
+        carryVerifyCode(activity, batchMap.get("batchId") + "", batchCodeAllList);
         return batchCodeAllList;
     }
 
@@ -102,11 +125,26 @@ public class SendCodeServiceImpl implements SendCodeService {
     }
 
     @Override
+    public boolean isExistName(String actId, String name) {
+        Map<String, Object> batchMap = new HashMap<>();
+        batchMap.put("activityId", actId);
+        batchMap.put("batch", name);
+        return batchMapper.getBatchTotal(batchMap) > 0;
+    }
+
+    @Override
     public boolean delBatchById(String batchId) {
         Map<String, Object> batchMap = new HashMap<>();
         batchMap.put("batchId", batchId);
         batchMap.put("status", BatchStatus.DEL.getValue());
         return batchMapper.delBatchById(batchMap) > 0;
+    }
+
+    public int getBatchCodeTotal(String batchId, String status) {
+        Map<String, Object> batchCodeMap = new HashMap<>();
+        batchCodeMap.put("batchId", batchId);
+        batchCodeMap.put("status", status);
+        return batchCodeMapper.getBatchCodeTotal(batchCodeMap);
     }
 
     @Override
@@ -116,8 +154,11 @@ public class SendCodeServiceImpl implements SendCodeService {
             BatchCode batchCode = batchCodeMapper.getBatchCodeById(id);
             batchCodeAllList.add(batchCode);
             sendCode(actId, batchCode.getBatchId(), batchCodeAllList);
-            //todo 单次发送短信需要更新批次发送成功数
-
+            //更新批次发送成功数量
+            Batch batch = new Batch();
+            batch.setId(batchCode.getBatchId());
+            batch.setSendSuccessNumber(getBatchCodeTotal(batchCode.getBatchId(), BatchCodeStatus.ALREADY_SEND.getValue()));
+            batchMapper.updateBatch(batch);
             //记录发送短信和保存发码两个步骤的日志
             StringBuffer optInfo1 = new StringBuffer();
             optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
@@ -148,8 +189,6 @@ public class SendCodeServiceImpl implements SendCodeService {
                 }
             }
             //更新批次导入数量和成功数量
-            Batch batchOri = batchMapper.getBatchById(batchId);
-            //更新批次导入数量和成功数量
             Batch batch = new Batch();
             batch.setId(batchId);
             //记录发送短信和保存发码两个步骤的日志
@@ -157,21 +196,15 @@ public class SendCodeServiceImpl implements SendCodeService {
             optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
             try {
                 sendCode(actId, batchId, batchCodeAllList);
-                if (batchOri.getSendSuccessNumber() != null) {
-                    batch.setSendSuccessNumber(batchOri.getSendSuccessNumber() + batchCodeAllList.size());
-                } else {
-                    batch.setSendSuccessNumber(batchCodeAllList.size());
-                }
-                batch.setImportSuccessNumber(batchCodeAllList.size() + batchOri.getImportSuccessNumber());
+                batch.setSendSuccessNumber(getBatchCodeTotal(batchId, BatchCodeStatus.ALREADY_SEND.getValue()));
+                batch.setSendNumber(batchCodeAllList.size());
+                batch.setImportSuccessNumber(getBatchCodeTotal(batchId, null));
                 batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
                 optInfo1.append("成功数量：" + batchCodeAllList.size() + ";");
             } catch (Exception e) {
-                if (batchOri.getSendFailNumber() != null) {
-                    batch.setSendFailNumber(batchOri.getSendFailNumber() + batchCodeAllList.size());
-                } else {
-                    batch.setSendFailNumber(batchCodeAllList.size());
-
-                }
+                batch.setSendSuccessNumber(getBatchCodeTotal(batchId, BatchCodeStatus.ALREADY_SEND.getValue()));
+                batch.setSendNumber(batchCodeAllList.size());
+                batch.setImportSuccessNumber(getBatchCodeTotal(batchId, null));
                 batch.setStatus(BatchStatus.IMPORT_NOT_CARRY.getValue());
                 optInfo1.append("失败数量：" + batchCodeAllList.size() + ";");
                 sendSuccessFlag = false;
@@ -226,7 +259,6 @@ public class SendCodeServiceImpl implements SendCodeService {
         batch.setId(actBatchId);
         batch.setImportNumber(batchCodeAllList.size());
         batch.setImportSuccessNumber(batchCodeAllList.size());
-        batch.setImportFailNumber(0);
         batch.setSendNumber(batchCodeAllList.size());
         //记录发送短信和保存发码两个步骤的日志
         StringBuffer optInfo1 = new StringBuffer();
@@ -294,12 +326,12 @@ public class SendCodeServiceImpl implements SendCodeService {
                 }
                 final MMSBO sendMsg = duanxin;
                 logger.info("短信内容==电话：" + sendMsg.getMobile() + "名称:" + sendMsg.getCustomer() + "内容：" + sendMsg.getContent());
-                jmsTemplate.send("subject", new MessageCreator() {
-                    public Message createMessage(Session session) throws JMSException {
-                        ObjectMessage msg = session.createObjectMessage(sendMsg);
-                        return msg;
-                    }
-                });
+//                jmsTemplate.send("subject", new MessageCreator() {
+//                    public Message createMessage(Session session) throws JMSException {
+//                        ObjectMessage msg = session.createObjectMessage(sendMsg);
+//                        return msg;
+//                    }
+//                });
 
                 //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
                 // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
@@ -362,10 +394,15 @@ public class SendCodeServiceImpl implements SendCodeService {
             codeVO.setStartTime(DateUtil.dateToStr(oc.getStartTime(), "yyyy-MM-dd HH:mm:ss"));// 活动开始时间
             codeVO.setEndTime(DateUtil.dateToStr(oc.getEndTime(), "yyyy-MM-dd HH:mm:ss"));// 活动结束时间
             codeVO.setSelectDate(act.getSelectDate());// 活动指定日期
-            
+
             codeVO.setOutCode(act.getOutCode());
-            codeVO.setOrderCode("");
-            codeVO.setEnterpriseCode("");
+            codeVO.setOrderCode(batchId);
+            Enterprise enterprise = new Enterprise();
+            enterprise.setId(act.getEnterpriseId());
+            Enterprise enterpriseOri = enterpriseMapper.selectOne(enterprise);
+            if (enterpriseOri != null) {
+                codeVO.setEnterpriseCode(enterpriseOri.getCode());
+            }
             // 将新组建的码对象添加到列表中
             carryList.add(codeVO);
         }
