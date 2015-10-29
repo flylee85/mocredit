@@ -105,4 +105,13 @@ public interface SendCodeService extends BaseService {
      * @return
      */
     boolean sendCodeById(String actId, String id);
+
+    /**
+     * 判断活动中该批次的名称是否已经存在
+     *
+     * @param actId
+     * @param name
+     * @return
+     */
+    boolean isExistName(String actId, String name);
 }

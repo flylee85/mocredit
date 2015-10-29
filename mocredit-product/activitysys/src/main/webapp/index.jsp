@@ -153,6 +153,14 @@
         <c:forEach items="${menus}" var="m">
             <li class="dropdown-submenu">
                 <a href="${m.url}" class="changePage"><i class="icon-list icon-xlarge"></i>${m.name}</a>
+                <c:if test="${!empty m.secondResourceList }">
+                    <ul class="dropdown-menu">
+                        <c:forEach items="${m.secondResourceList}" var="n">
+                            <li><a href="${n.url}" class="changePage">${n.name}</a></li>
+                        </c:forEach>
+                    </ul>
+                </c:if>
+            </li>
             </li>
         </c:forEach>
     </ul>

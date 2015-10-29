@@ -38,6 +38,16 @@ public class SendCodeController {
     @Autowired
     private SendCodeService sendCodeService;
 
+    @RequestMapping("/isExistName")
+    public String isExistName(String actId, String name) {
+        ResponseData responseData = new AjaxResponseData();
+        if (sendCodeService.isExistName(actId, name)) {
+            responseData.setSuccess(false);
+            responseData.setErrorMsg("该活动已存在该批次名称");
+        }
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
+    }
+
     @RequestMapping("/sendcode")
     public ModelAndView sendCode(String id) {
         //定义页面对象，用来跳转指定页面，下面一句代码的意思是：跳转到Web容器中的index.jsp页面
@@ -110,7 +120,7 @@ public class SendCodeController {
             List<String> titleList = new ArrayList<String>();
             setTitleAndKey(titleList, keyList);
             List<Map> codeMap = new ArrayList<Map>();
-            String fileName = name + "码.xlsx";
+            String fileName = name + ".xls";
             response.reset();
             response.setContentType("application/x-download");
             try {
@@ -263,18 +273,22 @@ public class SendCodeController {
 		 */
         try {
             if (!"".equals(name) && selectExcel.getSize() > 0) {
-                //如果文件大小大于0，说明文件上传成功
-                //调用导入联系人方法
-
-                Map<String, Object> operMap = sendCodeService.importCustomor(actId, name, downloadChannel, selectExcel.getInputStream());
-                //获取导入联系人方法执行结果
-                if (Boolean.parseBoolean(String.valueOf(operMap.get("success")))) {
-                    //如果导入结果为true，则只需要将导入消息设置为data就可以，因为返回页面的对象中，默认为true。
-                    responseData.setData(operMap.get("msg"));
+                if (!sendCodeService.isExistName(actId, name)) {
+                    //如果文件大小大于0，说明文件上传成功
+                    //调用导入联系人方法
+                    Map<String, Object> operMap = sendCodeService.importCustomor(actId, name, downloadChannel, selectExcel.getInputStream());
+                    //获取导入联系人方法执行结果
+                    if (Boolean.parseBoolean(String.valueOf(operMap.get("success")))) {
+                        //如果导入结果为true，则只需要将导入消息设置为data就可以，因为返回页面的对象中，默认为true。
+                        responseData.setData(operMap.get("msg"));
+                    } else {
+                        //如果导入结果为false，则需要将返回页面的对象中设置为false，并且需要将导入消息设置为data就可以。
+                        responseData.setSuccess(false);
+                        responseData.setData(operMap.get("msg"));
+                    }
                 } else {
-                    //如果导入结果为false，则需要将返回页面的对象中设置为false，并且需要将导入消息设置为data就可以。
                     responseData.setSuccess(false);
-                    responseData.setData(operMap.get("msg"));
+                    responseData.setErrorMsg("该活动已存在该批次名称");
                 }
             } else {
                 if ("".equals(name)) {

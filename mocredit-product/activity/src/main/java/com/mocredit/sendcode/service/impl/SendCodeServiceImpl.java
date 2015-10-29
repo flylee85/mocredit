@@ -81,6 +81,14 @@ public class SendCodeServiceImpl implements SendCodeService {
             batchCode.setStartTime(new Date());
             batchCodeMapper.updateBatchCode(batchCode);
         }
+        Batch batch = new Batch();
+        batch.setId(batchMap.get("batchId") + "");
+        batch.setPickNumber(batchCodeAllList.size());
+        batch.setPickSuccessNumber(batchCodeAllList.size());
+        batch.setSendNumber(batchCodeAllList.size());
+        batch.setSendSuccessNumber(batchCodeAllList.size());
+        batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
+        batchMapper.updateBatch(batch);
         carryVerifyCode(activity, batchMap.get("batchId") + "", batchCodeAllList);
         return batchCodeAllList;
     }
@@ -113,11 +121,26 @@ public class SendCodeServiceImpl implements SendCodeService {
     }
 
     @Override
+    public boolean isExistName(String actId, String name) {
+        Map<String, Object> batchMap = new HashMap<>();
+        batchMap.put("activityId", actId);
+        batchMap.put("batch", name);
+        return batchMapper.getBatchTotal(batchMap) > 0;
+    }
+
+    @Override
     public boolean delBatchById(String batchId) {
         Map<String, Object> batchMap = new HashMap<>();
         batchMap.put("batchId", batchId);
         batchMap.put("status", BatchStatus.DEL.getValue());
         return batchMapper.delBatchById(batchMap) > 0;
+    }
+
+    public int getBatchCodeTotal(String batchId, String status) {
+        Map<String, Object> batchCodeMap = new HashMap<>();
+        batchCodeMap.put("batchId", batchId);
+        batchCodeMap.put("status", status);
+        return batchCodeMapper.getBatchCodeTotal(batchCodeMap);
     }
 
     @Override
@@ -127,8 +150,11 @@ public class SendCodeServiceImpl implements SendCodeService {
             BatchCode batchCode = batchCodeMapper.getBatchCodeById(id);
             batchCodeAllList.add(batchCode);
             sendCode(actId, batchCode.getBatchId(), batchCodeAllList);
-            //todo 单次发送短信需要更新批次发送成功数
-
+            //更新批次发送成功数量
+            Batch batch = new Batch();
+            batch.setId(batchCode.getBatchId());
+            batch.setSendSuccessNumber(getBatchCodeTotal(batchCode.getBatchId(), BatchCodeStatus.ALREADY_SEND.getValue()));
+            batchMapper.updateBatch(batch);
             //记录发送短信和保存发码两个步骤的日志
             StringBuffer optInfo1 = new StringBuffer();
             optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
@@ -159,8 +185,6 @@ public class SendCodeServiceImpl implements SendCodeService {
                 }
             }
             //更新批次导入数量和成功数量
-            Batch batchOri = batchMapper.getBatchById(batchId);
-            //更新批次导入数量和成功数量
             Batch batch = new Batch();
             batch.setId(batchId);
             //记录发送短信和保存发码两个步骤的日志
@@ -168,21 +192,15 @@ public class SendCodeServiceImpl implements SendCodeService {
             optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
             try {
                 sendCode(actId, batchId, batchCodeAllList);
-                if (batchOri.getSendSuccessNumber() != null) {
-                    batch.setSendSuccessNumber(batchOri.getSendSuccessNumber() + batchCodeAllList.size());
-                } else {
-                    batch.setSendSuccessNumber(batchCodeAllList.size());
-                }
-                batch.setImportSuccessNumber(batchCodeAllList.size() + batchOri.getImportSuccessNumber());
+                batch.setSendSuccessNumber(getBatchCodeTotal(batchId, BatchCodeStatus.ALREADY_SEND.getValue()));
+                batch.setSendNumber(batchCodeAllList.size());
+                batch.setImportSuccessNumber(getBatchCodeTotal(batchId, null));
                 batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
                 optInfo1.append("成功数量：" + batchCodeAllList.size() + ";");
             } catch (Exception e) {
-                if (batchOri.getSendFailNumber() != null) {
-                    batch.setSendFailNumber(batchOri.getSendFailNumber() + batchCodeAllList.size());
-                } else {
-                    batch.setSendFailNumber(batchCodeAllList.size());
-
-                }
+                batch.setSendSuccessNumber(getBatchCodeTotal(batchId, BatchCodeStatus.ALREADY_SEND.getValue()));
+                batch.setSendNumber(batchCodeAllList.size());
+                batch.setImportSuccessNumber(getBatchCodeTotal(batchId, null));
                 batch.setStatus(BatchStatus.IMPORT_NOT_CARRY.getValue());
                 optInfo1.append("失败数量：" + batchCodeAllList.size() + ";");
                 sendSuccessFlag = false;
@@ -237,7 +255,6 @@ public class SendCodeServiceImpl implements SendCodeService {
         batch.setId(actBatchId);
         batch.setImportNumber(batchCodeAllList.size());
         batch.setImportSuccessNumber(batchCodeAllList.size());
-        batch.setImportFailNumber(0);
         batch.setSendNumber(batchCodeAllList.size());
         //记录发送短信和保存发码两个步骤的日志
         StringBuffer optInfo1 = new StringBuffer();

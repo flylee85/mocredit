@@ -107,7 +107,7 @@
 <script src="common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
 <script>
     var url = window.location.search;
-    var actId
+    var actId;
     if (url.lastIndexOf("?") != -1) {
         actId = url.substring(url.lastIndexOf("?") + 1, url.length);
 
@@ -192,7 +192,6 @@
         }
     }
 </script>
-
 <script>
     /**
      * 添加发码活动确认按钮
@@ -212,7 +211,13 @@
                 formObject[this['name']] = this['value'];
             }
         });
-        document.location.href = "sendCode/download?type=03&id=" + actId + "&name=" + formObject["name"] + "&count=" + formObject["count"]
+        $.post("sendCode/isExistName", {"actId": actId, "name": formObject["name"]}, function (result) {
+            if (result.success) {
+                window.location.href = "sendCode/download?type=03&id=" + actId + "&name=" + formObject["name"] + "&count=" + formObject["count"]
+            } else {
+                sendMsg(false, result.errorMsg);
+            }
+        }, 'json');
     });
 </script>
 <script>
