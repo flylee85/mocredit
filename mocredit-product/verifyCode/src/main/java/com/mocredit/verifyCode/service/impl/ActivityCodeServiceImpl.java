@@ -549,7 +549,9 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
                                                     actActivityCodeVO.getStartTime(),
                                                     actActivityCodeVO.getEndTime(),
                                                     actActivityCodeVO.getSelectDate(),
-                                                    actActivityCodeVO.getMaxNumber()
+                                                    actActivityCodeVO.getMaxNumber(),
+                                                    actActivityCodeVO.getOutCode(),
+                                                    actActivityCodeVO.getEnterpriseCode()
                                                 );
         //3.更新活动关联的门店
         int delete_store_c = this.actActivityStoreMapper.deleteByActivityId(actActivityCodeVO.getActivityId());

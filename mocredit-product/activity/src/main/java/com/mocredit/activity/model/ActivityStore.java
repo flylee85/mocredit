@@ -29,6 +29,8 @@ public class ActivityStore implements Serializable{
 	private String enterpriseName ;
 	//商户名称,与数据库字段无关，需要关联shop表查询名称
 	private String shopName;
+	//商户编码,与数据库字段无关，需要关联shop表查询名称
+	private String shopCode;
 	public String getActivityId(){
 		return activityId;
 	}
@@ -77,6 +79,10 @@ public class ActivityStore implements Serializable{
 	public void setStoreCode(String storeCode) {
 		this.storeCode = storeCode;
 	}
-	
-	
+	public String getShopCode() {
+		return shopCode;
+	}
+	public void setShopCode(String shopCode) {
+		this.shopCode = shopCode;
+	}
 }

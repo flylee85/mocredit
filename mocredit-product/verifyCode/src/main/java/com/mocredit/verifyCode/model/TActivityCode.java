@@ -25,6 +25,11 @@ public class TActivityCode {
     private String issueEnterpriseName;
     private String customMobile;
     private Date releaseTime;
+    
+    private String outCode;//活动外部编码
+    private String enterpriseCode;
+    private String customName;
+    private String orderCode;//发码批次
 
     /** 冗余字段。合同ID **/
     private String contractId ;
@@ -191,4 +196,38 @@ public class TActivityCode {
     public void setContractId(String contractId) {
         this.contractId = contractId;
     }
+
+	public String getOutCode() {
+		return outCode;
+	}
+
+	public void setOutCode(String outCode) {
+		this.outCode = outCode;
+	}
+
+	public String getEnterpriseCode() {
+		return enterpriseCode;
+	}
+
+	public void setEnterpriseCode(String enterpriseCode) {
+		this.enterpriseCode = enterpriseCode;
+	}
+
+	public String getCustomName() {
+		return customName;
+	}
+
+	public void setCustomName(String customName) {
+		this.customName = customName;
+	}
+
+	public String getOrderCode() {
+		return orderCode;
+	}
+
+	public void setOrderCode(String orderCode) {
+		this.orderCode = orderCode;
+	}
+    
+    
 }

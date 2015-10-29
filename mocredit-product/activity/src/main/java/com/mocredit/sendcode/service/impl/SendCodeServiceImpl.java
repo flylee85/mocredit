@@ -362,6 +362,10 @@ public class SendCodeServiceImpl implements SendCodeService {
             codeVO.setStartTime(DateUtil.dateToStr(oc.getStartTime(), "yyyy-MM-dd HH:mm:ss"));// 活动开始时间
             codeVO.setEndTime(DateUtil.dateToStr(oc.getEndTime(), "yyyy-MM-dd HH:mm:ss"));// 活动结束时间
             codeVO.setSelectDate(act.getSelectDate());// 活动指定日期
+            
+            codeVO.setOutCode(act.getOutCode());
+            codeVO.setOrderCode("");
+            codeVO.setEnterpriseCode("");
             // 将新组建的码对象添加到列表中
             carryList.add(codeVO);
         }

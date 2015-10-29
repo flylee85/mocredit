@@ -667,9 +667,14 @@ public class ActivityController{
 		//返回页面数据
 		return JSON.toJSONString(responseData);
 	}
+	@RequestMapping("getCombs")
+	public String getComb(){
+		
+	}
 	@RequestMapping("/test")
 	public String test(){
 		return activityService.extractedCode("c6efb2223be54cbe944a3f4afbdd0023", "批次"+new Random().nextInt(), 10)+"";
 	
 	}
+	
 }
