@@ -669,7 +669,7 @@ public class ActivityController{
 	}
 	@RequestMapping("getCombs")
 	public String getComb(){
-		
+		return "";
 	}
 	@RequestMapping("/test")
 	public String test(){
