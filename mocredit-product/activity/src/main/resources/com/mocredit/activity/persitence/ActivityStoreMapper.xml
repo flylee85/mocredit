@@ -73,7 +73,7 @@
 	,st.code as storeCode
 	from act_activity_store a
 	left join t_store st on a.store_id=st.id
-	left join t_shop sh on a.shop_id=sh.id
+	left join t_merchant sh on a.shop_id=sh.id
 	<where>
 		<include refid="base_activityStore_condition" />
 		<if test="activityIdList != null" >

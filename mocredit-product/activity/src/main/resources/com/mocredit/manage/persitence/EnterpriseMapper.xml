@@ -57,7 +57,7 @@
   <select id="selectOne" resultMap="BaseResultMap" parameterType="com.mocredit.manage.model.Enterprise" >
     select 
     	<include refid="Base_Column_List" />
-    from t_enterprise
+    from t_enterprise a
 	   <where>
 	   		<include refid="base_enterprise_condition" />
 	   </where> 

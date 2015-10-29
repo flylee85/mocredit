@@ -288,7 +288,7 @@ public class SendCodeController {
                     }
                 } else {
                     responseData.setSuccess(false);
-                    responseData.setErrorMsg("该活动已存在该批次名称");
+                    responseData.setData("该活动已存在该批次名称");
                 }
             } else {
                 if ("".equals(name)) {
