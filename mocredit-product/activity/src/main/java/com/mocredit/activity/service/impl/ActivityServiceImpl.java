@@ -37,6 +37,7 @@ import com.mocredit.base.util.IDUtil;
 import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.base.util.ValidatorUtil;
 import com.mocredit.manage.model.Enterprise;
+import com.mocredit.manage.persitence.ContractMapper;
 import com.mocredit.manage.persitence.EnterpriseMapper;
 import com.mocredit.sys.service.OptLogService;
 
@@ -59,7 +60,10 @@ public class ActivityServiceImpl implements ActivityService {
 	private BatchMapper batchMapper;// 发码批次dao对象
 	@Autowired
 	private BatchCodeMapper batchCodeMapper;// 发码批次码dao对象
+	@Autowired
 	private EnterpriseMapper enterpriseMapper;//企业操作
+	@Autowired
+	private ContractMapper contractMapper;//合同操作对象
 	@Autowired
 	private OptLogService optLogService;// 操作日志service对象
 
@@ -1350,5 +1354,16 @@ public class ActivityServiceImpl implements ActivityService {
 		optLogService.addOptLog(activity.getId(), "", "活动修改-----" + activity.toDescribeString());
 
 		return affectCount;
+	}
+	
+	@Override
+	public Map<String, Object> getComb(String activityId) {
+		Map<String,Object> map=new HashMap<>();
+		if(activityId==null||!activityId.equals("")){
+		}else{
+			map.put("ENTERPRISE", enterpriseMapper.selectAll(null));
+			map.put("CONTRACT", contractMapper.selectAll(null));
+		}
+		return map;
 	}
 }
