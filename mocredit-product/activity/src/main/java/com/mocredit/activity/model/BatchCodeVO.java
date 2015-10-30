@@ -47,9 +47,19 @@ public class BatchCodeVO implements Serializable{
 	//指定时间
 	private String selectDate ;
 
+	private String activityCode;
 	private String outCode;//活动外部编码
     private String enterpriseCode;
     private String orderCode;//发码批次
+
+	public String getActivityCode() {
+		return activityCode;
+	}
+
+	public void setActivityCode(String activityCode) {
+		this.activityCode = activityCode;
+	}
+
 	public String getOrderId() {
 		return orderId;
 	}
