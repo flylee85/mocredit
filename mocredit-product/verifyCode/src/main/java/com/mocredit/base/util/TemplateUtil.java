@@ -98,6 +98,7 @@ public class TemplateUtil {
         REMARK("remark","备注"),
         SYSDATE("sysdate","年月日（yyyy-mm-dd）"),
         SYSTIME("systime","时分秒(hh:MM:ss)"),
+        NEW_LINE("newLine","换行")
         ;
 
 

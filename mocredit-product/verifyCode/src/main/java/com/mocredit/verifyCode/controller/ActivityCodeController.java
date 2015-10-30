@@ -143,10 +143,7 @@ public class ActivityCodeController {
                         verifiedCode.getDevice(),
                         verifiedCode.getStoreId(),
                         verifiedCode.getStoreCode(),
-                        verifiedCode.getStoreName(),
                         verifiedCode.getRequestSerialNumber(),
-                        verifiedCode.getShopId(),
-                        verifiedCode.getShopName(),
                         verifiedCode.getCode()
                 );
 

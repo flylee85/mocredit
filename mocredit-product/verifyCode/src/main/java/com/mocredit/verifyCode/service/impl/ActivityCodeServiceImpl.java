@@ -83,10 +83,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
      * @param device   机具ID
      * @param store_id 兑换的门店ID
      * @param store_code 门店编码
-     * @param store_name 兑换的门店名称
      * @param request_serial_number POS请求的序列号
-     * @param shop_id 商户ID
-     * @param shop_name 商户名称
      * @param code                   券码
      * @return
      */
@@ -94,10 +91,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
                                             String device,
                                             String store_id,
                                             String store_code,
-                                            String store_name,
                                             String request_serial_number,
-                                            String shop_id,
-                                            String shop_name,
                                             String code) {
         AjaxResponseData ard=new AjaxResponseData();
         //判断券码的规则合法性
@@ -125,7 +119,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		List<TVerifiedCode> verifiedCode = vcm.findVerifiedCodesByCodeAndType(param);
 		if(null!=verifiedCode&&verifiedCode.size()>1){
 			 ard.setSuccess(false);
-             ard.setErrorMsg("当前券码已经使用过!");
+             TVerifiedCode oneCode = verifiedCode.get(0);
+			ard.setErrorMsg("当前券码已于时间"+DateUtil.dateToStr(oneCode.getVerifyTime(),"yyyy-MM-dd \n HH:mm:ss")+"在"+oneCode.getShopName()+oneCode.getStoreName()+"\n使用过。");
              ard.setErrorCode(ErrorCode.CODE_51.getCode());
              return ard ;
 		}
@@ -166,11 +161,13 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 
         //编码不为空，优先适用门店编码获取
         boolean canUse=false;
+        ActActivityStore activityStore=null;
 //        store_code=null;//TODO 暂时store_code不能用
         if( !StringUtils.isEmpty(store_code) ){
             for (ActActivityStore aas : actActivityStores) {
                 if (store_code.equals(aas.getStoreCode())) {
                     canUse = true;
+                    activityStore=aas;
                     break;
                 }
             }
@@ -178,6 +175,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
             for (ActActivityStore aas : actActivityStores) {
                 if (aas.getStoreId().equals(store_id)) {
                     canUse = true;
+                    activityStore=aas;
                     break;
                 }
             }
@@ -297,28 +295,44 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
                 tvc.setActivityName(activityCode.getActivityName());
 //                tvc.setAmount(amount);
                 tvc.setDevice(device); //机具id
-                tvc.setStoreId(store_id); //门店ID
+                tvc.setStoreId(activityStore.getStoreId()); //门店ID
                 tvc.setStartTime(activityCode.getStartTime());
                 tvc.setEndTime(activityCode.getEndTime());
                 tvc.setNumber(1); //一个码固定只能使用一次
                 tvc.setRequestSerialNumber(request_serial_number); //POS请求序列号
                 tvc.setIssueEnterpriseId(activityCode.getIssueEnterpriseId());
                 tvc.setIssueEnterpriseName(activityCode.getIssueEnterpriseName());
-                tvc.setShopId(shop_id); //执行企业的编号
-                tvc.setShopName(shop_name);
+                tvc.setShopId(activityStore.getShopId()); //执行企业的编号
+                tvc.setShopName(activityStore.getShopName());
                 tvc.setVerifyType(VerifyCodeStatus.VERIFYCODE.getValue()); //设置状态为验码核销
                 tvc.setContractId(activityCode.getContractId());
                 int count = vcm.insertVerifiedCode(tvc);
                 logger.debug("使用记录:" + count);
                 //构建用于替换模板的数据
                 Map<TemplateUtil.TemplateField,String> dataMap = new HashMap();
-                dataMap.put(TemplateUtil.TemplateField.STORE_NAME ,store_name);
-                dataMap.put(TemplateUtil.TemplateField.STORE_CODE ,store_id);
+                dataMap.put(TemplateUtil.TemplateField.STORE_NAME ,activityStore.getStoreName());
+                dataMap.put(TemplateUtil.TemplateField.STORE_CODE ,activityStore.getStoreCode());
                 dataMap.put(TemplateUtil.TemplateField.DEVICE_CODE ,device);
-                dataMap.put(TemplateUtil.TemplateField.SHOP_NAME ,shop_name);
-                dataMap.put(TemplateUtil.TemplateField.SHOP_CODE ,shop_id);
+                dataMap.put(TemplateUtil.TemplateField.SHOP_NAME ,activityStore.getShopName());
+                dataMap.put(TemplateUtil.TemplateField.SHOP_CODE ,activityStore.getShopCode());
                 dataMap.put(TemplateUtil.TemplateField.ACTIVITY_NAME ,activityCode.getActivityName());
-                dataMap.put(TemplateUtil.TemplateField.CODE ,activityCode.getCode());
+                dataMap.put(TemplateUtil.TemplateField.CODE ,code);
+                dataMap.put(TemplateUtil.TemplateField.CODE_SERIAL_NUMBER ,request_serial_number);
+                dataMap.put(TemplateUtil.TemplateField.CUSTOM_MOBILE ,activityCode.getCustomMobile());
+                dataMap.put(TemplateUtil.TemplateField.CUSTOM_NAME ,activityCode.getCustomName());
+                dataMap.put(TemplateUtil.TemplateField.START_TIME ,DateUtil.dateToStr(activityCode.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
+                dataMap.put(TemplateUtil.TemplateField.END_TIME ,DateUtil.dateToStr(activityCode.getEndTime(), "yyyy-MM-dd HH:mm:ss"));
+                dataMap.put(TemplateUtil.TemplateField.ENTERPRISE_CODE ,activityCode.getEnterpriseCode());
+                dataMap.put(TemplateUtil.TemplateField.ENTERPRISE_NAME ,activityCode.getIssueEnterpriseName());
+                dataMap.put(TemplateUtil.TemplateField.MAX_NUM ,String.valueOf(activityCode.getMaxNum()));
+                dataMap.put(TemplateUtil.TemplateField.ORDER_CODE ,activityCode.getOrderCode());
+                dataMap.put(TemplateUtil.TemplateField.ACTIVITY_OUT_CODE ,activityCode.getOutCode());
+                dataMap.put(TemplateUtil.TemplateField.ACTIVITY_CODE ,activityCode.getActivityCode());
+                String dateTime = DateUtil.getLongCurDate();
+                String[] dateTimes = dateTime.split(" ");
+                dataMap.put(TemplateUtil.TemplateField.SYSDATE ,dateTimes[0]);
+                dataMap.put(TemplateUtil.TemplateField.SYSTIME ,dateTimes[1]);
+                dataMap.put(TemplateUtil.TemplateField.NEW_LINE ,"\n");
 //                dataMap.put(TemplateUtil.TemplateField.AMOUNT ,String.valueOf( amount.setScale(2,BigDecimal.ROUND_HALF_UP) ));
 
 
@@ -336,7 +350,10 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
                 m.put("issueEnterpriseId",activityCode.getIssueEnterpriseId());
                 m.put("issueEnterpriseName",activityCode.getIssueEnterpriseName());
                 m.put("ticketTitle",activityInfo.getTicketTitle());
+                //票据模板转换
                 m.put("ticketContent", TemplateUtil.buildStringFromTemplate(dataMap,activityInfo.getTicketContent() ) );
+              //POS显示信息模板转换
+                m.put("posSuccessMsg", TemplateUtil.buildStringFromTemplate(dataMap,activityInfo.getPosSuccessMsg()));
                 ard.setSuccess(true);
                 ard.setData(m);
                 ard.setRedundancyData(activityCode);
@@ -346,7 +363,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
                 s.setCustormMobile( activityCode.getCustomMobile() );
                 s.setCustormName("");
                 s.setCode(activityCode.getCode());
-                s.setTemplateString(activityInfo.getSuccessSmsMsg());
+                //短信模板转换
+                s.setTemplateString(TemplateUtil.buildStringFromTemplate(dataMap,activityInfo.getSuccessSmsMsg()));
 
                 SmsSendTask.smsList.add(s);
 //            } else {
@@ -371,7 +389,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 
         return ard;
     }
-
+    
     public AjaxResponseData correctActivityCodeWithTran(String request_serial_number,String code,String device ,VerifyCodeStatus verifyCodeStatus) {
         AjaxResponseData ard =new AjaxResponseData();
 

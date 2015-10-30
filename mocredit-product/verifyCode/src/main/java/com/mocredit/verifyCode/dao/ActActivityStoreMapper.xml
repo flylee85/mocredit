@@ -40,7 +40,7 @@
                 )
                 VALUES
                 <foreach collection="actActivityStores" item="item" index="index" separator=",">
-                    ( #{item.activityId},#{item.storeId},#{item.enterpriseId},#{item.shopId},#{shopName},#{shopCode},#{storeName},#{storeCode})
+                    ( #{item.activityId},#{item.storeId},#{item.enterpriseId},#{item.shopId},#{item.shopName},#{item.shopCode},#{item.storeName},#{item.storeCode})
                 </foreach>
             </when>
             <otherwise>

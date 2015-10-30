@@ -57,10 +57,7 @@ public interface ActivityCodeService {
                                                     String device,
                                                     String store_id,
                                                     String store_code,
-                                                    String store_name,
                                                     String request_serial_number,
-                                                    String shop_id,
-                                                    String shop_name,
                                                     String code);
 
     /**
