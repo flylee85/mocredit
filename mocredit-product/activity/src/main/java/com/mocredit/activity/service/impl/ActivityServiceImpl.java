@@ -640,6 +640,12 @@ public class ActivityServiceImpl implements ActivityService {
 					httpPostMap.put("outCode", activity.getOutCode().toString());
 					changeDescribe.append("外部编码：" + activity.getOutCode() + ";");
 				}
+				//活动编码
+				if (oldActivity.getCode()!= null && activity.getCode() != null
+						&& !oldActivity.getCode().equals(activity.getCode())) {
+					httpPostMap.put("activityCode", activity.getCode().toString());
+					changeDescribe.append("活动编码：" + activity.getCode() + ";");
+				}
 				//企业编码
 				Enterprise param=new Enterprise();
 				param.setId(activity.getEnterpriseId());

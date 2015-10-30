@@ -117,7 +117,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
         param.put("code", code);
         param.put("verifyType", VerifyCodeStatus.VERIFYCODE.getValue());
 		List<TVerifiedCode> verifiedCode = vcm.findVerifiedCodesByCodeAndType(param);
-		if(null!=verifiedCode&&verifiedCode.size()>1){
+		if(null!=verifiedCode&&!verifiedCode.isEmpty()){
 			 ard.setSuccess(false);
              TVerifiedCode oneCode = verifiedCode.get(0);
 			ard.setErrorMsg("当前券码已于时间"+DateUtil.dateToStr(oneCode.getVerifyTime(),"yyyy-MM-dd \n HH:mm:ss")+"在"+oneCode.getShopName()+oneCode.getStoreName()+"\n使用过。");
@@ -304,6 +304,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
                 tvc.setIssueEnterpriseName(activityCode.getIssueEnterpriseName());
                 tvc.setShopId(activityStore.getShopId()); //执行企业的编号
                 tvc.setShopName(activityStore.getShopName());
+                tvc.setStoreName(activityStore.getStoreName());
                 tvc.setVerifyType(VerifyCodeStatus.VERIFYCODE.getValue()); //设置状态为验码核销
                 tvc.setContractId(activityCode.getContractId());
                 int count = vcm.insertVerifiedCode(tvc);
@@ -317,6 +318,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
                 dataMap.put(TemplateUtil.TemplateField.SHOP_CODE ,activityStore.getShopCode());
                 dataMap.put(TemplateUtil.TemplateField.ACTIVITY_NAME ,activityCode.getActivityName());
                 dataMap.put(TemplateUtil.TemplateField.CODE ,code);
+                dataMap.put(TemplateUtil.TemplateField.AMOUNT ,String.valueOf(activityCode.getAmount()));
                 dataMap.put(TemplateUtil.TemplateField.CODE_SERIAL_NUMBER ,request_serial_number);
                 dataMap.put(TemplateUtil.TemplateField.CUSTOM_MOBILE ,activityCode.getCustomMobile());
                 dataMap.put(TemplateUtil.TemplateField.CUSTOM_NAME ,activityCode.getCustomName());
@@ -328,6 +330,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
                 dataMap.put(TemplateUtil.TemplateField.ORDER_CODE ,activityCode.getOrderCode());
                 dataMap.put(TemplateUtil.TemplateField.ACTIVITY_OUT_CODE ,activityCode.getOutCode());
                 dataMap.put(TemplateUtil.TemplateField.ACTIVITY_CODE ,activityCode.getActivityCode());
+                dataMap.put(TemplateUtil.TemplateField.SELECT_DATE ,activityCode.getSelectDate());
                 String dateTime = DateUtil.getLongCurDate();
                 String[] dateTimes = dateTime.split(" ");
                 dataMap.put(TemplateUtil.TemplateField.SYSDATE ,dateTimes[0]);
