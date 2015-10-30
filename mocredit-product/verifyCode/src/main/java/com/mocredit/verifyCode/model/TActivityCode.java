@@ -30,6 +30,7 @@ public class TActivityCode {
     private String enterpriseCode;
     private String customName;
     private String orderCode;//发码批次
+    private String activityCode;//活动编码
 
     /** 冗余字段。合同ID **/
     private String contractId ;
@@ -227,6 +228,14 @@ public class TActivityCode {
 
 	public void setOrderCode(String orderCode) {
 		this.orderCode = orderCode;
+	}
+
+	public String getActivityCode() {
+		return activityCode;
+	}
+
+	public void setActivityCode(String activityCode) {
+		this.activityCode = activityCode;
 	}
     
     
