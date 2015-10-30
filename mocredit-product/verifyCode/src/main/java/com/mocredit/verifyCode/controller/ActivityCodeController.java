@@ -265,10 +265,11 @@ public class ActivityCodeController {
                          "startTime": "2015-07-17 14:36:53",    //有效期开始时间
                          "contractId": "HT0001"           //合同id
                           *****新增字段
-                         "out_code", //外部编码
-                         "order_code",//发码批次
-                         "enterprise_code",//发行企业编码
-                         "custom_name"//客户名
+                         "outCode", //外部编码
+                         "orderCode",//发码批次
+                         "enterpriseCode",//发行企业编码
+                         "customName"//客户名
+                         "activityCode" //活动编码
                      },
                     ......
                  ]
