@@ -654,9 +654,12 @@ public class ActivityServiceImpl implements ActivityService {
 				changeDescribe.append("企业编码：" + enterprise.getCode() + ";");
 				
 				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
-				httpPostMap.put("storeList", activity.getStoreList());
+				Map<String, Object> queryMap = new HashMap<String, Object>();
+				queryMap.put("activityId", activity.getId());
+				List<ActivityStore> storeList = activityStoreMapper.queryActivityStoreList(queryMap);
+				httpPostMap.put("actActivityStores", storeList);
 				changeDescribe.append("门店信息：[");
-				for (ActivityStore as : activity.getStoreList()) {
+				for (ActivityStore as : storeList) {
 					changeDescribe.append("{门店名称：" + as.getStoreName() + ";");
 					changeDescribe.append("{门店编码：" + as.getStoreCode() + ";");
 					changeDescribe.append("门店id：" + as.getStoreId() + ";}");
@@ -665,6 +668,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 				// 将修改信息发送至验码系统
 				httpPostMap.put("operType", "UPDATE");
+				System.out.println(JSON.toJSONString(httpPostMap));
 				String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
 						JSON.toJSONString(httpPostMap));
 				Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
