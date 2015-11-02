@@ -60,6 +60,7 @@ public class ActActivityCodeVO {
     private String enterpriseCode;
     private String customName;
     private String orderCode;//发码批次
+    private String activityCode;
     //-----------------------------
 
     /** 操作类型 **/
@@ -238,6 +239,14 @@ public class ActActivityCodeVO {
 
 	public void setOrderCode(String orderCode) {
 		this.orderCode = orderCode;
+	}
+
+	public String getActivityCode() {
+		return activityCode;
+	}
+
+	public void setActivityCode(String activityCode) {
+		this.activityCode = activityCode;
 	}
     
 }

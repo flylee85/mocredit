@@ -195,7 +195,7 @@
 				var str = '<div class="row selectStore clearfix">';
 
 				$.each(dataObject.storeList, function (i, n) {
-					str += '<span data-id='+ n.storeId +'" data-storeName="'+n.storeName+'" data-shopId="'+ n.shopId+'" data-shopName='+n.shopName+' class="label bg-info">'+ n.storeName+'<i class="icon-remove"></i></span>';
+					str += '<span data-id="'+ n.storeId +'" data-storeName="'+n.storeName+'" data-shopId="'+ n.shopId+'" data-shopName='+n.shopName+' class="label bg-info">'+ n.storeName+'<i class="icon-remove"></i></span>';
 				});
 				str += '</div>'
 				addActivityFamaForm.find(".choosedStore").empty().append(str);

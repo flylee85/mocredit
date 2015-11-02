@@ -422,8 +422,9 @@ public class ActivityCodeController {
              "enterpriseName": "企业1", //发行企业名称，冗余字段
              "selectDate": "6,7" //选择的日期
              *****新增字段
-             "out_code", //外部编码
-             "enterprise_code",//发行企业编码
+             "outCode", //外部编码
+             "enterpriseCode",//发行企业编码
+             "activityCode" //活动编号
              }
 
      *
