@@ -10,9 +10,9 @@
         <artifactId>mocredit-product</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>activitysys</artifactId>
+    <artifactId>manage</artifactId>
     <packaging>war</packaging>
-    <name>activitysys</name>
+    <name>manage</name>
 
     <dependencies>
         <!-- 依赖server模块 -->
@@ -22,19 +22,19 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.mocredit.product</groupId>
-            <artifactId>activity</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
+        <dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.2.2</version>
+		</dependency>
     </dependencies>
 
     <build>
-        <finalName>activitysys</finalName>
+        <finalName>manage</finalName>
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
