@@ -38,7 +38,10 @@
 		a.createtime as createtime,
 		a.modifytime as modifytime,
 		a.creator as creator,
-		a.modifier as modifier
+		a.modifier as modifier,
+		a.bins as bins,
+		a.exchange_type as exchangeType,
+		a.channel as channel
 	</sql>
 	
 	<!--  公用查询条件，包含活动所有字段的查询条件     -->
@@ -239,6 +242,9 @@
 			modifytime,
 			creator,
 			modifier,
+			bins,
+			exchange_type,
+			channel
 	</trim>
 	<trim prefix="values (" suffix=")" suffixOverrides="," >
 			#{id},
@@ -269,6 +275,9 @@
 			#{modifytime},
 			#{creator},
 			#{modifier},
+			#{bins},
+			#{exchangeType},
+			#{channel}
 	</trim>
 	</insert>
 	
@@ -359,6 +368,15 @@
 	</if>
 		<if test="modifier != null" >
 		modifier = #{modifier},
+	</if>
+	<if test="bins != null" >
+		bins = #{bins},
+	</if>
+	<if test="exchangeType != null" >
+		exchange_type = #{exchangeType},
+	</if>
+	<if test="channel != null" >
+		channel = #{channel},
 	</if>
 	</set>
 	where id = #{id}

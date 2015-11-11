@@ -164,7 +164,7 @@
 				str += '<span data-id="'+ $(this).attr("data-id") +'" data-storeName="'+$(this).attr("data-storeName")+'" data-shopId="'+ $(this).attr("data-shopId")+'" data-shopName='+$(this).attr("data-shopName")+' class="label bg-info">'+ $(this).attr("data-storeName")+'<i class="icon-remove"></i></span>';
 			})
 			str += '</div>';
-			$("#addActivityFamaForm .choosedStore").empty().append(str);
+			$(".choosedStore").empty().append(str);
 			$('#shopModal').modal('hide');
 		});
 		var toSelectModal;

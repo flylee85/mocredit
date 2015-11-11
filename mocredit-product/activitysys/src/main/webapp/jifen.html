@@ -38,14 +38,6 @@
 									  data-parsley-required="true" data-parsley-maxlength="30" placeholder="产品编码" name="code" tabindex="2" data-parsley-type="alphanum">
 						   </div>
 					   </div>
-					   <div class="form-group">
-						   <label class="col-lg-2 control-label">外部编码</label>
-
-						   <div class="col-lg-4">
-							   <input type="text" class="form-control input-small parsley-validated"
-									  data-parsley-required="true" data-parsley-maxlength="30" placeholder="外部编码" name="outCode"  tabindex="3" data-parsley-type="alphanum">
-						   </div>
-					   </div>
 				   </div>
 				   <div class="panel clearfix">
 					   <header class="panel-heading bg-white">活动发行方及合同</header>
@@ -65,26 +57,47 @@
 							   </select>
 						   </div>
 					   </div>
+					   <div class="form-group">
+					  		  <label class="col-lg-2 control-label">积分渠道</label>
+					   <div class="col-lg-4">
+							   <select class="form-control input-small" data-parsley-required="true" tabindex="5" name="channel">
+								   <option value="" selected>请选择积分渠道</option>
+								   <option value="citic" >中信银行</option>
+								   <option value="cmbc" >民生银行</option>
+								   <option value="bocom" >交通银行</option>
+							   </select>
+						   </div>
+					   </div>
 				   </div>
 				   <div class="panel clearfix">
 					   <header class="panel-heading bg-white">积分设定</header>
 					   <div class="form-group">
-						   <label class="col-lg-2 control-label">选择积分活动</label>
+						   <label class="col-lg-2 control-label">兑换类型</label>
 
-						   <div class="col-lg-4">
-							   <select class="form-control input-small" data-parsley-required="true" tabindex="6" name="integralActivity"
-									   code="INTEGRAL_ACTIVITY">
-								   <option value="" selected>请选择积分活动</option>
-							   </select>
+						   <div class="col-lg-10">
+						   <input class="parsley-validated" type="radio" data-parsley-required="true"  name="exchangeType" value="2" />外部商品码
+						   <input type="radio" name="exchangeType" value="1" />活动定额积分
 						   </div>
-						   <label class="col-lg-2 control-label">积分</label>
+					   </div>
+				   </div>
+				   <div  class="panel clearfix">
+				   	 <label class="col-lg-2 control-label">积分</label>
 
 						   <div class="col-lg-4">
 							   <input type="text" class="form-control input-small parsley-validated"
 									  data-parsley-required="true" data-parsley-type="integer" data-parsley-min="1" placeholder="积分" tabindex="7" name="integral">
 						   </div>
-					   </div>
-
+						    <label class="col-lg-2 control-label">外部商品编码</label>
+						   <div class="col-lg-4">
+							    <input type="text" class="form-control input-small parsley-validated" data-parsley-maxlength="30" placeholder="外部编码" name="outCode"  tabindex="3" data-parsley-type="alphanum">
+							</div>
+				   </div>
+				   <div class="panel clearfix">
+				   		<label class="col-lg-2 control-label">支持BIN码</label>
+				   		<div class="col-lg-4">
+							   <textarea style="width: 100%;"  name="bins"></textarea>
+						   </div>
+						   <label class="col-lg-6 control-label" style="text-align: left">逗号隔开，不填代表不限制</label>
 				   </div>
 				   <div class="panel clearfix">
 					   <header class="panel-heading bg-white">小票内容</header>
