@@ -61,9 +61,9 @@ public class ActivityServiceImpl implements ActivityService {
 	@Autowired
 	private BatchCodeMapper batchCodeMapper;// 发码批次码dao对象
 	@Autowired
-	private EnterpriseMapper enterpriseMapper;//企业操作
+	private EnterpriseMapper enterpriseMapper;// 企业操作
 	@Autowired
-	private ContractMapper contractMapper;//合同操作对象
+	private ContractMapper contractMapper;// 合同操作对象
 	@Autowired
 	private OptLogService optLogService;// 操作日志service对象
 
@@ -276,78 +276,84 @@ public class ActivityServiceImpl implements ActivityService {
 		/*
 		 * 积分同步活动
 		 */
-		// if ("01".equals(activity.getType())) {
-		// //
-		// 获取验码系统中-修改活动，启动活动，停止活动的ＵＲＬ，并定义一个请求这些地址时，所需要的参数Map,将活动Id和活动名称都放在这个Map中
-		// String changeActivityUrl =
-		// PropertiesUtil.getValue("integral.activityImport");
-		// Map<String, Object> httpPostMap = new HashMap<String, Object>();
-		// httpPostMap.put("activityId", activity.getId());// 活动Id
-		// httpPostMap.put("activityName", activity.getName());// 活动Id
-		// // 定义一个修改内容描述
-		// StringBuffer changeDescribe = new StringBuffer();
-		// // 活动启用或停止
-		// if ("02".equals(activity.getStatus())) {
-		// // 验码模块-活动停止
-		// httpPostMap.put("status", "02");
-		// changeDescribe.append("活动状态：停止；");
-		// } else if ("01".equals(activity.getStatus())) {
-		// // 验码模块-活动启用
-		// httpPostMap.put("status", "01");
-		// changeDescribe.append("活动状态：启用；");
-		// }
-		//
-		// // 开始时间，结束时间
-		// httpPostMap.put("startTime",
-		// DateUtil.dateToStr(activity.getStartTime(), "yyyy-MM-dd
-		// HH:mm:ss"));// 开始时间
-		// httpPostMap.put("endTime", DateUtil.dateToStr(activity.getEndTime(),
-		// "yyyy-MM-dd HH:mm:ss"));// 结束时间
-		// changeDescribe.append("开始时间：" + httpPostMap.get("startTime") + ";");
-		// changeDescribe.append("结束时间：" + httpPostMap.get("endTime") + ";");
-		//
-		// // 活动指定日期修改，该处临时这样判断
-		// httpPostMap.put("selectDate", activity.getSelectDate());// 指定日期
-		// changeDescribe.append("指定日期：" + activity.getSelectDate() + ";");
-		//
-		// // 活动积分修改
-		// httpPostMap.put("integral", activity.getIntegral().toString());
-		// changeDescribe.append("积分：" + activity.getIntegral() + ";");
-		//
-		// // 活动最大类型修改
-		// httpPostMap.put("maxType", activity.getMaxType().toString());
-		// changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
-		//
-		// // 活动使用次数
-		// httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
-		// changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
-		//
-		// // 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
-		// httpPostMap.put("storeList", storeList);
-		// changeDescribe.append("门店信息：[");
-		// for (ActivityStore as : storeList) {
-		// changeDescribe.append("{门店名称：" + as.getStoreName() + ";");
-		// changeDescribe.append("{门店编码：" + as.getStoreCode() + ";");
-		// changeDescribe.append("门店id：" + as.getStoreId() + ";}");
-		// }
-		// changeDescribe.append("]");
-		//
-		// // 将修改信息发送至验码系统
-		// httpPostMap.put("operCode", "1");
-		// String returnJson =
-		// HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-		// JSON.toJSONString(httpPostMap));
-		// Map<String, Object> returnMap = JSON.parseObject(returnJson,
-		// Map.class);
-		// boolean isSuccess =
-		// Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-		// if (!isSuccess) {
-		// throw new BusinessException("向积分核销系统同步信息失败");
-		// }
-		// // 保存送信息到验码系统的日志
-		// optLogService.addOptLog("活动Id:" + activity.getId(), "",
-		// "积分核销接口修改活动信息-----" + changeDescribe.toString());
-		// }
+		if ("01".equals(activity.getType())) {
+			// 获取验码系统中-修改活动，启动活动，停止活动的ＵＲＬ，并定义一个请求这些地址时，所需要的参数Map,将活动Id和活动名称都放在这个Map中
+			String changeActivityUrl = PropertiesUtil.getValue("integral.activityImport");
+			Map<String, Object> httpPostMap = new HashMap<String, Object>();
+			httpPostMap.put("activityId", activity.getId());// 活动Id
+			httpPostMap.put("activityName", activity.getName());// 活动Id
+			// 定义一个修改内容描述
+			StringBuffer changeDescribe = new StringBuffer();
+			// 活动启用或停止
+			if ("02".equals(activity.getStatus())) {
+				// 验码模块-活动停止
+				httpPostMap.put("status", "02");
+				changeDescribe.append("活动状态：停止；");
+			} else if ("01".equals(activity.getStatus())) {
+				// 验码模块-活动启用
+				httpPostMap.put("status", "01");
+				changeDescribe.append("活动状态：启用；");
+			}
+
+			// 开始时间，结束时间
+			httpPostMap.put("startTime", DateUtil.dateToStr(activity.getStartTime(), "yyyy-MM-dd HH:mm:ss"));// 开始时间
+			httpPostMap.put("endTime", DateUtil.dateToStr(activity.getEndTime(), "yyyy-MM-dd HH:mm:ss"));// 结束时间
+			changeDescribe.append("开始时间：" + httpPostMap.get("startTime") + ";");
+			changeDescribe.append("结束时间：" + httpPostMap.get("endTime") + ";");
+
+			// 活动指定日期修改，该处临时这样判断
+			httpPostMap.put("selectDate", activity.getSelectDate());// 指定日期
+			changeDescribe.append("指定日期：" + activity.getSelectDate() + ";");
+
+			// 活动积分修改
+			httpPostMap.put("integral", activity.getIntegral());
+			changeDescribe.append("积分：" + activity.getIntegral() + ";");
+
+			// 活动最大类型修改
+			httpPostMap.put("maxType", activity.getMaxType().toString());
+			changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
+
+			// 活动使用次数
+			httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
+			changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
+
+			// 活动使用次数
+			httpPostMap.put("productCode", activity.getOutCode().toString());
+			changeDescribe.append("外部编码：" + activity.getOutCode() + ";");
+
+			// BIN码
+			httpPostMap.put("bins", activity.getBins());
+			changeDescribe.append("BIN码列表：" + activity.getBins() + ";");
+
+			// 积分通道
+			httpPostMap.put("channel", activity.getChannel());
+			changeDescribe.append("积分通道：" + activity.getChannel() + ";");
+
+			// 兑换类型
+			httpPostMap.put("exchangeType", activity.getExchangeType());
+			changeDescribe.append("兑换类型：" + activity.getExchangeType() + ";");
+
+			// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
+			httpPostMap.put("storeList", storeList);
+			changeDescribe.append("门店信息：[");
+			for (ActivityStore as : storeList) {
+				changeDescribe.append("{门店名称：" + as.getStoreName() + ";");
+				changeDescribe.append("{门店编码：" + as.getStoreCode() + ";");
+				changeDescribe.append("门店id：" + as.getStoreId() + ";}");
+			}
+			changeDescribe.append("]");
+
+			// 将修改信息发送至验码系统
+			httpPostMap.put("operCode", "1");
+			String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, JSON.toJSONString(httpPostMap));
+			Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+			boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+			if (!isSuccess) {
+				throw new BusinessException("向积分核销系统同步信息失败");
+			}
+			// 保存送信息到验码系统的日志
+			optLogService.addOptLog("活动Id:" + activity.getId(), "", "积分核销接口修改活动信息-----" + changeDescribe.toString());
+		}
 		// 保存日志
 		optLogService.addOptLog(activity.getId(), "", "活动添加-----" + activity.toDescribeString());
 		return affectCount;
@@ -424,130 +430,120 @@ public class ActivityServiceImpl implements ActivityService {
 	private void synOthers(Activity activity, Activity oldActivity) {
 		// 积分同步
 		if ("01".equals(activity.getType())) {
-			// //
 			// 获取验码系统中-修改活动，启动活动，停止活动的ＵＲＬ，并定义一个请求这些地址时，所需要的参数Map,将活动Id和活动名称都放在这个Map中
-			// String changeActivityUrl =
-			// PropertiesUtil.getValue("integral.activityImport");
-			// Map<String, Object> httpPostMap = new HashMap<String, Object>();
-			// httpPostMap.put("activityId", activity.getId());// 活动Id
-			// httpPostMap.put("activityName", activity.getName());// 活动Id
-			// // 定义一个修改内容描述
-			// StringBuffer changeDescribe = new StringBuffer();
-			// // 活动启用或停止
-			// if (oldActivity.getStatus() != null && activity.getStatus() !=
-			// null
-			// && !oldActivity.getStatus().equals(activity.getStatus())) {
-			// if ("02".equals(activity.getStatus())) {
-			// // 验码模块-活动停止
-			// httpPostMap.put("status", "02");
-			// changeDescribe.append("活动状态：停止；");
-			//
-			// // 调用验码模块-停止活动接口
-			// httpPostMap.put("operCode", "3");
-			// String returnJson =
-			// HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-			// JSON.toJSONString(httpPostMap));
-			// Map<String, Object> returnMap = JSON.parseObject(returnJson,
-			// Map.class);
-			// boolean isSuccess =
-			// Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-			// if (!isSuccess) {
-			// throw new BusinessException("向积分核销系统停止活动失败");
-			// }
-			// // 保存送信息到验码系统的日志
-			// optLogService.addOptLog("活动Id:" + activity.getId(), "",
-			// "积分核销接口停止活动-----" + changeDescribe.toString());
-			// } else if ("01".equals(activity.getStatus())) {
-			// // 验码模块-活动启用
-			// httpPostMap.put("status", "01");
-			// changeDescribe.append("活动状态：启用；");
-			//
-			// // 调用验码模块--启用活动接口
-			// httpPostMap.put("operCode", "4");
-			// String returnJson =
-			// HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-			// JSON.toJSONString(httpPostMap));
-			// Map<String, Object> returnMap = JSON.parseObject(returnJson,
-			// Map.class);
-			// boolean isSuccess =
-			// Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-			// if (!isSuccess) {
-			// throw new BusinessException("向积分核销系统启用活动失败");
-			// }
-			// // 保存送信息到验码系统的日志
-			// optLogService.addOptLog("活动Id:" + activity.getId(), "",
-			// "积分核销接口启用活动-----" + changeDescribe.toString());
-			// }
-			// } else {
-			// // 活动开始时间或者结束时间修改
-			// //
-			// if((oldActivity.getStartTime()!=null&&activity.getStartTime()!=null&&oldActivity.getStartTime().getTime()!=activity.getStartTime().getTime())||(oldActivity.getEndTime()!=null&&activity.getEndTime()!=null&&oldActivity.getEndTime().getTime()!=activity.getEndTime().getTime())){
-			// // 如果活动时间修改，则通知验码模块所有未消费的码的使用时长
-			// httpPostMap.put("startTime",
-			// DateUtil.dateToStr(activity.getStartTime(), "yyyy-MM-dd
-			// HH:mm:ss"));// 开始时间
-			// httpPostMap.put("endTime",
-			// DateUtil.dateToStr(activity.getEndTime(), "yyyy-MM-dd
-			// HH:mm:ss"));// 结束时间
-			// changeDescribe.append("开始时间：" + httpPostMap.get("startTime") +
-			// ";");
-			// changeDescribe.append("结束时间：" + httpPostMap.get("endTime") +
-			// ";");
-			// // }
-			//
-			// // 活动指定日期修改，该处临时这样判断
-			// //
-			// if(oldActivity.getSelectDate()!=null&&activity.getSelectDate()!=null&&!oldActivity.getSelectDate().equals(activity.getSelectDate())){
-			// httpPostMap.put("selectDate", activity.getSelectDate());// 指定日期
-			// changeDescribe.append("指定日期：" + activity.getSelectDate() + ";");
-			// // }
-			//
-			// // 活动积分修改
-			// //
-			// if(oldActivity.getIntegral()!=null&&activity.getIntegral()!=null&&!oldActivity.getIntegral().equals(activity.getIntegral())){
-			// httpPostMap.put("integral", activity.getIntegral().toString());
-			// changeDescribe.append("积分：" + activity.getIntegral() + ";");
-			// // }
-			//
-			// // 活动最大类型修改
-			// //
-			// if(oldActivity.getMaxType()!=null&&activity.getMaxType()!=null&&!oldActivity.getMaxType().equals(activity.getMaxType())){
-			// httpPostMap.put("maxType", activity.getMaxType().toString());
-			// changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
-			// // }
-			//
-			// // 活动使用次数
-			// //
-			// if(oldActivity.getMaxNumber()!=null&&activity.getMaxNumber()!=null&&!oldActivity.getMaxNumber().equals(activity.getMaxNumber())){
-			// httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
-			// changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
-			// // }
-			// // 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
-			// httpPostMap.put("storeList", storeList);
-			// changeDescribe.append("门店信息：[");
-			// for (ActivityStore as : storeList) {
-			// changeDescribe.append("{门店名称：" + as.getStoreName() + ";");
-			// changeDescribe.append("{门店编码：" + as.getStoreCode() + ";");
-			// changeDescribe.append("门店id：" + as.getStoreId() + ";}");
-			// }
-			// changeDescribe.append("]");
-			//
-			// // 将修改信息发送至验码系统
-			// httpPostMap.put("operCode", "2");
-			// String returnJson =
-			// HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-			// JSON.toJSONString(httpPostMap));
-			// Map<String, Object> returnMap = JSON.parseObject(returnJson,
-			// Map.class);
-			// boolean isSuccess =
-			// Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-			// if (!isSuccess) {
-			// throw new BusinessException("向积分核销系统同步信息失败");
-			// }
-			// // 保存送信息到验码系统的日志
-			// optLogService.addOptLog("活动Id:" + activity.getId(), "",
-			// "积分核销接口修改活动信息-----" + changeDescribe.toString());
-			// }
+			String changeActivityUrl = PropertiesUtil.getValue("integral.activityImport");
+			Map<String, Object> httpPostMap = new HashMap<String, Object>();
+			httpPostMap.put("activityId", activity.getId());// 活动Id
+			httpPostMap.put("activityName", activity.getName());// 活动Id
+			// 定义一个修改内容描述
+			StringBuffer changeDescribe = new StringBuffer();
+			// 活动启用或停止
+			if (oldActivity.getStatus() != null && activity.getStatus() != null
+					&& !oldActivity.getStatus().equals(activity.getStatus())) {
+				if ("02".equals(activity.getStatus())) {
+					// 验码模块-活动停止
+					httpPostMap.put("status", "02");
+					changeDescribe.append("活动状态：停止；");
+
+					// 调用验码模块-停止活动接口
+					httpPostMap.put("operCode", "3");
+					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+							JSON.toJSONString(httpPostMap));
+					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+					if (!isSuccess) {
+						throw new BusinessException("向积分核销系统停止活动失败");
+					}
+					// 保存送信息到验码系统的日志
+					optLogService.addOptLog("活动Id:" + activity.getId(), "",
+							"积分核销接口停止活动-----" + changeDescribe.toString());
+				} else if ("01".equals(activity.getStatus())) {
+					// 验码模块-活动启用
+					httpPostMap.put("status", "01");
+					changeDescribe.append("活动状态：启用；");
+
+					// 调用验码模块--启用活动接口
+					httpPostMap.put("operCode", "4");
+					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+							JSON.toJSONString(httpPostMap));
+					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+					if (!isSuccess) {
+						throw new BusinessException("向积分核销系统启用活动失败");
+					}
+					// 保存送信息到验码系统的日志
+					optLogService.addOptLog("活动Id:" + activity.getId(), "",
+							"积分核销接口启用活动-----" + changeDescribe.toString());
+				}
+			} else {
+				// 活动开始时间或者结束时间修改
+				httpPostMap.put("startTime", DateUtil.dateToStr(activity.getStartTime(), "yyyy-MM-dd HH:mm:ss"));// 开始时间
+				httpPostMap.put("endTime", DateUtil.dateToStr(activity.getEndTime(), "yyyy-MM-dd HH:mm:ss"));// 结束时间
+				changeDescribe.append("开始时间：" + httpPostMap.get("startTime") + ";");
+				changeDescribe.append("结束时间：" + httpPostMap.get("endTime") + ";");
+
+				// 活动指定日期修改，该处临时这样判断
+				httpPostMap.put("selectDate", activity.getSelectDate());// 指定日期
+				changeDescribe.append("指定日期：" + activity.getSelectDate() + ";");
+
+				// 活动积分修改
+				httpPostMap.put("integral", activity.getIntegral().toString());
+				changeDescribe.append("积分：" + activity.getIntegral() + ";");
+
+				// 活动最大类型修改
+				httpPostMap.put("maxType", activity.getMaxType().toString());
+				changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
+
+				// 活动使用次数
+				httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
+				changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
+
+				// 活动状态 活动修改时的状态与原活动一致
+				httpPostMap.put("status", oldActivity.getStatus());
+				changeDescribe.append("状态：" + oldActivity.getStatus() + ";");
+
+				// 外部编码
+				httpPostMap.put("productCode", activity.getOutCode().toString());
+				changeDescribe.append("外部编码：" + activity.getOutCode() + ";");
+
+				// BIN码
+				httpPostMap.put("bins", activity.getBins());
+				changeDescribe.append("BIN码：" + activity.getBins() + ";");
+
+				// 积分通道
+				httpPostMap.put("channel", activity.getChannel());
+				changeDescribe.append("积分通道：" + activity.getChannel() + ";");
+
+				// 兑换类型
+				httpPostMap.put("exchangeType", activity.getExchangeType());
+				changeDescribe.append("兑换类型：" + activity.getExchangeType() + ";");
+				
+				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
+				Map<String, Object> queryMap = new HashMap<String, Object>();
+				queryMap.put("activityId", activity.getId());
+				List<ActivityStore> storeList = activityStoreMapper.queryActivityStoreList(queryMap);
+				httpPostMap.put("storeList", storeList);
+				changeDescribe.append("门店信息：[");
+				for (ActivityStore as : storeList) {
+					changeDescribe.append("{门店名称：" + as.getStoreName() + ";");
+					changeDescribe.append("{门店编码：" + as.getStoreCode() + ";");
+					changeDescribe.append("门店id：" + as.getStoreId() + ";}");
+				}
+				changeDescribe.append("]");
+
+				// 将修改信息发送至验码系统
+				httpPostMap.put("operCode", "2");
+				String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+						JSON.toJSONString(httpPostMap));
+				Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+				boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+				if (!isSuccess) {
+					throw new BusinessException("向积分核销系统同步信息失败");
+				}
+				// 保存送信息到验码系统的日志
+				optLogService.addOptLog("活动Id:" + activity.getId(), "",
+						"积分核销接口修改活动信息-----" + changeDescribe.toString());
+			}
 		}
 		// 验码同步
 		else if ("02".equals(activity.getType())) {
@@ -633,26 +629,26 @@ public class ActivityServiceImpl implements ActivityService {
 					httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
 					changeDescribe.append("使用次数：" + activity.getMaxNumber() + ";");
 				}
-				
-				//外部编码
-				if (oldActivity.getOutCode()!= null && activity.getOutCode() != null
+
+				// 外部编码
+				if (oldActivity.getOutCode() != null && activity.getOutCode() != null
 						&& !oldActivity.getOutCode().equals(activity.getOutCode())) {
 					httpPostMap.put("outCode", activity.getOutCode().toString());
 					changeDescribe.append("外部编码：" + activity.getOutCode() + ";");
 				}
-				//活动编码
-				if (oldActivity.getCode()!= null && activity.getCode() != null
+				// 活动编码
+				if (oldActivity.getCode() != null && activity.getCode() != null
 						&& !oldActivity.getCode().equals(activity.getCode())) {
 					httpPostMap.put("activityCode", activity.getCode().toString());
 					changeDescribe.append("活动编码：" + activity.getCode() + ";");
 				}
-				//企业编码
-				Enterprise param=new Enterprise();
+				// 企业编码
+				Enterprise param = new Enterprise();
 				param.setId(activity.getEnterpriseId());
 				Enterprise enterprise = enterpriseMapper.selectOne(param);
 				httpPostMap.put("enterpriseCode", enterprise.getCode());
 				changeDescribe.append("企业编码：" + enterprise.getCode() + ";");
-				
+
 				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 				Map<String, Object> queryMap = new HashMap<String, Object>();
 				queryMap.put("activityId", activity.getId());
@@ -1365,14 +1361,14 @@ public class ActivityServiceImpl implements ActivityService {
 
 		return affectCount;
 	}
-	
+
 	@Override
 	public Map<String, Object> getComb(String activityId) {
-		Map<String,Object> map=new HashMap<>();
-		if(activityId==null||activityId.equals("")){
+		Map<String, Object> map = new HashMap<>();
+		if (activityId == null || activityId.equals("")) {
 			map.put("ENTERPRISE", enterpriseMapper.selectAll(null));
 			map.put("CONTRACT", contractMapper.selectAll(null));
-		}else{
+		} else {
 		}
 		return map;
 	}

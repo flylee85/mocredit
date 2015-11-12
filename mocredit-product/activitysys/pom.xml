@@ -15,11 +15,6 @@
     <name>activitysys</name>
 
     <dependencies>
-        <dependency>
-            <groupId>com.mocredit</groupId>
-            <version>1.0-SNAPSHOT</version>
-            <artifactId>mocredit-security-client</artifactId>
-        </dependency>
         <!-- 依赖server模块 -->
         <dependency>
             <groupId>com.mocredit.base</groupId>
