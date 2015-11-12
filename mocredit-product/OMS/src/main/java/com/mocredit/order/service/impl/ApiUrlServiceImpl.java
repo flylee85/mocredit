@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mocredit.order.entity.ApiUrl;
-import com.mocredit.order.persistence.ApiUrlMapper;
+import com.mocredit.order.persitence.ApiUrlMapper;
 import com.mocredit.order.service.ApiUrlService;
 
 /**

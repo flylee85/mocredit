@@ -9,9 +9,9 @@ public class Store {
 	 * int comment '门店ID', activity_id int comment '活动ID', primary key (uuid)
 	 */
 	private Integer uuid;
-	private Integer shopId;
-	private Integer storeId;
-	private Integer activityId;
+	private String shopId;
+	private String storeId;
+	private String activityId;
 
 	public Integer getUuid() {
 		return uuid;
@@ -21,27 +21,27 @@ public class Store {
 		this.uuid = uuid;
 	}
 
-	public Integer getShopId() {
+	public String getShopId() {
 		return shopId;
 	}
 
-	public void setShopId(Integer shopId) {
+	public void setShopId(String shopId) {
 		this.shopId = shopId;
 	}
 
-	public Integer getStoreId() {
+	public String getStoreId() {
 		return storeId;
 	}
 
-	public void setStoreId(Integer storeId) {
+	public void setStoreId(String storeId) {
 		this.storeId = storeId;
 	}
 
-	public Integer getActivityId() {
+	public String getActivityId() {
 		return activityId;
 	}
 
-	public void setActivityId(Integer activityId) {
+	public void setActivityId(String activityId) {
 		this.activityId = activityId;
 	}
 

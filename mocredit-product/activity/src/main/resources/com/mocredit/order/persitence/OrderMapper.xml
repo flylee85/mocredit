@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mocredit.order.persitence.OrderMapper">
+    <sql id="base_order_column_list">
+        id as id,
+        order_id as orderId,
+        `type` as type,
+        activity_id as activityId,
+        activity_name as activityName,
+        pub_enterprise_id as pubEnterpriseId,
+        pub_enterprise_name as pubEnterpriseName,
+        sup_enterprise_id as supEnterpriseId,
+        sup_enterprise_name as supEnterpriseName,
+        store_id as storeId,
+        store_name as storeName,
+        `status` as status,
+        bank as bank,
+        tel as tel,
+        card_num as cardNum,
+        code as code,
+        integral as integral,
+        start_time as startTime,
+        end_time as endTime,
+        create_time as createTime
+    </sql>
+    <insert id="save" parameterType="com.mocredit.order.entity.Order">
+		insert into
+		`t_order`(order_id,`type`,activity_id,activity_name,pub_enterprise_id,pub_enterprise_name,
+		sup_enterprise_id,sup_enterprise_name,store_id,store_name,`status`,bank,
+		card_num,code,integral,tel,start_time,end_time,create_time)
+		values(#{t.orderId},#{t.type},#{t.activityId},#{t.activityName},#{t.pubEnterpriseId},#{t.pubEnterpriseName},
+		#{t.supEnterpriseId},#{t.supEnterpriseName},#{t.storeId},#{t.storeName},#{t.status},
+		#{t.bank},#{t.cardNum},#{t.code},#{t.integral},#{t.tel},#{t.startTime},#{t.endTime},now())
+	</insert>
+    <update id="updateOrderStatusByOrderId">
+        update t_order set status=#{status} where order_id=#{orderId}
+    </update>
+    <select id="findOrderByOrderId" resultType="com.mocredit.order.entity.Order">
+        select
+        <include refid="base_order_column_list"/>
+        from t_order where order_id=#{orderId}
+    </select>
+    <select id="findOrderList" parameterType="com.mocredit.order.vo.OrderVo"
+            resultType="com.mocredit.order.entity.Order">
+        select
+        <include refid="base_order_column_list"/>
+        from t_order where 1=1
+        <include refid="findOrderListCond"/>
+        order by id desc
+    </select>
+    <update id="updateOrderByCode">
+        update t_order set code=#{t.code}
+        <include refid="updateOrderCond"/>
+        where code=#{t.code}
+    </update>
+    <sql id="findOrderListCond">
+        <if test="tvo.type!=null">
+            and `type`=#{tvo.type}
+        </if>
+        <if test="tvo.startTime!=null">and create_time>=#{tvo.startTime}</if>
+        <if test="tvo.endTime!=null">and create_time &lt;=#{tvo.endTime}</if>
+        <if test="tvo.statuses!=null">and status in(#{tvo.statuses})</if>
+        <if test="tvo.keywords!=null">
+            and (activity_name like '%${tvo.keywords}%' or pub_enterprise_name like '%${tvo.keywords}%' or
+            sup_enterprise_name
+            like '%${tvo.keywords}%' or store_name like '%${tvo.keywords}%' or bank like '%${tvo.keywords}%' or card_num
+            like
+            '%${tvo.keywords}%' or tel like '%${tvo.keywords}%')
+        </if>
+    </sql>
+
+    <sql id="updateOrderCond">
+        <if test="t.storeId!=null">,store_id>=#{t.storeId}</if>
+        <if test="t.storeName!=null">,store_name>=#{t.storeName}</if>
+        <if test="t.status!=null">,status>=#{t.status}</if>
+    </sql>
+</mapper>

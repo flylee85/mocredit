@@ -41,7 +41,7 @@ public class Activity implements Serializable{
 	//通知短信内容,notice_sms_msg
 	private String noticeSmsMsg ;
 	//开始时间,start_time
-	@JSONField (format="yyyy-MM-dd HH:mm:ss")  
+
 	private Date startTime ;
 	//结束时间,end_time
 	@JSONField (format="yyyy-MM-dd HH:mm:ss")  

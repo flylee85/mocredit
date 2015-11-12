@@ -146,7 +146,7 @@ public class IntegralInterfaceCtrlTest {
 		Assert.assertTrue(resp2.getSuccess());
 		// 取消活动
 		ActivityVo activityVo1 = new ActivityVo();
-		activityVo1.setActivityId(10010);
+		activityVo1.setActivityId("10010");
 		activityVo1.setOperCode(3);
 		Response resp3 = JSON.parseObject(
 				HttpRequestUtil.doPostJson(BASE_URL + "activityImport",

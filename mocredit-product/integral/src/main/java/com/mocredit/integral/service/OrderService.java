@@ -2,6 +2,7 @@ package com.mocredit.integral.service;
 
 import java.util.List;
 
+import com.mocredit.integral.entity.Activity;
 import org.apache.ibatis.annotations.Param;
 
 import com.mocredit.integral.dto.OrderDto;
@@ -49,4 +50,5 @@ public interface OrderService extends BaseService<Order> {
 	 * @return
 	 */
 	List<OrderDto> synOrder(Integer offset, Integer pagesize);
+
 }

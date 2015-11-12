@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mocredit.order.persistence.UserDisplayMapper">
+<mapper namespace="com.mocredit.order.persitence.UserDisplayMapper">
 	<insert id="save" parameterType="com.mocredit.order.entity.UserDisplay">
 		insert into
 		`t_user_display`(user_id,`type`,name,time)

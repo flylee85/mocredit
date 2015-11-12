@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mocredit.order.entity.Order;
-import com.mocredit.order.persistence.OrderMapper;
+import com.mocredit.order.persitence.OrderMapper;
 import com.mocredit.order.service.OrderService;
 import com.mocredit.order.vo.OrderVo;
 

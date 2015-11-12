@@ -1,4 +1,4 @@
-package com.mocredit.order.persistence;
+package com.mocredit.order.persitence;
 
 import org.apache.ibatis.annotations.Param;
 

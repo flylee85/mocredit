@@ -58,4 +58,12 @@ public interface MerchantMapper {
      * @mbggenerated Thu Oct 29 12:05:06 CST 2015
      */
     int updateByPrimaryKey(Merchant record);
+
+    /**
+     * 根据企业id查询商户(企业和商户一对一)
+     *
+     * @param enterpriseId
+     * @return
+     */
+    Merchant selectByEnterpriseId(String enterpriseId);
 }

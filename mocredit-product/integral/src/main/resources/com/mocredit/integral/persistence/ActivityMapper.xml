@@ -3,68 +3,76 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mocredit.integral.persistence.ActivityMapper">
-	<resultMap id="BaseResultMap" type="com.mocredit.integral.entity.Activity">
-		<result column="activity_id" property="activityId" />
-		<result column="activity_name" property="activityName" />
-		<result column="pub_enterprise_id" property="pubEnterpriseId" />
-		<result column="pub_enterprise_name" property="pubEnterpriseName" />
-		<result column="product_type" property="productType" />
-		<result column="start_time" property="startTime" />
-		<result column="end_time" property="endTime" />
-		<result column="select_date" property="selectDate" />
-		<result column="integral" property="integral" />
-		<result column="max_type" property="maxType" />
-		<result column="max_number" property="maxNumber" />
-		<result column="status" property="status" />
-	</resultMap>
+    <resultMap id="BaseResultMap" type="com.mocredit.integral.entity.Activity">
+        <result column="activity_id" property="activityId"/>
+        <result column="activity_name" property="activityName"/>
+        <result column="pub_enterprise_id" property="pubEnterpriseId"/>
+        <result column="pub_enterprise_name" property="pubEnterpriseName"/>
+        <result column="product_type" property="productType"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="select_date" property="selectDate"/>
+        <result column="integral" property="integral"/>
+        <result column="max_type" property="maxType"/>
+        <result column="max_number" property="maxNumber"/>
+        <result column="status" property="status"/>
+        <result column="exchange_type" property="exchangeType"/>
+        <result column="bins" property="bins"/>
+        <result column="channel" property="channel"/>
+    </resultMap>
 
-	<insert id="save" parameterType="com.mocredit.integral.entity.Activity">
+    <insert id="save" parameterType="com.mocredit.integral.entity.Activity">
 		insert into
-		`ti_activity`(activity_id,activity_name,pub_enterprise_id,pub_enterprise_name,product_type,start_time,end_time,select_date,integral,max_type,max_number,status)
-		values(#{t.activityId},#{t.activityName},#{t.pubEnterpriseId},#{t.pubEnterpriseName},#{t.productType},#{t.startTime},#{t.endTime},#{t.selectDate},#{t.integral},#{t.maxType},#{t.maxNumber},#{t.status})
+		`ti_activity`(activity_id,activity_name,pub_enterprise_id,pub_enterprise_name,product_type,
+		start_time,end_time,select_date,integral,max_type,
+		max_number,status,exchange_type,bins,channel,
+		receipt_title,receipt_print,pos_success_msg)
+		values(#{t.activityId},#{t.activityName},#{t.pubEnterpriseId},#{t.pubEnterpriseName},#{t.productType},
+		#{t.startTime},#{t.endTime},#{t.selectDate},#{t.integral},#{t.maxType},
+		#{t.maxNumber},#{t.status},#{t.exchangeType},#{t.bins},#{t.channel})
 	</insert>
-	<select id="getByActivityId" resultMap="BaseResultMap">
+    <select id="getByActivityId" resultMap="BaseResultMap">
 		select * from
 		`ti_activity` where activity_id=#{activityId}
 	</select>
-	<select id="getByShopIdStoreIdAcId" resultType="com.mocredit.integral.entity.Store">
-		select uuid as uuid,shop_id as shopId,store_id as storeId,activity_id
-		as activityId from
-		`ti_store` where 1=1 and activity_id=#{activityId}
-		<if test="shopId!=null">
-			and shop_id=#{shopId}
-		</if>
-		<if test="storeId!=null">
-			and store_id=#{storeId}
-		</if>
+    <select id="getByShopIdStoreIdAcId" resultType="com.mocredit.integral.entity.Store">
+        select uuid as uuid,shop_id as shopId,store_id as storeId,activity_id
+        as activityId from
+        `ti_store` where 1=1 and activity_id=#{activityId}
+        <if test="shopId!=null">
+            and shop_id=#{shopId}
+        </if>
+        <if test="storeId!=null">
+            and store_id=#{storeId}
+        </if>
 
-	</select>
-	<insert id="saveStore" parameterType="com.mocredit.integral.entity.Store">
+    </select>
+    <insert id="saveStore" parameterType="com.mocredit.integral.entity.Store">
 		insert into
 		`ti_store`(shop_id,store_id,activity_id)
 		values(#{shopId},#{storeId},#{activityId})
 	</insert>
 
-	<update id="updateActStatusById">
+    <update id="updateActStatusById">
 		update `ti_activity`
 		set
 		`status`=#{status} where
 		activity_id=#{activityId}
 	</update>
-	<delete id="deleteActAndStoreById">
+    <delete id="deleteActAndStoreById">
 		DELETE a.*,b.* FROM `ti_activity` a LEFT JOIN
 		`ti_store` b ON
 		a.activity_id=b.activity_id WHERE
 		a.activity_id=#{activityId}
 	</delete>
-	<insert id="saveActTransRecord" parameterType="com.mocredit.integral.entity.ActivityTransRecord">
+    <insert id="saveActTransRecord" parameterType="com.mocredit.integral.entity.ActivityTransRecord">
 		INSERT INTO
 		`ti_activity_trans_record` (activity_id,trans_date,trans_count)
 		VALUES
 		(#{activityId},NOW(),#{transCount}) ON DUPLICATE KEY UPDATE
 		trans_count=trans_count+1;
 	</insert>
-	<select id="statCountByTime" resultType="com.mocredit.integral.entity.ActivityTransRecord">
+    <select id="statCountByTime" resultType="com.mocredit.integral.entity.ActivityTransRecord">
 		SELECT
 		`uuid`,activity_id
 		as activityId, SUM(trans_count) as transCount
@@ -73,4 +81,7 @@
 		trans_date >=#{startTime} AND
 		trans_date &lt;=#{endTime}
 	</select>
+    <select id="getActivityByOrderId" resultType="com.mocredit.integral.entity.Activity">
+		select b.* from ti_order a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where order_id=#{orderId}
+    </select>
 </mapper>

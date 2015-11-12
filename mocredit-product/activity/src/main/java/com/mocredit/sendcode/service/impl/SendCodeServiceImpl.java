@@ -11,7 +11,13 @@ import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.util.*;
 import cn.m.mt.common.MMSBO;
 import com.mocredit.manage.model.Enterprise;
+import com.mocredit.manage.model.Merchant;
 import com.mocredit.manage.persitence.EnterpriseMapper;
+import com.mocredit.manage.service.MerchantService;
+import com.mocredit.order.constant.OrderStatusType;
+import com.mocredit.order.constant.OrderType;
+import com.mocredit.order.entity.Order;
+import com.mocredit.order.service.OrderService;
 import com.mocredit.sendcode.constant.BatchCodeStatus;
 import com.mocredit.sendcode.constant.BatchStatus;
 import com.mocredit.sendcode.constant.DownloadType;
@@ -50,6 +56,10 @@ public class SendCodeServiceImpl implements SendCodeService {
     private ActivityStoreMapper activityStoreMapper;
     @Autowired
     private EnterpriseMapper enterpriseMapper;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private MerchantService merchantService;
 
     @Override
     @Transactional
@@ -326,12 +336,12 @@ public class SendCodeServiceImpl implements SendCodeService {
                 }
                 final MMSBO sendMsg = duanxin;
                 logger.info("短信内容==电话：" + sendMsg.getMobile() + "名称:" + sendMsg.getCustomer() + "内容：" + sendMsg.getContent());
-             /*   jmsTemplate.send("subject", new MessageCreator() {
+                jmsTemplate.send("subject", new MessageCreator() {
                     public Message createMessage(Session session) throws JMSException {
                         ObjectMessage msg = session.createObjectMessage(sendMsg);
                         return msg;
                     }
-                });*/
+                });
 
                 //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
                 // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
@@ -406,6 +416,8 @@ public class SendCodeServiceImpl implements SendCodeService {
             }
             // 将新组建的码对象添加到列表中
             carryList.add(codeVO);
+            //保存订单
+            saveOrder(oc, act, enterpriseOri);
         }
         // 将列表添加到码批次对象中
         batchVO.setActivityCodeList(carryList);
@@ -433,6 +445,32 @@ public class SendCodeServiceImpl implements SendCodeService {
         // 将返回对象的success设置为true,并返回数据对象
         resultMap.put("success", true);
         return resultMap;
+    }
+
+    /**
+     * 保存订单信息
+     * @param batchCode
+     * @param activity
+     * @param enterprise
+     * @return
+     */
+    public boolean saveOrder(BatchCode batchCode, Activity activity, Enterprise enterprise) {
+        Merchant merchant = merchantService.selectByEnterpriseId(enterprise.getId());
+        Order order = new Order();
+        order.setActivityId(activity.getId());
+        order.setActivityName(activity.getName());
+        order.setPubEnterpriseId(enterprise.getId());
+        order.setPubEnterpriseName(enterprise.getName());
+        order.setCode(batchCode.getCode());
+        order.setStartTime(DateUtil.dateToStr(activity.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
+        order.setEndTime(DateUtil.dateToStr(activity.getEndTime(), "yyyy-MM-dd HH:mm:ss"));
+        order.setStatus(OrderStatusType.SEND.getValue());
+        order.setTel(batchCode.getCustomerMobile());
+        order.setType(OrderType.CHECK_CODE_ORDER.getValue());
+        order.setOrderId(batchCode.getId());
+        order.setSupEnterpriseId(merchant.getId());
+        order.setSupEnterpriseName(merchant.getName());
+        return orderService.save(order);
     }
 
     public String validatorMobile(String activityId, String name, String type, Map<String, Object> msgMap, Map<String, String> resultMap, List<List<Object>> excelList) {

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.mocredit.order.persistence;
+package com.mocredit.order.persitence;
 
 import java.util.List;
 
