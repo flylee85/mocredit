@@ -12,6 +12,7 @@ import com.mocredit.activity.model.Activity;
 import com.mocredit.activity.model.ActivityStore;
 import com.mocredit.activity.model.SelectStoreVO;
 import com.mocredit.base.pagehelper.PageInfo;
+import com.mocredit.manage.model.Store;
 
 /**
  * 
@@ -76,6 +77,8 @@ public interface ActivityService {
 	 * @return
 	 */
 	public List<ActivityStore> querySelectStores(Map<String,Object> activityMap);
+	
+	public List<ActivityStore> queryStoresForSelect(String activityId); 
 	/**
 	 * 添加活动
 	 * @param activity

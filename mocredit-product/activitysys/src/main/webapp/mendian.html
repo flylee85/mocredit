@@ -169,154 +169,98 @@
 		});
 		var toSelectModal;
 		var selectedModal;
-		//>>
 		$("#leftToRight").click(function(){
 			$('#shopModal .to-select tbody :checkbox:checked').each(function(){
 				var _this=$(this);
-				if($("#shopModal .has-selected tbody :checkbox[data-id="+_this.attr("data-id")+"]").length==0){
-					$("#shopModal .has-selected tbody .dataTables_empty").parent().remove();
-					$("#shopModal .has-selected tbody").append($(this).click().parent().parent());
-				}
+				$("#shopModal .has-selected tbody .dataTables_empty").parent().remove();
+				$("#shopModal .has-selected tbody").append($(this).parent().parent());
 			})
 		});
-		//<<
 		$("#rightToLeft").click(function(){
 			$('#shopModal .has-selected tbody :checkbox:checked').each(function(){
 				var _this=$(this);
-				if($("#shopModal .to-select tbody :checkbox[data-id="+_this.attr("data-id")+"]").length==0){
-					$("#shopModal .to-select tbody .dataTables_empty").parent().remove();
-					$("#shopModal .to-select tbody").append($(this).click().parent().parent());
-				}
+				$("#shopModal .to-select tbody .dataTables_empty").parent().remove();
+				$("#shopModal .to-select tbody").append($(this).parent().parent());
 			})
 		});
 		// 初始化地区
 		$(".city").province_city();
 		// 查询门店
-		$("#storeSearch").click(function () {
-			toSelectModal.ajax.reload(function (json) {
-				updateChooseStore();
-			});
+		//$("#storeSearch").click(function () {
+		//	toSelectModal.ajax.reload(function (json) {
+		//		updateChooseStore();
+		//	});
 
-		});
+		//});
 		//门店初始化
 		function initToSelectMendian() {
-				$('#shopModal .to-select').find('[data-ride="datatables"]').each(function () {
-					toSelectModal = $(this).DataTable({
-						"ajax": {
-							url: "third/getStores",
-							type: "post",
-							data: function (d) {
-								return $.extend({}, d, {
-									"storeName": $('.to-select [name=storeName]').val(),
-									"province": $('.to-select [name=province]').val(),
-									"city": $('.to-select [name=city]').val(),
-									"shopId": $('.to-select [name=shopId]').val(),
-									"contractId":$("select[name=contractId]").val()
-								})
-							}
-						},
-						"initComplete": function (settings, json) {
-							initSelectedMendian();
-						},
-						"processing": true,
-						//"serverSide":true,
-						"autoWidth": true,
-						"ordering": false,
-						"paging":false,
-						"scrollY": "200px",
-						"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
-						"columns": [
-							{"data": null},
-							{"data": "shopName"},
-							{"data": "storeName", className: "storeName"},
-							{"data": "area"}
-						],
-						"columnDefs": [
-							{
-								"targets": 0,
-								"data": null,
-								"render": function (data, type, full) {
-									return '<input type="checkbox" data-id="' + full['id'] + '" data-shopId="' + full['shopId'] + '" data-storeName="' + full['storeName'] + '" data-shopName="' + full['shopName'] + '">';
+			$.get("activitysys/getSelectedStores",{activityId:$("#activityCurrentId").val()},function(result){
+				var toselectData=[];
+				var selectedData=[];
+				 for(var i in result.data){
+					 var store=result.data[i];
+					 if(store.activityId=="0"){
+						 toselectData.push(store);
+					 }else{
+						 selectedData.push(store);
+					 }
+				 }
+				 $('#shopModal .to-select').find('[data-ride="datatables"]').each(function () {
+						toSelectModal = $(this).DataTable({
+							"data":toselectData,
+							"processing": true,
+							//"serverSide":true,
+							"autoWidth": true,
+							"ordering": false,
+							"paging":false,
+							"scrollY": "200px",
+							"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
+							"columns": [
+								{"data": null},
+								{"data": "shopName"},
+								{"data": "storeName", className: "storeName"},
+								{"data": "area"}
+							],
+							"columnDefs": [
+								{
+									"targets": 0,
+									"data": null,
+									"render": function (data, type, full) {
+										return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId']  + '" data-storeName="'+full['storeName']+'" data-shopName="'+full['shopName']+'">';
+									}
 								}
-							}
-						]
+							]
+						});
 					});
-				});
-//			}
-			//
-		}
-		//已选门店初始化
-		function initSelectedMendian() {
-				$('#shopModal .has-selected').find('[data-ride="datatables"]').each(function () {
-					selectedModal = $(this).DataTable({
-						"ajax": {
-							url: "activitysys/getSelectedStores",
-							type: "post",
-							data: function (d) {
-								return $.extend({}, d, {
-									"activityId":$("#activityCurrentId").val(),
-									"storeName": $('.to-selecthas-selected [name=storeName]').val(),
-									"province": $('.has-selected [name=province]').val(),
-									"city": $('.has-selected [name=city]').val(),
-									"shopId": $('.has-selected [name=shopId]').val()
-								})
-							}
-						},
-						"initComplete": function (settings, json) {
-							flashSelectedData();
-							updateChooseStore();
-						},
-						"processing": true,
-						//"serverSide":true,
-						"autoWidth": true,
-						"ordering": false,
-						"paging":false,
-						"scrollY": "200px",
-						"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
-						"columns": [
-							{"data": null},
-							{"data": "shopName"},
-							{"data": "storeName", className: "storeName"},
-							{"data": null}
-						],
-						"columnDefs": [
-							{
-								"targets": 0,
-								"data": null,
-								"render": function (data, type, full) {
-									return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId'] + '" data-storeName="' + full['storeName'] + '" data-shopName="' + full['shopName'] + '">';
+				 
+				 $('#shopModal .has-selected').find('[data-ride="datatables"]').each(function () {
+						selectedModal = $(this).DataTable({
+							"data":selectedData,
+							"processing": true,
+							//"serverSide":true,
+							"autoWidth": true,
+							"ordering": false,
+							"paging":false,
+							"scrollY": "200px",
+							"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
+							"columns": [
+								{"data": null},
+								{"data": "shopName"},
+								{"data": "storeName", className: "storeName"},
+								{"data": "area"}
+							],
+							"columnDefs": [
+								{
+									"targets": 0,
+									"data": null,
+									"render": function (data, type, full) {
+										return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId'] + '" data-storeName="'+full['storeName']+'" data-shopName="'+full['shopName']+'">';
+									}
 								}
-							}
-						]
+							]
+						});
 					});
-				});
-//			}
-			//
-		}
-		// 重新选择已选择门店
-		function updateChooseStore() {
-			$('#shopModal .has-selected tbody tr :checkbox').each(function (i, n) {
-				var storeId = $(this).attr('data-id');
-				$('#shopModal .to-select tbody :checkbox[data-id=' + storeId +']').parent().parent().remove();
-			});
-		}
-		
-		function flashSelectedData(){
-			var storeId="";
-			var checkebox=$('#shopModal .has-selected tbody tr :checkbox');
-			checkebox.each(function(){
-				storeId+= $(this).attr('data-id')+"_";
-			})
-			if(storeId.length>0){
-				storeId=storeId.substr(0,storeId.length-1);
-				$.get("third/getData?field=STORE|id="+storeId,null,function(data){
-					var list=data.data.STORE;
-					console.log(list);
-					for(var i in list){
-						$(checkebox).filter("[data-id="+list[i].id+"]").parent().siblings(":last").text(list[i].area);
-					}
-				},'json')
-			}
+			},'json');
 		}
 		initToSelectMendian();
 	</script>

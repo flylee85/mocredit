@@ -62,5 +62,5 @@ public interface VerifiedCodeMapper {
      * @return
      */
     public List<TVerifiedCode> findVerifiedCodesByCodeAndType(Map<String, Object> param);
-
+    
 }

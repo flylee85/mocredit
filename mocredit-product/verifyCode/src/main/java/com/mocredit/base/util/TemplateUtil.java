@@ -74,7 +74,6 @@ public class TemplateUtil {
      * 定义要替换的模板中的字段。
      */
     public enum TemplateField{
-
         ACTIVITY_NAME("activityName","活动名称"),
         ACTIVITY_CODE("activityCode","活动编码"),
         ACTIVITY_OUT_CODE("outCode","外部编码"),

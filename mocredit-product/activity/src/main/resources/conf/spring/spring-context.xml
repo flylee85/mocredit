@@ -55,7 +55,7 @@
     <!-- scan for mappers and let them be autowired -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage"
-                  value="com.mocredit.activity.persitence,com.mocredit.sys.persitence,com.mocredit.manage.persitence"/>
+                  value="com.mocredit.activity.persitence,com.mocredit.sys.persitence,com.mocredit.manage.persitence,com.mocredit.order.persitence"/>
     </bean>
 
     <!--事物处理方式 使用@Transactional 标注在 方法上 -->

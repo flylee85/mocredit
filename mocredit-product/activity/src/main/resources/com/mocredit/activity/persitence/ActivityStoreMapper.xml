@@ -102,6 +102,27 @@
 	</where>
 	</select>
 	
+	<select id="selectForChoose" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.lang.String" >
+	    select 
+	    s.id as storeId,s.name as storeName,m.id as shopId,m.name as shopName,
+	    <choose>
+	    	<when test="activityId !=null">
+	    	case when aas.activity_id is null then 0 else 1 end as activityId
+	    	</when>
+	    	<otherwise>0 as activityId</otherwise>
+	    </choose>
+	    ,a.title|'  '|a1.title|'  '|a2.title as area
+	    from t_store s
+	    left join t_merchant m on s.merchant_id=m.id
+	    left join t_area a on s.province=a.id
+	    left join t_area a1 on s.city=a1.id
+	    left join t_area a2 on s.area=a2.id
+	    
+	    <if test="activityId != null">
+	    left join act_activity_store aas on s.id=aas.store_id and aas.activity_id=#{activityId}
+	    </if>
+  </select>
+  
 	<!--  添加一条活动商户关联记录  -->
 	<insert id="addActivityStore" parameterType="com.mocredit.activity.model.ActivityStore" >
 	insert into act_activity_store
