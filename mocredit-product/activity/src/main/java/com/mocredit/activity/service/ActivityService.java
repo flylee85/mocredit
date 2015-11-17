@@ -12,7 +12,6 @@ import com.mocredit.activity.model.Activity;
 import com.mocredit.activity.model.ActivityStore;
 import com.mocredit.activity.model.SelectStoreVO;
 import com.mocredit.base.pagehelper.PageInfo;
-import com.mocredit.manage.model.Store;
 
 /**
  * 
@@ -136,4 +135,11 @@ public interface ActivityService {
 	public Integer updateStatus(Activity activity);
 	
 	public Map<String,Object> getComb(String activityId);
+	/**
+	 * 为积分核销（为机具）查询活动信息
+	 * @param activityId
+	 * @param snCode
+	 * @return
+	 */
+	public List<Map<String, Object>> getActivitiesForDevice(List<String> activityId,String snCode);
 }

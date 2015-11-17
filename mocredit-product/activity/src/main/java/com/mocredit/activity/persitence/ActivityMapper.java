@@ -3,6 +3,8 @@ package com.mocredit.activity.persitence;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.mocredit.activity.model.Activity;
 import com.mocredit.activity.model.SelectStoreVO;
 
@@ -34,4 +36,8 @@ public interface ActivityMapper {
 	int deleteActivityById(String id);
 	//删除活动记录 ，根据条件
 	int deleteActivity(Map<String,Object> activityMap);
+	//为机具查询活动信息
+	List<Map<String, Object>>selectForDevice(@Param("activityId") List<String> activityId);
+	//为机具查询活动信息
+	Map<String, Object>selectStoreInfoForDevice(@Param("snCode") String snCode);
 }

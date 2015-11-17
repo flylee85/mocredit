@@ -209,7 +209,36 @@
 		</if>
 	</where>
 	</select>
-	
+	<select id="selectForDevice" resultType="java.util.HashMap" parameterType="java.util.List" >
+		SELECT
+			aa.id AS activityId,
+			aa.`code` AS activityCode,
+			aa.out_code AS activityOutCode,
+			aa.exchange_type AS activityType,
+			aa.amount AS amt,
+			aa.`name` AS activityName,
+			aa.start_time AS sTime,
+			aa.end_time AS eTime,
+			aa.select_date AS selectDate,
+			aa.bins
+		FROM
+			act_activity aa
+		WHERE aa.id in
+		<foreach item="item" index="index" collection="activityId" open="(" separator="," close=")">  
+		  '${item}'  
+		 </foreach> 
+	</select>
+	<select id="selectStoreInfoForDevice" resultType="java.util.HashMap" parameterType="java.lang.String" >
+		SELECT
+			ss.`code` AS storeCode,
+			ss.`name` AS storeName,
+			m.`code` AS shopCode,
+			m.`name` AS shopName
+		from t_terminal t
+		left join t_store ss on t.store_id=ss.id
+		left join t_merchant m on m.id=ss.merchant_id
+		where t.sn_code=#{snCode}
+	</select>
 	<!--  添加一条活动记录  -->
 	<insert id="addActivity" parameterType="com.mocredit.activity.model.Activity" >
 	insert into act_activity
