@@ -1,8 +1,11 @@
 package com.mocredit.integral.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.mocredit.integral.entity.*;
+import com.mocredit.integral.vo.StoreVo;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,10 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mocredit.integral.constant.ActivityStatus;
 import com.mocredit.integral.constant.ErrorCodeType;
-import com.mocredit.integral.entity.Activity;
-import com.mocredit.integral.entity.ActivityTransRecord;
-import com.mocredit.integral.entity.Response;
-import com.mocredit.integral.entity.Store;
 import com.mocredit.integral.persistence.ActivityMapper;
 import com.mocredit.integral.service.ActivityService;
 import com.mocredit.integral.service.LogService;
@@ -105,21 +104,24 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 
 
     @Override
-    public Store getByShopIdStoreIdAcId(String shopId, String storeId,
-                                        String activityId) {
-        return activityMapper.getByShopIdStoreIdAcId(shopId, storeId, activityId);
+    public Store getByShopIdStoreIdAcId(String storeId, String activityId) {
+        return activityMapper.getByShopIdStoreIdAcId(storeId, activityId);
     }
 
     @Transactional
-    public void saveActivityAndStore(Activity activity, List<Store> storeLists) {
+    public void saveActivityAndStore(Activity activity, List<StoreVo> storeLists) {
         activityMapper.save(activity);
-        for (Store store : storeLists) {
-            activityMapper.saveStore(store);
+        for (StoreVo storeVo : storeLists) {
+            activityMapper.saveStore(storeVo);
+            for (Terminal terminal : storeVo.getTerminals()) {
+                terminal.setActivityId(activity.getActivityId());
+                terminal.setStoreId(storeVo.getStoreId());
+            }
         }
     }
 
     @Transactional
-    public void updateActivityAndStore(Activity activity, List<Store> storeLists) {
+    public void updateActivityAndStore(Activity activity, List<StoreVo> storeLists) {
         // 先删除
         activityMapper.deleteActAndStoreById(activity.getActivityId());
         // 再新增
@@ -140,6 +142,20 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 
     @Override
     public Activity getActivityByOrderId(String orderId) {
-        return null;
+        return activityMapper.getActivityByOrderId(orderId);
+    }
+
+    @Override
+    public List<Activity> getActivityByEnCode(String enCode) {
+        return activityMapper.getActivityByEnCode(enCode);
+    }
+
+    @Override
+    public String getActIdsByEnCode(String enCode) {
+        List<String> actIds = new ArrayList<>();
+        for (Activity activity : activityMapper.getActivityByEnCode(enCode)) {
+            actIds.add(activity.getActivityId());
+        }
+        return String.join(",", actIds);
     }
 }

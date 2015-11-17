@@ -39,9 +39,6 @@
         select uuid as uuid,shop_id as shopId,store_id as storeId,activity_id
         as activityId from
         `ti_store` where 1=1 and activity_id=#{activityId}
-        <if test="shopId!=null">
-            and shop_id=#{shopId}
-        </if>
         <if test="storeId!=null">
             and store_id=#{storeId}
         </if>
@@ -52,7 +49,11 @@
 		`ti_store`(shop_id,store_id,activity_id)
 		values(#{shopId},#{storeId},#{activityId})
 	</insert>
-
+    <insert id="saveTerminal" parameterType="com.mocredit.integral.entity.Terminal">
+		insert into
+		`ti_terminal`(en_code,store_id,activity_id)
+		values(#{enCode},#{storeId},#{activityId})
+	</insert>
     <update id="updateActStatusById">
 		update `ti_activity`
 		set
@@ -60,9 +61,10 @@
 		activity_id=#{activityId}
 	</update>
     <delete id="deleteActAndStoreById">
-		DELETE a.*,b.* FROM `ti_activity` a LEFT JOIN
+		DELETE a.*,b.*,c.* FROM `ti_activity` a LEFT JOIN
 		`ti_store` b ON
-		a.activity_id=b.activity_id WHERE
+		a.activity_id=b.activity_id LEFT JOIN `ti_terminal` c ON
+		b.store_id=c.store_id and b.activity_id=c.activity_id WHERE
 		a.activity_id=#{activityId}
 	</delete>
     <insert id="saveActTransRecord" parameterType="com.mocredit.integral.entity.ActivityTransRecord">
@@ -81,7 +83,10 @@
 		trans_date >=#{startTime} AND
 		trans_date &lt;=#{endTime}
 	</select>
-    <select id="getActivityByOrderId" resultType="com.mocredit.integral.entity.Activity">
+    <select id="getActivityByOrderId" resultMap="BaseResultMap">
 		select b.* from ti_order a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where order_id=#{orderId}
     </select>
+    <select id="getActivityByEnCode" resultMap="BaseResultMap">
+		select b.* from ti_terminal a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where a.en_code=#{enCode}
+	</select>
 </mapper>

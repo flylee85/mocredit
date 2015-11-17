@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 
 import com.mocredit.integral.adapter.IntegralBankAdapter;
+import com.mocredit.integral.vo.OrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSON;
@@ -52,31 +53,6 @@ public class IntegralBaseController extends BaseController {
     /**
      * 请求bank接口如果成功就保存订单并返回true，否则不保存订单返回false
      *
-     * @param url
-     * @param order
-     * @return
-     */
-    protected boolean doGetAndSaveOrder(String url, Order order) {
-        return httpRequstService.doGetAndSaveOrder(getRequestId(), url, order);
-    }
-
-    /**
-     * 请求bank接口如果成功就保存订单并返回true，否则不保存订单返回false
-     *
-     * @param url
-     * @param paramMap
-     * @param order
-     * @return
-     */
-    protected boolean doPostAndSaveOrder(String url, Map<?, ?> paramMap,
-                                         Order order, Response resp) {
-        return httpRequstService.doPostAndSaveOrder(getRequestId(), url,
-                paramMap, order, resp);
-    }
-
-    /**
-     * 请求bank接口如果成功就保存订单并返回true，否则不保存订单返回false
-     *
      * @param param
      * @param order
      * @param resp
@@ -88,114 +64,58 @@ public class IntegralBaseController extends BaseController {
     }
 
     /**
-     * @param url
-     * @param paramMap
-     * @return
-     */
-    protected boolean paymentRevoke(String url, Map<?, ?> paramMap,
-                                    Response resp) {
-        return httpRequstService.paymentRevoke(getRequestId(), url, paramMap,
-                resp);
-    }
-
-    /**
      * @param param
-     * @param device
-     * @param orderId
      * @param resp
      * @return
      */
-    protected boolean paymentRevokeJson(String param, String device, String orderId, Response resp) {
-        return httpRequstService.paymentRevokeJson(getRequestId(), param, device, orderId, resp);
-    }
-
-    /**
-     * 积分冲正
-     *
-     * @param url
-     * @param paramMap
-     * @return
-     */
-    protected boolean paymentReserval(String url, Map<?, ?> paramMap,
-                                      Response resp) {
-        return httpRequstService.paymentReserval(getRequestId(), url, paramMap,
-                resp);
+    protected boolean paymentRevokeJson(String param, OrderVo orderVo, Response resp) {
+        return httpRequstService.paymentRevokeJson(getRequestId(), param, orderVo, resp);
     }
 
     /**
      * 积分冲正
      *
      * @param param
-     * @param orderId
-     * @param resp
      * @return
      */
-    protected boolean paymentReservalJson(String param, String orderId,
+    protected boolean paymentReservalJson(String param, OrderVo orderVo,
                                           Response resp) {
-        return httpRequstService.paymentReservalJson(getRequestId(), param, orderId, resp);
-    }
-
-    /**
-     * 积分撤销冲正
-     *
-     * @param url
-     * @param paramMap
-     * @return
-     */
-    protected boolean paymentRevokeReserval(String url, Map<?, ?> paramMap,
-                                            Response resp) {
-        return httpRequstService.paymentRevokeReserval(getRequestId(), url,
-                paramMap, resp);
+        return httpRequstService.paymentReservalJson(getRequestId(), param, orderVo, resp);
     }
 
     /**
      * 积分撤销冲正
      *
      * @param param
-     * @param orderId
      * @param resp
      * @return
      */
-    protected boolean paymentRevokeReservalJson(String param, String orderId,
+    protected boolean paymentRevokeReservalJson(String param, OrderVo orderVo,
                                                 Response resp) {
-        return httpRequstService.paymentRevokeReservalJson(getRequestId(), param, orderId, resp);
-    }
-
-    /**
-     * 积分查询
-     *
-     * @param url
-     * @param paramMap
-     * @return
-     */
-    public boolean confirmInfo(String url, Map<?, ?> paramMap, Response resp) {
-        return httpRequstService.confirmInfo(getRequestId(), url, paramMap,
-                resp);
+        return httpRequstService.paymentRevokeReservalJson(getRequestId(), param, orderVo, resp);
     }
 
     /**
      * 积分查询
      *
      * @param param
-     * @param confirmInfo
      * @param resp
      * @return
      */
-    public boolean confirmInfoJson(String param, ConfirmInfoVo confirmInfo, Response resp) {
+    public boolean confirmInfoJson(String param, OrderVo orderVo, Response resp) {
         return httpRequstService.confirmInfoJson(getRequestId(), param,
-                confirmInfo, resp);
+                orderVo, resp);
     }
 
     /**
-     * 活动同步
+     * 同步活动信息
      *
-     * @param url
-     * @param paramMap
+     * @param enCode
+     * @param resp
      * @return
      */
-    public boolean activityImport(String url, Map<?, ?> paramMap, Response resp) {
-        return httpRequstService.activityImport(getRequestId(), url, paramMap,
-                resp);
+    public boolean activitySyn(String enCode, Response resp) {
+        return httpRequstService.activitySyn(getRequestId(), enCode, resp);
     }
 
     /**

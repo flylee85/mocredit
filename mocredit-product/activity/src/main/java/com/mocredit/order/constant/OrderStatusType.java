@@ -7,7 +7,7 @@ package com.mocredit.order.constant;
  * @author ytq
  */
 public enum OrderStatusType {
-    EXCHANGE("01", "已兑换"), SEND("02", "已发送"), REVOCATION("03", "已撤回");
+    SEND("01", "已发送"), EXCHANGE("02", "已兑换"), REVOCATION("03", "已撤回");
     private String value;
     private String text;
 

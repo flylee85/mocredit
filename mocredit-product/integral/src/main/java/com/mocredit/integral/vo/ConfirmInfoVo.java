@@ -9,9 +9,9 @@ public class ConfirmInfoVo implements Serializable {
 	 */
 	private static final long serialVersionUID = -1907082923614009830L;
 	private String bank;
-	private Integer activityId;
+	private String activityId;
 	private String cardNum;
-	private Integer shopId;
+	private String shopId;
 	private String productType;
 
 	public String getBank() {
@@ -22,11 +22,11 @@ public class ConfirmInfoVo implements Serializable {
 		this.bank = bank;
 	}
 
-	public Integer getActivityId() {
+	public String getActivityId() {
 		return activityId;
 	}
 
-	public void setActivityId(Integer activityId) {
+	public void setActivityId(String activityId) {
 		this.activityId = activityId;
 	}
 
@@ -38,11 +38,11 @@ public class ConfirmInfoVo implements Serializable {
 		this.cardNum = cardNum;
 	}
 
-	public Integer getShopId() {
+	public String getShopId() {
 		return shopId;
 	}
 
-	public void setShopId(Integer shopId) {
+	public void setShopId(String shopId) {
 		this.shopId = shopId;
 	}
 

@@ -10,32 +10,32 @@ import com.mocredit.integral.entity.Store;
  * @author ytq 2015年8月24日
  */
 public class ActivityVo extends Activity {
-	private String productCode;
-	private Integer operCode;
-	private List<Store> storeList = new ArrayList<Store>();
+    private String productCode;
+    private Integer operCode;
+    private List<StoreVo> storeList = new ArrayList<StoreVo>();
 
-	public String getProductCode() {
-		return productCode;
-	}
+    public String getProductCode() {
+        return productCode;
+    }
 
-	public void setProductCode(String productCode) {
-		this.productCode = productCode;
-	}
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
 
-	public Integer getOperCode() {
-		return operCode;
-	}
+    public Integer getOperCode() {
+        return operCode;
+    }
 
-	public void setOperCode(Integer operCode) {
-		this.operCode = operCode;
-	}
+    public void setOperCode(Integer operCode) {
+        this.operCode = operCode;
+    }
 
-	public List<Store> getStoreList() {
-		return storeList;
-	}
+    public List<StoreVo> getStoreList() {
+        return storeList;
+    }
 
-	public void setStoreList(List<Store> storeList) {
-		this.storeList = storeList;
-	}
+    public void setStoreList(List<StoreVo> storeList) {
+        this.storeList = storeList;
+    }
 
 }

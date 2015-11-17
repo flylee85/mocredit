@@ -1,0 +1,11 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+	<link rel="stylesheet" type="text/css" href="resources/extJs/base/extjs-4.2.1/resources/css/ext-all.css">
+	<!--  -->
+	<script type="text/javascript" src="resources/extJs/base/extjs-4.2.1/ext-all.js"></script>
+	<script type="text/javascript" src="resources/extJs/base/extjs-4.2.1/locale/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="resources/extJs/mx/Paging.js"></script>
+	<script type="text/javascript" src="resources/extJs/mx/TreePicker.js"></script>
+	<script type="text/javascript" src="resources/myjs/jqdp.js"></script>
+	<script type="text/javascript" src="resources/myjs/frame.js"></script>
+	<script type="text/javascript" src="resources/myjs/util.js"></script>
+	

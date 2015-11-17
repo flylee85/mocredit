@@ -73,16 +73,16 @@ public class IntegralInterfaceCtrlTest {
 	public void confirmInfoTest() throws Exception {
 		// 不存在该活动导致空指针异常提示参数错误
 		ConfirmInfoVo confirmInfoVo = new ConfirmInfoVo();
-		confirmInfoVo.setActivityId(100);
+		confirmInfoVo.setActivityId(100+"");
 		confirmInfoVo.setBank("citic");
 		confirmInfoVo.setCardNum("62140038786912");
-		confirmInfoVo.setShopId(1246);
+		confirmInfoVo.setShopId(1246+"");
 		String jsonStr = JSON.toJSONString(confirmInfoVo);
 		Response resp = JSON.parseObject(
 				HttpRequestUtil.doPostJson(BASE_URL + "confirmInfo", jsonStr),
 				Response.class);
-		confirmInfoVo.setActivityId(10010);
-		confirmInfoVo.setShopId(1);
+		confirmInfoVo.setActivityId(10010+"");
+		confirmInfoVo.setShopId(1+"");
 		String jsonStr1 = JSON.toJSONString(confirmInfoVo);
 		Response resp1 = JSON.parseObject(
 				HttpRequestUtil.doPostJson(BASE_URL + "confirmInfo", jsonStr1),
