@@ -16,54 +16,46 @@ import com.mocredit.integral.persistence.OrderMapper;
 import com.mocredit.integral.service.OrderService;
 
 /**
- * 
  * @author ytq
- * 
  */
 @Service
 public class OrderServiceImpl implements OrderService {
-	@Autowired
-	private OrderMapper orderMapper;
-	@Autowired
-	private ActivityMapper activityMapper;
+    @Autowired
+    private OrderMapper orderMapper;
+    @Autowired
+    private ActivityMapper activityMapper;
 
-	@Override
-	@Transactional
-	public boolean save(Order t) {
-		ActivityTransRecord actRecod = new ActivityTransRecord();
-		actRecod.setActivityId(t.getActivityId());
-		actRecod.setTransCount(1);
-		actRecod.setTransDate(new Date());
-		return orderMapper.save(t) > 0
-				&& activityMapper.saveActTransRecord(actRecod) > 0;
-	}
+    @Override
+    @Transactional
+    public boolean save(Order t) {
+        ActivityTransRecord actRecod = new ActivityTransRecord();
+        actRecod.setActivityId(t.getActivityId());
+        actRecod.setTransCount(1);
+        actRecod.setTransDate(new Date());
+        return orderMapper.save(t) > 0
+                && activityMapper.saveActTransRecord(actRecod) > 0;
+    }
 
-	@Override
-	@Transactional
-	public boolean isExistOrderAndUpdate(String device, String orderId) {
-		boolean isExist = orderMapper.getOrderByOrderIdAndDevice(device,
-				orderId) > 0;
-		if (isExist) {
-			return orderMapper.updateStatusByOrderIdAndDevice(device, orderId,
-					OrderStatus.REVOKE.getValue()) > 0;
-		} else {
-			return isExist;
-		}
-	}
+    @Override
+    @Transactional
+    public boolean isExistOrderAndUpdate(String orderId) {
+        boolean isExist = orderMapper.isExistOrder(orderId) > 0;
+        if (isExist) {
+            return orderMapper.updateStatusByOrderId(orderId,
+                    OrderStatus.PAYMENT_REVOKE.getValue()) > 0;
+        } else {
+            return isExist;
+        }
+    }
 
-	@Override
-	public boolean isExistOrder(String device, String orderId, String transDate) {
-		return orderMapper.isExistOrder(device, orderId, transDate) > 0;
-	}
+    @Override
+    public boolean isExistOrder(String orderId) {
+        return orderMapper.isExistOrder(orderId) > 0;
+    }
 
-	@Override
-	public boolean isExistOrder(String orderId) {
-		return orderMapper.getOrderByOrderId(orderId) > 0;
-	}
-
-	@Override
-	public List<OrderDto> synOrder(Integer offset, Integer pagesize) {
-		return orderMapper.synOrder(offset, pagesize);
-	}
+    @Override
+    public List<OrderDto> synOrder(Integer offset, Integer pagesize) {
+        return orderMapper.synOrder(offset, pagesize);
+    }
 
 }

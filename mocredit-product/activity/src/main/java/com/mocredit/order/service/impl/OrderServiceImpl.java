@@ -40,9 +40,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public int updateOrderStatusByOrderId(String orderId, String status) {
-        int affectCount = orderMapper.updateOrderStatusByOrderId(orderId, status);
         orderRevoke(orderId);
-        return affectCount;
+        return orderMapper.updateOrderStatusByOrderId(orderId, status);
     }
 
     @Override

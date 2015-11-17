@@ -61,7 +61,7 @@
         </if>
         <if test="tvo.startTime!=null">and create_time>=#{tvo.startTime}</if>
         <if test="tvo.endTime!=null">and create_time &lt;=#{tvo.endTime}</if>
-        <if test="tvo.statuses!=null">and status in(#{tvo.statuses})</if>
+        <if test="tvo.statuses!=null">and status in(${tvo.statuses})</if>
         <if test="tvo.keywords!=null">
             and (activity_name like '%${tvo.keywords}%' or pub_enterprise_name like '%${tvo.keywords}%' or
             sup_enterprise_name

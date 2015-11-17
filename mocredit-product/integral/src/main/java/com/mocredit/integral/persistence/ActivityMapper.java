@@ -1,7 +1,9 @@
 package com.mocredit.integral.persistence;
 
 import java.util.Date;
+import java.util.List;
 
+import com.mocredit.integral.entity.Terminal;
 import org.apache.ibatis.annotations.Param;
 
 import com.mocredit.integral.entity.Activity;
@@ -29,15 +31,13 @@ public interface ActivityMapper {
     Activity getByActivityId(@Param("activityId") String activityId);
 
     /**
-     * 根据shopId和storeId和activityId查询门店信息
+     * 根据storeId和activityId查询门店信息
      *
-     * @param shopId
      * @param storeId
      * @param activityId
      * @return
      */
-    Store getByShopIdStoreIdAcId(@Param("shopId") String shopId,
-                                 @Param("storeId") String storeId,
+    Store getByShopIdStoreIdAcId(@Param("storeId") String storeId,
                                  @Param("activityId") String activityId);
 
     /**
@@ -47,6 +47,14 @@ public interface ActivityMapper {
      * @return
      */
     int saveStore(Store t);
+
+    /**
+     * 保存机具信息
+     *
+     * @param t
+     * @return
+     */
+    int saveTerminal(Terminal t);
 
     /**
      * 根据活动id更新活动状态
@@ -92,4 +100,13 @@ public interface ActivityMapper {
      * @return
      */
     Activity getActivityByOrderId(@Param(value = "orderId") String orderId);
+
+    /**
+     * 根据机具号查询活动列表
+     *
+     * @param enCode
+     * @return
+     */
+    List<Activity> getActivityByEnCode(@Param(value = "enCode") String enCode);
+
 }

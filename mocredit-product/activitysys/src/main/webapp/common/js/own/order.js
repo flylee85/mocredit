@@ -134,10 +134,10 @@ $(function () {
 //    EXCHANGE("01", "已兑换"), SEND("02", "已发送"), REVOCATION("03", "已撤回");
                                 var statusText;
                                 if (data == "01") {
-                                    statusText = "已兑换";
+                                    statusText = "已发送";
                                 }
                                 if (data == "02") {
-                                    statusText = "已发送";
+                                    statusText = "已兑换";
                                 }
                                 if (data == "03") {
                                     statusText = "已撤回";

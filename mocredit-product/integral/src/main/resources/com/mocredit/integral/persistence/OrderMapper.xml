@@ -2,33 +2,40 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mocredit.integral.persistence.OrderMapper">
-	<insert id="save" parameterType="com.mocredit.integral.entity.Order">
+    <insert id="save" parameterType="com.mocredit.integral.entity.Order">
 		insert into
-		`ti_order`(request_id,card_num,bank,shop_id,shop_name,store_id,store_name,activity_id,activity_name,device,amount,order_id,status,trans_date,ctime)
-		values(#{t.requestId},#{t.cardNum},#{t.bank},#{t.shopId},#{t.shopName},#{t.storeId},#{t.storeName},#{t.activityId},#{t.activityName},#{t.device},#{t.amount},#{t.orderId},#{t.status},#{t.transDate},now())
+		`ti_order`(request_id,card_num,,store_id,activity_id,amt,order_id,old_order_id,en_code,card_exp_date,ctime,status)
+		values(#{t.requestId},#{t.cardNum},#{t.storeId},#{t.activityId},#{t.amt},#{t.orderId},#{t.oldOrderId},#{t.enCode},#{t.cardExpDate},now(),#{t.status})
 	</insert>
-	<select id="getOrderByOrderIdAndDevice" resultType="int">
-		select
-		count(1) from
-		`ti_order` where order_id=#{orderId} and device=#{device}
-	</select>
-	<select id="getOrderByOrderId" resultType="int">
-		select
-		count(1) from
-		`ti_order` where order_id=#{orderId}
-	</select>
-	<update id="updateStatusByOrderIdAndDevice">
+    <sql id="Base_Column">
+        a.uuid as uuid,
+		a.order_id as orderId,
+		a.old_order_id as oldOrderId,
+		a.activity_id as activityId,
+		a.store_id as storeId,
+		a.status as status,
+		a.card_num as cardNum,
+		a.amount as integral,
+		a.ctime as
+		createTime
+	</sql>
+    <select id="getOrderByOrderId" resultType="com.mocredit.integral.entity.Order">
+        select
+        <include refid="Base_Column"/>
+        from
+        `ti_order` where order_id=#{orderId}
+    </select>
+    <update id="updateStatusByOrderId">
 		update `ti_order`
 		set
 		status=#{status} where
-		order_id=#{orderId} and device=#{device}
+		order_id=#{orderId}
 	</update>
-	<select id="isExistOrder" resultType="int">
+    <select id="isExistOrder" resultType="int">
 		select count(1) from
-		`ti_order` where order_id=#{orderId} and device=#{device} and
-		trans_date=#{transDate}
+		`ti_order` where order_id=#{orderId}
 	</select>
-	<select id="synOrder" resultType="com.mocredit.integral.dto.OrderDto">
+    <select id="synOrder" resultType="com.mocredit.integral.dto.OrderDto">
 		select
 		a.uuid as id,
 		a.order_id

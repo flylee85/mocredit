@@ -4,53 +4,62 @@ package com.mocredit.integral.entity;
  * @author ytq 2015年8月26日
  */
 public class Store {
-	/**
-	 * uuid int not null auto_increment, shop_id int comment '商户ID', store_id
-	 * int comment '门店ID', activity_id int comment '活动ID', primary key (uuid)
-	 */
-	private Integer uuid;
-	private String shopId;
-	private String storeId;
-	private String activityId;
+    /**
+     * uuid int not null auto_increment, shop_id int comment '商户ID', store_id
+     * int comment '门店ID', activity_id int comment '活动ID', primary key (uuid)
+     */
+    private Integer uuid;
+    private String shopId;
+    private String storeId;
+    private String storeCode;
+    private String activityId;
 
-	public Integer getUuid() {
-		return uuid;
-	}
+    public String getStoreCode() {
+        return storeCode;
+    }
 
-	public void setUuid(Integer uuid) {
-		this.uuid = uuid;
-	}
+    public void setStoreCode(String storeCode) {
+        this.storeCode = storeCode;
+    }
 
-	public String getShopId() {
-		return shopId;
-	}
+    public Integer getUuid() {
+        return uuid;
+    }
 
-	public void setShopId(String shopId) {
-		this.shopId = shopId;
-	}
+    public void setUuid(Integer uuid) {
+        this.uuid = uuid;
+    }
 
-	public String getStoreId() {
-		return storeId;
-	}
+    public String getShopId() {
+        return shopId;
+    }
 
-	public void setStoreId(String storeId) {
-		this.storeId = storeId;
-	}
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
 
-	public String getActivityId() {
-		return activityId;
-	}
+    public String getStoreId() {
+        return storeId;
+    }
 
-	public void setActivityId(String activityId) {
-		this.activityId = activityId;
-	}
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
 
-	@Override
-	public String toString() {
-		return "Store [" + (uuid != null ? "uuid=" + uuid + ", " : "")
-				+ (shopId != null ? "shopId=" + shopId + ", " : "")
-				+ (storeId != null ? "storeId=" + storeId + ", " : "")
-				+ (activityId != null ? "activityId=" + activityId : "") + "]";
-	}
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
+
+    @Override
+    public String toString() {
+        return "Store [" + (uuid != null ? "uuid=" + uuid + ", " : "")
+                + (shopId != null ? "shopId=" + shopId + ", " : "")
+                + (storeId != null ? "storeId=" + storeId + ", " : "")
+                + (activityId != null ? "activityId=" + activityId : "") + "]";
+    }
 
 }

@@ -1,44 +1,56 @@
 package com.mocredit.integral.dto;
 
 public class PaymentDto {
-	/**
-	 * @param { shopId: 商户ID cardNum:卡号 orderId:订单号 transAmt:交易金额
-	 *        productType:银行内部活动代码 device:机具号 }
-	 */
-	private Integer shopId;
-	private String cardNum;
-	private String transAmt;
-	private String productType;
-	private String device;
-	public Integer getShopId() {
-		return shopId;
-	}
-	public void setShopId(Integer shopId) {
-		this.shopId = shopId;
-	}
-	public String getCardNum() {
-		return cardNum;
-	}
-	public void setCardNum(String cardNum) {
-		this.cardNum = cardNum;
-	}
-	public String getTransAmt() {
-		return transAmt;
-	}
-	public void setTransAmt(String transAmt) {
-		this.transAmt = transAmt;
-	}
-	public String getProductType() {
-		return productType;
-	}
-	public void setProductType(String productType) {
-		this.productType = productType;
-	}
-	public String getDevice() {
-		return device;
-	}
-	public void setDevice(String device) {
-		this.device = device;
-	}
+    /**
+     * orderId    订单号
+     * cardNum    卡号
+     * tranAmt    消费积分
+     * code       银行活动代码\\内部活动编码
+     * cardExpDate    卡有效期
+     */
+    private String orderId;
+    private String cardNum;
+    private String transAmt;
+    private String code;
+    private String cardExpDate;
 
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getCardNum() {
+        return cardNum;
+    }
+
+    public void setCardNum(String cardNum) {
+        this.cardNum = cardNum;
+    }
+
+    public String getTransAmt() {
+        return transAmt;
+    }
+
+    public void setTransAmt(String transAmt) {
+        this.transAmt = transAmt;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCardExpDate() {
+        return cardExpDate;
+    }
+
+    public void setCardExpDate(String cardExpDate) {
+        this.cardExpDate = cardExpDate;
+    }
 }
