@@ -35,6 +35,8 @@ public class TActivityCode {
     /** 冗余字段。合同ID **/
     private String contractId ;
     private String selectDate;
+    
+    private String status;//状态 01 未使用 02 已使用 03 已禁用
 
     public String getSelectDate() {
         return selectDate;
@@ -236,6 +238,14 @@ public class TActivityCode {
 
 	public void setActivityCode(String activityCode) {
 		this.activityCode = activityCode;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
     
     

@@ -37,8 +37,12 @@ import com.mocredit.base.util.IDUtil;
 import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.base.util.ValidatorUtil;
 import com.mocredit.manage.model.Enterprise;
+import com.mocredit.manage.model.Store;
+import com.mocredit.manage.model.Terminal;
 import com.mocredit.manage.persitence.ContractMapper;
 import com.mocredit.manage.persitence.EnterpriseMapper;
+import com.mocredit.manage.persitence.StoreMapper;
+import com.mocredit.manage.persitence.TerminalMapper;
 import com.mocredit.sys.service.OptLogService;
 
 /**
@@ -66,12 +70,16 @@ public class ActivityServiceImpl implements ActivityService {
 	private ContractMapper contractMapper;// 合同操作对象
 	@Autowired
 	private OptLogService optLogService;// 操作日志service对象
+	@Autowired
+	private StoreMapper storeMapper; // 门店mapper
+	@Autowired
+	private TerminalMapper terminalMapper;// 机具mapper
 
 	/**
 	 * 获取一条活动，根据主键
 	 * 
 	 * @param id
-	 * @return
+	 * @return一
 	 */
 	public Activity getActivityById(String id) {
 		// 获取活动对象
@@ -226,7 +234,13 @@ public class ActivityServiceImpl implements ActivityService {
 		}
 		return activityStoreMapper.queryActivityStoreList(activityMap);
 	}
-
+	@Override
+	public List<ActivityStore> queryStoresForSelect(String activityId) {
+		if("".equals(activityId)){
+			activityId=null;
+		}
+		return activityStoreMapper.selectForChoose(activityId);
+	}
 	/**
 	 * 添加活动
 	 * 
@@ -334,23 +348,32 @@ public class ActivityServiceImpl implements ActivityService {
 			changeDescribe.append("兑换类型：" + activity.getExchangeType() + ";");
 
 			// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
-			httpPostMap.put("storeList", storeList);
+			List<Store> selectAllofActivity = storeMapper.selectAllofActivity(activity.getId());
+			
 			changeDescribe.append("门店信息：[");
-			for (ActivityStore as : storeList) {
-				changeDescribe.append("{门店名称：" + as.getStoreName() + ";");
-				changeDescribe.append("{门店编码：" + as.getStoreCode() + ";");
-				changeDescribe.append("门店id：" + as.getStoreId() + ";}");
+			for (Store as : selectAllofActivity) {
+				changeDescribe.append("{门店名称：" + as.getName() + ";");
+				changeDescribe.append("{门店编码：" + as.getCode() + ";");
+				changeDescribe.append("门店id：" + as.getId() + ";}");
+				//机具
+				Terminal terminal=new Terminal();
+				terminal.setStoreId(as.getId());
+				List<Terminal> terminals = terminalMapper.selectAll(terminal);
+				as.setTerminals(terminals);
 			}
 			changeDescribe.append("]");
+			
+			httpPostMap.put("storeList", selectAllofActivity);
 
 			// 将修改信息发送至验码系统
 			httpPostMap.put("operCode", "1");
-			String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, JSON.toJSONString(httpPostMap));
-			Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-			boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-			if (!isSuccess) {
-				throw new BusinessException("向积分核销系统同步信息失败");
-			}
+			System.out.println(JSON.toJSONString(httpPostMap));
+//			String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, JSON.toJSONString(httpPostMap));
+//			Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+//			boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+//			if (!isSuccess) {
+//				throw new BusinessException("向积分核销系统同步信息失败");
+//			}
 			// 保存送信息到验码系统的日志
 			optLogService.addOptLog("活动Id:" + activity.getId(), "", "积分核销接口修改活动信息-----" + changeDescribe.toString());
 		}
@@ -517,29 +540,35 @@ public class ActivityServiceImpl implements ActivityService {
 				// 兑换类型
 				httpPostMap.put("exchangeType", activity.getExchangeType());
 				changeDescribe.append("兑换类型：" + activity.getExchangeType() + ";");
-				
+
 				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 				Map<String, Object> queryMap = new HashMap<String, Object>();
 				queryMap.put("activityId", activity.getId());
-				List<ActivityStore> storeList = activityStoreMapper.queryActivityStoreList(queryMap);
-				httpPostMap.put("storeList", storeList);
+				List<Store> storeList = storeMapper.selectAllofActivity(activity.getId());
 				changeDescribe.append("门店信息：[");
-				for (ActivityStore as : storeList) {
-					changeDescribe.append("{门店名称：" + as.getStoreName() + ";");
-					changeDescribe.append("{门店编码：" + as.getStoreCode() + ";");
-					changeDescribe.append("门店id：" + as.getStoreId() + ";}");
+				for (Store as : storeList) {
+					changeDescribe.append("{门店名称：" + as.getName() + ";");
+					changeDescribe.append("{门店编码：" + as.getCode() + ";");
+					changeDescribe.append("门店id：" + as.getId() + ";}");
+					//机具
+					Terminal terminal=new Terminal();
+					terminal.setStoreId(as.getId());
+					List<Terminal> terminals = terminalMapper.selectAll(terminal);
+					as.setTerminals(terminals);
 				}
 				changeDescribe.append("]");
+				httpPostMap.put("storeList", storeList);
 
 				// 将修改信息发送至验码系统
 				httpPostMap.put("operCode", "2");
-				String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-						JSON.toJSONString(httpPostMap));
-				Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-				boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-				if (!isSuccess) {
-					throw new BusinessException("向积分核销系统同步信息失败");
-				}
+				System.out.println(JSON.toJSONString(httpPostMap));
+//				String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+//						JSON.toJSONString(httpPostMap));
+//				Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+//				boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+//				if (!isSuccess) {
+//					throw new BusinessException("向积分核销系统同步信息失败");
+//				}
 				// 保存送信息到验码系统的日志
 				optLogService.addOptLog("活动Id:" + activity.getId(), "",
 						"积分核销接口修改活动信息-----" + changeDescribe.toString());

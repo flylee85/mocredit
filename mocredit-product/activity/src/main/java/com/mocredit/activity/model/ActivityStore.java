@@ -31,6 +31,14 @@ public class ActivityStore implements Serializable{
 	private String shopName;
 	//商户编码,与数据库字段无关，需要关联shop表查询名称
 	private String shopCode;
+	private String area;
+	
+	public String getArea() {
+		return area;
+	}
+	public void setArea(String area) {
+		this.area = area;
+	}
 	public String getActivityId(){
 		return activityId;
 	}

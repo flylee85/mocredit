@@ -108,5 +108,12 @@ public interface ActivityCodeService {
      * @return
      */
     public AjaxResponseData startUsingActivityWithTran(String activity_id);
+    
+    /**
+     * 验码状态修改（订单撤销）
+     * @param orderId
+     * @return
+     */
+    public AjaxResponseData chexiao(String orderId,String code);
 
 }

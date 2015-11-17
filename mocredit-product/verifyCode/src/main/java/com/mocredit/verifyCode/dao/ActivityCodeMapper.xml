@@ -27,6 +27,7 @@
         <result column="order_code" property="orderCode" jdbcType="VARCHAR"></result>
         <result column="enterprise_code" property="enterpriseCode" jdbcType="VARCHAR"></result>
         <result column="activity_code" property="activityCode" jdbcType="VARCHAR"></result>
+        <result column="status" property="status" jdbcType="VARCHAR"></result>
     </resultMap>
     <!-- ²åÈëÂë -->
     <insert id="insertActivityCode" parameterType="com.mocredit.verifyCode.model.TActivityCode">
@@ -34,11 +35,11 @@
         INSERT  INTO t_activity_code (
           id,code,code_serial_number,activity_id,activity_name,max_num,
           amount,start_time,end_time,order_id,createtime,
-          issue_enterprise_id,issue_enterprise_name,custom_mobile,release_time,contract_id,out_code,order_code,enterprise_code,custom_name,activity_code
+          issue_enterprise_id,issue_enterprise_name,custom_mobile,release_time,contract_id,out_code,order_code,enterprise_code,custom_name,activity_code,status
         )VALUES (
           #{id},#{code},#{codeSerialNumber},#{activityId},#{activityName},#{maxNum},
           #{amount},#{startTime},#{endTime},#{orderId},#{createTime},
-          #{issueEnterpriseId},#{issueEnterpriseName},#{customMobile},#{releaseTime},#{contractId},#{outCode},#{orderCode},#{enterpriseCode},#{customName},#{activityCode}
+          #{issueEnterpriseId},#{issueEnterpriseName},#{customMobile},#{releaseTime},#{contractId},#{outCode},#{orderCode},#{enterpriseCode},#{customName},#{activityCode},#{status}
         )
         ]]>
     </insert>
@@ -91,6 +92,7 @@
             <if test=" null != enterpriseCode">  enterprise_code=#{enterpriseCode} ,</if>
             <if test=" null != customName">  custom_name=#{customName} ,</if>
             <if test=" null != activityCode">  activity_code=#{activityCode} ,</if>
+            <if test=" null != status">  status=#{status} ,</if>
           </set>
           where id=#{id}
 
@@ -103,12 +105,12 @@
                 INSERT INTO t_activity_code (
                 id,code,code_serial_number,activity_id,activity_name,max_num,
                 amount,start_time,end_time,order_id,createtime,
-                issue_enterprise_id,issue_enterprise_name,custom_mobile,release_time,contract_id,select_date,out_code,order_code,enterprise_code,custom_name,activity_code
+                issue_enterprise_id,issue_enterprise_name,custom_mobile,release_time,contract_id,select_date,out_code,order_code,enterprise_code,custom_name,activity_code,status
                 )VALUES
                 <foreach collection="activityCodes" item="item" index="index" separator=",">
                     (#{item.id},#{item.code},#{item.codeSerialNumber},#{item.activityId},#{item.activityName},#{item.maxNum},
                     #{item.amount},#{item.startTime},#{item.endTime},#{item.orderId},#{item.createTime},
-                    #{item.issueEnterpriseId},#{item.issueEnterpriseName},#{item.customMobile},#{item.releaseTime},#{item.contractId},#{item.selectDate},#{item.outCode},#{item.orderCode},#{item.enterpriseCode},#{item.customName},#{item.activityCode})
+                    #{item.issueEnterpriseId},#{item.issueEnterpriseName},#{item.customMobile},#{item.releaseTime},#{item.contractId},#{item.selectDate},#{item.outCode},#{item.orderCode},#{item.enterpriseCode},#{item.customName},#{item.activityCode},#{status})
                 </foreach>
             </when>
             <otherwise>
