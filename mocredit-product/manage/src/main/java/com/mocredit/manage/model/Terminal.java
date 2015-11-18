@@ -38,7 +38,7 @@ public class Terminal {
 	 *
 	 * @mbggenerated Mon Nov 02 15:47:55 CST 2015
 	 */
-	@JSONField (format="yyyy-MM-dd")  
+	@JSONField(format = "yyyy-MM-dd")
 	private Date createTime;
 
 	/**
@@ -117,6 +117,51 @@ public class Terminal {
 	private String merchantName;
 	private String storeName;
 	private String storeCode;
+	private String supplierId;// 供应商ID
+	private String type;// 机具类型ID
+	private String supplierName;// 供应商名
+	private String typeName;// 机具类型名
+	private String gateway;// 网关
+
+	public String getGateway() {
+		return gateway;
+	}
+
+	public void setGateway(String gateway) {
+		this.gateway = gateway;
+	}
+
+	public String getTypeName() {
+		return typeName;
+	}
+
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+
+	public String getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(String supplierId) {
+		this.supplierId = supplierId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getSupplierName() {
+		return supplierName;
+	}
+
+	public void setSupplierName(String supplierName) {
+		this.supplierName = supplierName;
+	}
 
 	public String getMerchantName() {
 		return merchantName;
