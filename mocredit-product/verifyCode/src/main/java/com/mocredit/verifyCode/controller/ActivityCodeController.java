@@ -83,10 +83,8 @@ public class ActivityCodeController {
             // "useCount": 2,
              "device": "acaaaa",
              "storeId": "00001",
-             "storeName": "00001",
+             "storeCode": "00001",
              "requestSerialNumber": "111111",
-             "executiveEnterpriseId": "222",
-             "executiveEnterpriseName": "333",
              "code": "ssssss"
              }
             2.响应数据：

@@ -603,7 +603,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 				actActivityCodeVO.getEnterpriseName(), actActivityCodeVO.getContractId(), actActivityCodeVO.getAmount(),
 				actActivityCodeVO.getStartTime(), actActivityCodeVO.getEndTime(), actActivityCodeVO.getSelectDate(),
 				actActivityCodeVO.getMaxNumber(), actActivityCodeVO.getOutCode(), actActivityCodeVO.getEnterpriseCode(),
-				actActivityCodeVO.getActivityCode());
+				actActivityCodeVO.getActivityCode(),ActivityCodeStatus.NOT_USED.getValue());
 		// 3.更新活动关联的门店
 		int delete_store_c = this.actActivityStoreMapper.deleteByActivityId(actActivityCodeVO.getActivityId());
 		int insert_store_c = this.actActivityStoreMapper.batchSave(actActivityCodeVO.getActActivityStores());
