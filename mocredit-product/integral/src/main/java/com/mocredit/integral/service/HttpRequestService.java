@@ -1,12 +1,15 @@
 package com.mocredit.integral.service;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.integral.adapter.IntegralBankAdapter;
+import com.mocredit.integral.constant.ActivityStatus;
 import com.mocredit.integral.vo.OrderVo;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +94,7 @@ public class HttpRequestService extends LogService {
     }
 
     /**
-     * post json and save order
+     * 积分消费和保存订单
      *
      * @param requestId
      * @param param
@@ -105,6 +108,14 @@ public class HttpRequestService extends LogService {
             Activity activity = activityService.getByActivityId(order
                     .getActivityId());
             if (activity != null) {
+                //判断活动是否启用
+                if (ActivityStatus.STOP.equals(activity.getStatus())) {
+                    resp.setErrorCode(ErrorCodeType.ACTIVITY_ALREADY_STOP
+                            .getValue());
+                    resp.setErrorMsg(ErrorCodeType.ACTIVITY_ALREADY_STOP
+                            .getText());
+                    return false;
+                }
                 //验证该卡能否参加该活动
                 if (activity.getBins() != null && !"".equals(activity.getBins())) {
                     boolean flag = false;
@@ -209,7 +220,7 @@ public class HttpRequestService extends LogService {
     }
 
     /**
-     * 构建请求payment接口参数
+     * 构建请求payment接口参数和查询积分接口参数
      *
      * @param activity
      * @param order
@@ -459,11 +470,12 @@ public class HttpRequestService extends LogService {
      */
     public boolean activitySyn(Integer requestId, String enCode, Response resp) {
         String activityIds = activityService.getActIdsByEnCode(enCode);
-        Map<String,Object> mapParam = new HashMap<>();
+        Map<String, Object> mapParam = new HashMap<>();
         mapParam.put("activityIds", activityIds.split(","));
         mapParam.put("enCode", enCode);
         String url = PropertiesUtil.getValue("activity.syn");
         String response = doPostJson(requestId, url, JSON.toJSONString(mapParam));
+//        String response = HttpUtil.sendPost(url,JSON.toJSONString(mapParam),"uft-8","uft-8",5000);
         if (response == null) {
             resp.setErrorCode(ErrorCodeType.ACTIVITY_SYN_ERROR.getValue());
             resp.setErrorMsg(ErrorCodeType.ACTIVITY_SYN_ERROR.getText());
@@ -498,7 +510,7 @@ public class HttpRequestService extends LogService {
         try {
             LOGGER.info("### doPost url={},requestId={},param={} ###", url,
                     requestId, param);
-            String response = HttpRequestUtil.doPostJson(url, param);
+            String response = HttpUtil.doRestfulByHttpConnection(url, param);
             outRequestLogService.save(new OutRequestLog(requestId, url, param));
             outResponseLogService.save(new OutResponseLog(requestId, response));
             return response;

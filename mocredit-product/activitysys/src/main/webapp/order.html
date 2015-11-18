@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>订单管理</title>
+    <title>流水管理</title>
     <link rel="stylesheet" href="common/js/file-input/fileinput.css">
     <link rel="stylesheet" href="common/css/switchery/style.css">
     <link rel="stylesheet" href="common/js/datepicker/bootstrap-datepicker.css">
@@ -11,19 +11,19 @@
 
 <section class="main padder">
     <div class="clearfix">
-        <h4><i class="icon-list"></i> 订单列表</h4>
+        <h4><i class="icon-list"></i> 流水列表</h4>
     </div>
     <div class="clearfix">
         <ul class="breadcrumb">
             <li><a href="#"><i class="icon-home"></i>首页</a></li>
-            <li class="active"><i class="icon-list-ul"></i>订单管理</li>
+            <li class="active"><i class="icon-list-ul"></i>流水管理</li>
         </ul>
     </div>
     <section class="panel">
         <header class="panel-heading text-right">
             <ul class="nav nav-tabs pull-left">
-                <li class="active"><a data-toggle="tab" id="tabToJifen" href="#jifen">积分订单</a></li>
-                <li class=""><a data-toggle="tab" id="tabToFama" href="#fama">发码订单</a></li>
+                <li class="active"><a data-toggle="tab" id="tabToJifen" href="#jifen">积分流水</a></li>
+                <li class=""><a data-toggle="tab" id="tabToFama" href="#fama">发码流水</a></li>
             </ul>
         </header>
         <div class="tab-content">
@@ -35,7 +35,7 @@
                                 <table class="table table-striped m-b-none" data-ride="datatables">
                                     <thead>
                                     <tr>
-                                        <th width="10%">订单编号</th>
+                                        <th width="10%">流水编号</th>
                                         <th width="8%">企业</th>
                                         <th width="8%">商铺</th>
                                         <th width="15%">门店</th>
@@ -81,16 +81,16 @@
                                 <!--value="" size="16" name="endTime">-->
                             </div>
                             <div class="col-lg-1">
-                                <input type="checkbox" name="statusList" value="01">
-                                已发码
+                                <!--<input type="checkbox" name="statusList" value="01">
+                                已发码-->
                             </div>
                             <div class="col-lg-1">
-                                <input type="checkbox" name="statusList" value="02">
-                                已兑换
+                               <!-- <input type="checkbox" name="statusList" value="02">
+                                已兑换-->
                             </div>
                             <div class="col-lg-1">
-                                <input type="checkbox" name="statusList" value="03">
-                                已撤回
+                                <!--<input type="checkbox" name="statusList" value="03">
+                                已撤回-->
                             </div>
                             <div class="col-lg-2">
                                 <input type="text" tabindex="1" class="form-control input-small parsley-validated"
@@ -115,7 +115,7 @@
                                 <table class="table table-striped m-b-none" data-ride="datatables">
                                     <thead>
                                     <tr>
-                                        <th width="20%">订单编号</th>
+                                        <th width="20%">流水编号</th>
                                         <th width="8%">企业</th>
                                         <th width="8%">商铺</th>
                                         <th width="15%">门店</th>

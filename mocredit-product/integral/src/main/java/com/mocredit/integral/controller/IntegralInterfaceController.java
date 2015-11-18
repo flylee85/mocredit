@@ -2,13 +2,11 @@ package com.mocredit.integral.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.mocredit.integral.constant.ErrorCodeType;
-import com.mocredit.integral.entity.Activity;
-import com.mocredit.integral.entity.InRequestLog;
-import com.mocredit.integral.entity.Order;
-import com.mocredit.integral.entity.Response;
+import com.mocredit.integral.entity.*;
 import com.mocredit.integral.service.ActivityService;
 import com.mocredit.integral.service.InRequestLogService;
 import com.mocredit.integral.service.OrderService;
+import com.mocredit.integral.service.TerminalService;
 import com.mocredit.integral.util.DateEditor;
 import com.mocredit.integral.vo.ActivityVo;
 import com.mocredit.integral.vo.ConfirmInfoVo;
@@ -43,6 +41,8 @@ public class IntegralInterfaceController extends IntegralBaseController {
     @Autowired
     private ActivityService activityService;
     @Autowired
+    private TerminalService terminalService;
+    @Autowired
     private InRequestLogService inRequestLogService;
     static ObjectMapper objectMapper = new ObjectMapper();
     static Map<String, String> errorCodeMap = new HashMap<String, String>();
@@ -72,6 +72,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
         try {
             Order order = JSON.parseObject(param, Order.class);
             saveInRequestLog(request, order.getOrderId(), param);
+            setOrderStoreId(order);
             if (doPostJsonAndSaveOrder(param, order, resp)) {
                 LOGGER.info("### payment success param={} ###", param);
                 resp.setSuccess(true);
@@ -108,6 +109,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
+            setOrderStoreId(orderVo);
             if (paymentRevokeJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentRevoke success param={} ###", orderId);
                 return renderJSONString(true, "", "", "");
@@ -144,6 +146,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
+            setOrderStoreId(orderVo);
             if (paymentReservalJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentReserval success param={} ###", param);
                 return renderJSONString(true, "", "", "");
@@ -180,6 +183,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
+            setOrderStoreId(orderVo);
             if (paymentRevokeReservalJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentRevokeReserval success param={} ###",
                         param);
@@ -219,6 +223,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
+            setOrderStoreId(orderVo);
             if (confirmInfoJson(param, orderVo, resp)) {
                 LOGGER.info("### confirmInfo success param={} ###", param);
                 return renderJSONString(true, "", "", "");
@@ -320,17 +325,17 @@ public class IntegralInterfaceController extends IntegralBaseController {
             RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String activitySyn(HttpServletRequest request,
-                              HttpServletResponse response, /*@RequestBody*/ String param) {
+                              HttpServletResponse response, @RequestBody String param) {
         LOGGER.info("### request in activitySyn param={} ###", param);
         Response resp = new Response();
         try {
-            String enCode = /*JSON.parseObject(param).getString("enCode")*/"12312321r";
+            String enCode = JSON.parseObject(param).getString("enCode");
             saveInRequestLog(request, null, param);
             if (activitySyn(enCode, resp)) {
                 LOGGER.info(
                         "### request in success activitySyn param={} ###",
                         param);
-                return renderJSONString(true, resp.getErrorMsg(),resp.getErrorCode(), resp.getData());
+                return renderJSONString(true, resp.getErrorMsg(), resp.getErrorCode(), resp.getData());
             } else {
                 LOGGER.error(
                         "### request in error activitySyn param={} ###",
@@ -347,5 +352,18 @@ public class IntegralInterfaceController extends IntegralBaseController {
             return renderJSONString(false, resp.getErrorMsg(),
                     resp.getErrorCode(), resp.getData());
         }
+    }
+
+    /**
+     * 设置订单的门店id
+     *
+     * @param order
+     */
+    public void setOrderStoreId(Order order) {
+        Terminal terminal = terminalService.getTerminalByEnCodeAndActivityId(order.getEnCode(), order.getActivityId());
+        order.setStoreId(terminal.getStoreId());
+//        if (terminal != null) {
+//            order.setStoreId(terminal.getStoreId());
+//        }
     }
 }

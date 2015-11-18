@@ -449,6 +449,7 @@ public class SendCodeServiceImpl implements SendCodeService {
 
     /**
      * 保存订单信息
+     *
      * @param batchCode
      * @param activity
      * @param enterprise
@@ -467,7 +468,7 @@ public class SendCodeServiceImpl implements SendCodeService {
         order.setStatus(OrderStatusType.SEND.getValue());
         order.setTel(batchCode.getCustomerMobile());
         order.setType(OrderType.CHECK_CODE_ORDER.getValue());
-        order.setOrderId(batchCode.getId());
+        order.setOrderId(IDUtil.getID());
         order.setSupEnterpriseId(merchant.getId());
         order.setSupEnterpriseName(merchant.getName());
         return orderService.save(order);
