@@ -24,6 +24,11 @@
     <result column="merchantName" property="merchantName" jdbcType="VARCHAR" />
     <result column="storeName" property="storeName" jdbcType="VARCHAR" />
     <result column="storeCode" property="storeCode" jdbcType="VARCHAR" />
+    <result column="supplier_id" property="supplierId" jdbcType="VARCHAR" />
+    <result column="supplierName" property="supplierName" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="typeName" property="typeName" jdbcType="VARCHAR" />
+    <result column="gateway" property="gateway" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     <!--
@@ -32,7 +37,7 @@
       This element was generated on Mon Nov 02 15:47:55 CST 2015.
     -->
     id, store_id, terminal_code, create_time, online_time, status, version_no, admin_password, 
-    batch_no, deskey, mackey, login_password, login_num,sn_code
+    batch_no, deskey, mackey, login_password, login_num,sn_code,type,supplier_id,gateway
   </sql>
   <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.String" >
     <!--
@@ -89,12 +94,12 @@
       create_time, online_time, status, 
       version_no, admin_password, batch_no, 
       deskey, mackey, login_password, 
-      login_num,sn_code)
+      login_num,sn_code,supplier_id,type,gateway)
     values (#{id,jdbcType=VARCHAR}, #{storeId,jdbcType=VARCHAR}, #{terminalCode,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{onlineTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, 
       #{versionNo,jdbcType=VARCHAR}, #{adminPassword,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR}, 
       #{deskey,jdbcType=VARCHAR}, #{mackey,jdbcType=VARCHAR}, #{loginPassword,jdbcType=VARCHAR}, 
-      #{loginNum,jdbcType=INTEGER},#{snCode})
+      #{loginNum,jdbcType=INTEGER},#{snCode},#{supplierId},#{type},#{gateway})
   </insert>
   <update id="deleteById" parameterType="java.util.List">
   	update t_terminal set status=2
@@ -150,6 +155,15 @@
       </if>
       <if test="snCode != null" >
         sn_code = #{snCode,jdbcType=INTEGER},
+      </if>
+      <if test="supplierId != null" >
+        supplier_id = #{supplierId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="gateway != null" >
+        gateway = #{gateway,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR} and status!=2

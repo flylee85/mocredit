@@ -35,11 +35,37 @@ oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 	]
 
 } );
+//加载企业信息
+$("#addTerminal").on("show.bs.modal", function () {
+	if (!$("#addTerminal").hasClass("hasDic")) {
+		loadDictionary();
+	}
+});
+/**
+ * 加载字典数据
+ */
+function loadDictionary() {
+	$.get("terminal/getComb", function (data) {
+		if (data.success) {
+			$.each(data.data, function (i, n) {
+				var thisSelect = $("select[code='" + i + "']");
+				$.each(n, function (j, o) {
+					var optionNode = $("<option>").attr("value", o.id).text(o.name);
+					thisSelect.append(optionNode);
+				});
+				if($.type(thisSelect.attr('data-val')) != "undefined"){
+					thisSelect.val(thisSelect.attr('data-val'));
+				}
+			});
+
+			$("#addTerminal").addClass("hasDic");
+		}
+	}, "json");
+}
 //获取门店信息
 $.get("terminal/getStoreInfo/"+$("#currentId").val(),null,function(result){
 	var form=$("#addTerminal form"); 
 	if(result.success){
-		console.log(result.data)
 		form.find("input:first").val(result.data.merchantName);
 		form.find("input:eq(1)").val(result.data.storeName);
 		form.find("input:eq(2)").val(result.data.storeCode);
@@ -59,7 +85,11 @@ function openUpdate(id, type){
 	$.get("terminal/view/"+id,null,function(result){
 		if(result.success){
 			var form=$("#addTerminal form");
-			form.find("input[name=snCode]").attr("data-id",result.data.id).val(result.data.snCode);
+			var terminal = result.data.terminal;
+			form.find("input[name=snCode]").attr("data-id",terminal.id).val(terminal.snCode);
+			form.find("select[name=supplierId] option[value="+terminal.supplierId+"]").attr("selected","selected");
+			form.find("select[name=type] option[value="+terminal.type+"]").attr("selected","selected");
+			form.find("select[name=gateway] option[value="+terminal.gateway+"]").attr("selected","selected");
 		}else{
 			alert("失败，请重试");
 		}

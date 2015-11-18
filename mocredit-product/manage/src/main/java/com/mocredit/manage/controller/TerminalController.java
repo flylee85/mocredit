@@ -16,7 +16,9 @@ import com.mocredit.base.datastructure.ResponseData;
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
 import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.manage.model.Terminal;
+import com.mocredit.manage.service.SupplierService;
 import com.mocredit.manage.service.TerminalService;
+import com.mocredit.manage.service.TerminalTypeService;
 import com.mocredit.manage.vo.TerminalVO;
 
 /**
@@ -30,6 +32,10 @@ import com.mocredit.manage.vo.TerminalVO;
 public class TerminalController {
 	@Autowired
 	private TerminalService terminalService;
+	@Autowired
+	private TerminalTypeService typeService;
+	@Autowired
+	private SupplierService supplierService;
 
 	@RequestMapping("/list")
 	public String list(@RequestParam(value = "search[value]", required = false) String key, Integer start,
@@ -61,7 +67,11 @@ public class TerminalController {
 		ResponseData response = new AjaxResponseData();
 		try {
 			Terminal terminal = terminalService.getTerminalById(id);
-			response.setData(terminal);
+			Map<String, Object> map = new HashMap<>();
+			map.put("terminal", terminal);
+			map.put("supplier", supplierService.getAll());
+			map.put("type", typeService.getAll());
+			response.setData(map);
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.setSuccess(false);
@@ -107,6 +117,22 @@ public class TerminalController {
 		ResponseData response = new AjaxResponseData();
 		try {
 			response.setData(terminalService.getStoreInfo(storeId));
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setSuccess(false);
+			response.setErrorMsg(e.getMessage());
+		}
+		return JSON.toJSONString(response);
+	}
+
+	@RequestMapping("/getComb")
+	public String getComb() {
+		ResponseData response = new AjaxResponseData();
+		try {
+			Map<String, Object> map = new HashMap<>();
+			map.put("supplier", supplierService.getAll());
+			map.put("type", typeService.getAll());
+			response.setData(map);
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.setSuccess(false);
