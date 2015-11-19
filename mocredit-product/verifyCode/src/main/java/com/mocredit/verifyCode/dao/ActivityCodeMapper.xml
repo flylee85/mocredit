@@ -135,7 +135,7 @@
             <if test=" null != enterpriseCode">  enterprise_code=#{enterpriseCode} ,</if>
             <if test=" null != activityCode">  activity_code=#{activityCode} ,</if>
         </set>
-        where activity_id=#{activityId}
+        where activity_id=#{activityId} and status=#{status}
     </update>
 
 </mapper>

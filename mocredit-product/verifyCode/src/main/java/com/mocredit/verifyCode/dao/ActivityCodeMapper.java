@@ -94,6 +94,7 @@ public interface ActivityCodeMapper {
                                  @Param("maxNum")        Integer maxNum,
                                  @Param("outCode")        String outCode,
                                  @Param("enterpriseCode")        String enterpriseCode,
-                                 @Param("activityCode")        String activityCode
+                                 @Param("activityCode")        String activityCode,
+                                 @Param("status")  String status
                                 );
 }
