@@ -54,4 +54,8 @@
             org.springframework.web.util.Log4jConfigListener
         </listener-class>
     </listener>
+    <context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>activitysys</param-value>
+	</context-param>
 </web-app>

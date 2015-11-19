@@ -6,4 +6,5 @@ import com.mocredit.manage.model.Terminal;
 
 public interface TerminalMapper {
 	List<Terminal> selectAll(Terminal terminal);
+	List<Terminal> selectAllEncode(Terminal terminal);
 }

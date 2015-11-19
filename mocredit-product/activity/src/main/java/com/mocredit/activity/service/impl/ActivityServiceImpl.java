@@ -360,7 +360,7 @@ public class ActivityServiceImpl implements ActivityService {
 				// 机具
 				Terminal terminal = new Terminal();
 				terminal.setStoreId(as.getId());
-				List<Terminal> terminals = terminalMapper.selectAll(terminal);
+				List<Terminal> terminals = terminalMapper.selectAllEncode(terminal);
 				as.setTerminals(terminals);
 			}
 			changeDescribe.append("]");
@@ -369,17 +369,13 @@ public class ActivityServiceImpl implements ActivityService {
 
 			// 将修改信息发送至验码系统
 			httpPostMap.put("operCode", "1");
-			System.out.println(JSON.toJSONString(httpPostMap));
-			// String returnJson =
-			// HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-			// JSON.toJSONString(httpPostMap));
-			// Map<String, Object> returnMap = JSON.parseObject(returnJson,
-			// Map.class);
-			// boolean isSuccess =
-			// Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-			// if (!isSuccess) {
-			// throw new BusinessException("向积分核销系统同步信息失败");
-			// }
+			// System.out.println(JSON.toJSONString(httpPostMap));
+			String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, JSON.toJSONString(httpPostMap));
+			Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+			boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+			if (!isSuccess) {
+				throw new BusinessException("向积分核销系统同步信息失败");
+			}
 			// 保存送信息到验码系统的日志
 			optLogService.addOptLog("活动Id:" + activity.getId(), "", "积分核销接口修改活动信息-----" + changeDescribe.toString());
 		}
@@ -559,7 +555,7 @@ public class ActivityServiceImpl implements ActivityService {
 					// 机具
 					Terminal terminal = new Terminal();
 					terminal.setStoreId(as.getId());
-					List<Terminal> terminals = terminalMapper.selectAll(terminal);
+					List<Terminal> terminals = terminalMapper.selectAllEncode(terminal);
 					as.setTerminals(terminals);
 				}
 				changeDescribe.append("]");
@@ -567,17 +563,14 @@ public class ActivityServiceImpl implements ActivityService {
 
 				// 将修改信息发送至验码系统
 				httpPostMap.put("operCode", "2");
-				System.out.println(JSON.toJSONString(httpPostMap));
-				// String returnJson =
-				// HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-				// JSON.toJSONString(httpPostMap));
-				// Map<String, Object> returnMap = JSON.parseObject(returnJson,
-				// Map.class);
-				// boolean isSuccess =
-				// Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-				// if (!isSuccess) {
-				// throw new BusinessException("向积分核销系统同步信息失败");
-				// }
+				//System.out.println(JSON.toJSONString(httpPostMap));
+				String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+						JSON.toJSONString(httpPostMap));
+				Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+				boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+				if (!isSuccess) {
+					throw new BusinessException("向积分核销系统同步信息失败");
+				}
 				// 保存送信息到验码系统的日志
 				optLogService.addOptLog("活动Id:" + activity.getId(), "",
 						"积分核销接口修改活动信息-----" + changeDescribe.toString());
@@ -1415,8 +1408,8 @@ public class ActivityServiceImpl implements ActivityService {
 	public List<Map<String, Object>> getActivitiesForDevice(List<String> activityId, String snCode) {
 		List<Map<String, Object>> activitys = activityMapper.selectForDevice(activityId);
 		Map<String, Object> storeInfo = activityMapper.selectStoreInfoForDevice(snCode);
-		if (null != activitys) {
-			for(Map<String, Object> map:activitys){
+		if (null != activitys && null != storeInfo) {
+			for (Map<String, Object> map : activitys) {
 				map.putAll(storeInfo);
 			}
 		}

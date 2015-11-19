@@ -220,9 +220,12 @@
 			aa.start_time AS sTime,
 			aa.end_time AS eTime,
 			aa.select_date AS selectDate,
-			aa.bins
+			aa.bins as cardBin,
+			e.name as enterpriseName,
+			e.code as enterpriseCode
 		FROM
 			act_activity aa
+		left join t_enterprise e on aa.enterprise_id=e.id
 		WHERE aa.id in
 		<foreach item="item" index="index" collection="activityId" open="(" separator="," close=")">  
 		  '${item}'  
