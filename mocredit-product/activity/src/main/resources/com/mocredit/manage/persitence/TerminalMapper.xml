@@ -44,6 +44,19 @@
    		</if>
    	</where>
   </select>
+  <select id="selectAllEncode" resultMap="BaseResultMap" parameterType="com.mocredit.manage.model.Terminal" >
+    select 
+    sn_code
+    from t_terminal
+   	<where>
+   		<if test="id !=null">
+   			id=#{id}
+   		</if>
+   		<if test="storeId !=null">
+   			and store_id=#{storeId}
+   		</if>
+   	</where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     <!--
       WARNING - @mbggenerated
