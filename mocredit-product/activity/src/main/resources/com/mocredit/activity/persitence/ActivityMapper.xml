@@ -221,6 +221,9 @@
 			aa.end_time AS eTime,
 			aa.select_date AS selectDate,
 			aa.bins as cardBin,
+			aa.receipt_title as receiptTitle,
+			aa.receipt_print as receiptPrint,
+			aa.pos_success_msg as posSuccessMsg,
 			e.name as enterpriseName,
 			e.code as enterpriseCode
 		FROM
@@ -240,13 +243,13 @@
 		from t_terminal t
 		left join t_store ss on t.store_id=ss.id
 		left join t_merchant m on m.id=ss.merchant_id
-		where t.sn_code=#{snCode}
+		where t.sn_code=#{snCode} limit 1
 	</select>
 	<!--  添加一条活动记录  -->
-	<insert id="addActivity" parameterType="com.mocredit.activity.model.Activity" >
+	<insert id="addActivity" parameterType="com.mocredit.activity.model.Activity"     
+        useGeneratedKeys="true" keyProperty="id" >
 	insert into act_activity
 	<trim prefix="(" suffix=")" suffixOverrides="," >
-			id,
 			name,
 			type,
 			code,
@@ -279,7 +282,6 @@
 			channel
 	</trim>
 	<trim prefix="values (" suffix=")" suffixOverrides="," >
-			#{id},
 			#{name},
 			#{type},
 			#{code},

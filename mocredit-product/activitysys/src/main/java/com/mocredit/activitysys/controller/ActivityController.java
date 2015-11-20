@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -248,9 +249,7 @@ public class ActivityController {
 			Integer affectCount = 0;
 			// 如果活动对象中id不存在或者为空，则执行添加操作
 			if ("".equals(activity.getId()) || activity.getId() == null) {
-				// 生成一个32位的UUID,并添加活动对象
-				String id = IDUtil.getID();
-				activity.setId(id);
+				// 生成一个12位的,并添加活动对象
 				activity.setMaxNumber(1);
 				affectCount = activityService.addActivity(activity);
 			}
@@ -789,5 +788,4 @@ public class ActivityController {
 		}
 		return doPostByHttpConnection;
 	}
-
 }
