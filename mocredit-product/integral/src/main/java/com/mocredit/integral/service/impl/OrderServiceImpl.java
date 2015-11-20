@@ -58,4 +58,8 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.synOrder(offset, pagesize);
     }
 
+    @Override
+    public Order getOrderByOrderId(String orderId) {
+        return orderMapper.getOrderByOrderId(orderId);
+    }
 }

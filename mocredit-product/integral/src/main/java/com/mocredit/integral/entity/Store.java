@@ -10,9 +10,27 @@ public class Store {
      */
     private Integer uuid;
     private String shopId;
+    private String shopName;
     private String storeId;
+    private String storeName;
     private String storeCode;
     private String activityId;
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
 
     public String getStoreCode() {
         return storeCode;

@@ -25,8 +25,7 @@
 		insert into
 		`ti_activity`(activity_id,activity_name,pub_enterprise_id,pub_enterprise_name,product_type,
 		start_time,end_time,select_date,integral,max_type,
-		max_number,status,exchange_type,bins,channel,
-		receipt_title,receipt_print,pos_success_msg)
+		max_number,status,exchange_type,bins,channel)
 		values(#{t.activityId},#{t.activityName},#{t.pubEnterpriseId},#{t.pubEnterpriseName},#{t.productType},
 		#{t.startTime},#{t.endTime},#{t.selectDate},#{t.integral},#{t.maxType},
 		#{t.maxNumber},#{t.status},#{t.exchangeType},#{t.bins},#{t.channel})
@@ -36,7 +35,8 @@
 		`ti_activity` where activity_id=#{activityId}
 	</select>
     <select id="getByShopIdStoreIdAcId" resultType="com.mocredit.integral.entity.Store">
-        select uuid as uuid,shop_id as shopId,store_id as storeId,activity_id
+        select uuid as uuid,shop_id as shopId,shop_name as shopName,store_id as storeId,store_name as storeName,
+        activity_id
         as activityId from
         `ti_store` where 1=1 and activity_id=#{activityId}
         <if test="storeId!=null">
@@ -46,8 +46,8 @@
     </select>
     <insert id="saveStore" parameterType="com.mocredit.integral.entity.Store">
 		insert into
-		`ti_store`(shop_id,store_id,activity_id)
-		values(#{shopId},#{storeId},#{activityId})
+		`ti_store`(shop_id,shop_name,store_id,store_name,activity_id)
+		values(#{shopId},#{shopName},#{storeId},#{storeName},#{activityId})
 	</insert>
     <insert id="saveTerminal" parameterType="com.mocredit.integral.entity.Terminal">
 		insert into

@@ -10,7 +10,7 @@ public class PaymentDto {
      */
     private String orderId;
     private String cardNum;
-    private String transAmt;
+    private String tranAmt;
     private String code;
     private String cardExpDate;
 
@@ -30,12 +30,12 @@ public class PaymentDto {
         this.cardNum = cardNum;
     }
 
-    public String getTransAmt() {
-        return transAmt;
+    public String getTranAmt() {
+        return tranAmt;
     }
 
-    public void setTransAmt(String transAmt) {
-        this.transAmt = transAmt;
+    public void setTranAmt(String tranAmt) {
+        this.tranAmt = tranAmt;
     }
 
     public String getCode() {

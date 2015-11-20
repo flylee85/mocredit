@@ -1,6 +1,9 @@
 package com.mocredit.integral.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.mocredit.integral.constant.Bank;
 import com.mocredit.integral.constant.ErrorCodeType;
 import com.mocredit.integral.entity.*;
 import com.mocredit.integral.service.ActivityService;
@@ -8,6 +11,7 @@ import com.mocredit.integral.service.InRequestLogService;
 import com.mocredit.integral.service.OrderService;
 import com.mocredit.integral.service.TerminalService;
 import com.mocredit.integral.util.DateEditor;
+import com.mocredit.integral.util.ToolUtils;
 import com.mocredit.integral.vo.ActivityVo;
 import com.mocredit.integral.vo.ConfirmInfoVo;
 import com.mocredit.integral.vo.OrderVo;
@@ -76,7 +80,10 @@ public class IntegralInterfaceController extends IntegralBaseController {
             if (doPostJsonAndSaveOrder(param, order, resp)) {
                 LOGGER.info("### payment success param={} ###", param);
                 resp.setSuccess(true);
-                return renderJSONString(true, "", "", "");
+                Map<String, String> mapData = new HashMap<>();
+                mapData.put("activityId", order.getActivityId());
+                mapData.put("orderId", order.getOrderId());
+                return renderJSONString(true, "", "", JSON.toJSONString(mapData));
             } else {
                 LOGGER.error("### payment error param={} ###", param);
                 return renderJSONString(false, resp.getErrorMsg(),
@@ -89,6 +96,41 @@ public class IntegralInterfaceController extends IntegralBaseController {
             saveInRequestLog(request, null, param);
             return renderJSONString(false, resp.getErrorMsg(),
                     resp.getErrorCode(), resp.getData());
+        }
+    }
+
+    /**
+     * 老机具积分消费
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/paymentOld", produces = {"application/xml;charset=UTF-8"})
+    @ResponseBody
+    public String paymentOld(HttpServletRequest request,
+                             HttpServletResponse response, Order order) {
+        String param = order.toString();
+        LOGGER.info("### request in payment param={} ###", param);
+        Response resp = new Response();
+        try {
+            order.setOrderId(ToolUtils.getPosno());
+            saveInRequestLog(request, order.getOrderId(), param);
+            setOrderStoreId(order);
+            if (doPostJsonAndSaveOrderForOld(param, order, resp)) {
+                LOGGER.info("### payment success param={} ###", param);
+                resp.setSuccess(true);
+                return resp.getData() + "";
+            } else {
+                LOGGER.error("### payment error param={} ###", param);
+                return resp.getData() + "";
+            }
+        } catch (Exception e) {
+            LOGGER.error("### payment error param={} error={}###", param, e);
+            resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
+            resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
+            saveInRequestLog(request, null, param);
+            return resp.getData() + "";
         }
     }
 
@@ -109,6 +151,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
+            setOrderInfo(orderVo);
             setOrderStoreId(orderVo);
             if (paymentRevokeJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentRevoke success param={} ###", orderId);
@@ -146,6 +189,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
+            setOrderInfo(orderVo);
             setOrderStoreId(orderVo);
             if (paymentReservalJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentReserval success param={} ###", param);
@@ -183,6 +227,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
+            setOrderInfo(orderVo);
             setOrderStoreId(orderVo);
             if (paymentRevokeReservalJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentRevokeReserval success param={} ###",
@@ -223,6 +268,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
+            setOrderInfo(orderVo);
             setOrderStoreId(orderVo);
             if (confirmInfoJson(param, orderVo, resp)) {
                 LOGGER.info("### confirmInfo success param={} ###", param);
@@ -355,6 +401,168 @@ public class IntegralInterfaceController extends IntegralBaseController {
     }
 
     /**
+     * 积分核销与老pos网关活动同步
+     *
+     * @param request
+     * @param response
+     * @param enCode
+     * @return
+     */
+    @RequestMapping(value = "/activityOldSyn", produces = {"application/xml;charset=UTF-8"}, method = {
+            RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public String activityOldSyn(HttpServletRequest request,
+                                 HttpServletResponse response, String enCode) {
+        String param = enCode;
+        LOGGER.info("### request in activityOldSyn param={} ###", param);
+        Response resp = new Response();
+        try {
+            saveInRequestLog(request, null, param);
+            if (activityOldSyn(enCode, resp)) {
+                JsonNode jsonNodeArray = objectMapper.readTree(resp.getData() + "");
+                StringBuilder sb = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet>");
+                for (JsonNode jsonNode : jsonNodeArray) {
+                    String activityId = jsonNode.get("activityId").asText();
+                    String activityName = jsonNode.get("activityName").asText();
+                    String enterpriseName = jsonNode.get("enterpriseName").asText();
+                    sb.append("<Table>");
+                    sb.append("<isSuccess>true</isSuccess>");
+                    sb.append("<eitemname>").append(activityName).append("</eitemname>");
+                    sb.append("<eitemid>").append(activityId).append("</eitemid>");
+                    sb.append("<ispayment>").append(3).append("</ispayment>");
+                    sb.append("<iszxcheck>").append(0).append("</iszxcheck>");
+                    sb.append("<codetimes>").append(1).append("</codetimes>");
+                    sb.append("<entname>").append(enterpriseName).append("</entname>");
+                    sb.append("</Table>");
+                }
+                LOGGER.info("### request in success activityOldSyn param={} ###", param);
+                sb.append("</NewDataSet>");
+                return sb.toString();
+            } else {
+                LOGGER.error(
+                        "### request in error activityOldSyn param={} ###",
+                        param);
+                StringBuilder sb = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet>");
+                sb.append("<Table>");
+                sb.append("<isSuccess>false</isSuccess>");
+                sb.append("<resultInfo>").append(ErrorCodeType.ACTIVITY_SYN_ERROR.getText()).append("</resultInfo>");
+                sb.append("</Table>");
+                sb.append("</NewDataSet>");
+                return sb.toString();
+            }
+        } catch (Exception e) {
+            LOGGER.error("### activityOldSyn error param={} error={} ###",
+                    param, e);
+            StringBuilder sb = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet>");
+            sb.append("<Table>");
+            sb.append("<isSuccess>false</isSuccess>");
+            sb.append("<resultInfo>").append(ErrorCodeType.ACTIVITY_SYN_ERROR.getText()).append("</resultInfo>");
+            sb.append("</Table>");
+            sb.append("</NewDataSet>");
+            return sb.toString();
+        }
+    }
+
+    /**
+     * 查询银行列表
+     *
+     * @param request
+     * @param response
+     * @param enCode
+     * @return
+     */
+    @RequestMapping(value = "/bankList", produces = {"application/xml;charset=UTF-8"}, method = {
+            RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public String bankList(HttpServletRequest request,
+                           HttpServletResponse response, String enCode) {
+        String param = enCode;
+        LOGGER.info("### request in bankList param={} ###", param);
+        try {
+            saveInRequestLog(request, null, param);
+            StringBuilder sb = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet>");
+            Map<String, String> mapBank = new HashMap<>();
+            for (Activity activity : activityService.getActivityByEnCode(enCode)) {
+                String bankId = activity.getChannel();
+                String bankName = Bank.getBankNameByBankId(bankId);
+                if (!mapBank.containsKey(bankId)) {
+                    sb.append("<Table>");
+                    sb.append("<bankid>").append(bankId).append("</bankid>");
+                    sb.append("<bankname>").append(bankName).append("</bankname>");
+                    sb.append("</Table>");
+                    mapBank.put(bankId, bankName);
+                }
+            }
+            sb.append("</NewDataSet>");
+            return sb.toString();
+
+        } catch (Exception e) {
+            LOGGER.error("### activityOldSyn error param={} error={} ###",
+                    param, e);
+            StringBuilder sb = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet>");
+            sb.append("<Table>");
+            sb.append("<resultInfo>").append("获取银行列表失败").append("</resultInfo>");
+            sb.append("</Table>");
+            sb.append("</NewDataSet>");
+            return sb.toString();
+        }
+    }
+
+    /**
+     * 根据银行查询活动列表
+     *
+     * @param request
+     * @param response
+     * @param enCode
+     * @param bankId
+     * @return
+     */
+    @RequestMapping(value = "/activityByBankId", produces = {"application/xml;charset=UTF-8"}, method = {
+            RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public String activityByBankId(HttpServletRequest request,
+                                   HttpServletResponse response, String enCode, String bankId) {
+        String param = enCode;
+        LOGGER.info("### request in bankList param={} ###", param);
+        try {
+            saveInRequestLog(request, null, param);
+            StringBuilder sb = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet>");
+            for (Activity activity : activityService.getActivityByEnCode(enCode)) {
+                if (bankId == null || "null".equals(bankId) || "".equals(bankId)) {
+                    String bId = activity.getChannel();
+                    sb.append("<Table>");
+                    sb.append("<bankid>").append(bId).append("</bankid>");
+                    sb.append("<outerid>").append(activity.getActivityId()).append("</outerid>");
+                    sb.append("<eitemname>").append(activity.getActivityName()).append("</eitemname>");
+                    sb.append("<expointtype>").append(activity.getExchangeType()).append("</expointtype >");
+                    sb.append("</Table>");
+                } else {
+                    if (bankId.equals(activity.getChannel())) {
+                        sb.append("<Table>");
+                        sb.append("<bankid>").append(bankId).append("</bankid>");
+                        sb.append("<outerid>").append(activity.getActivityId()).append("</outerid>");
+                        sb.append("<eitemname>").append(activity.getActivityName()).append("</eitemname>");
+                        sb.append("<expointtype>").append(activity.getExchangeType()).append("</expointtype >");
+                        sb.append("</Table>");
+                    }
+                }
+            }
+            sb.append("</NewDataSet>");
+            return sb.toString();
+
+        } catch (Exception e) {
+            LOGGER.error("### activityOldSyn error param={} error={} ###",
+                    param, e);
+            StringBuilder sb = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet>");
+            sb.append("<Table>");
+            sb.append("<resultInfo>").append("获取查询活动失败").append("</resultInfo>");
+            sb.append("</Table>");
+            sb.append("</NewDataSet>");
+            return sb.toString();
+        }
+    }
+
+    /**
      * 设置订单的门店id
      *
      * @param order
@@ -365,5 +573,21 @@ public class IntegralInterfaceController extends IntegralBaseController {
 //        if (terminal != null) {
 //            order.setStoreId(terminal.getStoreId());
 //        }
+    }
+
+    /**
+     * 设置订单信息
+     *
+     * @param order
+     */
+    public void setOrderInfo(Order order) {
+        Order oldOrder = orderService.getOrderByOrderId(order.getOldOrderId());
+        order.setStoreId(oldOrder.getStoreId());
+        order.setEnCode(oldOrder.getEnCode());
+        order.setCardExpDate(oldOrder.getCardExpDate());
+        order.setActivityId(oldOrder.getActivityId());
+        order.setAmt(oldOrder.getAmt());
+        order.setCardNum(oldOrder.getCardNum());
+        order.setEnCode(oldOrder.getEnCode());
     }
 }

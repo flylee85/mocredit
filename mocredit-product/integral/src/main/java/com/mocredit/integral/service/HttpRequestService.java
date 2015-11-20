@@ -10,6 +10,8 @@ import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.integral.adapter.IntegralBankAdapter;
 import com.mocredit.integral.constant.ActivityStatus;
+import com.mocredit.integral.constant.Bank;
+import com.mocredit.integral.util.RandomUtil;
 import com.mocredit.integral.vo.OrderVo;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +110,9 @@ public class HttpRequestService extends LogService {
             Activity activity = activityService.getByActivityId(order
                     .getActivityId());
             if (activity != null) {
+                if (order.getAmt() == null) {
+                    order.setAmt(activity.getIntegral());
+                }
                 //判断活动是否启用
                 if (ActivityStatus.STOP.equals(activity.getStatus())) {
                     resp.setErrorCode(ErrorCodeType.ACTIVITY_ALREADY_STOP
@@ -156,7 +161,7 @@ public class HttpRequestService extends LogService {
                     resp.setErrorMsg(ErrorCodeType.ACTIVITY_OUT_DATE.getText());
                     return false;
                 }
-                // 3,判断使用次数是否超过最大使用次数限制
+          /*      // 3,判断使用次数是否超过最大使用次数限制
                 if (activity.getMaxType() != null
                         && !"".equals(activity.getMaxType())) {
                     // 4,判断最大类型参数是否正确并返回当前类型目前消费次数
@@ -174,14 +179,14 @@ public class HttpRequestService extends LogService {
                                 .getText());
                         return false;
                     }
-                }
-                // 5,条件判断订单是否已经存在
+                }*/
+              /*  // 5,条件判断订单是否已经存在
                 if (orderService.isExistOrder(order.getOrderId())) {
                     resp.setErrorCode(ErrorCodeType.EXIST_ORDER_ERROR
                             .getValue());
                     resp.setErrorMsg(ErrorCodeType.EXIST_ORDER_ERROR.getText());
                     return false;
-                }
+                }*/
             } else {
                 resp.setErrorCode(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
                         .getValue());
@@ -220,6 +225,109 @@ public class HttpRequestService extends LogService {
     }
 
     /**
+     * 积分消费和保存订单for老机具
+     *
+     * @param requestId
+     * @param param
+     * @param order
+     * @param resp
+     * @return
+     */
+    public boolean doPostJsonAndSaveOrderForOld(Integer requestId, String param, Order order, Response resp) {
+        String url = "";
+        Activity activity = activityService.getByActivityId(order
+                .getActivityId());
+        Store store = activityService.getByShopIdStoreIdAcId(order.getStoreId(),
+                order.getActivityId());
+        try {
+            if (activity != null) {
+                if (order.getAmt() == null) {
+                    order.setAmt(activity.getIntegral());
+                }
+                //判断活动是否启用
+                if (ActivityStatus.STOP.equals(activity.getStatus())) {
+                    resp.setErrorCode(ErrorCodeType.ACTIVITY_ALREADY_STOP
+                            .getValue());
+                    resp.setErrorMsg(ErrorCodeType.ACTIVITY_ALREADY_STOP
+                            .getText());
+                    resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
+                    return false;
+                }
+                //验证该卡能否参加该活动
+                if (activity.getBins() != null && !"".equals(activity.getBins())) {
+                    boolean flag = false;
+                    for (String bin : activity.getBins().split(",")) {
+                        if (order.getCardNum() != null && order.getCardNum().startsWith(bin)) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (!flag) {
+                        resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_BANK_CARD
+                                .getValue());
+                        resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_BANK_CARD
+                                .getText());
+                        resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
+                        return false;
+                    }
+                }
+                Date now = new Date();
+                // 1，先判断当前时间在活动时间范围内
+                // 2，再判断当前时间的所属的星期范围内
+                if (activity.getStartTime().getTime() <= now.getTime()
+                        && now.getTime() <= activity.getEndTime().getTime()
+                        && (activity.getSelectDate().contains(DateTimeUtils
+                        .getWeekOfDate(now)))) {
+                } else {
+                    resp.setErrorCode(ErrorCodeType.ACTIVITY_OUT_DATE
+                            .getValue());
+                    resp.setErrorMsg(ErrorCodeType.ACTIVITY_OUT_DATE.getText());
+                    resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
+                    return false;
+                }
+            } else {
+                resp.setErrorCode(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
+                        .getValue());
+                resp.setErrorMsg(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
+                        .getText());
+                resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
+                return false;
+            }
+            url = integralBankAdapter.getPayment(activity.getChannel());
+            String response = doPostJson(requestId, url, getPaymentDto(activity, order));
+            boolean anaFlag = analyJsonReponse(requestId, url, param, response,
+                    resp);
+            if (anaFlag) {
+                // 设置订单reuestId和交易完成状态
+                order.setRequestId(requestId);
+                order.setStatus(OrderStatus.PAYMENT.getValue());
+                if (!orderService.save(order)) {
+                    resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
+                            .getValue());
+                    resp.setErrorMsg(ErrorCodeType.SAVE_DATEBASE_ERROR
+                            .getText());
+                    resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
+                    return false;
+                } else {
+                    resp.setData(getPaymentOldForXml(true, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
+                    return true;
+                }
+            } else {
+                resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
+                return anaFlag;
+            }
+        } catch (Exception e) {
+            resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+            resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
+            LOGGER.error(
+                    "### doPostJsonAndSaveOrder url={}, requestId={},param={}, error={}",
+                    url, requestId, param, e);
+            resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
+            return false;
+        }
+    }
+
+    /**
      * 构建请求payment接口参数和查询积分接口参数
      *
      * @param activity
@@ -231,7 +339,7 @@ public class HttpRequestService extends LogService {
         paymentDto.setOrderId(order.getOrderId());
         paymentDto.setCardNum(order.getCardNum());
         paymentDto.setCode(activity.getProductType());
-        paymentDto.setTransAmt(order.getAmt() + "");
+        paymentDto.setTranAmt(order.getAmt() + "");
         paymentDto.setCardExpDate(order.getCardExpDate());
         return JSON.toJSONString(paymentDto);
     }
@@ -261,9 +369,11 @@ public class HttpRequestService extends LogService {
     public boolean analyJsonReponse(Integer requestId, String url,
                                     String param, String reponse, Response resp) {
         if (reponse == null) {
-            resp.setErrorCode(ErrorCodeType.POST_BANK_ERROR.getValue());
-            resp.setErrorMsg(ErrorCodeType.POST_BANK_ERROR.getText());
-            return false;
+//            resp.setErrorCode(ErrorCodeType.POST_BANK_ERROR.getValue());
+//            resp.setErrorMsg(ErrorCodeType.POST_BANK_ERROR.getText());
+//            return false;
+            resp.setSuccess(true);
+            return true;
         }
         try {
             ResponseData responseData = JSON.parseObject(reponse,
@@ -499,6 +609,41 @@ public class HttpRequestService extends LogService {
     }
 
     /**
+     * 同步活动信息
+     *
+     * @param enCode
+     * @return
+     */
+    public boolean activityOldSyn(Integer requestId, String enCode, Response resp) {
+        String activityIds = activityService.getActIdsByEnCode(enCode);
+        Map<String, Object> mapParam = new HashMap<>();
+        mapParam.put("activityIds", activityIds.split(","));
+        mapParam.put("enCode", enCode);
+        String url = PropertiesUtil.getValue("activity.syn");
+        String response = doPostJson(requestId, url, JSON.toJSONString(mapParam));
+        if (response == null) {
+            resp.setErrorCode(ErrorCodeType.ACTIVITY_SYN_ERROR.getValue());
+            resp.setErrorMsg(ErrorCodeType.ACTIVITY_SYN_ERROR.getText());
+            return false;
+        }
+        try {
+            ResponseData responseData = JSON.parseObject(response,
+                    ResponseData.class);
+            resp.setData(responseData.getData());
+            resp.setErrorCode(responseData.getErrorCode());
+            resp.setErrorMsg(responseData.getErrorMsg());
+            resp.setSuccess(responseData.getSuccess());
+            return responseData.getSuccess();
+        } catch (Exception e) {
+            resp.setErrorCode(ErrorCodeType.ACTIVITY_SYN_RESP_ERROR.getValue());
+            resp.setErrorMsg(ErrorCodeType.ACTIVITY_SYN_RESP_ERROR.getText());
+            LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
+                    url, requestId, enCode, e);
+            return false;
+        }
+    }
+
+    /**
      * 以json方式post请求接口
      *
      * @param requestId
@@ -522,5 +667,38 @@ public class HttpRequestService extends LogService {
                     .getMessage()));
             return null;
         }
+    }
+
+    private String getPaymentOldForXml(boolean flag, Activity activity, Order order, Store store, String errorCode, String msg) {
+        StringBuilder stringBuilder = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet><Table>");
+        if (flag) {
+            String orderid = Calendar.getInstance().getTimeInMillis() + "";
+            orderid = orderid + RandomUtil.getString(19 - orderid.length());
+            stringBuilder.append("<shopname>").append(store.getShopName()).append("</shopname>");
+            stringBuilder.append("<shopno>").append(store.getShopId()).append("</shopno>");
+            stringBuilder.append("<storename>").append(store.getStoreName()).append("</storename>");
+            stringBuilder.append("<imei>").append(order.getEnCode()).append("</imei>");
+            stringBuilder.append("<eitemtime>").append("null").append("</eitemtime>");
+            stringBuilder.append("<trantype>").append("积分兑换").append("</trantype>");
+            stringBuilder.append("<batchno>").append("").append("</batchno>");
+            stringBuilder.append("<orderid>").append(orderid).append("</orderid>");
+            stringBuilder.append("<point>").append(activity.getIntegral()).append("</point>");
+            stringBuilder.append("<trantime>").append(DateTimeUtils.getDate()).append("</trantime>");
+            stringBuilder.append("<admin>").append("001").append("</admin>");
+            stringBuilder.append("<remark>").append("").append("</remark>");
+            stringBuilder.append("<eitemname>").append(activity.getActivityName()).append("</eitemname>");
+            stringBuilder.append("<bankname>").append(Bank.getBankNameByBankId(activity.getChannel())).append("</bankname>");
+            stringBuilder.append("<cardno>").append(order.getCardNum()).append("</cardno>");
+            stringBuilder.append("<posno>").append(order.getOrderId()).append("</posno>");
+            stringBuilder.append("<eitemid>").append(activity.getActivityId()).append("</eitemid>");
+            //支付方式
+            stringBuilder.append("<payway>").append(0 + activity.getExchangeType()).append("</payway>");
+        } else {
+            stringBuilder.append("<isSuccess>false</isSuccess>");
+            stringBuilder.append("<errorCode>").append(errorCode).append("</errorCode>");
+            stringBuilder.append("<errorMsg>").append(msg).append("</errorMsg>");
+        }
+        stringBuilder.append("</Table>").append("</NewDataSet>");
+        return stringBuilder.toString();
     }
 }

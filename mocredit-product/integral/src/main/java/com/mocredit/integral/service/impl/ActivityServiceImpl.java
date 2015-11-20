@@ -112,10 +112,17 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
     public void saveActivityAndStore(Activity activity, List<StoreVo> storeLists) {
         activityMapper.save(activity);
         for (StoreVo storeVo : storeLists) {
+            storeVo.setStoreId(storeVo.getId());
+            storeVo.setStoreName(storeVo.getName());
+            storeVo.setShopName(storeVo.getMerchantName());
+            storeVo.setShopId(storeVo.getMerchantId());
             activityMapper.saveStore(storeVo);
             for (Terminal terminal : storeVo.getTerminals()) {
-                terminal.setActivityId(activity.getActivityId());
-                terminal.setStoreId(storeVo.getStoreId());
+                if (terminal != null) {
+                    terminal.setActivityId(activity.getActivityId());
+                    terminal.setStoreId(storeVo.getStoreId());
+                    activityMapper.saveTerminal(terminal);
+                }
             }
         }
     }

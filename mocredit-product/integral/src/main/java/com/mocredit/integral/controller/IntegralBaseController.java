@@ -64,6 +64,19 @@ public class IntegralBaseController extends BaseController {
     }
 
     /**
+     * 请求bank接口如果成功就保存订单并返回true，否则不保存订单返回false
+     *
+     * @param param
+     * @param order
+     * @param resp
+     * @return
+     */
+    protected boolean doPostJsonAndSaveOrderForOld(String param,
+                                                   Order order, Response resp) {
+        return httpRequstService.doPostJsonAndSaveOrderForOld(getRequestId(), param, order, resp);
+    }
+
+    /**
      * @param param
      * @param resp
      * @return
@@ -116,6 +129,17 @@ public class IntegralBaseController extends BaseController {
      */
     public boolean activitySyn(String enCode, Response resp) {
         return httpRequstService.activitySyn(getRequestId(), enCode, resp);
+    }
+
+    /**
+     * 同步活动信息
+     *
+     * @param enCode
+     * @param resp
+     * @return
+     */
+    public boolean activityOldSyn(String enCode, Response resp) {
+        return httpRequstService.activityOldSyn(getRequestId(), enCode, resp);
     }
 
     /**

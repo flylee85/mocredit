@@ -21,6 +21,7 @@ public interface OrderService extends BaseService<Order> {
      * @return
      */
     boolean isExistOrderAndUpdate(String orderId);
+
     /**
      * 根据订单id判断订单是否已存在
      *
@@ -37,5 +38,13 @@ public interface OrderService extends BaseService<Order> {
      * @return
      */
     List<OrderDto> synOrder(Integer offset, Integer pagesize);
+
+    /**
+     * 订单id查询订单
+     *
+     * @param orderId
+     * @return
+     */
+    Order getOrderByOrderId(String orderId);
 
 }
