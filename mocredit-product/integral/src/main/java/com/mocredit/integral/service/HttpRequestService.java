@@ -419,7 +419,7 @@ public class HttpRequestService extends LogService {
                         .getText());
                 return false;
             }
-            Activity activity = activityService.getActivityByOrderId(orderVo.getOrderId());
+            Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentRevoke(activity.getChannel());
             String response = doPostJson(requestId, url, getOrderIdAndOldOrderIdParam(orderVo));
             boolean anaFlag = analyJsonReponse(requestId, url, param, response,
@@ -460,7 +460,7 @@ public class HttpRequestService extends LogService {
                                        String param, OrderVo orderVo, Response resp) {
         String url = "";
         try {
-            Activity activity = activityService.getActivityByOrderId(orderVo.getOrderId());
+            Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentReserval(activity.getChannel());
             String response = doPostJson(requestId, url, getOrderIdAndOldOrderIdParam(orderVo));
             boolean anaFlag = analyJsonReponse(requestId, url, param, response, resp);
@@ -490,7 +490,7 @@ public class HttpRequestService extends LogService {
                                              OrderVo orderVo, Response resp) {
         String url = "";
         try {
-            Activity activity = activityService.getActivityByOrderId(orderVo.getOrderId());
+            Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentRevokeReserval(activity.getChannel());
             String response = doPostJson(requestId, url, getOrderIdAndOldOrderIdParam(orderVo));
             boolean anaFlag = analyJsonReponse(requestId, url, param, response, resp);
