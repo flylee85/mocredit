@@ -18,7 +18,8 @@ import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.base.util.PropertiesUtil;
-import com.mocredit.manage.constant.TerminalOperType;
+import com.mocredit.manage.constant.Gateway;
+import com.mocredit.manage.constant.OperType;
 import com.mocredit.manage.model.Enterprise;
 import com.mocredit.manage.model.Terminal;
 import com.mocredit.manage.persitence.TerminalMapper;
@@ -54,15 +55,18 @@ public class TerminalServiceImpl implements TerminalService {
 		terminal.setCreateTime(new Date());
 		terminal.setStatus(Enterprise.STATUS_ACTIVED);
 		int insert = terminalMapper.insert(terminal);
-		synGateway(terminal, TerminalOperType.ADD);
+		synGateway(terminal, OperType.ADD);
+		synIntegral(terminal, null, OperType.ADD);
 		return insert;
 	}
 
 	@Override
 	@Transactional
 	public int update(Terminal terminal) {
+		Terminal oldTerminal = terminalMapper.selectOne(terminal.getId());
 		int update = terminalMapper.update(terminal);
-		synGateway(terminal, TerminalOperType.UPDATE);
+		synGateway(terminal, OperType.UPDATE);
+		synIntegral(terminal, oldTerminal, OperType.UPDATE);
 		return update;
 	}
 
@@ -72,11 +76,13 @@ public class TerminalServiceImpl implements TerminalService {
 		if (null == id || id.isEmpty()) {
 			return 0;
 		}
+		Terminal terminal = terminalMapper.selectOne(id);
 		String[] ids = id.split(",");
 		List<String> list = new ArrayList<>();
 		Collections.addAll(list, ids);
 		int deleteById = terminalMapper.deleteById(list);
-		synGateway(id, TerminalOperType.DELETE);
+		synGateway(id, OperType.DELETE);
+		synIntegral(terminal, null, OperType.DELETE);
 		return deleteById;
 	}
 
@@ -97,32 +103,23 @@ public class TerminalServiceImpl implements TerminalService {
 	 *            机具信息（terminal/id）
 	 * @param oper
 	 *            TerminalOperType
-	 *            
-	 *   <br>
-	 *  接口参数格式：
-	 *  	新增：{
-	 *  		oper:1
-	 *  		id:1,
-	 *  		enCode:
-	 *  }
-	 *  修改：{
-	 *  	oper:2,
-	 *  	id:1,
-	 *  	enCode
-	 *  }
-	 *  删除：{
-	 *  	oper:3,
-	 * 	 	id:1,2,3
-	 *  }
+	 * 
+	 *            <br>
+	 *            接口参数格式： 新增：{ oper:1 id:1, enCode: } 修改：{ oper:2, id:1, enCode
+	 *            } 删除：{ oper:3, id:1,2,3 }
 	 */
-	private void synGateway(Object newTerminal, TerminalOperType oper) {
-		String importUrl = PropertiesUtil.getValue("gateway.deviceImport");
+	private void synGateway(Object newTerminal, OperType oper) {
+		String importUrl = PropertiesUtil.getValue("syn.gateway.deviceImport");
 		Map<String, Object> postMap = new HashMap<>();
 		postMap.put("oper", oper.getValue());
 		switch (oper) {
 		case ADD:
 		case UPDATE:
 			Terminal terminal = (Terminal) newTerminal;
+			// 只同步新网关机具
+			if (!Gateway.NEW.getValue().equals(terminal.getGateway())) {
+				return;
+			}
 			postMap.put("id", terminal.getId());
 			postMap.put("enCode", terminal.getSnCode());
 			break;
@@ -133,6 +130,42 @@ public class TerminalServiceImpl implements TerminalService {
 		String returnstr = HttpUtil.doRestfulByHttpConnection(importUrl, JSON.toJSONString(postMap));
 		if (!returnstr.equals("0")) {
 			throw new BusinessException("向新网关同步机具信息失败");
+		}
+	}
+
+	/**
+	 * 同步到积分核销接口 <br>
+	 * 新增:{oper:1,enCode,storeId} <br>
+	 * 修改:{oper:2,enCode,oldEnCode} <br>
+	 * 删除:{oper:3,enCode}
+	 * 
+	 * @param newTerminal
+	 * @param oldTerminal
+	 * @param oper
+	 */
+	private void synIntegral(Terminal newTerminal, Terminal oldTerminal, OperType oper) {
+		String importUrl = PropertiesUtil.getValue("syn.integral.deviceImport");
+		Map<String, Object> postMap = new HashMap<>();
+		postMap.put("oper", oper.getValue());
+		switch (oper) {
+		case ADD:
+			postMap.put("enCode", newTerminal.getSnCode());
+			postMap.put("storeId", newTerminal.getStoreId());
+			break;
+		case UPDATE:
+			postMap.put("enCode", newTerminal.getSnCode());
+			postMap.put("oldEnCode", oldTerminal.getSnCode());
+			break;
+		case DELETE:
+			postMap.put("enCode", newTerminal.getSnCode());
+			break;
+		}
+		String returnstr = HttpUtil.doRestfulByHttpConnection(importUrl, JSON.toJSONString(postMap));
+		@SuppressWarnings("unchecked")
+		Map<String, Object> returnMap = JSON.parseObject(returnstr, Map.class);
+		boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+		if (!isSuccess) {
+			throw new BusinessException("向积分核销同步机具信息失败");
 		}
 	}
 }
