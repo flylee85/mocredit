@@ -59,6 +59,7 @@ public class TerminalServiceImpl implements TerminalService {
 	}
 
 	@Override
+	@Transactional
 	public int update(Terminal terminal) {
 		int update = terminalMapper.update(terminal);
 		synGateway(terminal, TerminalOperType.UPDATE);
@@ -66,6 +67,7 @@ public class TerminalServiceImpl implements TerminalService {
 	}
 
 	@Override
+	@Transactional
 	public int delete(String id) {
 		if (null == id || id.isEmpty()) {
 			return 0;
@@ -95,6 +97,23 @@ public class TerminalServiceImpl implements TerminalService {
 	 *            机具信息（terminal/id）
 	 * @param oper
 	 *            TerminalOperType
+	 *            
+	 *   <br>
+	 *  接口参数格式：
+	 *  	新增：{
+	 *  		oper:1
+	 *  		id:1,
+	 *  		enCode:
+	 *  }
+	 *  修改：{
+	 *  	oper:2,
+	 *  	id:1,
+	 *  	enCode
+	 *  }
+	 *  删除：{
+	 *  	oper:3,
+	 * 	 	id:1,2,3
+	 *  }
 	 */
 	private void synGateway(Object newTerminal, TerminalOperType oper) {
 		String importUrl = PropertiesUtil.getValue("gateway.deviceImport");
@@ -111,10 +130,8 @@ public class TerminalServiceImpl implements TerminalService {
 			postMap.put("id", newTerminal.toString());
 			break;
 		}
-		String returnJson = HttpUtil.doRestfulByHttpConnection(importUrl, JSON.toJSONString(postMap));
-		Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-		boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-		if (!isSuccess) {
+		String returnstr = HttpUtil.doRestfulByHttpConnection(importUrl, JSON.toJSONString(postMap));
+		if (!returnstr.equals("0")) {
 			throw new BusinessException("向新网关同步机具信息失败");
 		}
 	}
