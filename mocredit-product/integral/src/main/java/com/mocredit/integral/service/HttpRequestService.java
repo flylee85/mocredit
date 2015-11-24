@@ -109,7 +109,7 @@ public class HttpRequestService extends LogService {
                     order.setAmt(activity.getIntegral());
                 }
                 //判断活动是否启用
-                if (ActivityStatus.STOP.equals(activity.getStatus())) {
+                if (ActivityStatus.STOP.getValue().equals(activity.getStatus())) {
                     resp.setErrorCode(ErrorCodeType.ACTIVITY_ALREADY_STOP
                             .getValue());
                     resp.setErrorMsg(ErrorCodeType.ACTIVITY_ALREADY_STOP
@@ -240,7 +240,7 @@ public class HttpRequestService extends LogService {
                     order.setAmt(activity.getIntegral());
                 }
                 //判断活动是否启用
-                if (ActivityStatus.STOP.equals(activity.getStatus())) {
+                if (ActivityStatus.STOP.getValue().equals(activity.getStatus())) {
                     resp.setErrorCode(ErrorCodeType.ACTIVITY_ALREADY_STOP
                             .getValue());
                     resp.setErrorMsg(ErrorCodeType.ACTIVITY_ALREADY_STOP

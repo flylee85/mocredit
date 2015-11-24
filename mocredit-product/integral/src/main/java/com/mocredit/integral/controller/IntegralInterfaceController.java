@@ -654,7 +654,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
                     param, e);
             StringBuilder sb = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet>");
             sb.append("<Table>");
-            sb.append("<resultInfo>").append("获取查询活动失败").append("</resultInfo>");
+            sb.append("<resultInfo>").append("获取活动列表失败").append("</resultInfo>");
             sb.append("</Table>");
             sb.append("</NewDataSet>");
             return sb.toString();
