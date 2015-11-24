@@ -38,6 +38,24 @@ public class Order {
     private String cardExpDate;//卡的有效期
     private Date ctime;
     private Integer amt;//积分
+    private String batchno; //老机具批次号
+    private String searchno;//老机具流水号
+
+    public String getBatchno() {
+        return batchno;
+    }
+
+    public void setBatchno(String batchno) {
+        this.batchno = batchno;
+    }
+
+    public String getSearchno() {
+        return searchno;
+    }
+
+    public void setSearchno(String searchno) {
+        this.searchno = searchno;
+    }
 
     public Integer getAmt() {
         return amt;

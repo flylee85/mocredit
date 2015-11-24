@@ -11,10 +11,13 @@ import com.mocredit.integral.service.InRequestLogService;
 import com.mocredit.integral.service.OrderService;
 import com.mocredit.integral.service.TerminalService;
 import com.mocredit.integral.util.DateEditor;
+import com.mocredit.integral.util.DateTimeUtils;
+import com.mocredit.integral.util.RandomUtil;
 import com.mocredit.integral.util.ToolUtils;
 import com.mocredit.integral.vo.ActivityVo;
 import com.mocredit.integral.vo.ConfirmInfoVo;
 import com.mocredit.integral.vo.OrderVo;
+import com.mocredit.integral.vo.TerminalVo;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -111,25 +115,29 @@ public class IntegralInterfaceController extends IntegralBaseController {
     public String paymentOld(HttpServletRequest request,
                              HttpServletResponse response, Order order) {
         String param = order.toString();
-        LOGGER.info("### request in payment param={} ###", param);
+        LOGGER.info("### request in paymentOld param={} ###", param);
         Response resp = new Response();
         try {
-            order.setOrderId(ToolUtils.getPosno());
+//            order.setOrderId(ToolUtils.getPosno());
+            order.setOrderId(order.getBatchno() + order.getSearchno());
             saveInRequestLog(request, order.getOrderId(), param);
             setOrderStoreId(order);
             if (doPostJsonAndSaveOrderForOld(param, order, resp)) {
-                LOGGER.info("### payment success param={} ###", param);
+                LOGGER.info("### paymentOld success param={} ###", param);
                 resp.setSuccess(true);
+                saveReponseLog(getRequestId(), resp.getData() + "");
                 return resp.getData() + "";
             } else {
-                LOGGER.error("### payment error param={} ###", param);
+                LOGGER.error("### paymentOld error param={} ###", param);
+                saveReponseLog(getRequestId(), resp.getData() + "");
                 return resp.getData() + "";
             }
         } catch (Exception e) {
-            LOGGER.error("### payment error param={} error={}###", param, e);
+            LOGGER.error("### paymentOld error param={} error={}###", param, e);
             resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
             resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
             saveInRequestLog(request, null, param);
+            saveReponseLog(getRequestId(), resp.getData() + "");
             return resp.getData() + "";
         }
     }
@@ -169,6 +177,56 @@ public class IntegralInterfaceController extends IntegralBaseController {
             saveInRequestLog(request, null, param);
             return renderJSONString(false, resp.getErrorMsg(),
                     resp.getErrorCode(), resp.getData());
+        }
+    }
+
+    /**
+     * 老机具积分消费撤销
+     * <p>
+     * 撤销接口参数：
+     * imei                     机具号
+     * account               银行账户
+     * batchno               批次号
+     * searchno              流水号
+     *
+     * @return
+     */
+    @RequestMapping(value = "/paymentRevokeOld", produces = {"application/xml;charset=UTF-8"})
+    @ResponseBody
+    public String paymentRevokeOld(HttpServletRequest request,
+                                   HttpServletResponse response, String imei, String account, String batchno, String searchno) {
+        String param = "imei=" + imei + "&account=" + account + "&batchno=" + batchno + "&searchno=" + searchno;
+        LOGGER.info("### request in paymentRevokeOld param={} ###", param);
+        Response resp = new Response();
+        try {
+            OrderVo orderVo = new OrderVo();
+//            String orderId = ToolUtils.getPosno();
+            String orderId = batchno + searchno;
+            orderVo.setOrderId(orderId);
+            saveInRequestLog(request, orderId, param);
+            setOrderInfoForOld(orderVo, searchno, batchno);
+            setOrderStoreId(orderVo);
+            Activity activity = activityService.getByActivityId(orderVo.getActivityId());
+            if (paymentRevokeJson(param, orderVo, resp)) {
+                LOGGER.info("### paymentRevokeOld success param={} ###", orderId);
+                String xml = getPaymentRevokeOldForXml(true, activity, orderVo, null, null);
+                saveReponseLog(getRequestId(), xml);
+                return xml;
+            } else {
+                LOGGER.error("### paymentRevokeOld error param={} ###", orderId);
+                String xml = getPaymentRevokeOldForXml(false, activity, orderVo, resp.getErrorCode(), resp.getErrorMsg());
+                saveReponseLog(getRequestId(), xml);
+                return xml;
+            }
+        } catch (Exception e) {
+            LOGGER.error("### paymentRevokeOld error param={} error={} ###",
+                    param, e);
+            resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
+            resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
+            saveInRequestLog(request, null, param);
+            String xml = getPaymentRevokeOldForXml(false, null, null, resp.getErrorCode(), resp.getErrorMsg());
+            saveReponseLog(getRequestId(), xml);
+            return xml;
         }
     }
 
@@ -401,6 +459,47 @@ public class IntegralInterfaceController extends IntegralBaseController {
     }
 
     /**
+     * 更新终端信息
+     *
+     * @param request
+     * @param response
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updateTerminal", produces = {"application/json;charset=UTF-8"}, method = {
+            RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public String updateTerminal(HttpServletRequest request,
+                                 HttpServletResponse response, @RequestBody String param) {
+        LOGGER.info("### request in updateTerminal param={} ###", param);
+        Response resp = new Response();
+        try {
+            TerminalVo terminalVo = JSON.parseObject(param, TerminalVo.class);
+            saveInRequestLog(request, null, param);
+            if (updateTerminal(terminalVo, resp)) {
+                LOGGER.info(
+                        "### request in success updateTerminal param={} ###",
+                        param);
+                return renderJSONString(true, resp.getErrorMsg(), resp.getErrorCode(), resp.getData());
+            } else {
+                LOGGER.error(
+                        "### request in error updateTerminal param={} ###",
+                        param);
+                return renderJSONString(false, resp.getErrorMsg(),
+                        resp.getErrorCode(), resp.getData());
+            }
+        } catch (Exception e) {
+            LOGGER.error("### updateTerminal error param={} error={} ###",
+                    param, e);
+            resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
+            resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
+            saveInRequestLog(request, null, param);
+            return renderJSONString(false, resp.getErrorMsg(),
+                    resp.getErrorCode(), resp.getData());
+        }
+    }
+
+    /**
      * 积分核销与老pos网关活动同步
      *
      * @param request
@@ -589,5 +688,58 @@ public class IntegralInterfaceController extends IntegralBaseController {
         order.setAmt(oldOrder.getAmt());
         order.setCardNum(oldOrder.getCardNum());
         order.setEnCode(oldOrder.getEnCode());
+    }
+
+    /**
+     * 设置订单信息
+     *
+     * @param order
+     */
+    public void setOrderInfoForOld(Order order, String searchno, String batchno) {
+        Order oldOrder = orderService.getOrderBySearchNoAndBatchNo(searchno, batchno);
+        order.setOldOrderId(oldOrder.getOrderId());
+        order.setStoreId(oldOrder.getStoreId());
+        order.setEnCode(oldOrder.getEnCode());
+        order.setCardExpDate(oldOrder.getCardExpDate());
+        order.setActivityId(oldOrder.getActivityId());
+        order.setAmt(oldOrder.getAmt());
+        order.setCardNum(oldOrder.getCardNum());
+        order.setEnCode(oldOrder.getEnCode());
+    }
+
+    private String getPaymentRevokeOldForXml(boolean flag, Activity activity, Order order, String errorCode, String msg) {
+        StringBuilder stringBuilder = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet><Table>");
+        if (flag) {
+            Store store = activityService.getByShopIdStoreIdAcId(order.getStoreId(),
+                    order.getActivityId());
+//            String orderid = Calendar.getInstance().getTimeInMillis() + "";
+//            orderid = orderid + RandomUtil.getString(19 - orderid.length());
+            stringBuilder.append("<isSuccess>true</isSuccess>");
+            stringBuilder.append("<shopname>").append(store.getShopName()).append("</shopname>");
+            stringBuilder.append("<shopno>").append(store.getShopId()).append("</shopno>");
+            stringBuilder.append("<storename>").append(store.getStoreName()).append("</storename>");
+            stringBuilder.append("<imei>").append(order.getEnCode()).append("</imei>");
+            stringBuilder.append("<eitemtime>").append("null").append("</eitemtime>");
+            stringBuilder.append("<trantype>").append("积分兑换").append("</trantype>");
+            stringBuilder.append("<batchno>").append("").append("</batchno>");
+            stringBuilder.append("<orderid>").append(order.getOrderId()).append("</orderid>");
+            stringBuilder.append("<point>").append(activity.getIntegral()).append("</point>");
+            stringBuilder.append("<trantime>").append(DateTimeUtils.getDate()).append("</trantime>");
+            stringBuilder.append("<admin>").append("001").append("</admin>");
+            stringBuilder.append("<remark>").append("").append("</remark>");
+            stringBuilder.append("<eitemname>").append(activity.getActivityName()).append("</eitemname>");
+            stringBuilder.append("<bankname>").append(Bank.getBankNameByBankId(activity.getChannel())).append("</bankname>");
+            stringBuilder.append("<cardno>").append(order.getCardNum()).append("</cardno>");
+            stringBuilder.append("<posno>").append(order.getOrderId()).append("</posno>");
+            stringBuilder.append("<eitemid>").append(activity.getActivityId()).append("</eitemid>");
+            //支付方式
+            stringBuilder.append("<payway>").append(0 + activity.getExchangeType()).append("</payway>");
+        } else {
+            stringBuilder.append("<isSuccess>false</isSuccess>");
+            stringBuilder.append("<errorCode>").append(errorCode).append("</errorCode>");
+            stringBuilder.append("<errorMsg>").append(msg).append("</errorMsg>");
+        }
+        stringBuilder.append("</Table>").append("</NewDataSet>");
+        return stringBuilder.toString();
     }
 }

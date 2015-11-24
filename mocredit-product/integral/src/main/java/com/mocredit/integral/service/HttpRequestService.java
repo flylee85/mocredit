@@ -1,25 +1,20 @@
 package com.mocredit.integral.service;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.integral.adapter.IntegralBankAdapter;
-import com.mocredit.integral.constant.ActivityStatus;
-import com.mocredit.integral.constant.Bank;
+import com.mocredit.integral.constant.*;
 import com.mocredit.integral.util.RandomUtil;
 import com.mocredit.integral.vo.OrderVo;
+import com.mocredit.integral.vo.TerminalVo;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.mocredit.integral.constant.ErrorCodeType;
-import com.mocredit.integral.constant.OrderStatus;
 import com.mocredit.integral.dto.PaymentDto;
 import com.mocredit.integral.entity.Activity;
 import com.mocredit.integral.entity.ActivityTransRecord;
@@ -425,6 +420,8 @@ public class HttpRequestService extends LogService {
             boolean anaFlag = analyJsonReponse(requestId, url, param, response,
                     resp);
             if (anaFlag) {
+                orderVo.setRequestId(requestId);
+                orderVo.setStatus(OrderStatus.PAYMENT_REVOKE.getValue());
                 if (!orderService.isExistOrderAndUpdate(orderVo.getOldOrderId()) || !orderService.save(orderVo)) {
                     resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
                             .getValue());
@@ -644,6 +641,38 @@ public class HttpRequestService extends LogService {
     }
 
     /**
+     * 更新机具信息
+     *
+     * @param requestId
+     * @param terminalVo
+     * @param resp
+     * @return
+     */
+    public boolean updateTerminal(Integer requestId, TerminalVo terminalVo, Response resp) {
+
+        try {
+            switch (terminalVo.getOper()) {
+                case OperTerminal.ADD:
+                    List<Activity> activityList = activityService.getActivityByStoreId(terminalVo.getStoreId());
+                    for (Activity activity : activityList) {
+                        terminalVo.setActivityId(activity.getActivityId());
+                        activityService.saveTerminal(terminalVo);
+                    }
+                    break;
+                case OperTerminal.UPD:
+                    activityService.updateTerminalByEnCode(terminalVo.getEnCode(), terminalVo.getOldEnCode());
+                    break;
+                case OperTerminal.DEL:
+                    activityService.deleteTerminalByEnCode(terminalVo.getEnCode());
+                    break;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
      * 以json方式post请求接口
      *
      * @param requestId
@@ -672,8 +701,8 @@ public class HttpRequestService extends LogService {
     private String getPaymentOldForXml(boolean flag, Activity activity, Order order, Store store, String errorCode, String msg) {
         StringBuilder stringBuilder = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet><Table>");
         if (flag) {
-            String orderid = Calendar.getInstance().getTimeInMillis() + "";
-            orderid = orderid + RandomUtil.getString(19 - orderid.length());
+            /*String orderid = Calendar.getInstance().getTimeInMillis() + "";
+            orderid = orderid + RandomUtil.getString(19 - orderid.length());*/
             stringBuilder.append("<shopname>").append(store.getShopName()).append("</shopname>");
             stringBuilder.append("<shopno>").append(store.getShopId()).append("</shopno>");
             stringBuilder.append("<storename>").append(store.getStoreName()).append("</storename>");
@@ -681,7 +710,7 @@ public class HttpRequestService extends LogService {
             stringBuilder.append("<eitemtime>").append("null").append("</eitemtime>");
             stringBuilder.append("<trantype>").append("积分兑换").append("</trantype>");
             stringBuilder.append("<batchno>").append("").append("</batchno>");
-            stringBuilder.append("<orderid>").append(orderid).append("</orderid>");
+            stringBuilder.append("<orderid>").append(order.getOrderId()).append("</orderid>");
             stringBuilder.append("<point>").append(activity.getIntegral()).append("</point>");
             stringBuilder.append("<trantime>").append(DateTimeUtils.getDate()).append("</trantime>");
             stringBuilder.append("<admin>").append("001").append("</admin>");

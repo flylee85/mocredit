@@ -54,6 +54,12 @@
 		`ti_terminal`(en_code,store_id,activity_id)
 		values(#{enCode},#{storeId},#{activityId})
 	</insert>
+    <delete id="deleteTerminalByEnCode">
+		delete from `ti_terminal` where en_code=#{enCode}
+	</delete>
+    <delete id="updateTerminalByEnCode">
+		update `ti_terminal` set en_code=#{enCode} where en_code=#{oldEnCode}
+	</delete>
     <update id="updateActStatusById">
 		update `ti_activity`
 		set
@@ -88,5 +94,8 @@
     </select>
     <select id="getActivityByEnCode" resultMap="BaseResultMap">
 		select b.* from ti_terminal a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where a.en_code=#{enCode}
+	</select>
+    <select id="getActivityByStoreId" resultMap="BaseResultMap">
+		select b.* from ti_store a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where a.store_id=#{storeId}
 	</select>
 </mapper>

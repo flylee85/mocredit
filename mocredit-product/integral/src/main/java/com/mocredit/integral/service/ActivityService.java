@@ -3,10 +3,7 @@ package com.mocredit.integral.service;
 import java.util.Date;
 import java.util.List;
 
-import com.mocredit.integral.entity.Activity;
-import com.mocredit.integral.entity.ActivityTransRecord;
-import com.mocredit.integral.entity.Response;
-import com.mocredit.integral.entity.Store;
+import com.mocredit.integral.entity.*;
 import com.mocredit.integral.vo.ActivityVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -64,10 +61,42 @@ public interface ActivityService extends BaseService<Activity> {
     List<Activity> getActivityByEnCode(String enCode);
 
     /**
+     * 根据机具号和门店查询活动列表
+     *
+     * @return
+     */
+    List<Activity> getActivityByStoreId(String storeId);
+
+    /**
+     * 根据机具号删除机具
+     *
+     * @param enCode
+     * @return
+     */
+    boolean deleteTerminalByEnCode(String enCode);
+
+    /**
+     * 根据机具号更新机具编码
+     *
+     * @param enCode
+     * @param oldEnCode
+     * @return
+     */
+    boolean updateTerminalByEnCode(String enCode, String oldEnCode);
+
+    /**
      * 根据机具号查询活动列表
      *
      * @param enCode
      * @return
      */
     String getActIdsByEnCode(String enCode);
+
+    /**
+     * 保存机具信息
+     *
+     * @param t
+     * @return
+     */
+    boolean saveTerminal(Terminal t);
 }
