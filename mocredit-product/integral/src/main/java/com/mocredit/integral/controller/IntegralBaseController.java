@@ -7,7 +7,9 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 
 import com.mocredit.integral.adapter.IntegralBankAdapter;
+import com.mocredit.integral.entity.Terminal;
 import com.mocredit.integral.vo.OrderVo;
+import com.mocredit.integral.vo.TerminalVo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSON;
@@ -46,7 +48,12 @@ public class IntegralBaseController extends BaseController {
         return jsonStr;
     }
 
-    private void saveReponseLog(Integer requestId, String jsonStr) {
+    /**
+     * 保存响应信息
+     * @param requestId
+     * @param jsonStr
+     */
+    public void saveReponseLog(Integer requestId, String jsonStr) {
         inResponseLogService.save(new InResponseLog(requestId, jsonStr));
     }
 
@@ -84,6 +91,7 @@ public class IntegralBaseController extends BaseController {
     protected boolean paymentRevokeJson(String param, OrderVo orderVo, Response resp) {
         return httpRequstService.paymentRevokeJson(getRequestId(), param, orderVo, resp);
     }
+
 
     /**
      * 积分冲正
@@ -140,6 +148,17 @@ public class IntegralBaseController extends BaseController {
      */
     public boolean activityOldSyn(String enCode, Response resp) {
         return httpRequstService.activityOldSyn(getRequestId(), enCode, resp);
+    }
+
+    /**
+     * 更新机具信息
+     *
+     * @param terminalVo
+     * @param resp
+     * @return
+     */
+    public boolean updateTerminal(TerminalVo terminalVo, Response resp) {
+        return httpRequstService.updateTerminal(getRequestId(), terminalVo, resp);
     }
 
     /**

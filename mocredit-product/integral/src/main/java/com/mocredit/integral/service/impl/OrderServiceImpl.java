@@ -62,4 +62,9 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderByOrderId(String orderId) {
         return orderMapper.getOrderByOrderId(orderId);
     }
+
+    @Override
+    public Order getOrderBySearchNoAndBatchNo(String searchno, String batchno) {
+        return orderMapper.getOrderBySearchNoAndBatchNo(searchno,batchno);
+    }
 }

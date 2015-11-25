@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mocredit.integral.persistence.TerminalMapper">
+    <select id="getTerminalByEnCodeAndActivityId" resultType="com.mocredit.integral.entity.Terminal">
+		select id,en_code as enCode,store_id as storeId,activity_id as activityId from ti_terminal
+		where en_code= #{enCode} and activity_id=#{activityId}
+	</select>
+</mapper>

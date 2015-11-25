@@ -109,4 +109,28 @@ public interface ActivityMapper {
      */
     List<Activity> getActivityByEnCode(@Param(value = "enCode") String enCode);
 
+    /**
+     * 根据机具号和门店查询活动列表
+     *
+     * @return
+     */
+    List<Activity> getActivityByStoreId(@Param(value = "storeId") String storeId);
+
+    /**
+     * 根据机具号删除机具
+     *
+     * @param enCode
+     * @return
+     */
+    int deleteTerminalByEnCode(@Param(value = "enCode") String enCode);
+
+    /**
+     * 根据机具号更新机具编码
+     *
+     * @param enCode
+     * @param oldEnCode
+     * @return
+     */
+    int updateTerminalByEnCode(@Param(value = "enCode") String enCode, @Param(value = "oldEnCode") String oldEnCode);
+
 }

@@ -4,8 +4,8 @@
 <mapper namespace="com.mocredit.integral.persistence.OrderMapper">
     <insert id="save" parameterType="com.mocredit.integral.entity.Order">
 		insert into
-		`ti_order`(request_id,card_num,store_id,activity_id,amt,order_id,old_order_id,en_code,card_exp_date,ctime,`status`)
-		values(#{t.requestId},#{t.cardNum},#{t.storeId},#{t.activityId},#{t.amt},#{t.orderId},#{t.oldOrderId},#{t.enCode},#{t.cardExpDate},now(),#{t.status})
+		`ti_order`(request_id,card_num,store_id,activity_id,amt,order_id,old_order_id,en_code,card_exp_date,ctime,`status`,batch_no,search_no)
+		values(#{t.requestId},#{t.cardNum},#{t.storeId},#{t.activityId},#{t.amt},#{t.orderId},#{t.oldOrderId},#{t.enCode},#{t.cardExpDate},now(),#{t.status},#{t.batchno},#{t.searchno})
 	</insert>
     <sql id="Base_Column">
         a.uuid as uuid,
@@ -16,15 +16,24 @@
 		a.status as status,
 		a.en_code as enCode,
 		a.card_num as cardNum,
-		a.amt as integral,
+		a.amt as amt,
 		a.ctime as
-		createTime
+		createTime,
+		a.card_exp_date as cardExpDate,
+		a.batch_no as batchno,
+		a.search_no as searchno
 	</sql>
     <select id="getOrderByOrderId" resultType="com.mocredit.integral.entity.Order">
         select
         <include refid="Base_Column"/>
         from
         `ti_order` a where order_id=#{orderId}
+    </select>
+    <select id="getOrderBySearchNoAndBatchNo" resultType="com.mocredit.integral.entity.Order">
+        select
+        <include refid="Base_Column"/>
+        from
+        `ti_order` a where search_no=#{searchno} and batch_no=#{batchno}
     </select>
     <update id="updateStatusByOrderId">
 		update `ti_order`

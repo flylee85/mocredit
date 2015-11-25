@@ -14,6 +14,7 @@ public class StoreVo extends Store {
     private String merchantId;
     private String merchantName;
     private String name;
+    private List<Terminal> terminals = new ArrayList<Terminal>();
 
     public String getMerchantId() {
         return merchantId;
@@ -46,8 +47,6 @@ public class StoreVo extends Store {
     public void setId(String id) {
         this.id = id;
     }
-
-    private List<Terminal> terminals = new ArrayList<Terminal>();
 
     public List<Terminal> getTerminals() {
         return terminals;

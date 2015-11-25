@@ -54,4 +54,13 @@ public interface OrderMapper {
      */
     List<OrderDto> synOrder(@Param(value = "offset") Integer offset,
                             @Param(value = "pagesize") Integer pagesize);
+
+    /**
+     * 根据流水号和批次号查询订单信息
+     *
+     * @param searchno
+     * @param batchno
+     * @return
+     */
+    Order getOrderBySearchNoAndBatchNo(@Param(value = "searchno") String searchno, @Param(value = "batchno") String batchno);
 }

@@ -158,11 +158,31 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
     }
 
     @Override
+    public List<Activity> getActivityByStoreId(String storeId) {
+        return activityMapper.getActivityByStoreId(storeId);
+    }
+
+    @Override
     public String getActIdsByEnCode(String enCode) {
         List<String> actIds = new ArrayList<>();
         for (Activity activity : activityMapper.getActivityByEnCode(enCode)) {
             actIds.add(activity.getActivityId());
         }
         return String.join(",", actIds);
+    }
+
+    @Override
+    public boolean deleteTerminalByEnCode(String enCode) {
+        return activityMapper.deleteTerminalByEnCode(enCode) > 0;
+    }
+
+    @Override
+    public boolean updateTerminalByEnCode(String enCode, String oldEnCode) {
+        return activityMapper.updateTerminalByEnCode(enCode, oldEnCode) > 0;
+    }
+
+    @Override
+    public boolean saveTerminal(Terminal t) {
+        return activityMapper.saveTerminal(t) > 0;
     }
 }

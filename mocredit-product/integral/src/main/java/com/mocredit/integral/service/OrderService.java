@@ -47,4 +47,12 @@ public interface OrderService extends BaseService<Order> {
      */
     Order getOrderByOrderId(String orderId);
 
+    /**
+     * 根据流水号和批次号查询订单信息
+     *
+     * @param searchno
+     * @param batchno
+     * @return
+     */
+    Order getOrderBySearchNoAndBatchNo(String searchno, String batchno);
 }
