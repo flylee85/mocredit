@@ -25,6 +25,7 @@ public interface TerminalMapper {
     int insert(Terminal record);
     
     List<Terminal> selectAllForPage(Map<String, Object>param);
+    Terminal checkSnCode(Map<String, Object>param);
     Terminal selectOne(@Param("id")String id);
     int update(Terminal terminal);
     Terminal selectStore(@Param("storeId")String storeId);

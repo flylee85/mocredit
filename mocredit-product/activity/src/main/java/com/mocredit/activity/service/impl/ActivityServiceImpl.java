@@ -1410,6 +1410,8 @@ public class ActivityServiceImpl implements ActivityService {
 		Map<String, Object> storeInfo = activityMapper.selectStoreInfoForDevice(snCode);
 		if (null != activitys && null != storeInfo) {
 			for (Map<String, Object> map : activitys) {
+				map.put("sTime", DateUtil.dateToStr((Date)map.get("sTime"), "yyyy-MM-dd HH:mm:ss"));
+				map.put("eTime", DateUtil.dateToStr((Date)map.get("eTime"), "yyyy-MM-dd HH:mm:ss"));
 				map.putAll(storeInfo);
 			}
 		}
