@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.mocredit.base.exception.BusinessException;
@@ -54,9 +55,16 @@ public class TerminalServiceImpl implements TerminalService {
 		terminal.setId(IDUtil.getID());
 		terminal.setCreateTime(new Date());
 		terminal.setStatus(Enterprise.STATUS_ACTIVED);
-		int insert = terminalMapper.insert(terminal);
-		synGateway(terminal, OperType.ADD);
-		synIntegral(terminal, null, OperType.ADD);
+		int insert = 0;
+		if (checkSnCode(terminal.getSnCode(), null)) {
+			insert = terminalMapper.insert(terminal);
+			if("1".equals(PropertiesUtil.getValue("syn.switch"))){
+				synGateway(terminal, OperType.ADD);
+				synIntegral(terminal, null, OperType.ADD);
+			}
+			} else {
+			throw new BusinessException("EN号已存在");
+		}
 		return insert;
 	}
 
@@ -64,9 +72,16 @@ public class TerminalServiceImpl implements TerminalService {
 	@Transactional
 	public int update(Terminal terminal) {
 		Terminal oldTerminal = terminalMapper.selectOne(terminal.getId());
-		int update = terminalMapper.update(terminal);
-		synGateway(terminal, OperType.UPDATE);
-		synIntegral(terminal, oldTerminal, OperType.UPDATE);
+		int update = 0;
+		if (checkSnCode(terminal.getSnCode(), terminal.getId())) {
+			update = terminalMapper.update(terminal);
+			if("1".equals(PropertiesUtil.getValue("syn.switch"))){
+				synGateway(terminal, OperType.UPDATE);
+				synIntegral(terminal, oldTerminal, OperType.UPDATE);
+			}
+		} else {
+			throw new BusinessException("EN号已存在");
+		}
 		return update;
 	}
 
@@ -81,8 +96,10 @@ public class TerminalServiceImpl implements TerminalService {
 		List<String> list = new ArrayList<>();
 		Collections.addAll(list, ids);
 		int deleteById = terminalMapper.deleteById(list);
-		synGateway(id, OperType.DELETE);
-		synIntegral(terminal, null, OperType.DELETE);
+		if("1".equals(PropertiesUtil.getValue("syn.switch"))){
+			synGateway(id, OperType.DELETE);
+			synIntegral(terminal, null, OperType.DELETE);
+		}
 		return deleteById;
 	}
 
@@ -167,5 +184,21 @@ public class TerminalServiceImpl implements TerminalService {
 		if (!isSuccess) {
 			throw new BusinessException("向积分核销同步机具信息失败");
 		}
+	}
+
+	/**
+	 * 校验SN号
+	 * 
+	 * @param snCode
+	 * @param id
+	 * @return
+	 */
+	private boolean checkSnCode(String snCode, String id) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("snCode", snCode);
+		if (!StringUtils.isEmpty(id)) {
+			param.put("id", id);
+		}
+		return null == terminalMapper.checkSnCode(param);
 	}
 }
