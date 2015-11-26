@@ -49,8 +49,9 @@
     sn_code
     from t_terminal
    	<where>
+   		status!=2
    		<if test="id !=null">
-   			id=#{id}
+   			and id=#{id}
    		</if>
    		<if test="storeId !=null">
    			and store_id=#{storeId}
