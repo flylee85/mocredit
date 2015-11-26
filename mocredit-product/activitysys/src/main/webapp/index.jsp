@@ -31,7 +31,7 @@
     <ul class="nav navbar-nav navbar-avatar pull-right">
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <span class="hidden-sm-only"><shiro:principal/></span>
+                <span class="hidden-sm-only">${username}</span>
                 <span class="thumb-small avatar inline"><img src="common/images/avatar.jpg" alt="Mika Sokeil"
                                                              class="img-circle"></span>
                 <b class="caret hidden-sm-only"></b>

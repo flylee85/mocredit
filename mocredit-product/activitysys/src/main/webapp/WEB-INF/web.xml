@@ -21,17 +21,31 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <!-- <filter>
+         <filter-name>shiroFilter</filter-name>
+         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+         <async-supported>true</async-supported>
+         <init-param>
+             <param-name>targetFilterLifecycle</param-name>
+             <param-value>true</param-value>
+         </init-param>
+     </filter>
+     <filter-mapping>
+         <filter-name>shiroFilter</filter-name>
+         <url-pattern>/*</url-pattern>
+     </filter-mapping>-->
     <filter>
-        <filter-name>shiroFilter</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-        <async-supported>true</async-supported>
+        <filter-name>SecurityFilter</filter-name>
+        <filter-class>com.mocredit.security.filter.WebSecurityFilter</filter-class>
         <init-param>
-            <param-name>targetFilterLifecycle</param-name>
-            <param-value>true</param-value>
+            <param-name>urls</param-name>
+            <param-value>
+                /|/login|/quit|/css.*|/securityError|/images.*|/include.*|/img.*|/js.*|/lib.*|/common.*|/upload.*|/fonts.*|/static.*|/main|/nobussness|/loginout
+            </param-value>
         </init-param>
     </filter>
     <filter-mapping>
-        <filter-name>shiroFilter</filter-name>
+        <filter-name>SecurityFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <servlet-mapping>
@@ -55,7 +69,7 @@
         </listener-class>
     </listener>
     <context-param>
-		<param-name>webAppRootKey</param-name>
-		<param-value>activitysys</param-value>
-	</context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>activitysys</param-value>
+    </context-param>
 </web-app>
