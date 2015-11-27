@@ -32,13 +32,29 @@ public class IndexController extends ShiroBaseController {
         return mav;
     }
 
-    @RequestMapping(value = "/login")
-    public ModelAndView login(HttpServletRequest request, String username, String password) {
+    @RequestMapping("/login")
+    public ModelAndView login() {
+        ModelAndView mav = new ModelAndView("login");
+        return mav;
+    }
+
+    @RequestMapping(value = "/loginAction")
+    public ModelAndView loginAction(HttpServletRequest request, String username, String password) {
+        ModelAndView mav;
+        if (username == null || "".equals(username)) {
+            mav = new ModelAndView("login");
+            mav.addObject("error", "用户名不能为空");
+            return mav;
+        }
+        if (password == null || "".equals(password)) {
+            mav = new ModelAndView("login");
+            mav.addObject("error", "密码不能为空");
+            return mav;
+        }
         Map<String, String> param = new HashMap<>();
         param.put("username", username);
         param.put("password", password);
         getMenus(shiroClient.getProperty("client.app.key"), shiroClient.getProperty("client.app.loginUrl"), JSON.toJSONString(param), request);
-        ModelAndView mav;
         if ((boolean) request.getAttribute("isSuccess")) {
             mav = new ModelAndView("index");
             mav.addObject("menus", request.getAttribute("menusList"));
