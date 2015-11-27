@@ -1,0 +1,7 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="common/lib/bootstrap/css/bootstrap.min.css">
+	
+	<script type="text/javascript" src="common/lib/jquery/jquery-1.11.1.min.js"></script>
+	
+	<script type="text/javascript" src="common/lib/bootstrap/js/bootstrap.min.js"></script>
