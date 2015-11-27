@@ -1,5 +1,7 @@
-package com.mocredit.activitysys.service.impl;
+package com.mocredit.activity.service.impl;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,18 +11,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.mocredit.activity.model.Activity;
-import com.mocredit.base.exception.BusinessException;
+import com.mocredit.activity.persitence.ActivityMapper;
 import com.mocredit.base.util.DateUtil;
-import com.mocredit.base.util.HttpUtil;
-import com.mocredit.base.util.PropertiesUtil;
+import com.mocredit.base.util.IDUtil;
 import com.mocredit.manage.model.Store;
 import com.mocredit.manage.model.Terminal;
 import com.mocredit.manage.persitence.StoreMapper;
@@ -32,25 +31,33 @@ import com.mocredit.manage.persitence.TerminalMapper;
  * @author liaoy
  * @date 2015年11月25日
  */
-@Service("dataInit")
 public class DataInitUtil {
 	private static final String IN_URL = "jdbc:mysql://localhost:3306/mcntong_init?useUnicode=true&characterEncoding=utf-8";
 	private static final String IN_UNAME = "root";
 	private static final String IN_PWD = "root";
-	private static final String OUT_URL = "jdbc:mysql://localhost:3306/activity_init?useUnicode=true&characterEncoding=utf-8";
+	private static final String OUT_URL = "jdbc:mysql://localhost:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
 	private static final String OUT_UNAME = "root";
 	private static final String OUT_PWD = "root";
+	private static String IMPORT_URL = "http://ytq-pc:8080/activityImport";
 	private Connection conIn;
 	private Connection conOut;
-	@Autowired
 	private StoreMapper storeMapper;
-	@Autowired
 	private TerminalMapper terminalMapper;
+	private ActivityMapper activityMapper;
 
-	public static void main(String[] args) {
-		String configLocation = "classpath*:conf/spring/*.xml"; 
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		// 初始化spring
+		String configLocation = "classpath*:conf/spring/*.xml";
 		ApplicationContext ctx = new ClassPathXmlApplicationContext(configLocation);
-		DataInitUtil util = (DataInitUtil) ctx.getBean("dataInit");
+		DataInitUtil util = new DataInitUtil();
+		util.setStoreMapper(ctx.getBean(StoreMapper.class));
+		util.setTerminalMapper(ctx.getBean(TerminalMapper.class));
+		util.setActivityMapper(ctx.getBean(ActivityMapper.class));
+		// Properties p= new Properties();
+		// p.load(new FileInputStream(new
+		// File("classpath:resources/config.properties")));
+		// IMPORT_URL=p.getProperty("integral.activityImport");
+
 		// 加载MySql的驱动类
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -58,8 +65,8 @@ public class DataInitUtil {
 			util.conIn = DriverManager.getConnection(IN_URL, IN_UNAME, IN_PWD);
 			System.out.println("==========创建写入库链接=========");
 			util.conOut = DriverManager.getConnection(OUT_URL, OUT_UNAME, OUT_PWD);
-			System.out.println("==========开启事务=========");
-			util.conOut.setAutoCommit(false);
+			// System.out.println("==========开启事务=========");
+			// util.conOut.setAutoCommit(false);
 			System.out.println("==========开始导入=========");
 			// 导入企业
 			System.out.println("==========start 导入企业=========");
@@ -77,32 +84,32 @@ public class DataInitUtil {
 			System.out.println("==========start 导入设备=========");
 			util.importDevice();
 			System.out.println("==========end 导入设备=========");
-			// 导入活动
-			System.out.println("==========start 导入活动=========");
-			util.importActivity();
-			System.out.println("==========end 导入活动=========");
 			// 导入活动店铺关系
 			System.out.println("==========start 导入活动门店关系=========");
 			util.importaActivityStore();
 			System.out.println("==========end 导入活动门店关系=========");
+			// 导入活动
+			System.out.println("==========start 导入活动=========");
+			util.importActivity();
+			System.out.println("==========end 导入活动=========");
 			// 导入民生活动
 			System.out.println("==========start 导入民生活动=========");
 			util.importMinShengActivity();
 			System.out.println("==========end 导入民生活动=========");
-			System.out.println("==========提交事务=========");
-			util.conOut.commit();
+			// System.out.println("==========提交事务=========");
+			// util.conOut.commit();
 
 			util.conIn.close();
 			util.conOut.close();
 		} catch (Exception e) {
 			System.out.println("==========导入时发生异常=========");
-			try {
-				System.out.println("==========回滚操作=========");
-				util.conOut.rollback();
-			} catch (SQLException e1) {
-				System.out.println("==========回滚时发生异常=========");
-				e1.printStackTrace();
-			}
+			// try {
+			// System.out.println("==========回滚操作=========");
+			// util.conOut.rollback();
+			// } catch (SQLException e1) {
+			// System.out.println("==========回滚时发生异常=========");
+			// e1.printStackTrace();
+			// }
 			e.printStackTrace();
 		}
 		System.out.println("==========结束导入=========");
@@ -218,7 +225,7 @@ public class DataInitUtil {
 	private void importaActivityStore() throws SQLException {
 		// 读取活动表
 		ResultSet rs = query(
-				"SELECT distinct es.eitemid, es.storeid, s.shopid FROM eitemstore es LEFT JOIN store s ON es.storeid = s.id",
+				"SELECT distinct es.eitemid, es.storeid, s.shopid FROM eitemstore es LEFT JOIN store s ON es.storeid = s.id where es.eitemid in (select id from eitem i where status=1 and expointType!=0)",
 				true);
 		StringBuilder sb = new StringBuilder("INSERT INTO `act_activity_store`(activity_id,store_id,shop_id) VALUES");
 		while (rs.next()) {
@@ -270,18 +277,20 @@ public class DataInitUtil {
 	private void importActivity() throws SQLException {
 		// 读取活动表
 		ResultSet rs = query(
-				"select id,`name`,productcode,outerid,entid,(select e.entname from enterprise e where id =i.entid) as enterprise_name,expointType,price,num,endtime,printTitle,printstr,weeklimit,smscontent,checkinfo,expenseSms,status from eitem i where status=1",
+				"select id,`name`,productcode,outerid,entid,(select e.entname from enterprise e where id =i.entid) as enterprise_name,expointType,price,num,endtime,printTitle,printstr,weeklimit,smscontent,checkinfo,expenseSms,status from eitem i where status=1 and expointType!=0",
 				true);
-		StringBuilder sb = new StringBuilder(
-				"INSERT INTO act_activity(id,enterprise_id,enterprise_name,name,type,CODE,out_code,receipt_title,receipt_print,pos_success_msg,success_sms_msg,start_time,end_time,select_date,amount,integral,createtime,exchange_type,status,max_type,max_number,contract_id ) values ");
 		while (rs.next()) {
+			StringBuilder sb = new StringBuilder(
+					"INSERT INTO act_activity(id,enterprise_id,enterprise_name,name,type,CODE,out_code,receipt_title,receipt_print,pos_success_msg,success_sms_msg,start_time,end_time,select_date,amount,integral,createtime,exchange_type,status,max_type,max_number,contract_id,send_sms_type,channel ) values ");
 			sb.append("(");
-			sb.append(getColumn(rs.getString("id")));
+			String id = rs.getString("id");
+			sb.append(getColumn(id));
 			sb.append(getColumn(rs.getString("entid")));
 			sb.append(getColumn(rs.getString("enterprise_name")));
 			sb.append(getColumn(rs.getString("name")));
 			sb.append(getColumn("0".equals(rs.getString("expointType")) ? "02" : "01"));
-			sb.append(getColumn(rs.getString("productcode")));
+			sb.append(getColumn(
+					StringUtils.isEmpty(rs.getString("productcode")) ? IDUtil.getID() : rs.getString("productcode")));
 			sb.append(getColumn(rs.getString("outerid")));
 			sb.append(getColumn(rs.getString("printTitle")));
 			sb.append(getColumn(rs.getString("printstr")));
@@ -291,7 +300,8 @@ public class DataInitUtil {
 			sb.append("STR_TO_DATE('"
 					+ (StringUtils.isEmpty(rs.getString("endtime")) ? "2199-12-31" : rs.getString("endtime"))
 					+ "','%Y-%m-%d'),");// 结束时间
-			sb.append(getColumn(rs.getString("weeklimit")));
+			sb.append(getColumn(
+					StringUtils.isEmpty(rs.getString("weeklimit")) ? "1,2,3,4,5,6,7" : rs.getString("weeklimit")));
 			sb.append(getColumn(StringUtils.isEmpty(rs.getString("price")) ? "0" : rs.getString("price")));// 金额
 			sb.append(getColumn("0"));// 积分
 			sb.append("now(),");
@@ -307,13 +317,16 @@ public class DataInitUtil {
 			sb.append(getColumn(""));// max_type
 			sb.append(getColumn("1"));// max_number
 			sb.append(getColumn("0"));// contract_id
+			sb.append(getColumn("0".equals(rs.getString("expointType")) ? "02" : ""));// sms_send_type
+			sb.append(getColumn("1"));// channel
 			sb.deleteCharAt(sb.length() - 1);
-			sb.append("),");
+			sb.append(")");
+			System.out.println(sb.toString());
+			execute(sb.toString(), false);
+			Activity activity = activityMapper.getActivityById(id);
+			this.sysnActivity(activity);
 		}
 		rs.close();
-		sb.deleteCharAt(sb.length() - 1);
-		System.out.println(sb.toString());
-		execute(sb.toString(), false);
 	}
 
 	/**
@@ -396,57 +409,54 @@ public class DataInitUtil {
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append(")");
 			System.out.println(sb.toString());
-			int activityId = execute(sb.toString(), false);
-
+			execute(sb.toString(), false);
+			ResultSet actId = query("SELECT LAST_INSERT_ID()", false);
+			int activityId = 0;
+			if (actId.next()) {
+				activityId = actId.getInt(1);
+			}
 			// 导入活动门店关系
 			String shopSql = "SELECT shopid FROM sd_pos_term WHERE MERCH_ID = '" + rs.getString("MERCH_ID")
 					+ "' AND TERM_ID = '" + rs.getString("TREM_ID") + "'";
 			ResultSet shop = query(shopSql, true);
 			if (shop.next()) {
 				String shopId = shop.getString(1);
-				String sql = "SELECT id FROM store WHERE shopid = '" + shopId + "'";
+				String sql = "SELECT distinct id FROM store WHERE shopid = '" + shopId + "'";
 				ResultSet storeIds = query(sql, true);
 				while (storeIds.next()) {
 					execute("INSERT INTO `act_activity_store`(activity_id,store_id,shop_id) VALUES(" + activityId + ",'"
 							+ storeIds.getString(1) + "','" + shopId + "')", false);
 				}
 			}
+
+			Activity activity = activityMapper.getActivityById(String.valueOf(activityId));
+			this.sysnActivity(activity);
 		}
 		rs.close();
 	}
 
-	private int execute(String sql, boolean isIn) {
-		try {
-			Statement stmt = isIn ? conIn.createStatement() : conOut.createStatement();
-			int count = stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
-			if (count > 0) {
-				ResultSet generatedKeys = stmt.getGeneratedKeys();
-				if (null == generatedKeys) {
-					return count;
+	private int execute(String sql, boolean isIn) throws SQLException {
+		Statement stmt = isIn ? conIn.createStatement() : conOut.createStatement();
+		int count = stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+		if (count > 0) {
+			ResultSet generatedKeys = stmt.getGeneratedKeys();
+			if (null == generatedKeys) {
+				return count;
+			} else {
+				if (generatedKeys.next()) {
+					return generatedKeys.getInt(1);
 				} else {
-					if (generatedKeys.next()) {
-						return generatedKeys.getInt(1);
-					} else {
-						return count;
-					}
+					return count;
 				}
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		return -1;
 	}
 
-	private ResultSet query(String sql, boolean isIn) {
+	private ResultSet query(String sql, boolean isIn) throws SQLException {
 		Statement stmt;
-		try {
-			stmt = isIn ? conIn.createStatement() : conOut.createStatement();
-			return stmt.executeQuery(sql);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		stmt = isIn ? conIn.createStatement() : conOut.createStatement();
+		return stmt.executeQuery(sql);
 	}
 
 	private String getColumn(Object column) {
@@ -469,7 +479,7 @@ public class DataInitUtil {
 	private void sysnActivity(Activity activity) {
 
 		// 获取验码系统中-修改活动，启动活动，停止活动的ＵＲＬ，并定义一个请求这些地址时，所需要的参数Map,将活动Id和活动名称都放在这个Map中
-		String changeActivityUrl = PropertiesUtil.getValue("integral.activityImport");
+		String changeActivityUrl = IMPORT_URL;
 		Map<String, Object> httpPostMap = new HashMap<String, Object>();
 		httpPostMap.put("activityId", activity.getId());// 活动Id
 		httpPostMap.put("activityName", activity.getName());// 活动Id
@@ -544,12 +554,41 @@ public class DataInitUtil {
 
 		// 将修改信息发送至验码系统
 		httpPostMap.put("operCode", "1");
-		// System.out.println(JSON.toJSONString(httpPostMap));
-		String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, JSON.toJSONString(httpPostMap));
-		Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-		boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-		if (!isSuccess) {
-			throw new BusinessException("向积分核销系统同步信息失败");
-		}
+		System.out.println(JSON.toJSONString(httpPostMap));
+		// String returnJson =
+		// HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+		// JSON.toJSONString(httpPostMap));
+		// Map<String, Object> returnMap = JSON.parseObject(returnJson,
+		// Map.class);
+		// boolean isSuccess =
+		// Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+		// if (!isSuccess) {
+		// throw new BusinessException("向积分核销系统同步信息失败");
+		// }
 	}
+
+	public StoreMapper getStoreMapper() {
+		return storeMapper;
+	}
+
+	public void setStoreMapper(StoreMapper storeMapper) {
+		this.storeMapper = storeMapper;
+	}
+
+	public TerminalMapper getTerminalMapper() {
+		return terminalMapper;
+	}
+
+	public void setTerminalMapper(TerminalMapper terminalMapper) {
+		this.terminalMapper = terminalMapper;
+	}
+
+	public ActivityMapper getActivityMapper() {
+		return activityMapper;
+	}
+
+	public void setActivityMapper(ActivityMapper activityMapper) {
+		this.activityMapper = activityMapper;
+	}
+
 }
