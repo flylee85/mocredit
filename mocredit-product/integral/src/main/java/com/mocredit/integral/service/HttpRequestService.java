@@ -612,31 +612,52 @@ public class HttpRequestService extends LogService {
      * @return
      */
     public boolean activityOldSyn(Integer requestId, String enCode, Response resp) {
-        String activityIds = activityService.getActIdsByEnCode(enCode);
-        Map<String, Object> mapParam = new HashMap<>();
-        mapParam.put("activityIds", activityIds.split(","));
-        mapParam.put("enCode", enCode);
-        String url = PropertiesUtil.getValue("activity.syn");
-        String response = doPostJson(requestId, url, JSON.toJSONString(mapParam));
-        if (response == null) {
-            resp.setErrorCode(ErrorCodeType.ACTIVITY_SYN_ERROR.getValue());
-            resp.setErrorMsg(ErrorCodeType.ACTIVITY_SYN_ERROR.getText());
-            return false;
+        List<Activity> activityList = activityService.getActivityByEnCode(enCode);
+        List<String> activityIds = new ArrayList<>();
+        List<Map> mapList = new ArrayList<>();
+        for (Activity activity : activityList) {
+            if (!OffLineActivity.isOffLineActivity(activity.getActivityId())) {
+                activityIds.add(activity.getActivityId());
+            } else {
+                Map<String, String> map = new HashMap<>();
+                map.put("activityId", activity.getActivityId());
+                map.put("activityName", activity.getActivityName());
+                map.put("enterpriseName", "离线活动");
+                mapList.add(map);
+            }
         }
-        try {
-            ResponseData responseData = JSON.parseObject(response,
-                    ResponseData.class);
-            resp.setData(responseData.getData());
-            resp.setErrorCode(responseData.getErrorCode());
-            resp.setErrorMsg(responseData.getErrorMsg());
-            resp.setSuccess(responseData.getSuccess());
-            return responseData.getSuccess();
-        } catch (Exception e) {
-            resp.setErrorCode(ErrorCodeType.ACTIVITY_SYN_RESP_ERROR.getValue());
-            resp.setErrorMsg(ErrorCodeType.ACTIVITY_SYN_RESP_ERROR.getText());
-            LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
-                    url, requestId, enCode, e);
-            return false;
+
+        resp.setExtraData(JSON.toJSONString(mapList));
+//        String activityIds = activityService.getActIdsByEnCode(enCode);
+        Map<String, Object> mapParam = new HashMap<>();
+        mapParam.put("activityIds", activityIds);
+        mapParam.put("enCode", enCode);
+
+        String url = PropertiesUtil.getValue("activity.syn");
+        if (!activityIds.isEmpty()) {
+            String response = doPostJson(requestId, url, JSON.toJSONString(mapParam));
+            if (response == null) {
+                resp.setErrorCode(ErrorCodeType.ACTIVITY_SYN_ERROR.getValue());
+                resp.setErrorMsg(ErrorCodeType.ACTIVITY_SYN_ERROR.getText());
+                return false;
+            }
+            try {
+                ResponseData responseData = JSON.parseObject(response,
+                        ResponseData.class);
+                resp.setData(responseData.getData());
+                resp.setErrorCode(responseData.getErrorCode());
+                resp.setErrorMsg(responseData.getErrorMsg());
+                resp.setSuccess(responseData.getSuccess());
+                return responseData.getSuccess();
+            } catch (Exception e) {
+                resp.setErrorCode(ErrorCodeType.ACTIVITY_SYN_RESP_ERROR.getValue());
+                resp.setErrorMsg(ErrorCodeType.ACTIVITY_SYN_RESP_ERROR.getText());
+                LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
+                        url, requestId, enCode, e);
+                return false;
+            }
+        } else {
+            return true;
         }
     }
 

@@ -534,6 +534,21 @@ public class IntegralInterfaceController extends IntegralBaseController {
                     sb.append("<entname>").append(enterpriseName).append("</entname>");
                     sb.append("</Table>");
                 }
+                JsonNode jsonNodeArrayOff = objectMapper.readTree(resp.getExtraData() + "");
+                for (JsonNode jsonNode : jsonNodeArrayOff) {
+                    String activityId = jsonNode.get("activityId").asText();
+                    String activityName = jsonNode.get("activityName").asText();
+                    String enterpriseName = jsonNode.get("enterpriseName").asText();
+                    sb.append("<Table>");
+                    sb.append("<isSuccess>true</isSuccess>");
+                    sb.append("<eitemname>").append(activityName).append("</eitemname>");
+                    sb.append("<eitemid>").append(activityId).append("</eitemid>");
+                    sb.append("<ispayment>").append(3).append("</ispayment>");
+                    sb.append("<iszxcheck>").append(0).append("</iszxcheck>");
+                    sb.append("<codetimes>").append(1).append("</codetimes>");
+                    sb.append("<entname>").append(enterpriseName).append("</entname>");
+                    sb.append("</Table>");
+                }
                 LOGGER.info("### request in success activityOldSyn param={} ###", param);
                 sb.append("</NewDataSet>");
                 return sb.toString();
