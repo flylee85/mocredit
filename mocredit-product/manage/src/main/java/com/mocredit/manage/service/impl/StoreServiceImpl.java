@@ -9,7 +9,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.base.util.IDUtil;
@@ -34,7 +36,7 @@ public class StoreServiceImpl implements StoreService {
 				key = null;
 			}
 		}
-		Map<String, Object>map=new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("key", key);
 		map.put("merchantId", merchantId);
 		List<Store> list = storeMapper.selectAllForPage(map);
@@ -46,11 +48,17 @@ public class StoreServiceImpl implements StoreService {
 		store.setId(IDUtil.getID());
 		store.setStatus(Enterprise.STATUS_ACTIVED);
 		store.setCreateTime(new Date());
+		if (!checkCode(store.getCode(), null)) {
+			throw new BusinessException("门店编号已存在");
+		}
 		return storeMapper.insert(store);
 	}
 
 	@Override
 	public int update(Store store) {
+		if (!checkCode(store.getCode(), store.getId())) {
+			throw new BusinessException("门店编号已存在");
+		}
 		return storeMapper.update(store);
 	}
 
@@ -68,5 +76,21 @@ public class StoreServiceImpl implements StoreService {
 	@Override
 	public Store getStoreById(String id) {
 		return storeMapper.selectOne(id);
+	}
+
+	/**
+	 * 校验编号
+	 * 
+	 * @param snCode
+	 * @param id
+	 * @return
+	 */
+	private boolean checkCode(String code, String id) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("code", code);
+		if (!StringUtils.isEmpty(id)) {
+			param.put("id", id);
+		}
+		return null == storeMapper.checkStoreCode(param);
 	}
 }

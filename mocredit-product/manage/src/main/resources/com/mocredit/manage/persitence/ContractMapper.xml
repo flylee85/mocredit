@@ -61,6 +61,18 @@
     	</if>
     </where>
   </select>
+  <select id="checkCode" resultMap="BaseResultMap" parameterType="java.util.Map" >
+		select code
+		from t_contract
+		<where>
+		status!=2
+		 and code=#{code}
+		<if test="id!=null">
+   			and id!=#{id}
+   		</if>
+		</where>
+		limit 1
+  </select>
   <update id="deleteById" parameterType="java.lang.String" >
     <!--
       WARNING - @mbggenerated

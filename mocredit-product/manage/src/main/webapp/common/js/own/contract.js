@@ -3,7 +3,6 @@ $(".datepicker").each(function () {
 	var $this=$(this);
 	$this.datepicker({
 		format: "yyyy-mm-dd",
-		container: $this.parent(),
 		autoclose: true,
 		language: 'zh-CN',
 		todayHighlight: true
@@ -168,10 +167,14 @@ $("#addItem").click(function(){
 		data: JSON.stringify(formObject),
 		dataType: "json",
 		success: function (result) {
-			sendMsg(true, "添加成功")
-			$("#addContract").modal("hide");
-			//刷新
-			oTable.ajax.reload();
+			if(result.success){
+				sendMsg(true, "添加成功");
+				$("#addContract").modal("hide");
+				//刷新
+				oTable.ajax.reload();
+			}else{
+				sendMsg(false, result.errorMsg);
+			}
 		},
 		error: function (result) {
 			alert('失败！失败原因：'+result.msg);

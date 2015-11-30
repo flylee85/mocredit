@@ -54,22 +54,22 @@ oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 	]
 
 } );
-var map = new BMap.Map("mapcontainer");    // 创建Map实例
-map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
-map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
-map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-var marker=null;
-//添加点击事件获取经纬度
-map.addEventListener("click", function(e){    
-	if(marker){
-		marker.setPosition(new BMap.Point(e.point.lng,e.point.lat));
-	}else{
-		addMarker(new BMap.Point(e.point.lng,e.point.lat));
-	}
-	map.addOverlay(marker);
-	$("#addStore form input[name=longitude]").val(e.point.lng);
-	$("#addStore form input[name=latitude]").val(e.point.lat);
-});
+//var map = new BMap.Map("mapcontainer");    // 创建Map实例
+//map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
+//map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
+//map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+//var marker=null;
+////添加点击事件获取经纬度
+//map.addEventListener("click", function(e){    
+//	if(marker){
+//		marker.setPosition(new BMap.Point(e.point.lng,e.point.lat));
+//	}else{
+//		addMarker(new BMap.Point(e.point.lng,e.point.lat));
+//	}
+//	map.addOverlay(marker);
+//	$("#addStore form input[name=longitude]").val(e.point.lng);
+//	$("#addStore form input[name=latitude]").val(e.point.lat);
+//});
 //验证
 var form = $("#addStore").find("form").parsley();
 $("#addStore").on('hidden.bs.modal', function (e) {
@@ -80,7 +80,7 @@ $("#addStore").on('hidden.bs.modal', function (e) {
 	 .val('')
 	 .removeAttr('checked')
 	 .removeAttr('selected');
-	removeMarker();
+//	removeMarker();
 });
 $("#toAdd").click(function(){
 	$.get("merchant/all",null,function(result){
@@ -129,12 +129,12 @@ function openUpdate(id, type){
 				var merchant=result.data.merchants[i];
 				_select.append('<option value="'+merchant.id+'" '+(merchant.id==result.data.store.merchantId?'selected':'')+'>'+merchant.name+'</option>');
 			}
-			//处理地图
-			if(result.data.store.longitude){
-				var point =new BMap.Point(result.data.store.longitude,result.data.store.latitude);
-				addMarker(point);
-				map.setCenter(point);
-			}
+//			//处理地图
+//			if(result.data.store.longitude){
+//				var point =new BMap.Point(result.data.store.longitude,result.data.store.latitude);
+//				addMarker(point);
+//				map.setCenter(point);
+//			}
 			//处理地区
 			if(result.data.province){
 				setArea(form.find("select[name=province]"),result.data.store.province,result.data.province,"省份");
@@ -200,10 +200,14 @@ $("#addItem").click(function(){
 		data: JSON.stringify(formObject),
 		dataType: "json",
 		success: function (result) {
-			sendMsg(true, "添加成功");
-			$("#addStore").modal("hide");
-			//刷新
-			oTable.ajax.reload();
+			if(result.success){
+				sendMsg(true, "添加成功");
+				$("#addStore").modal("hide");
+				//刷新
+				oTable.ajax.reload();
+			}else{
+				sendMsg(false,result.errorMsg);
+			}
 		},
 		error: function (result) {
 			alert('失败！失败原因：'+result.msg);
