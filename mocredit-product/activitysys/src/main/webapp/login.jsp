@@ -17,7 +17,7 @@
     <link href="${pageContext.request.contextPath}/static/lib/rateit/rateit.css" rel="stylesheet"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/lib/bootstrap/css/signin.css"/>
     <script src="${pageContext.request.contextPath}/static/js/md5.js"></script>
-    <script src="${pageContext.request.contextPath}common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
     <style>.error {
         color: red;
     }</style>
