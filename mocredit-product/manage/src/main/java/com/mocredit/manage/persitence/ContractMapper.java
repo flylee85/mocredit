@@ -25,7 +25,7 @@ public interface ContractMapper {
 	int insert(Contract record);
 
 	List<Contract> selectAllForPage(Map<String, Object> map);
-
+	Contract checkCode(Map<String, Object> map);
 	Contract selectOne(@Param("id") String id);
 
 	int update(Contract contract);

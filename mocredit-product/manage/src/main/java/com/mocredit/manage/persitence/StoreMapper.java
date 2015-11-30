@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.mocredit.manage.model.Store;
+import com.mocredit.manage.model.Terminal;
 
 public interface StoreMapper {
 	/**
@@ -29,5 +30,7 @@ public interface StoreMapper {
 	Store selectOne(@Param("id") String id);
 
 	int update(Store store);
+
+    Store checkStoreCode(Map<String, Object>param);
 
 }

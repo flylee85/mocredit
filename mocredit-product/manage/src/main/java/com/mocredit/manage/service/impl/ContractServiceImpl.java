@@ -10,7 +10,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.base.util.IDUtil;
@@ -48,6 +50,9 @@ public class ContractServiceImpl implements ContractService {
 	@Override
 	@Transactional
 	public int add(Contract contract) {
+		if (!checkCode(contract.getCode(), null)) {
+			throw new BusinessException("合同编号已存在");
+		}
 		contract.setId(IDUtil.getID());
 		contract.setCreateTime(new Date());
 		contract.setStatus(Contract.STATUS_ACTIVED);
@@ -64,6 +69,9 @@ public class ContractServiceImpl implements ContractService {
 	@Override
 	@Transactional
 	public int update(Contract contract) {
+		if (!checkCode(contract.getCode(), contract.getId())) {
+			throw new BusinessException("合同编号已存在");
+		}
 		int update = contractMapper.update(contract);
 		if (update > 0) {
 			/* 先清空合同商户关系 */
@@ -101,5 +109,21 @@ public class ContractServiceImpl implements ContractService {
 			contract.setMerchantList(merchants);
 		}
 		return contract;
+	}
+
+	/**
+	 * 校验编号
+	 * 
+	 * @param snCode
+	 * @param id
+	 * @return
+	 */
+	private boolean checkCode(String code, String id) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("code", code);
+		if (!StringUtils.isEmpty(id)) {
+			param.put("id", id);
+		}
+		return null == contractMapper.checkCode(param);
 	}
 }

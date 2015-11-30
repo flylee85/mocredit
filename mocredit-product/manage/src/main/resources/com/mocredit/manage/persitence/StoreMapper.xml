@@ -75,6 +75,18 @@
     </if>
     </where>
   </select>
+   <select id="checkStoreCode" resultMap="BaseResultMap" parameterType="java.util.Map" >
+		select code
+		from t_store
+		<where>
+		status!=2
+		 and code=#{code}
+		<if test="id!=null">
+   			and id!=#{id}
+   		</if>
+		</where>
+		limit 1
+  </select>
   <update id="deleteById" parameterType="java.util.List">
   	update t_store set status=2
   	where

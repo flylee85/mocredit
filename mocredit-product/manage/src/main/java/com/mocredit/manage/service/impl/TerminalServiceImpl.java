@@ -58,11 +58,11 @@ public class TerminalServiceImpl implements TerminalService {
 		int insert = 0;
 		if (checkSnCode(terminal.getSnCode(), null)) {
 			insert = terminalMapper.insert(terminal);
-			if("1".equals(PropertiesUtil.getValue("syn.switch"))){
+			if ("1".equals(PropertiesUtil.getValue("syn.switch"))) {
 				synGateway(terminal, OperType.ADD);
 				synIntegral(terminal, null, OperType.ADD);
 			}
-			} else {
+		} else {
 			throw new BusinessException("EN号已存在");
 		}
 		return insert;
@@ -75,7 +75,7 @@ public class TerminalServiceImpl implements TerminalService {
 		int update = 0;
 		if (checkSnCode(terminal.getSnCode(), terminal.getId())) {
 			update = terminalMapper.update(terminal);
-			if("1".equals(PropertiesUtil.getValue("syn.switch"))){
+			if ("1".equals(PropertiesUtil.getValue("syn.switch"))) {
 				synGateway(terminal, OperType.UPDATE);
 				synIntegral(terminal, oldTerminal, OperType.UPDATE);
 			}
@@ -96,7 +96,7 @@ public class TerminalServiceImpl implements TerminalService {
 		List<String> list = new ArrayList<>();
 		Collections.addAll(list, ids);
 		int deleteById = terminalMapper.deleteById(list);
-		if("1".equals(PropertiesUtil.getValue("syn.switch"))){
+		if ("1".equals(PropertiesUtil.getValue("syn.switch"))) {
 			synGateway(id, OperType.DELETE);
 			synIntegral(terminal, null, OperType.DELETE);
 		}
