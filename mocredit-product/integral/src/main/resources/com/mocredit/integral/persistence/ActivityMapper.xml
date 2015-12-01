@@ -74,7 +74,7 @@
 		a.activity_id=#{activityId}
 	</delete>
     <delete id="deleteStoreByStoreId">
-		DELETE FROM `ti_store` WHERE store_id IN (${storeId})
+		DELETE FROM `ti_store` WHERE store_id = #{storeId}
 	</delete>
     <insert id="saveActTransRecord" parameterType="com.mocredit.integral.entity.ActivityTransRecord">
 		INSERT INTO

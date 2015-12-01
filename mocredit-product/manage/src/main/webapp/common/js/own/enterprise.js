@@ -16,7 +16,8 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
 		"columns": [
 			{ "data": "name", "className":"qiyeName" },
 			{ "data": "createTime" },
-			{ "data": null },
+			{ "data": "activityCount" },
+			{ "data": "contractCount" },
 			{ "data": null }
 		],
 		"columnDefs": [

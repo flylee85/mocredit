@@ -121,6 +121,7 @@
 	    <if test="activityId != null">
 	    left join act_activity_store aas on s.id=aas.store_id and aas.activity_id=#{activityId}
 	    </if>
+	    where s.status!=2
   </select>
   
 	<!--  添加一条活动商户关联记录  -->
