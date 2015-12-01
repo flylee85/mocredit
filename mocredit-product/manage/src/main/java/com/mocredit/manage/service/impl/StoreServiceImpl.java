@@ -9,12 +9,17 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
+import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.IDUtil;
+import com.mocredit.base.util.PropertiesUtil;
+import com.mocredit.manage.constant.OperType;
 import com.mocredit.manage.model.Enterprise;
 import com.mocredit.manage.model.Store;
 import com.mocredit.manage.persitence.StoreMapper;
@@ -63,6 +68,7 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
+	@Transactional
 	public int delete(String id) {
 		if (null == id || id.isEmpty()) {
 			return 0;
@@ -70,7 +76,11 @@ public class StoreServiceImpl implements StoreService {
 		String[] ids = id.split(",");
 		List<String> list = new ArrayList<>();
 		Collections.addAll(list, ids);
-		return storeMapper.deleteById(list);
+		int count = storeMapper.deleteById(list);
+		if (count > 0 && "1".equals(PropertiesUtil.getValue("syn.switch"))) {
+			synIntegral(id, OperType.DELETE);
+		}
+		return count;
 	}
 
 	@Override
@@ -92,5 +102,31 @@ public class StoreServiceImpl implements StoreService {
 			param.put("id", id);
 		}
 		return null == storeMapper.checkStoreCode(param);
+	}
+
+	/**
+	 * 同步到积分核销接口 <br>
+	 * 删除:{oper:3,storeId}
+	 * 
+	 * @param newTerminal
+	 * @param oldTerminal
+	 * @param oper
+	 */
+	private void synIntegral(String storeId, OperType oper) {
+		String importUrl = PropertiesUtil.getValue("syn.integral.storeImport");
+		Map<String, Object> postMap = new HashMap<>();
+		postMap.put("oper", oper.getValue());
+		switch (oper) {
+		case DELETE:
+			postMap.put("storeId", storeId);
+			break;
+		}
+		String returnstr = HttpUtil.doRestfulByHttpConnection(importUrl, JSON.toJSONString(postMap));
+		@SuppressWarnings("unchecked")
+		Map<String, Object> returnMap = JSON.parseObject(returnstr, Map.class);
+		boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+		if (!isSuccess) {
+			throw new BusinessException("向积分核销同步机具信息失败");
+		}
 	}
 }

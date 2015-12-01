@@ -51,6 +51,7 @@
     	<include refid="Base_Column_List" />
     from t_enterprise
 	   <where>
+	   status!=2 
 	   		<include refid="base_enterprise_condition" />
 	   </where>
   </select>

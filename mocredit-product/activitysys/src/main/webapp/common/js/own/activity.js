@@ -59,8 +59,7 @@ $(function () {
                         "sortable": false,
                         "render": function (data, type, full) {
                             return '<a href="javascript:openUpdateJifenActivity(\'' + data['id'] + '\',0)" >查看</a>' +
-                                '<a href="javascript:openUpdateJifenActivity(\'' + data['id'] + '\',1)" >编辑</a>' +
-                                '<a href="#" onclick="javascript:doDelete(this)" data-id="' + data['id'] + '">删除</a>';
+                                '<a href="javascript:openUpdateJifenActivity(\'' + data['id'] + '\',1)" >编辑</a>' ;
                         }
                     },
                 ]
@@ -125,8 +124,7 @@ $(function () {
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
-                            return '<a href="javascript:openUpdateFamaActivity(\'' + full['id'] + '\',1)" >编辑</a>' +
-                                '<a href="#" onclick="javascript:doDelete(this)" data-id="' + full['id'] + '">删除</a>';
+                            return '<a href="javascript:openUpdateFamaActivity(\'' + full['id'] + '\',1)" >编辑</a>';
                         }
                     }, {
                         "targets": 8,
