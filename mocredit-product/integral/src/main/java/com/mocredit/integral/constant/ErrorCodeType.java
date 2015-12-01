@@ -29,7 +29,8 @@ public enum ErrorCodeType {
     ACTIVITY_NOT_EXIST_BANK_CARD("512", "该卡不能参与该活动"),
     ACTIVITY_SYN_ERROR("513", "活动同步失败"),
     ACTIVITY_SYN_RESP_ERROR("514", "活动同步响应参数错误"),
-    ACTIVITY_ALREADY_STOP("515", "活动已停止");
+    ACTIVITY_ALREADY_STOP("515", "活动已停止"),
+    DELETE_STORE_ERROR("516", "删除门店出错");
 
     private String value;
     private String text;

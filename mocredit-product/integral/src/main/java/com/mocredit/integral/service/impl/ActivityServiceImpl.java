@@ -177,6 +177,11 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
     }
 
     @Override
+    public boolean deleteStoreByStoreId(String storeId) {
+        return activityMapper.deleteStoreByStoreId(storeId) > 0;
+    }
+
+    @Override
     public boolean updateTerminalByEnCode(String enCode, String oldEnCode) {
         return activityMapper.updateTerminalByEnCode(enCode, oldEnCode) > 0;
     }

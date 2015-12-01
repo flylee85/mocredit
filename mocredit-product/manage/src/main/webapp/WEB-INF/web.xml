@@ -48,6 +48,9 @@
         <filter-name>SecurityFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+    <session-config>
+        <session-timeout>20160</session-timeout>
+    </session-config>
     <servlet-mapping>
         <servlet-name>spring</servlet-name>
         <url-pattern>/</url-pattern>

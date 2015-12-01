@@ -138,7 +138,9 @@ public class IntegralInterfaceController extends IntegralBaseController {
             resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
             saveInRequestLog(request, null, param);
             saveReponseLog(getRequestId(), resp.getData() + "");
-            return resp.getData() + "";
+            String xml = getPaymentRevokeOldForXml(false, null, null, resp.getErrorCode(), resp.getErrorMsg());
+            saveReponseLog(getRequestId(), xml);
+            return xml;
         }
     }
 
@@ -198,10 +200,10 @@ public class IntegralInterfaceController extends IntegralBaseController {
         String param = "imei=" + imei + "&account=" + account + "&batchno=" + batchno + "&searchno=" + searchno;
         LOGGER.info("### request in paymentRevokeOld param={} ###", param);
         Response resp = new Response();
+        String orderId = batchno + searchno;
         try {
             OrderVo orderVo = new OrderVo();
 //            String orderId = ToolUtils.getPosno();
-            String orderId = batchno + searchno;
             orderVo.setOrderId(orderId);
             saveInRequestLog(request, orderId, param);
             setOrderInfoForOld(orderVo, searchno, batchno);
@@ -223,7 +225,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
                     param, e);
             resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
             resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
-            saveInRequestLog(request, null, param);
+            saveInRequestLog(request, orderId, param);
             String xml = getPaymentRevokeOldForXml(false, null, null, resp.getErrorCode(), resp.getErrorMsg());
             saveReponseLog(getRequestId(), xml);
             return xml;
@@ -490,6 +492,49 @@ public class IntegralInterfaceController extends IntegralBaseController {
             }
         } catch (Exception e) {
             LOGGER.error("### updateTerminal error param={} error={} ###",
+                    param, e);
+            resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
+            resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
+            saveInRequestLog(request, null, param);
+            return renderJSONString(false, resp.getErrorMsg(),
+                    resp.getErrorCode(), resp.getData());
+        }
+    }
+
+    /**
+     * 更新门店信息
+     *
+     * @param request
+     * @param response
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updateStore", produces = {"application/json;charset=UTF-8"}, method = {
+            RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public String updateStore(HttpServletRequest request,
+                              HttpServletResponse response, @RequestBody String param) {
+        LOGGER.info("### request in updateStore param={} ###", param);
+        Response resp = new Response();
+        try {
+            JSONObject jsonObject = JSON.parseObject(param);
+            String oper = jsonObject.getString("oper");
+            String storeId = jsonObject.getString("storeId");
+            saveInRequestLog(request, null, param);
+            if (updateStore(oper, storeId, resp)) {
+                LOGGER.info(
+                        "### request in success updateStore param={} ###",
+                        param);
+                return renderJSONString(true, resp.getErrorMsg(), resp.getErrorCode(), resp.getData());
+            } else {
+                LOGGER.error(
+                        "### request in error updateStore param={} ###",
+                        param);
+                return renderJSONString(false, resp.getErrorMsg(),
+                        resp.getErrorCode(), resp.getData());
+            }
+        } catch (Exception e) {
+            LOGGER.error("### updateStore error param={} error={} ###",
                     param, e);
             resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
             resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());

@@ -694,6 +694,29 @@ public class HttpRequestService extends LogService {
     }
 
     /**
+     * 更新机具信息
+     *
+     * @param requestId
+     * @param resp
+     * @return
+     */
+    public boolean updateStore(Integer requestId, String oper, String storeId, Response resp) {
+
+        try {
+            switch (oper) {
+                case OperStore.DEL:
+                    activityService.deleteStoreByStoreId(storeId);
+                    break;
+            }
+            return true;
+        } catch (Exception e) {
+            resp.setErrorCode(ErrorCodeType.DELETE_STORE_ERROR.getValue());
+            resp.setErrorMsg(ErrorCodeType.DELETE_STORE_ERROR.getText());
+            return false;
+        }
+    }
+
+    /**
      * 以json方式post请求接口
      *
      * @param requestId

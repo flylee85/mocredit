@@ -125,6 +125,14 @@ public interface ActivityMapper {
     int deleteTerminalByEnCode(@Param(value = "enCode") String enCode);
 
     /**
+     * 删除门店信息
+     *
+     * @param storeId
+     * @return
+     */
+    int deleteStoreByStoreId(@Param(value = "storeId") String storeId);
+
+    /**
      * 根据机具号更新机具编码
      *
      * @param enCode

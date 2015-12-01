@@ -247,7 +247,19 @@ public class HttpRequestUtil {
 
         System.out
                 .println(doPostJson(
-                        "http://localhost:8080/integral/interface/activityImport",
-                        "{\"operCode\":1,\"activityId\":\"17\",\"startTime\":\"2015-08-12 11:11:11\",\"storeList\":[{\"shopId\":1,\"storeId\":3}]}"));
+                        "http://117.121.20.137:10000/bank/payment",
+                        "{\"cardExpDate\":\"0924\",\"cardNum\":\"6214850280354785\",\"code\":\"MS0001\",\"orderId\":\"000059002467\",\"tranAmt\":\"100\"}"));
+
+        System.out
+                .println(doPostJson(
+                        "http://117.121.20.137:10000/bank/paymentRevoke",
+                        "{\"activityId\":\"MS00001\",\"orderId\":\"000059002468\",\"oldOrderId\":\"000059002467\"}"));
+//        System.out
+//                .println(doPostJson(
+//                        "http://127.0.0.1:8080/payment",
+//                        "{\"activityId\":\"ZSYH11\",\"cardExpDate\":\"2003\",\"cardNum\":\"4392260028467460\",\"enCode\":\"82393007\",\"orderId\":\"5773e998185723513\",\"transAmt\":\"null\"}"));
+//        System.out
+//                .println(doPostJson(
+//                        "http://127.0.0.1:8080/paymentOld?activityId=ZSYH11&cardExpDate=2003&cardNum=4392260028467460&enCode=82393007", ""));
     }
 }
