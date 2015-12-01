@@ -30,6 +30,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_contract
+    where status!=2
   </select>
   <select id="selectOne" resultMap="BaseResultMap" parameterType="com.mocredit.manage.model.Contract" >
     <!--
