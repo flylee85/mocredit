@@ -102,7 +102,7 @@
 	</where>
 	</select>
 	
-	<select id="selectForChoose" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.lang.String" >
+	<select id="selectForChoose" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.lang.String" flushCache="true" useCache="false">
 	    select 
 	    s.id as storeId,s.name as storeName,m.id as shopId,m.name as shopName,
 	    <choose>

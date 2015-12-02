@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +23,22 @@ import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.manage.constant.OperType;
 import com.mocredit.manage.model.Enterprise;
 import com.mocredit.manage.model.Store;
+import com.mocredit.manage.model.Terminal;
 import com.mocredit.manage.persitence.StoreMapper;
+import com.mocredit.manage.persitence.TerminalMapper;
 import com.mocredit.manage.service.StoreService;
+import com.mocredit.manage.service.TerminalService;
 
 @Service
 public class StoreServiceImpl implements StoreService {
+	// 日志对象
+	private static Logger logger = Logger.getLogger(StoreServiceImpl.class);
 	@Autowired
 	private StoreMapper storeMapper;
+	@Autowired
+	private TerminalMapper terminalMapper;
+	@Autowired
+	private TerminalService terminalService;
 
 	@Override
 	public PageInfo<Store> getPage(String key, String merchantId, int pageNum, int pageSize) {
@@ -77,7 +87,17 @@ public class StoreServiceImpl implements StoreService {
 		List<String> list = new ArrayList<>();
 		Collections.addAll(list, ids);
 		int count = storeMapper.deleteById(list);
-		if (count > 0 && "1".equals(PropertiesUtil.getValue("syn.switch"))) {
+		if (count > 0) {
+			for (String storeId : ids) {
+				Map<String, Object> terminalParam = new HashMap<>();
+				terminalParam.put("storeId", storeId);
+				List<Terminal> terminals = terminalMapper.selectAllForPage(terminalParam);
+				for (Terminal terminal : terminals) {
+					terminalService.delete(terminal.getId());
+				}
+			}
+		}
+		if (count > 0) {
 			synIntegral(id, OperType.DELETE);
 		}
 		return count;
@@ -112,7 +132,8 @@ public class StoreServiceImpl implements StoreService {
 	 * @param oldTerminal
 	 * @param oper
 	 */
-	private void synIntegral(String storeId, OperType oper) {
+	@Override
+	public void synIntegral(String storeId, OperType oper) {
 		String importUrl = PropertiesUtil.getValue("syn.integral.storeImport");
 		Map<String, Object> postMap = new HashMap<>();
 		postMap.put("oper", oper.getValue());
@@ -120,6 +141,12 @@ public class StoreServiceImpl implements StoreService {
 		case DELETE:
 			postMap.put("storeId", storeId);
 			break;
+		}
+		// 是否开启同步
+		if (!"1".equals(PropertiesUtil.getValue("syn.switch"))) {
+			logger.debug("connect url：" + importUrl);
+			logger.debug("connect data：" + JSON.toJSONString(postMap));
+			return;
 		}
 		String returnstr = HttpUtil.doRestfulByHttpConnection(importUrl, JSON.toJSONString(postMap));
 		@SuppressWarnings("unchecked")

@@ -1,6 +1,7 @@
 package com.mocredit.manage.service;
 
 import com.mocredit.base.pagehelper.PageInfo;
+import com.mocredit.manage.constant.OperType;
 import com.mocredit.manage.model.Store;
 
 /**
@@ -46,4 +47,5 @@ public interface StoreService {
 	int delete(String id);
 
 	Store getStoreById(String id);
+	void synIntegral(String storeId, OperType oper) ;
 }

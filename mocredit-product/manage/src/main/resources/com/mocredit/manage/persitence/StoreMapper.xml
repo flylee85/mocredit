@@ -95,6 +95,11 @@
 				#{id}
 	</foreach>
   </update>
+  <update id="deleteByMerchantId" parameterType="java.lang.String">
+  	update t_store set status=2
+  	where
+  	 merchant_id=#{merchantId}
+  </update>
   <insert id="insert" parameterType="com.mocredit.manage.model.Store" >
     <!--
       WARNING - @mbggenerated

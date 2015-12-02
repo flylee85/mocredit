@@ -119,6 +119,16 @@
 				#{id}
 	</foreach>
   </delete>
+   <delete id="deleteByStoreId" parameterType="java.lang.String">
+  	delete from  t_terminal
+  	where
+  	 store_id=#{storeId}
+  </delete>
+   <delete id="deleteByMerchantId" parameterType="java.lang.String">
+  	delete from  t_terminal
+  	where
+  	 store_id in (select id from t_store where merchant_id=#{merchantId})
+  </delete>
   <update id="update" parameterType="com.mocredit.manage.model.Terminal" >
     <!--
       WARNING - @mbggenerated
