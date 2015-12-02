@@ -105,7 +105,7 @@
 	<select id="selectForChoose" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.util.Map">
 	    select 
 	    s.id as storeId,s.name as storeName,m.id as shopId,m.name as shopName
-	    ,a.title|'  '|a1.title|'  '|a2.title as area
+	    ,CONCAT(a.title , ' ' , a1.title , ' ' , a2.title) AS area
 	    from t_store s
 	    left join t_merchant m on s.merchant_id=m.id
 	    left join t_area a on s.province=a.id
@@ -113,7 +113,7 @@
 	    left join t_area a2 on s.area=a2.id
 	    <where>
 	    s.status!=2
-	     <if test="activityId != null and activityId!='' ">
+	     <if test="activityId != null">
 	     and s.id in (select store_id from act_activity_store where activity_id=#{activityId})
 	    </if>
 	    <if test="activityCurrentId != null and activityCurrentId !='' ">
