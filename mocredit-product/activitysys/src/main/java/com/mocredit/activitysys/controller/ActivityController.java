@@ -153,13 +153,12 @@ public class ActivityController {
 	 * @return json object string
 	 */
 	@RequestMapping("/getSelectedStores")
-	public String getSelectedStores(@RequestParam Map<String, Object> reqMap) {
+	public String getSelectedStores(@RequestParam Map<String, String> reqMap) {
 		// 定义返回页面的对象
 		ResponseData responseData = new AjaxResponseData();
 		try {
-			Object activityId = reqMap.get("activityId");
 			responseData
-					.setData(activityService.queryStoresForSelect(null != activityId ? activityId.toString() : null));
+					.setData(activityService.queryStoresForSelect(reqMap));
 			String resultStr = JSON.toJSONString(responseData);
 			return resultStr;
 		} catch (Exception e) {

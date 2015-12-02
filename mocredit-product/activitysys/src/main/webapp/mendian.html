@@ -26,9 +26,9 @@
 					<form class="form-horizontal">
 							<div class="row">
 								<div class="form-group">
-									<label class="col-lg-2 control-label">商户</label>
+									<label class="col-lg-2 control-label">门店</label>
 									<div class="col-lg-10">
-										<input type="text" class="form-control input-small" placeholder="门店名称" id="storeName" name="storeName">
+										<input type="text" class="form-control input-small" placeholder="门店名称"  name="storeName">
 									</div>
 								</div>
 							</div>
@@ -36,12 +36,12 @@
 								<div class="form-group">
 									<label class="col-lg-2 control-label">地区</label>
 									<div class="col-lg-4">
-										<select class="form-control input-small" id="province" name="province">
+										<select class="form-control input-small"  name="province">
 										</select>
 									</div>
 									<label class="col-lg-2 control-label">城市</label>
 									<div class="col-lg-4">
-										<select class="form-control input-small" name="city" id="city">
+										<select class="form-control input-small" name="city">
 										</select>
 									</div>
 								</div>
@@ -49,10 +49,10 @@
 							<div class="row">
 								<div class="form-group">
 									<div class="col-lg-8">
-										<input type="text" class="form-control input-small" placeholder="商家名称" id="shopName" name="shopName">
+										<input type="text" class="form-control input-small" placeholder="商家名称" name="shopName">
 									</div>
 									<div class="col-lg-4">
-										<button type="button" id="storeSearch" class="btn btn-primary btn-small col-lg-12">查询</button>
+										<button type="button" class="btn btn-primary btn-small col-lg-12 storeSearch">查询</button>
 									</div>
 								</div>
 							</div>
@@ -86,22 +86,22 @@
 						<form class="form-horizontal">
 							<div class="row">
 								<div class="form-group">
-									<label class="col-lg-2 control-label">商户</label>
+									<label class="col-lg-2 control-label">门店</label>
 									<div class="col-lg-10">
-										<input type="text" class="form-control input-small" placeholder="门店名称" id="storeName" name="storeName">
+										<input type="text" class="form-control input-small" placeholder="门店名称" name="storeName">
 									</div>
 								</div>
 							</div>
-							<div class="row city">
+							<div class="row city1">
 								<div class="form-group">
 									<label class="col-lg-2 control-label">地区</label>
 									<div class="col-lg-4">
-										<select class="form-control input-small" id="province" name="province">
+										<select class="form-control input-small" name="province">
 										</select>
 									</div>
 									<label class="col-lg-2 control-label">城市</label>
 									<div class="col-lg-4">
-										<select class="form-control input-small" name="city" id="city">
+										<select class="form-control input-small" name="city">
 										</select>
 									</div>
 								</div>
@@ -109,10 +109,10 @@
 							<div class="row">
 								<div class="form-group">
 									<div class="col-lg-8">
-										<input type="text" class="form-control input-small" placeholder="商家名称" id="shopName" name="shopName">
+										<input type="text" class="form-control input-small" placeholder="商家名称" name="shopName">
 									</div>
 									<div class="col-lg-4">
-										<button type="button" id="storeSearch" class="btn btn-primary btn-small col-lg-12">查询</button>
+										<button type="button"  class="btn btn-primary btn-small col-lg-12 storeSearch">查询</button>
 									</div>
 								</div>
 							</div>
@@ -151,118 +151,139 @@
 		</div>
 		<!-- / .modal 选择门店-->
 	<script>
-		// 选择门店 全选
-		$('#shopModal thead :checkbox').click(function () {
-			$(this).parents(".dataTables_wrapper").find("tbody :checkbox").prop("checked", $(this).prop("checked"));
-		});
-		//选择门店确认
-		$("#chooseShopEnter").click(function () {
-			$(".chooseShop").text("已选 " + $("#shopModal .has-selected tbody tr").length + " 家门店");
-			var choosedStore = $(".choosedStore").empty();
-			var str = '<div class="row selectStore clearfix">';
-			$("#shopModal .has-selected tbody tr :checkbox").each(function(){
-				str += '<span data-id="'+ $(this).attr("data-id") +'" data-storeName="'+$(this).attr("data-storeName")+'" data-shopId="'+ $(this).attr("data-shopId")+'" data-shopName='+$(this).attr("data-shopName")+' class="label bg-info">'+ $(this).attr("data-storeName")+'<i class="icon-remove"></i></span>';
-			})
-			str += '</div>';
-			$(".choosedStore").empty().append(str);
-			$('#shopModal').modal('hide');
-		});
-		var toSelectModal;
-		var selectedModal;
-		$("#leftToRight").click(function(){
-			$('#shopModal .to-select tbody :checkbox:checked').each(function(){
-				var _this=$(this);
-				$("#shopModal .has-selected tbody .dataTables_empty").parent().remove();
-				$("#shopModal .has-selected tbody").append($(this).parent().parent());
-			})
-		});
-		$("#rightToLeft").click(function(){
-			$('#shopModal .has-selected tbody :checkbox:checked').each(function(){
-				var _this=$(this);
-				$("#shopModal .to-select tbody .dataTables_empty").parent().remove();
-				$("#shopModal .to-select tbody").append($(this).parent().parent());
-			})
-		});
-		// 初始化地区
-		$(".city").province_city();
-		// 查询门店
-		//$("#storeSearch").click(function () {
-		//	toSelectModal.ajax.reload(function (json) {
-		//		updateChooseStore();
-		//	});
-
-		//});
-		//门店初始化
-		function initToSelectMendian() {
-			$.get("activitysys/getSelectedStores",{activityId:$("#activityCurrentId").val()},function(result){
-				var toselectData=[];
-				var selectedData=[];
-				 for(var i in result.data){
-					 var store=result.data[i];
-					 if(store.activityId=="0"){
-						 toselectData.push(store);
-					 }else{
-						 selectedData.push(store);
-					 }
-				 }
-				 $('#shopModal .to-select').find('[data-ride="datatables"]').each(function () {
-						toSelectModal = $(this).DataTable({
-							"data":toselectData,
-							"processing": true,
-							//"serverSide":true,
-							"autoWidth": true,
-							"ordering": false,
-							"paging":false,
-							"scrollY": "200px",
-							"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
-							"columns": [
-								{"data": null},
-								{"data": "shopName"},
-								{"data": "storeName", className: "storeName"},
-								{"data": "area"}
-							],
-							"columnDefs": [
-								{
-									"targets": 0,
-									"data": null,
-									"render": function (data, type, full) {
-										return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId']  + '" data-storeName="'+full['storeName']+'" data-shopName="'+full['shopName']+'">';
-									}
-								}
-							]
-						});
-					});
-				 
-				 $('#shopModal .has-selected').find('[data-ride="datatables"]').each(function () {
-						selectedModal = $(this).DataTable({
-							"data":selectedData,
-							"processing": true,
-							//"serverSide":true,
-							"autoWidth": true,
-							"ordering": false,
-							"paging":false,
-							"scrollY": "200px",
-							"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
-							"columns": [
-								{"data": null},
-								{"data": "shopName"},
-								{"data": "storeName", className: "storeName"},
-								{"data": "area"}
-							],
-							"columnDefs": [
-								{
-									"targets": 0,
-									"data": null,
-									"render": function (data, type, full) {
-										return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId'] + '" data-storeName="'+full['storeName']+'" data-shopName="'+full['shopName']+'">';
-									}
-								}
-							]
-						});
-					});
-			},'json');
-		}
-		initToSelectMendian();
+	// 选择门店 全选
+	$('#shopModal thead :checkbox').click(function () {
+		$(this).parents(".dataTables_wrapper").find("tbody :checkbox").prop("checked", $(this).prop("checked"));
+	});
+	//选择门店确认
+	$("#chooseShopEnter").click(function () {
+		$(".chooseShop").text("已选 " + $("#shopModal .has-selected tbody tr").length + " 家门店");
+		var choosedStore = $(".choosedStore").empty();
+		var str = '<div class="row selectStore clearfix">';
+		$("#shopModal .has-selected tbody tr :checkbox").each(function(){
+			str += '<span data-id="'+ $(this).attr("data-id") +'" data-storeName="'+$(this).attr("data-storeName")+'" data-shopId="'+ $(this).attr("data-shopId")+'" data-shopName='+$(this).attr("data-shopName")+' class="label bg-info">'+ $(this).attr("data-storeName")+'<i class="icon-remove"></i></span>';
+		})
+		str += '</div>';
+		$(".choosedStore").empty().append(str);
+		$('#shopModal').modal('hide');
+	});
+	var toSelectModal;
+	var selectedModal;
+	//>>
+	$("#leftToRight").click(function(){
+		$('#shopModal .to-select tbody :checkbox:checked').each(function(){
+			var _this=$(this);
+			$("#shopModal .has-selected tbody .dataTables_empty").parent().remove();
+			$("#shopModal .has-selected tbody").append($(this).parent().parent());
+		})
+	});
+	//<<
+	$("#rightToLeft").click(function(){
+		$('#shopModal .has-selected tbody :checkbox:checked').each(function(){
+			var _this=$(this);
+			$("#shopModal .to-select tbody .dataTables_empty").parent().remove();
+			$("#shopModal .to-select tbody").append($(this).parent().parent());
+		})
+	});
+	// 初始化地区
+	$(".city").province_city();
+	$(".city1").province_city();
+	// 查询门店
+	$(".to-select .storeSearch").click(function () {
+		toSelectModal.ajax.reload();
+	});
+	// 查询门店
+	$(".has-selected .storeSearch").click(function () {
+		selectedModal.ajax.reload();
+	});
+	//门店初始化
+	function initToSelectMendian() {
+			$('#shopModal .to-select').find('[data-ride="datatables"]').each(function () {
+				toSelectModal = $(this).DataTable({
+					"ajax": {
+						url: "activitysys/getSelectedStores",
+						type: "post",
+						data: function (d) {
+							return $.extend({}, d, {
+								"activityCurrentId":$("#activityCurrentId").val(),
+								"storeName": $('.to-select [name=storeName]').val(),
+								"province": $('.to-select [name=province]').val(),
+								"city": $('.to-select [name=city]').val(),
+								"shopName": $('.to-select [name=shopName]').val(),
+							})
+						}
+					},
+					"processing": true,
+					//"serverSide":true,
+					"autoWidth": true,
+					"ordering": false,
+					"paging":false,
+					"scrollY": "200px",
+					"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
+					"columns": [
+						{"data": null},
+						{"data": "shopName"},
+						{"data": "storeName", className: "storeName"},
+						{"data": "area"}
+					],
+					"columnDefs": [
+						{
+							"targets": 0,
+							"data": null,
+							"render": function (data, type, full) {
+								return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId'] + '" data-storeName="' + full['storeName'] + '" data-shopName="' + full['shopName'] + '">';
+							}
+						}
+					]
+				});
+			});
+	}
+	//已选门店初始化
+	function initSelectedMendian() {
+			$('#shopModal .has-selected').find('[data-ride="datatables"]').each(function () {
+				selectedModal = $(this).DataTable({
+					"ajax": {
+						url: "activitysys/getSelectedStores",
+						type: "post",
+						data: function (d) {
+							return $.extend({}, d, {
+								"activityId":$("#activityCurrentId").val(),
+								"storeName": $('.has-selected [name=storeName]').val(),
+								"province": $('.has-selected [name=province]').val(),
+								"city": $('.has-selected [name=city]').val(),
+								"shopName": $('.has-selected [name=shopName]').val()
+							})
+						}
+					},
+					"processing": true,
+					//"serverSide":true,
+					"autoWidth": true,
+					"ordering": false,
+					"paging":false,
+					"scrollY": "200px",
+					"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
+					"columns": [
+						{"data": null},
+						{"data": "shopName"},
+						{"data": "storeName", className: "storeName"},
+						{"data": "area"}
+					],
+					"columnDefs": [
+						{
+							"targets": 0,
+							"data": null,
+							"render": function (data, type, full) {
+								return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId'] + '" data-storeName="' + full['storeName'] + '" data-shopName="' + full['shopName'] + '">';
+							}
+						}
+					]
+				});
+			});
+//		}
+		//
+	}
+	initToSelectMendian();
+	initSelectedMendian();
 	</script>
 	</body>
 </html>

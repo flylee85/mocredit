@@ -95,7 +95,7 @@ public class TerminalServiceImpl implements TerminalService {
 		List<String> list = new ArrayList<>();
 		Collections.addAll(list, ids);
 		int deleteById = terminalMapper.deleteById(list);
-		synGateway(id, OperType.DELETE);
+		synGateway(terminal, OperType.DELETE);
 		synIntegral(terminal, null, OperType.DELETE);
 		return deleteById;
 	}
@@ -113,7 +113,7 @@ public class TerminalServiceImpl implements TerminalService {
 	/**
 	 * 同步到网关
 	 * 
-	 * @param newTerminal
+	 * @param terminal
 	 *            机具信息（terminal/id）
 	 * @param oper
 	 *            TerminalOperType
@@ -123,23 +123,22 @@ public class TerminalServiceImpl implements TerminalService {
 	 *            } 删除：{ oper:3, id:1,2,3 }
 	 */
 	@Override
-	public void synGateway(Object newTerminal, OperType oper) {
+	public void synGateway(Terminal terminal, OperType oper) {
+		// 只同步新网关机具
+		if (!Gateway.NEW.getValue().equals(terminal.getGateway())) {
+			return;
+		}
 		String importUrl = PropertiesUtil.getValue("syn.gateway.deviceImport");
 		Map<String, Object> postMap = new HashMap<>();
 		postMap.put("oper", oper.getValue());
 		switch (oper) {
 		case ADD:
 		case UPDATE:
-			Terminal terminal = (Terminal) newTerminal;
-			// 只同步新网关机具
-			if (!Gateway.NEW.getValue().equals(terminal.getGateway())) {
-				return;
-			}
 			postMap.put("id", terminal.getId());
 			postMap.put("enCode", terminal.getSnCode());
 			break;
 		case DELETE:
-			postMap.put("id", newTerminal.toString());
+			postMap.put("id", terminal.getId());
 			break;
 		}
 		// 是否开启同步

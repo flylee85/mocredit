@@ -56,7 +56,7 @@ public interface TerminalService {
 	 */
 	Terminal getStoreInfo(String storeId);
 
-	void synGateway(Object newTerminal, OperType oper);
+	void synGateway(Terminal newTerminal, OperType oper);
 
 	void synIntegral(Terminal newTerminal, Terminal oldTerminal, OperType oper);
 }

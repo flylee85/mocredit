@@ -102,26 +102,36 @@
 	</where>
 	</select>
 	
-	<select id="selectForChoose" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.lang.String" flushCache="true" useCache="false">
+	<select id="selectForChoose" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.util.Map">
 	    select 
-	    s.id as storeId,s.name as storeName,m.id as shopId,m.name as shopName,
-	    <choose>
-	    	<when test="activityId !=null">
-	    	case when aas.activity_id is null then 0 else 1 end as activityId
-	    	</when>
-	    	<otherwise>0 as activityId</otherwise>
-	    </choose>
+	    s.id as storeId,s.name as storeName,m.id as shopId,m.name as shopName
 	    ,a.title|'  '|a1.title|'  '|a2.title as area
 	    from t_store s
 	    left join t_merchant m on s.merchant_id=m.id
 	    left join t_area a on s.province=a.id
 	    left join t_area a1 on s.city=a1.id
 	    left join t_area a2 on s.area=a2.id
-	    
-	    <if test="activityId != null">
-	    left join act_activity_store aas on s.id=aas.store_id and aas.activity_id=#{activityId}
+	    <where>
+	    s.status!=2
+	     <if test="activityId != null and activityId!='' ">
+	     and s.id in (select store_id from act_activity_store where activity_id=#{activityId})
 	    </if>
-	    where s.status!=2
+	    <if test="activityCurrentId != null and activityCurrentId !='' ">
+	     and s.id not in (select store_id from act_activity_store where activity_id=#{activityCurrentId})
+	    </if>
+	    <if test="storeName !=null and storeName!='' ">
+	     and s.name like '%${storeName}%'
+	    </if>
+	    <if test="province !=null and province!='' ">
+	     and s.province =#{province}
+	    </if>
+	    <if test="city !=null and city!='' ">
+	     and s.city =#{city}
+	    </if>
+	    <if test="shopName !=null and shopName!='' ">
+	    and m.name like '%${shopName}%'
+	    </if>
+	    </where>
   </select>
   
 	<!--  添加一条活动商户关联记录  -->

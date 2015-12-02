@@ -77,7 +77,7 @@ public interface ActivityService {
 	 */
 	public List<ActivityStore> querySelectStores(Map<String,Object> activityMap);
 	
-	public List<ActivityStore> queryStoresForSelect(String activityId); 
+	public List<ActivityStore> queryStoresForSelect(Map<String,String> activityMap); 
 	/**
 	 * 添加活动
 	 * @param activity

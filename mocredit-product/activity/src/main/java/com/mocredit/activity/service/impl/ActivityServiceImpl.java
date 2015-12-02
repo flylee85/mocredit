@@ -74,6 +74,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private StoreMapper storeMapper; // 门店mapper
 	@Autowired
 	private TerminalMapper terminalMapper;// 机具mapper
+	private boolean importFlag = true;
 
 	/**
 	 * 获取一条活动，根据主键
@@ -236,11 +237,8 @@ public class ActivityServiceImpl implements ActivityService {
 	}
 
 	@Override
-	public List<ActivityStore> queryStoresForSelect(String activityId) {
-		if ("".equals(activityId)) {
-			activityId = null;
-		}
-		return activityStoreMapper.selectForChoose(activityId);
+	public List<ActivityStore> queryStoresForSelect(Map<String, String> param) {
+		return activityStoreMapper.selectForChoose(param);
 	}
 
 	/**
@@ -292,6 +290,9 @@ public class ActivityServiceImpl implements ActivityService {
 		/*
 		 * 积分同步活动
 		 */
+		if (!importFlag) {
+			return affectCount;
+		}
 		if ("01".equals(activity.getType())) {
 			// 获取验码系统中-修改活动，启动活动，停止活动的ＵＲＬ，并定义一个请求这些地址时，所需要的参数Map,将活动Id和活动名称都放在这个Map中
 			String changeActivityUrl = PropertiesUtil.getValue("integral.activityImport");
@@ -453,6 +454,9 @@ public class ActivityServiceImpl implements ActivityService {
 	 * @param storeList
 	 */
 	private void synOthers(Activity activity, Activity oldActivity) {
+		if (!importFlag) {
+			return;
+		}
 		// 积分同步
 		if ("01".equals(activity.getType())) {
 			// 获取验码系统中-修改活动，启动活动，停止活动的ＵＲＬ，并定义一个请求这些地址时，所需要的参数Map,将活动Id和活动名称都放在这个Map中
@@ -563,7 +567,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 				// 将修改信息发送至验码系统
 				httpPostMap.put("operCode", "2");
-				//System.out.println(JSON.toJSONString(httpPostMap));
+				// System.out.println(JSON.toJSONString(httpPostMap));
 				String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
 						JSON.toJSONString(httpPostMap));
 				Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
@@ -1410,8 +1414,8 @@ public class ActivityServiceImpl implements ActivityService {
 		Map<String, Object> storeInfo = activityMapper.selectStoreInfoForDevice(snCode);
 		if (null != activitys && null != storeInfo) {
 			for (Map<String, Object> map : activitys) {
-				map.put("sTime", DateUtil.dateToStr((Date)map.get("sTime"), "yyyy-MM-dd HH:mm:ss"));
-				map.put("eTime", DateUtil.dateToStr((Date)map.get("eTime"), "yyyy-MM-dd HH:mm:ss"));
+				map.put("sTime", DateUtil.dateToStr((Date) map.get("sTime"), "yyyy-MM-dd HH:mm:ss"));
+				map.put("eTime", DateUtil.dateToStr((Date) map.get("eTime"), "yyyy-MM-dd HH:mm:ss"));
 				map.putAll(storeInfo);
 			}
 		}
