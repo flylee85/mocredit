@@ -12,6 +12,7 @@ import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.manage.model.Enterprise;
+import com.mocredit.manage.persitence.ContractMapper;
 import com.mocredit.manage.persitence.EnterpriseMapper;
 import com.mocredit.manage.service.EnterpriseService;
 
@@ -19,16 +20,18 @@ import com.mocredit.manage.service.EnterpriseService;
 public class EnterpriseServiceImpl implements EnterpriseService {
 	@Autowired
 	private EnterpriseMapper enterpriseMapper;
+	@Autowired
+	private ContractMapper contractMapper;
 
 	@Override
 	public PageInfo<Enterprise> getPage(String key, int pageNum, int pageSize) {
 		PageHelper.startPage(pageNum, pageSize);
-		if(null!=key){
-			key=key.trim();
-			if(!key.isEmpty()){
-				key="%"+key+"%";
-			}else{
-				key=null;
+		if (null != key) {
+			key = key.trim();
+			if (!key.isEmpty()) {
+				key = "%" + key + "%";
+			} else {
+				key = null;
 			}
 		}
 		List<Enterprise> list = enterpriseMapper.selectAllForPage(key);
@@ -56,7 +59,13 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 		String[] ids = id.split(",");
 		List<String> list = new ArrayList<>();
 		Collections.addAll(list, ids);
-		return enterpriseMapper.deleteById(list);
+		int count = enterpriseMapper.deleteById(list);
+		if (count > 0) {
+			for (String enterpriseId : ids) {
+				contractMapper.deleteByEnterpriseId(enterpriseId);
+			}
+		}
+		return count;
 	}
 
 	@Override

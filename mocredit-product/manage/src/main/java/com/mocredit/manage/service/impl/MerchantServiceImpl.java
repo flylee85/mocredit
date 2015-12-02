@@ -9,18 +9,26 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.manage.model.Merchant;
+import com.mocredit.manage.model.Store;
 import com.mocredit.manage.persitence.MerchantMapper;
+import com.mocredit.manage.persitence.StoreMapper;
 import com.mocredit.manage.service.MerchantService;
+import com.mocredit.manage.service.StoreService;
 
 @Service
 public class MerchantServiceImpl implements MerchantService {
 	@Autowired
 	private MerchantMapper merchantMapper;
+	@Autowired
+	private StoreMapper storeMapper;
+	@Autowired
+	private StoreService storeService;
 
 	@Override
 	public PageInfo<Merchant> getPage(String key, String contractId, int pageNum, int pageSize) {
@@ -53,6 +61,7 @@ public class MerchantServiceImpl implements MerchantService {
 		return merchantMapper.update(merchant);
 	}
 
+	@Transactional
 	@Override
 	public int delete(String id) {
 		if (null == id || id.isEmpty()) {
@@ -61,7 +70,19 @@ public class MerchantServiceImpl implements MerchantService {
 		String[] ids = id.split(",");
 		List<String> list = new ArrayList<>();
 		Collections.addAll(list, ids);
-		return merchantMapper.deleteById(list);
+		int count = merchantMapper.deleteById(list);
+		if (count > 0) {
+			// 删除商户后删除商户下的门店和机具，并触发同步
+			for (String merchantId : ids) {
+				Map<String, Object> storeParam = new HashMap<>();
+				storeParam.put("merchantId", merchantId);
+				List<Store> stores = storeMapper.selectAllForPage(storeParam);
+				for (Store store : stores) {
+					storeService.delete(store.getId());
+				}
+			}
+		}
+		return count;
 	}
 
 	@Override

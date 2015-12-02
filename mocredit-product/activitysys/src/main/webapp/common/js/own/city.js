@@ -16,12 +16,12 @@ $.fn.province_city = function(vprovince,vcity,vtown){
     if(_self.data("province")){
         $sel1.append("<option value='"+_self.data("province")[1]+"'>"+_self.data("province")[0]+"</option>");
     }
-    $.get('common/js/own/city.xml', function(data){
+    $.get('area/getChildren/0', function(data){
         var arrList = [];
-        $(data).find('province').each(function(){
-            var $province = $(this);
-            $sel1.append("<option value='"+$province.attr('value')+"'>"+$province.attr('value')+"</option>");
-        });
+        for(var i in data.data){
+        	var $province = data.data[i];
+            $sel1.append("<option value='"+$province.id+"'>"+$province.title+"</option>");
+        };
         if(typeof vprovince != undefined){
             $sel1.val(vprovince);
             $sel1.change();
@@ -45,12 +45,12 @@ $.fn.province_city = function(vprovince,vcity,vtown){
                 $sel2.append("<option value='"+_self.data("city")[1]+"'>"+_self.data("city")[0]+"</option>");
             }
         } else{
-            provinceValue = $('#province').val();
-            $.get('common/js/own/city.xml', function(data){
-                $(data).find("province[value='"+provinceValue+"'] > city").each(function(){
-                    var $city = $(this);
-                    $sel2.append("<option value='"+$city.attr('value')+"'>"+$city.attr('value')+"</option>");
-                });
+            provinceValue = $sel1.val();
+            $.get('area/getChildren/'+provinceValue, function(data){
+            	for(var i in data.data){
+                	var $city = data.data[i];
+                    $sel2.append("<option value='"+$city.id+"'>"+$city.title+"</option>");
+                };
 
                 if(typeof vcity != undefined){
                     $sel2.val(vcity);

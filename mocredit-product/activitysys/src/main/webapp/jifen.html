@@ -115,6 +115,7 @@
                                 <textarea class="form-control parsley-validated" data-parsley-rangelength="[10,200]"
 										  data-parsley-trigger="keyup" rows="3" placeholder="小票打印内容"
 										  name="receiptPrint" tabindex="9" data-parsley-required="true"></textarea>
+								<a href="mb.html" target="_blank">模板变量说明</a>
 						   </div>
 					   </div>
 				   </div>
@@ -142,13 +143,13 @@
 						   <label class="col-lg-2 control-label">活动开始日期</label>
 
 						   <div class="col-lg-4">
-							   <input id="date1" data-parsley-required="true" data-parsley-trigger="change" tabindex="12" class="input-small form-control datepicker" type="text"
+							   <input id="date1" readonly="readonly" data-parsley-required="true" data-parsley-trigger="change" tabindex="12" class="input-small form-control datepicker" type="text"
 									  value="" name="startTime">
 						   </div>
 						   <label class="col-lg-2 control-label">活动截止日期</label>
 
 						   <div class="col-lg-4">
-							   <input id="date2" data-parsley-required="true" data-parsley-trigger="change" tabindex="13" class="input-small form-control datepicker" type="text"
+							   <input id="date2" readonly="readonly" data-parsley-required="true" data-parsley-trigger="change" tabindex="13" class="input-small form-control datepicker" type="text"
 									  value="" name="endTime">
 						   </div>
 					   </div>

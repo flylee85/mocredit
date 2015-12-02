@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,8 @@ import com.mocredit.manage.service.TerminalService;
 
 @Service
 public class TerminalServiceImpl implements TerminalService {
+	// 日志对象
+	private static Logger logger = Logger.getLogger(TerminalServiceImpl.class);
 	@Autowired
 	private TerminalMapper terminalMapper;
 
@@ -58,10 +61,8 @@ public class TerminalServiceImpl implements TerminalService {
 		int insert = 0;
 		if (checkSnCode(terminal.getSnCode(), null)) {
 			insert = terminalMapper.insert(terminal);
-			if ("1".equals(PropertiesUtil.getValue("syn.switch"))) {
-				synGateway(terminal, OperType.ADD);
-				synIntegral(terminal, null, OperType.ADD);
-			}
+			synGateway(terminal, OperType.ADD);
+			synIntegral(terminal, null, OperType.ADD);
 		} else {
 			throw new BusinessException("EN号已存在");
 		}
@@ -75,10 +76,8 @@ public class TerminalServiceImpl implements TerminalService {
 		int update = 0;
 		if (checkSnCode(terminal.getSnCode(), terminal.getId())) {
 			update = terminalMapper.update(terminal);
-			if ("1".equals(PropertiesUtil.getValue("syn.switch"))) {
-				synGateway(terminal, OperType.UPDATE);
-				synIntegral(terminal, oldTerminal, OperType.UPDATE);
-			}
+			synGateway(terminal, OperType.UPDATE);
+			synIntegral(terminal, oldTerminal, OperType.UPDATE);
 		} else {
 			throw new BusinessException("EN号已存在");
 		}
@@ -96,10 +95,8 @@ public class TerminalServiceImpl implements TerminalService {
 		List<String> list = new ArrayList<>();
 		Collections.addAll(list, ids);
 		int deleteById = terminalMapper.deleteById(list);
-		if ("1".equals(PropertiesUtil.getValue("syn.switch"))) {
-			synGateway(id, OperType.DELETE);
-			synIntegral(terminal, null, OperType.DELETE);
-		}
+		synGateway(terminal, OperType.DELETE);
+		synIntegral(terminal, null, OperType.DELETE);
 		return deleteById;
 	}
 
@@ -116,7 +113,7 @@ public class TerminalServiceImpl implements TerminalService {
 	/**
 	 * 同步到网关
 	 * 
-	 * @param newTerminal
+	 * @param terminal
 	 *            机具信息（terminal/id）
 	 * @param oper
 	 *            TerminalOperType
@@ -125,24 +122,30 @@ public class TerminalServiceImpl implements TerminalService {
 	 *            接口参数格式： 新增：{ oper:1 id:1, enCode: } 修改：{ oper:2, id:1, enCode
 	 *            } 删除：{ oper:3, id:1,2,3 }
 	 */
-	private void synGateway(Object newTerminal, OperType oper) {
+	@Override
+	public void synGateway(Terminal terminal, OperType oper) {
+		// 只同步新网关机具
+		if (!Gateway.NEW.getValue().equals(terminal.getGateway())) {
+			return;
+		}
 		String importUrl = PropertiesUtil.getValue("syn.gateway.deviceImport");
 		Map<String, Object> postMap = new HashMap<>();
 		postMap.put("oper", oper.getValue());
 		switch (oper) {
 		case ADD:
 		case UPDATE:
-			Terminal terminal = (Terminal) newTerminal;
-			// 只同步新网关机具
-			if (!Gateway.NEW.getValue().equals(terminal.getGateway())) {
-				return;
-			}
 			postMap.put("id", terminal.getId());
 			postMap.put("enCode", terminal.getSnCode());
 			break;
 		case DELETE:
-			postMap.put("id", newTerminal.toString());
+			postMap.put("id", terminal.getId());
 			break;
+		}
+		// 是否开启同步
+		if (!"1".equals(PropertiesUtil.getValue("syn.switch"))) {
+			logger.debug("connect url：" + importUrl);
+			logger.debug("connect data：" + JSON.toJSONString(postMap));
+			return;
 		}
 		String returnstr = HttpUtil.doRestfulByHttpConnection(importUrl, JSON.toJSONString(postMap));
 		if (!returnstr.equals("0")) {
@@ -160,7 +163,8 @@ public class TerminalServiceImpl implements TerminalService {
 	 * @param oldTerminal
 	 * @param oper
 	 */
-	private void synIntegral(Terminal newTerminal, Terminal oldTerminal, OperType oper) {
+	@Override
+	public void synIntegral(Terminal newTerminal, Terminal oldTerminal, OperType oper) {
 		String importUrl = PropertiesUtil.getValue("syn.integral.deviceImport");
 		Map<String, Object> postMap = new HashMap<>();
 		postMap.put("oper", oper.getValue());
@@ -176,6 +180,12 @@ public class TerminalServiceImpl implements TerminalService {
 		case DELETE:
 			postMap.put("enCode", newTerminal.getSnCode());
 			break;
+		}
+		// 是否开启同步
+		if (!"1".equals(PropertiesUtil.getValue("syn.switch"))) {
+			logger.debug("connect url：" + importUrl);
+			logger.debug("connect data：" + JSON.toJSONString(postMap));
+			return;
 		}
 		String returnstr = HttpUtil.doRestfulByHttpConnection(importUrl, JSON.toJSONString(postMap));
 		@SuppressWarnings("unchecked")

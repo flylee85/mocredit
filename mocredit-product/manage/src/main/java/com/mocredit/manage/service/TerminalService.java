@@ -1,6 +1,7 @@
 package com.mocredit.manage.service;
 
 import com.mocredit.base.pagehelper.PageInfo;
+import com.mocredit.manage.constant.OperType;
 import com.mocredit.manage.model.Terminal;
 
 /**
@@ -46,10 +47,16 @@ public interface TerminalService {
 	int delete(String id);
 
 	Terminal getTerminalById(String id);
-	 /**
-	  * 获取门店商户信息
-	  * @param storeId
-	  * @return
-	  */
+
+	/**
+	 * 获取门店商户信息
+	 * 
+	 * @param storeId
+	 * @return
+	 */
 	Terminal getStoreInfo(String storeId);
+
+	void synGateway(Terminal newTerminal, OperType oper);
+
+	void synIntegral(Terminal newTerminal, Terminal oldTerminal, OperType oper);
 }
