@@ -117,9 +117,10 @@ public class IntegralInterfaceController extends IntegralBaseController {
         String param = order.toString();
         LOGGER.info("### request in paymentOld param={} ###", param);
         Response resp = new Response();
+        String orderId = ToolUtils.getPosno();
         try {
 //            order.setOrderId(ToolUtils.getPosno());
-            order.setOrderId(order.getBatchno() + order.getSearchno());
+            order.setOrderId(orderId);
             saveInRequestLog(request, order.getOrderId(), param);
             setOrderStoreId(order);
             if (doPostJsonAndSaveOrderForOld(param, order, resp)) {
@@ -200,7 +201,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
         String param = "imei=" + imei + "&account=" + account + "&batchno=" + batchno + "&searchno=" + searchno;
         LOGGER.info("### request in paymentRevokeOld param={} ###", param);
         Response resp = new Response();
-        String orderId = batchno + searchno;
+        String orderId = ToolUtils.getPosno();
         try {
             OrderVo orderVo = new OrderVo();
 //            String orderId = ToolUtils.getPosno();
@@ -757,6 +758,8 @@ public class IntegralInterfaceController extends IntegralBaseController {
      */
     public void setOrderInfoForOld(Order order, String searchno, String batchno) {
         Order oldOrder = orderService.getOrderBySearchNoAndBatchNo(searchno, batchno);
+        order.setBatchno(batchno);
+        order.setSearchno(searchno);
         order.setOldOrderId(oldOrder.getOrderId());
         order.setStoreId(oldOrder.getStoreId());
         order.setEnCode(oldOrder.getEnCode());

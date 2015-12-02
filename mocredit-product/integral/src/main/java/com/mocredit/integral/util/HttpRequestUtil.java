@@ -248,12 +248,25 @@ public class HttpRequestUtil {
         System.out
                 .println(doPostJson(
                         "http://117.121.20.137:10000/bank/payment",
-                        "{\"cardExpDate\":\"0924\",\"cardNum\":\"6214850280354785\",\"code\":\"MS0001\",\"orderId\":\"000059002467\",\"tranAmt\":\"100\"}"));
+                        "{\"cardExpDate\":\"0924\",\"cardNum\":\"6214850280354785\",\"code\":\"MS0001\",\"orderId\":\"130059002469\",\"tranAmt\":\"100\"}"));
 
         System.out
                 .println(doPostJson(
+
                         "http://117.121.20.137:10000/bank/paymentRevoke",
-                        "{\"activityId\":\"MS00001\",\"orderId\":\"000059002468\",\"oldOrderId\":\"000059002467\"}"));
+                        "{\"orderId\":\"230059002470\",\"oldOrderId\":\"130059002469\"}"));
+
+        System.out
+                .println(doPostJson(
+
+                        "http://117.121.20.137:10000/bank/paymentReserval",
+                        "{\"orderId\":\"240059002470\",\"oldOrderId\":\"130059002469\"}"));
+
+        System.out
+                .println(doPostJson(
+
+                        "http://117.121.20.137:10000/bank/paymentRevokeReserval",
+                        "{\"orderId\":\"250059002470\",\"oldOrderId\":\"240059002470\"}"));
 //        System.out
 //                .println(doPostJson(
 //                        "http://127.0.0.1:8080/payment",

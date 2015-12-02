@@ -197,7 +197,7 @@ public class HttpRequestService extends LogService {
                 // 设置订单reuestId和交易完成状态
                 order.setRequestId(requestId);
                 order.setStatus(OrderStatus.PAYMENT.getValue());
-                if (!orderService.save(order)) {
+                if (!orderService.saveAndCount(order)) {
                     resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
                             .getValue());
                     resp.setErrorMsg(ErrorCodeType.SAVE_DATEBASE_ERROR
@@ -296,7 +296,7 @@ public class HttpRequestService extends LogService {
                 // 设置订单reuestId和交易完成状态
                 order.setRequestId(requestId);
                 order.setStatus(OrderStatus.PAYMENT.getValue());
-                if (!orderService.save(order)) {
+                if (!orderService.saveAndCount(order)) {
                     resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
                             .getValue());
                     resp.setErrorMsg(ErrorCodeType.SAVE_DATEBASE_ERROR
