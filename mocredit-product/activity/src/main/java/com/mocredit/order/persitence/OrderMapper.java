@@ -41,11 +41,31 @@ public interface OrderMapper {
     int updateOrderByCode(@Param(value = "t") Order order);
 
     /**
-     * 更加订单id查询订单信息
+     * 根据活动id和码更新订单id和状态
+     *
+     * @param activityId
+     * @param code
+     * @param orderId
+     * @param status
+     * @return
+     */
+    int updateOrderByActIdAndCode(@Param(value = "activityId") String activityId,
+                                  @Param(value = "code") String code,
+                                  @Param(value = "orderId") String orderId,
+                                  @Param(value = "status") String status);
+
+    /**
+     * 根据订单id查询订单信息
      *
      * @param orderId
      * @return
      */
     Order findOrderByOrderId(@Param(value = "orderId") String orderId);
 
+    /**
+     * 根据流水id查询订单信息
+     *
+     * @return
+     */
+    Order findOrderByOId(@Param(value = "id") String id);
 }

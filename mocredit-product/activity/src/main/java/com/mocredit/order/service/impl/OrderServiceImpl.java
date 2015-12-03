@@ -10,6 +10,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.PropertiesUtil;
+import com.mocredit.order.constant.OrderStatusType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,9 +40,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public int updateOrderStatusByOrderId(String orderId, String status) {
-        orderRevoke(orderId);
-        return orderMapper.updateOrderStatusByOrderId(orderId, status);
+    public int updateOrderStatusById(String id, String status) {
+        Order order = orderMapper.findOrderByOId(id);
+        orderRevoke(order.getOrderId());
+        return orderMapper.updateOrderStatusByOrderId(order.getOrderId(), status);
     }
 
     @Override
@@ -54,10 +56,35 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.findOrderByOrderId(orderId);
     }
 
+    @Override
+    @Transactional
+    public int checkOrderById(String id) {
+        Order order = orderMapper.findOrderByOId(id);
+        Map mapCheck = orderCheck(order.getActivityId(), order.getCode());
+        return orderMapper.updateOrderByActIdAndCode(order.getActivityId(), order.getCode(), mapCheck.get("orderId") + "", OrderStatusType.EXCHANGE.getValue());
+    }
+
+    public Map<String, Object> orderCheck(String activityId, String code) {
+        String orderCheckUrl = PropertiesUtil.getValue("verifyCode.orderCheck");
+        // 调用Http工具，执行送码操作，并解析返回值
+        Map<String, Object> param = new HashMap<>();
+        param.put("activityId", activityId);
+        param.put("code", code);
+        String orderRevokeJson = HttpUtil.doRestfulByHttpConnection(orderCheckUrl, JSON.toJSONString(param));
+        Map<String, Object> orderRevokeMap = JSON.parseObject(orderRevokeJson, Map.class);
+        logger.debug("送码，返回结果：" + orderRevokeJson);
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        // 将返回对象的success设置为true,并返回数据对象
+        resultMap.put("success", true);
+        return resultMap;
+    }
+
     public Map<String, Object> orderRevoke(String orderId) {
         String orderRevokeUrl = PropertiesUtil.getValue("verifyCode.orderRevoke");
         // 调用Http工具，执行送码操作，并解析返回值
-        String orderRevokeJson = HttpUtil.doRestfulByHttpConnection(orderRevokeUrl, orderId);// 送码
+        Map<String, Object> param = new HashMap<>();
+        param.put("orderId", orderId);
+        String orderRevokeJson = HttpUtil.doRestfulByHttpConnection(orderRevokeUrl, JSON.toJSONString(param));// 送码
         Map<String, Object> orderRevokeMap = JSON.parseObject(orderRevokeJson, Map.class);
         logger.debug("送码，返回结果：" + orderRevokeJson);
         Map<String, Object> resultMap = new HashMap<String, Object>();

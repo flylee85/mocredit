@@ -468,7 +468,7 @@ public class SendCodeServiceImpl implements SendCodeService {
         order.setStatus(OrderStatusType.SEND.getValue());
         order.setTel(batchCode.getCustomerMobile());
         order.setType(OrderType.CHECK_CODE_ORDER.getValue());
-        order.setOrderId(IDUtil.getID());
+        order.setId(IDUtil.getID());
         order.setSupEnterpriseId(merchant.getId());
         order.setSupEnterpriseName(merchant.getName());
         return orderService.save(order);

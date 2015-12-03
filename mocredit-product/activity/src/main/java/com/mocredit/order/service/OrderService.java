@@ -18,7 +18,7 @@ public interface OrderService extends BaseService<Order> {
 
     List<Order> findOrderList(OrderVo orderVo);
 
-    int updateOrderStatusByOrderId(String orderId, String status);
+    int updateOrderStatusById(String id, String status);
 
     int updateOrderByCode(Order order);
 
@@ -30,4 +30,10 @@ public interface OrderService extends BaseService<Order> {
      */
     Order findOrderByOrderId(String orderId);
 
+    /**
+     * 根据流水id监测订单
+     *
+     * @return
+     */
+    int checkOrderById(String id);
 }
