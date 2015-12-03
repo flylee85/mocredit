@@ -113,6 +113,7 @@ $(function () {
                     "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
                     "aaSorting": [[4, "desc"]],//默认排序
                     "columns": [
+                        {"data": "id", "name": "id", "width": "90px"},
                         {"data": "orderId", "name": "orderId", "width": "90px"},
                         {"data": "pubEnterpriseName", "name": "pubEnterpriseName", "width": "70px"},
                         {"data": "supEnterpriseName", "name": "supEnterpriseName", "width": "70px"},
@@ -127,7 +128,7 @@ $(function () {
                     ],
                     "columnDefs": [
                         {
-                            "targets": 7,
+                            "targets": 8,
                             "data": "status",
                             "sortable": false,
                             "render": function (data, type, full) {
@@ -146,15 +147,21 @@ $(function () {
                             }
                         },
                         {
-                            "targets": 10,
+                            "targets": 11,
                             "data": null,
                             "sortable": false,
                             "render": function (data, type, full) {
-                                if (full['orderId'] != null && full['orderId'] != "null" && full['orderId'] != "") {
-                                    return '<a href="javascript:doUpdate(this,\'' + full['orderId'] + '\')"data-id="' + full['orderId'] + '">撤回</a>';
-                                } else {
-                                    return;
+                                if (full['status'] == "01") {
+                                    return '<a href="javascript:doCheck(this,\'' + full['id'] + '\')"data-id="' + full['id'] + '">监测</a>';
                                 }
+                                if (full['status'] == "02") {
+                                    return '<a href="javascript:doUpdate(this,\'' + full['id'] + '\')"data-id="' + full['id'] + '">撤回</a>';
+                                }
+                                //if (full['orderId'] != null && full['orderId'] != "null" && full['orderId'] != "") {
+                                //    return '<a href="javascript:doUpdate(this,\'' + full['orderId'] + '\')"data-id="' + full['orderId'] + '">撤回</a>';
+                                //} else {
+                                //    return;
+                                //}
                             }
                         }
                     ]
@@ -1010,15 +1017,40 @@ function cishuLimite(obj) {
     }
 }
 /**
- * 更新订单状态数据
+ * check订单状态
  * @param obj
  */
-function doUpdate(obj, orderId) {
-    var id = $(obj).attr("data-id");
+function doCheck(obj, id) {
+    //var id = $(obj).attr("data-id");
     var contentTitle = $(obj).parent().prevAll(".name").text();
     $.confirmUpdateDailog({
         confirm: function () {
-            $.get("order/updateOrderByOrderId", {"orderId": orderId}, function (msg) {
+            $.get("order/checkOrderById", {"id": id}, function (msg) {
+                if (msg.success) {
+                    sendMsg(true, "监测成功");
+                    if ($('#jifen').hasClass('active')) {
+                        $('#jifen').find('table').DataTable().ajax.reload();
+                    } else {
+                        $('#fama').find('table').DataTable().ajax.reload();
+                    }
+                } else {
+                    sendMsg(false, msg.errorMsg);
+                }
+            }, 'json');
+        },
+        target: id
+    });
+}
+/**
+ * 更新订单状态数据
+ * @param obj
+ */
+function doUpdate(obj, id) {
+    //var id = $(obj).attr("data-id");
+    var contentTitle = $(obj).parent().prevAll(".name").text();
+    $.confirmUpdateDailog({
+        confirm: function () {
+            $.get("order/updateOrderById", {"id": id}, function (msg) {
                 if (msg.success) {
                     sendMsg(true, "撤回成功");
                     if ($('#jifen').hasClass('active')) {
@@ -1031,7 +1063,7 @@ function doUpdate(obj, orderId) {
                 }
             }, 'json');
         },
-        target: orderId
+        target: id
     });
 }
 $.extend({
@@ -1092,7 +1124,7 @@ $.confirmUpdateDailog.default = {
 				</div>\
 			</div>',
     title: "确认",
-    content: "您确定要撤销 <b>{target}</b> 吗？",
+    content: "您确定要处理 <b>{target}</b> 吗？",
     target: "",
     confirm: null
 }

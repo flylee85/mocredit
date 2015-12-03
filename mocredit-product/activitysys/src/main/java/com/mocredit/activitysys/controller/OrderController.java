@@ -73,16 +73,15 @@ public class OrderController extends BaseController {
     /**
      * 根据订单id更新订单状态
      *
-     * @param orderId
      * @return json obj string
      */
-    @RequestMapping("/updateOrderByOrderId")
+    @RequestMapping("/updateOrderById")
     @ResponseBody
-    public String deleteActivityById(@RequestParam String orderId) {
-        //定义返回页面的对象
+    public String deleteActivityById(@RequestParam String id) {
+        //定义返回页面的对象id
         ResponseData responseData = new AjaxResponseData();
         try {
-            Integer affectCount = orderService.updateOrderStatusByOrderId(orderId, OrderStatusType.REVOCATION.getValue());
+            Integer affectCount = orderService.updateOrderStatusById(id, OrderStatusType.REVOCATION.getValue());
             //如果程序执行到这里没有发生异常，则证明该操作成功执行,将获取到的数据放到返回页面的对象中
             responseData.setData(affectCount);
         } catch (Exception e) {
@@ -90,6 +89,30 @@ public class OrderController extends BaseController {
             e.printStackTrace();
             responseData.setSuccess(false);
             responseData.setErrorMsg("撤销订单失败");
+        }
+        //返回页面数据
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 监测订单状态id
+     *
+     * @return json obj string
+     */
+    @RequestMapping("/checkOrderById")
+    @ResponseBody
+    public String checkOrderByOrderId(@RequestParam String id) {
+        //定义返回页面的对象
+        ResponseData responseData = new AjaxResponseData();
+        try {
+            Integer affectCount = orderService.checkOrderById(id);
+            //如果程序执行到这里没有发生异常，则证明该操作成功执行,将获取到的数据放到返回页面的对象中
+            responseData.setData(affectCount);
+        } catch (Exception e) {
+            //如果抛出异常，则将返回页面的对象设置为false
+            e.printStackTrace();
+            responseData.setSuccess(false);
+            responseData.setErrorMsg("监测订单失败");
         }
         //返回页面数据
         return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
