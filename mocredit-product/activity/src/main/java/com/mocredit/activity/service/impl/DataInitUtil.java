@@ -261,7 +261,7 @@ public class DataInitUtil {
 	private void importaActivityStore() throws SQLException {
 		// 读取活动表
 		ResultSet rs = query(
-				"SELECT distinct es.eitemid, es.storeid, s.shopid FROM eitemstore es LEFT JOIN store s ON es.storeid = s.id where es.eitemid in (select id from eitem i where status=1 and expointType!=0)",
+				"SELECT distinct es.eitemid, es.storeid, s.shopid FROM eitemstore es LEFT JOIN store s ON es.storeid = s.id where es.eitemid in (select id from eitem i where productcode in ('COSTAHB','TPYKF'))",
 				true);
 		StringBuilder sb = new StringBuilder("INSERT INTO `act_activity_store`(activity_id,store_id,shop_id) VALUES");
 		while (rs.next()) {
