@@ -50,7 +50,13 @@
           SELECT * FROM  t_activity_code where code=#{code}
         ]]>
     </select>
-
+    
+<!-- 根据编码查询码记录 -->
+    <select id="findByCodeAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TActivityCode" resultMap="baseResultMap" parameterType="map" >
+        <![CDATA[
+          SELECT * FROM  t_activity_code where code=#{code} and activity_id=#{activityId}
+        ]]>
+    </select>
 
     <select id="findActivityCodeById" resultType="com.mocredit.verifyCode.model.TActivityCode" resultMap="baseResultMap" parameterType="java.lang.String" >
         <![CDATA[

@@ -59,4 +59,12 @@ public interface TerminalService {
 	void synGateway(Terminal newTerminal, OperType oper);
 
 	void synIntegral(Terminal newTerminal, Terminal oldTerminal, OperType oper);
+
+	/**
+	 * 根据机具号获取所在门店ID
+	 * 
+	 * @param code
+	 * @return
+	 */
+	String getStoreIdByCode(String code);
 }

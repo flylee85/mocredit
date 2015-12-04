@@ -41,7 +41,7 @@
 
     <select id="findVerifiedCodesByDeviceAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="map">
         <![CDATA[
-          SELECT * FROM  t_verified_code where device=#{device} and request_serial_number=#{request_serial_number} and DATE_FORMAT( verify_time,'%Y%m%d')= DATE_FORMAT( #{date},'%Y%m%d')
+          SELECT * FROM  t_verified_code where device=#{device} and request_serial_number=#{request_serial_number} and DATE_FORMAT( verify_time,'%Y%m%d')= DATE_FORMAT( #{date},'%Y%m%d') limit 1
         ]]>
     </select>
     <!-- 根据券码序列号（券码ID）查询券码验证记录 -->
