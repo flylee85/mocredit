@@ -53,6 +53,7 @@ $(function () {
                     {"data": "orderTime", "name": "orderTime", "width": "90px"},
                     {"data": "status", "name": "status", "width": "70px"},
                     {"data": "amt", "name": "amt", "width": "70px"},
+                    {"data": "enCode", "name": "enCode", "width": "70px"},
                     {"data": "cardNo", "name": "cardNo", "width": "70px"},
                 ], "columnDefs": [
                     {
