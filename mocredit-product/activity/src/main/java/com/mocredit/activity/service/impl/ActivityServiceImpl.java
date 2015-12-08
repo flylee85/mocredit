@@ -327,11 +327,14 @@ public class ActivityServiceImpl implements ActivityService {
 			changeDescribe.append("积分：" + activity.getIntegral() + ";");
 
 			// 活动最大类型修改
-			httpPostMap.put("maxType", activity.getMaxType().toString());
+//			httpPostMap.put("maxType", activity.getMaxType().toString());
+			httpPostMap.put("maxType", "1");
+			
 			changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
 
 			// 活动使用次数
-			httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
+//			httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
+			httpPostMap.put("maxNumber","1");
 			changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
 
 			// 活动使用次数
@@ -524,11 +527,13 @@ public class ActivityServiceImpl implements ActivityService {
 				changeDescribe.append("积分：" + activity.getIntegral() + ";");
 
 				// 活动最大类型修改
-				httpPostMap.put("maxType", activity.getMaxType().toString());
+//				httpPostMap.put("maxType", activity.getMaxType().toString());
+				httpPostMap.put("maxType","1");
 				changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
 
 				// 活动使用次数
-				httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
+//				httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
+				httpPostMap.put("maxNumber", "1");
 				changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
 
 				// 活动状态 活动修改时的状态与原活动一致
