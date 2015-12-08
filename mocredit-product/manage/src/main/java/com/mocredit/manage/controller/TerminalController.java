@@ -140,4 +140,23 @@ public class TerminalController {
 		}
 		return JSON.toJSONString(response);
 	}
+
+	/**
+	 * 根据机具号获取门店ID
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/getStoreIdByCode/{code}")
+	public String getStoreIdByCode(@PathVariable String code) {
+		ResponseData response = new AjaxResponseData();
+		try {
+			String storeId = terminalService.getStoreIdByCode(code);
+			response.setData(storeId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setSuccess(false);
+			response.setErrorMsg(e.getMessage());
+		}
+		return JSON.toJSONString(response);
+	}
 }

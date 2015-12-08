@@ -84,6 +84,14 @@
 		</where>
 		limit 1
   </select>
+  <select id="selectStoreIdByCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select store_id
+		from t_terminal
+		<where>
+		 sn_code=#{code}
+		</where>
+		limit 1
+  </select>
   <select id="selectStore" resultMap="BaseResultMap" parameterType="java.lang.String" >
     <!--
       WARNING - @mbggenerated

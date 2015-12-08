@@ -26,6 +26,13 @@ public interface ActivityCodeMapper {
      *   返回一个列表
      */
     List<TActivityCode> findActivityCodeByCode(String code);
+    /**
+     * 根据券码号，查询券码对象表
+     * @param code
+     * @return
+     *   返回一个列表
+     */
+    TActivityCode findByCodeAndRequestSerialNumber(@Param("device")String device,@Param("requestSerialNumber")String requestSerialNumber,@Param("date") Date date);
 
     /**
      * 根据券码主键获取券码对象

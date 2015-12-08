@@ -37,5 +37,5 @@ public interface TerminalMapper {
 	int update(Terminal terminal);
 
 	Terminal selectStore(@Param("storeId") String storeId);
-
+	Terminal selectStoreIdByCode(@Param("code") String code);
 }

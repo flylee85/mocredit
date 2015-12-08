@@ -211,4 +211,10 @@ public class TerminalServiceImpl implements TerminalService {
 		}
 		return null == terminalMapper.checkSnCode(param);
 	}
+	
+	@Override
+	public String getStoreIdByCode(String code) {
+		 Terminal terminal = terminalMapper.selectStoreIdByCode(code);
+		 return null==terminal?"":terminal.getStoreId();
+	}
 }

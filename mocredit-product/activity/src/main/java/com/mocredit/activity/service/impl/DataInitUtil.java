@@ -18,7 +18,9 @@ import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.mocredit.activity.model.Activity;
 import com.mocredit.activity.persitence.ActivityMapper;
+import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.util.DateUtil;
+import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.manage.model.Store;
 import com.mocredit.manage.model.Terminal;
@@ -32,13 +34,47 @@ import com.mocredit.manage.persitence.TerminalMapper;
  * @date 2015年11月25日
  */
 public class DataInitUtil {
-	private static final String IN_URL = "jdbc:mysql://localhost:3306/mcntong_init?useUnicode=true&characterEncoding=utf-8";
+//	private static final String IN_URL = "jdbc:mysql://192.168.4.137:3306/mcntong?useUnicode=true&characterEncoding=utf-8";
+//	private static final String IN_UNAME = "root";
+//	private static final String IN_PWD = "mocredit";
+//	private static final String OUT_URL = "jdbc:mysql://192.168.100.156:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
+//	private static final String OUT_UNAME = "root";
+//	private static final String OUT_PWD = "tbuqgXb6tb9)Suwbijrjiscl";
+//	private static final String DEVICE_URL="jdbc:mysql://192.168.100.156:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+//	private static final String DEVICE_UNAME = "root";
+//	private static final String DEVICE_PWD = "tbuqgXb6tb9)Suwbijrjiscl";
+	
+	private static final String IN_URL = "jdbc:mysql://192.168.4.137:3306/mcntong?useUnicode=true&characterEncoding=utf-8";
 	private static final String IN_UNAME = "root";
-	private static final String IN_PWD = "root";
-	private static final String OUT_URL = "jdbc:mysql://localhost:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
+	private static final String IN_PWD = "mocredit";
+	private static final String OUT_URL = "jdbc:mysql://192.168.24.124:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
 	private static final String OUT_UNAME = "root";
-	private static final String OUT_PWD = "root";
-	private static String IMPORT_URL = "http://ytq-pc:8080/activityImport";
+	private static final String OUT_PWD = "eAhrpeDoq/ve39md";
+	private static final String DEVICE_URL="jdbc:mysql://192.168.24.124:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+	private static final String DEVICE_UNAME = "root";
+	private static final String DEVICE_PWD = "eAhrpeDoq/ve39md";
+	
+//	private static final String IN_URL = "jdbc:mysql://127.0.0.1:3306/mcntong_init?useUnicode=true&characterEncoding=utf-8";
+//	private static final String IN_UNAME = "root";
+//	private static final String IN_PWD = "root";
+//	private static final String OUT_URL = "jdbc:mysql://127.0.0.1:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
+//	private static final String OUT_UNAME = "root";
+//	private static final String OUT_PWD = "root";
+//	private static final String DEVICE_URL="jdbc:mysql://127.0.0.1:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+//	private static final String DEVICE_UNAME = "root";
+//	private static final String DEVICE_PWD = "root";
+//	private static String IMPORT_URL = "http://192.168.100.156:9092/integral/activityImport";
+	/*** 正式环境 ***/
+	// private static final String IN_URL =
+	// "jdbc:mysql://192.168.4.137:3306/mcntong?useUnicode=true&characterEncoding=utf-8";
+	// private static final String IN_UNAME = "root";
+	// private static final String IN_PWD = "mocredit";
+	// private static final String OUT_URL =
+	// "jdbc:mysql://localhost:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
+	// private static final String OUT_UNAME = "root";
+	// private static final String OUT_PWD = "tbuqgXb6tb9)Suwbijrjiscl";
+	private static String IMPORT_URL = "http://192.168.22.122:9092/integral/activityImport";
+
 	private Connection conIn;
 	private Connection conOut;
 	private StoreMapper storeMapper;
@@ -225,7 +261,7 @@ public class DataInitUtil {
 	private void importaActivityStore() throws SQLException {
 		// 读取活动表
 		ResultSet rs = query(
-				"SELECT distinct es.eitemid, es.storeid, s.shopid FROM eitemstore es LEFT JOIN store s ON es.storeid = s.id where es.eitemid in (select id from eitem i where status=1 and expointType!=0)",
+				"SELECT distinct es.eitemid, es.storeid, s.shopid FROM eitemstore es LEFT JOIN store s ON es.storeid = s.id where es.eitemid in (select id from eitem i where productcode in ('COSTAHB','TPYKF'))",
 				true);
 		StringBuilder sb = new StringBuilder("INSERT INTO `act_activity_store`(activity_id,store_id,shop_id) VALUES");
 		while (rs.next()) {
@@ -245,8 +281,11 @@ public class DataInitUtil {
 	private void importDevice() throws SQLException {
 		// 读取活动表
 		ResultSet rs = query("select * from device where status=0", true);
+		String oldGateway="insert into device(storeid,devcode,shopid,agentid)values(";
 		StringBuilder sb = new StringBuilder(
 				"INSERT INTO `t_terminal`(id,store_id,create_time,status,deskey,mackey,sn_code,supplier_id,type,gateway) VALUES");
+		Connection conn = DriverManager.getConnection(DEVICE_URL, DEVICE_UNAME, DEVICE_PWD);
+		Statement statement = conn.createStatement();
 		while (rs.next()) {
 			sb.append("(");
 			sb.append(getColumn(rs.getString("id")));
@@ -262,11 +301,15 @@ public class DataInitUtil {
 			sb.append(getColumn("02"));
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append("),");
+			
+			statement.execute(oldGateway+getColumn(1)+getColumn(rs.getString("devcode"))+getColumn(1)+17+")");
 		}
+		conn.close();
 		rs.close();
 		sb.deleteCharAt(sb.length() - 1);
 		System.out.println(sb.toString());
 		execute(sb.toString(), false);
+		
 	}
 
 	/**
@@ -276,8 +319,10 @@ public class DataInitUtil {
 	 */
 	private void importActivity() throws SQLException {
 		// 读取活动表
+//		String importSql = "select id,`name`,productcode,outerid,entid,(select e.entname from enterprise e where id =i.entid) as enterprise_name,expointType,price,num,endtime,printTitle,printstr,weeklimit,smscontent,checkinfo,expenseSms,status from eitem i where status=1 and expointType!=0";
+		String importSql="select id,`name`,productcode,outerid,entid,(select e.entname from enterprise e where id =i.entid) as enterprise_name,expointType,price,num,endtime,printTitle,printstr,weeklimit,smscontent,checkinfo,expenseSms,status from eitem i where productcode in ('COSTAHB','TPYKF')";
 		ResultSet rs = query(
-				"select id,`name`,productcode,outerid,entid,(select e.entname from enterprise e where id =i.entid) as enterprise_name,expointType,price,num,endtime,printTitle,printstr,weeklimit,smscontent,checkinfo,expenseSms,status from eitem i where status=1 and expointType!=0",
+				importSql,
 				true);
 		while (rs.next()) {
 			StringBuilder sb = new StringBuilder(
@@ -288,10 +333,11 @@ public class DataInitUtil {
 			sb.append(getColumn(rs.getString("entid")));
 			sb.append(getColumn(rs.getString("enterprise_name")));
 			sb.append(getColumn(rs.getString("name")));
-			sb.append(getColumn("0".equals(rs.getString("expointType")) ? "02" : "01"));
+			sb.append(getColumn("01"));//type 积分
 			sb.append(getColumn(
 					StringUtils.isEmpty(rs.getString("productcode")) ? IDUtil.getID() : rs.getString("productcode")));
-			sb.append(getColumn(rs.getString("outerid")));
+			sb.append(getColumn(
+					StringUtils.isEmpty(rs.getString("productcode")) ? IDUtil.getID() : rs.getString("productcode")));
 			sb.append(getColumn(rs.getString("printTitle")));
 			sb.append(getColumn(rs.getString("printstr")));
 			sb.append(getColumn(rs.getString("checkinfo")));
@@ -306,12 +352,7 @@ public class DataInitUtil {
 			sb.append(getColumn("0"));// 积分
 			sb.append("now(),");
 			// 兑换类型转换
-			String exchangeType = "0";
-			if ("1".equals(rs.getString("expointType"))) {
-				exchangeType = "1";
-			} else if ("3".equals(rs.getString("expointType"))) {
-				exchangeType = "2";
-			}
+			String exchangeType ="3";//权益
 			sb.append(getColumn(exchangeType));// exchange_type
 			sb.append(getColumn("01"));// status
 			sb.append(getColumn(""));// max_type
@@ -336,7 +377,9 @@ public class DataInitUtil {
 	 */
 	private void importMinShengActivity() throws SQLException {
 		// 读取活动表
-		ResultSet rs = query("SELECT * FROM sd_points_info WHERE BANK_ID = 3 AND `STATUS` = 0", true);
+//		String importSql = "SELECT * FROM SD_POINTS_INFO WHERE BANK_ID = 3 AND `STATUS` = 0";
+		String importSql = "SELECT * FROM SD_POINTS_INFO WHERE ACTIVTY_ID in('MS0000','MS0003','MS0004','MS0002','MS0111','MS0005')";
+		ResultSet rs = query(importSql, true);
 		ResultSet msrs = query("SELECT id FROM enterprise where entname='民生银行'", true);
 		msrs.next();
 		String minshengId = msrs.getString("id");
@@ -349,7 +392,7 @@ public class DataInitUtil {
 			sb.append(getColumn(rs.getString("PRODUCT_NAME")));
 			sb.append(getColumn("01"));// type
 			sb.append(getColumn(rs.getString("ACTIVTY_ID")));
-			sb.append(getColumn(rs.getString("PRODUCT_ID")));
+			sb.append(getColumn(rs.getString("ACTIVTY_ID")));
 
 			String rule = rs.getString("RULES");
 			Map<String, String> ruleMap = handleRules(rule);
@@ -416,7 +459,7 @@ public class DataInitUtil {
 				activityId = actId.getInt(1);
 			}
 			// 导入活动门店关系
-			String shopSql = "SELECT shopid FROM sd_pos_term WHERE MERCH_ID = '" + rs.getString("MERCH_ID")
+			String shopSql = "SELECT shopid FROM SD_POS_TERM WHERE MERCH_ID = '" + rs.getString("MERCH_ID")
 					+ "' AND TERM_ID = '" + rs.getString("TREM_ID") + "'";
 			ResultSet shop = query(shopSql, true);
 			if (shop.next()) {
@@ -555,16 +598,12 @@ public class DataInitUtil {
 		// 将修改信息发送至验码系统
 		httpPostMap.put("operCode", "1");
 		System.out.println(JSON.toJSONString(httpPostMap));
-		// String returnJson =
-		// HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-		// JSON.toJSONString(httpPostMap));
-		// Map<String, Object> returnMap = JSON.parseObject(returnJson,
-		// Map.class);
-		// boolean isSuccess =
-		// Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-		// if (!isSuccess) {
-		// throw new BusinessException("向积分核销系统同步信息失败");
-		// }
+		String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, JSON.toJSONString(httpPostMap));
+		Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+		boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+		if (!isSuccess) {
+			throw new BusinessException("向积分核销系统同步信息失败");
+		}
 	}
 
 	public StoreMapper getStoreMapper() {

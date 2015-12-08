@@ -1,7 +1,5 @@
 package com.mocredit.verifyCode.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -90,7 +88,9 @@ public class TVerifiedCode {
      * 冗余字段： 存放门店编码
      */
     private String storeCode;
-
+    private String batchNo;//批次号
+    private String searchNo;//流水号
+    
     Integer useCount=1 ;//封装用于http请求的时候接收参数。与数据库无关
 
 
@@ -108,7 +108,23 @@ public class TVerifiedCode {
         return code;
     }
 
-    public void setCode(String code) {
+    public String getBatchNo() {
+		return batchNo;
+	}
+
+	public void setBatchNo(String batchNo) {
+		this.batchNo = batchNo;
+	}
+
+	public String getSearchNo() {
+		return searchNo;
+	}
+
+	public void setSearchNo(String searchNo) {
+		this.searchNo = searchNo;
+	}
+
+	public void setCode(String code) {
         this.code = code;
     }
 
