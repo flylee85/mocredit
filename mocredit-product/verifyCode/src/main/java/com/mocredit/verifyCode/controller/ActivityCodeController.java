@@ -187,7 +187,6 @@ public class ActivityCodeController {
 		verifiedCode.setBatchNo(batchNo);
 		verifiedCode.setSearchNo(searchNo);
 		verifiedCode.setDevice(device);
-		;
 		verifiedCode.setCode(code);
 		// 日志
 		TVerifyLog log = this.buildVerifyLog(ard, verifiedCode);
@@ -226,7 +225,6 @@ public class ActivityCodeController {
 			return JSON.toJSONString(ard);
 		}
 		// 判断是否传递了POS序列号与券码
-		// 2015-08-17 根据讨论，因为老机具没有传送 code，所以修改校验方式：
 		if (StringUtils.isEmpty(verifiedCode.getRequestSerialNumber())) {
 			ard.setSuccess(false);
 			ard.setErrorMsg("POS序列号或券码为空！");
@@ -261,7 +259,6 @@ public class ActivityCodeController {
 		String returnStr = null;
 		AjaxResponseData ard = new AjaxResponseData();
 		// 判断是否传递了POS序列号与券码
-		// 2015-08-17 根据讨论，因为老机具没有传送 code，所以修改校验方式：
 		if (StringUtils.isEmpty(batchNo) || StringUtils.isEmpty(searchNo) || StringUtils.isEmpty(device)) {
 			ard.setSuccess(false);
 			ard.setErrorMsg("POS序列号或券码为空！");
@@ -276,6 +273,41 @@ public class ActivityCodeController {
 			e.printStackTrace();
 		}
 		return returnStr;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/revokeActivityCodeForSys", produces = { "application/json;charset=UTF-8" })
+	public String revokeActivityCodeForSys(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody String param) {
+		AjaxResponseData ard = new AjaxResponseData();
+		// 判断请求的param是否为空，并且是一个json格式
+		TVerifiedCode verifiedCode = null;
+		try {
+			verifiedCode = JSON.parseObject(param, TVerifiedCode.class);
+		} catch (Exception e) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("非法的请求参数格式！");
+			ard.setErrorCode(ErrorCode.CODE_30.getCode());
+			return JSON.toJSONString(ard);
+		}
+		// 判断是否传递了POS序列号与券码
+		if (StringUtils.isEmpty(verifiedCode.getRequestSerialNumber())) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("POS序列号或券码为空！");
+			ard.setErrorCode(ErrorCode.CODE_15.getCode());
+			return JSON.toJSONString(ard);
+		}
+		try {
+			ard = this.activityCodeService.revokeForSys(verifiedCode.getRequestSerialNumber(),
+					verifiedCode.getDevice());
+		} catch (Exception e) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("请求过程发生事务异常!");
+			ard.setErrorCode(ErrorCode.CODE_30.getCode());
+			logger.error(e.toString());
+			e.printStackTrace();
+		}
+		return JSON.toJSONStringWithDateFormat(ard, DateUtil.FORMAT_YYYYMMDD_HHMMSS);
 	}
 
 	/**

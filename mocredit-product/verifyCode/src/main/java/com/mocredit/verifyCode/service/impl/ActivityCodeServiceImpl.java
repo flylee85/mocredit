@@ -497,6 +497,14 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		sb.append("</NewDataSet>");
 		return sb.toString();
 	}
+	
+	public AjaxResponseData revokeForSys(String request_serial_number, String device) {
+		AjaxResponseData ard = new AjaxResponseData();
+		// 码校验
+		TVerifiedCode verifyCodes = vcm.findByDeviceAndRequestSerialNumber(device, request_serial_number);
+		revoke(request_serial_number, device, ard, verifyCodes);
+		return ard;
+	}
 
 	/**
 	 * 消费撤销

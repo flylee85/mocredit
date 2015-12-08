@@ -88,6 +88,13 @@ public interface ActivityCodeService {
 	 * @return
 	 */
 	String revokeForOldPos(String batchNo,String searchNo, String device);
+	/**
+	 * 管理员人工撤销
+	 * @param request_serial_number
+	 * @param device
+	 * @return
+	 */
+	AjaxResponseData revokeForSys(String request_serial_number, String device);
 
 	/**
 	 * 解析导入数据，放入码表中。

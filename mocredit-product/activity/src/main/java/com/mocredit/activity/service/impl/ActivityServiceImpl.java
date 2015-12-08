@@ -350,6 +350,10 @@ public class ActivityServiceImpl implements ActivityService {
 			httpPostMap.put("exchangeType", activity.getExchangeType());
 			changeDescribe.append("兑换类型：" + activity.getExchangeType() + ";");
 
+			// 发行企业
+			httpPostMap.put("enterpriseName", activity.getEnterpriseName());
+			changeDescribe.append("发行企业：" + activity.getEnterpriseName() + ";");
+
 			// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 			List<Store> selectAllofActivity = storeMapper.selectAllofActivity(activity.getId());
 
@@ -546,6 +550,10 @@ public class ActivityServiceImpl implements ActivityService {
 				// 兑换类型
 				httpPostMap.put("exchangeType", activity.getExchangeType());
 				changeDescribe.append("兑换类型：" + activity.getExchangeType() + ";");
+
+				// 发行企业
+				httpPostMap.put("enterpriseName", activity.getEnterpriseName());
+				changeDescribe.append("发行企业：" + activity.getEnterpriseName() + ";");
 
 				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 				Map<String, Object> queryMap = new HashMap<String, Object>();
