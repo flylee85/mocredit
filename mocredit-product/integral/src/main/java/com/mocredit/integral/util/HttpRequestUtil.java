@@ -245,16 +245,39 @@ public class HttpRequestUtil {
         // "{\"activityId\":\"1\",\"startTime\":\"2015-08-12 11:11:11\",\"storeList\":\"[{\"shopId\":\"1\",\"storeId\":\"3\"}]\"}")
         // );
 
-        System.out
+        /*System.out
                 .println(doPostJson(
                         "http://117.121.20.137:10000/bank/payment",
-                        "{\"cardExpDate\":\"0924\",\"cardNum\":\"6214850280354785\",\"code\":\"MS0001\",\"orderId\":\"130059002469\",\"tranAmt\":\"100\"}"));
+                        "{\"cardExpDate\":\"1249\",\"cardNum\":\"6013823100097711014\",\"code\":\"MS0001\",\"orderId\":\"795060113343\",\"tranAmt\":\"23500\"}"));*/
+       /* System.out
+                .println(doPostJson(
+                        "http://192.168.23.123:10001/bank/payment",
+                        "{\"cardExpDate\":\"0720\",\"cardNum\":\"6226880053372785\",\"code\":\"TPYKF\",\"orderId\":\"79501604113343\",\"tranAmt\":\"23500\"}"));*/
+       /* System.out
+                .println(doPostJson(
+                        "http://192.168.23.123:10001/bank/payment",
+                        "{\"cardExpDate\":\"0320\",\"cardNum\":\"4392260028245056\",\"code\":\"COSTAHB\",\"orderId\":\"01212180262\",\"tranAmt\":\"500\"}"));*/
+     /*   System.out
+                .println(doPostJson(
+                        "http://192.168.100.155:10001/bank/payment",
+                        "{\"cardExpDate\":\"1249\",\"cardNum\":\"6013823100097711014\",\"code\":\"MS0001\",\"orderId\":\"7950604113343\",\"tranAmt\":\"23500\"}"));*/
+
+        System.out
+                .println(doPostJson(
+
+                        "http://192.168.23.123:10001/bank/paymentRevoke",
+                        "{\"orderId\":\"088015345403\",\"oldOrderId\":\"088015345402\"}"));
+
+      /*  System.out
+                .println(doPostJson(
+                        "http://117.121.20.137:10000/bank/payment",
+                        "{\"cardExpDate\":\"0924\",\"cardNum\":\"6214850280354785\",\"code\":\"MS0001\",\"orderId\":\"130051931012469\",\"tranAmt\":\"100\"}"));
 
         System.out
                 .println(doPostJson(
 
                         "http://117.121.20.137:10000/bank/paymentRevoke",
-                        "{\"orderId\":\"230059002470\",\"oldOrderId\":\"130059002469\"}"));
+                        "{\"orderId\":\"13005191012669\",\"oldOrderId\":\"13005191012469\"}"));
 
         System.out
                 .println(doPostJson(
@@ -267,6 +290,12 @@ public class HttpRequestUtil {
 
                         "http://117.121.20.137:10000/bank/paymentRevokeReserval",
                         "{\"orderId\":\"250059002470\",\"oldOrderId\":\"240059002470\"}"));
+
+        System.out
+                .println(doPostJson(
+
+                        "http://117.121.20.146:9092/integral/activitySyn",
+                        "{\"enCode\":\"5773e998\"}"));*/
 //        System.out
 //                .println(doPostJson(
 //                        "http://127.0.0.1:8080/payment",

@@ -2,6 +2,7 @@ package com.mocredit.integral.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.mocredit.integral.entity.Activity;
 import com.mocredit.integral.entity.ActivityTransRecord;
@@ -68,4 +69,8 @@ public interface OrderService extends BaseService<Order> {
      * @return
      */
     Order getOrderBySearchNoAndBatchNo(String searchno, String batchno);
+
+    List<Map<String, Object>> findOrderByList(OrderDto orderDto);
+
+    int findOrderByListCount(OrderDto orderDto);
 }

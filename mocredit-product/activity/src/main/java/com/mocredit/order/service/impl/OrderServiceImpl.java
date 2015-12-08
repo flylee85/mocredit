@@ -8,9 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.mocredit.base.datastructure.ResponseData;
 import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.order.constant.OrderStatusType;
+import com.mocredit.order.dto.OrderDto;
+import com.mocredit.order.entity.OrderData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +42,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
-    public int updateOrderStatusById(String id, String status) {
-        Order order = orderMapper.findOrderByOId(id);
-        orderRevoke(order.getOrderId());
-        return orderMapper.updateOrderStatusByOrderId(order.getOrderId(), status);
+    public ResponseData findOrderList(OrderDto orderDto) {
+        String param = JSON.toJSONString(orderDto);
+        String orderSearchUrl = null;
+        if ("02".equals(orderDto.getType())) {
+            orderSearchUrl = PropertiesUtil.getValue("verifyCode.orderSearch");
+        }
+        if ("01".equals(orderDto.getType())) {
+            orderSearchUrl = PropertiesUtil.getValue("integral.orderSearch");
+        }
+        String resp = HttpUtil.doRestfulByHttpConnection(orderSearchUrl, param);
+        return JSON.parseObject(resp, ResponseData.class);
+    }
+
+
+    @Override
+    public boolean revokeOrderByOrderId(String orderId, String enCode, ResponseData responseData) {
+        orderRevoke(orderId, enCode, responseData);
+        return responseData.getSuccess();
     }
 
     @Override
@@ -79,17 +95,15 @@ public class OrderServiceImpl implements OrderService {
         return resultMap;
     }
 
-    public Map<String, Object> orderRevoke(String orderId) {
+    public void orderRevoke(String orderId, String enCode, ResponseData responseData) {
         String orderRevokeUrl = PropertiesUtil.getValue("verifyCode.orderRevoke");
         // 调用Http工具，执行送码操作，并解析返回值
         Map<String, Object> param = new HashMap<>();
-        param.put("orderId", orderId);
+        param.put("requestSerialNumber", orderId);
+        param.put("device", enCode);
         String orderRevokeJson = HttpUtil.doRestfulByHttpConnection(orderRevokeUrl, JSON.toJSONString(param));// 送码
-        Map<String, Object> orderRevokeMap = JSON.parseObject(orderRevokeJson, Map.class);
-        logger.debug("送码，返回结果：" + orderRevokeJson);
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-        // 将返回对象的success设置为true,并返回数据对象
-        resultMap.put("success", true);
-        return resultMap;
+        ResponseData resp = JSON.parseObject(orderRevokeJson, ResponseData.class);
+        responseData.setSuccess(resp.getSuccess());
+        responseData.setErrorMsg(resp.getErrorMsg());
     }
 }

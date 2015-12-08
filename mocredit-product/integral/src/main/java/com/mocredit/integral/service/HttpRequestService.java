@@ -363,36 +363,39 @@ public class HttpRequestService extends LogService {
      */
     public boolean analyJsonReponse(Integer requestId, String url,
                                     String param, String reponse, Response resp) {
-        if (reponse == null) {
-//            resp.setErrorCode(ErrorCodeType.POST_BANK_ERROR.getValue());
-//            resp.setErrorMsg(ErrorCodeType.POST_BANK_ERROR.getText());
-//            return false;
-            resp.setSuccess(true);
+        String bankOff = PropertiesUtil.getValue("bank-off");
+        if (!"true".equals(bankOff)) {
+            if (reponse == null) {
+                resp.setErrorCode(ErrorCodeType.POST_BANK_ERROR.getValue());
+                resp.setErrorMsg(ErrorCodeType.POST_BANK_ERROR.getText());
+                return false;
+            }
+            try {
+                ResponseData responseData = JSON.parseObject(reponse,
+                        ResponseData.class);
+                resp.setData(responseData.getData());
+                resp.setErrorCode(responseData.getErrorCode());
+                resp.setErrorMsg(responseData.getErrorMsg());
+                resp.setSuccess(responseData.getSuccess());
+                // 判断bank端的接口响应是否是001(参数错误),002(系统错误)
+                if ("001".equals(resp.getErrorCode())) {
+                    resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
+                    resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
+                }
+                if ("002".equals(resp.getErrorCode())) {
+                    resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
+                    resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
+                }
+                return responseData.getSuccess();
+            } catch (Exception e) {
+                resp.setErrorCode(ErrorCodeType.ANA_RESPONSE_ERROR.getValue());
+                resp.setErrorMsg(ErrorCodeType.ANA_RESPONSE_ERROR.getText());
+                LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
+                        url, requestId, param, e);
+                return false;
+            }
+        } else {
             return true;
-        }
-        try {
-            ResponseData responseData = JSON.parseObject(reponse,
-                    ResponseData.class);
-            resp.setData(responseData.getData());
-            resp.setErrorCode(responseData.getErrorCode());
-            resp.setErrorMsg(responseData.getErrorMsg());
-            resp.setSuccess(responseData.getSuccess());
-            // 判断bank端的接口响应是否是001(参数错误),002(系统错误)
-            if ("001".equals(resp.getErrorCode())) {
-                resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
-                resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
-            }
-            if ("002".equals(resp.getErrorCode())) {
-                resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
-                resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
-            }
-            return responseData.getSuccess();
-        } catch (Exception e) {
-            resp.setErrorCode(ErrorCodeType.ANA_RESPONSE_ERROR.getValue());
-            resp.setErrorMsg(ErrorCodeType.ANA_RESPONSE_ERROR.getText());
-            LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
-                    url, requestId, param, e);
-            return false;
         }
     }
 
@@ -422,7 +425,7 @@ public class HttpRequestService extends LogService {
             if (anaFlag) {
                 orderVo.setRequestId(requestId);
                 orderVo.setStatus(OrderStatus.PAYMENT_REVOKE.getValue());
-                if (!orderService.isExistOrderAndUpdate(orderVo.getOldOrderId()) || !orderService.save(orderVo)) {
+                if (/*!orderService.isExistOrderAndUpdate(orderVo.getOldOrderId()) || */!orderService.save(orderVo)) {
                     resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
                             .getValue());
                     resp.setErrorMsg(ErrorCodeType.SAVE_DATEBASE_ERROR
@@ -725,19 +728,24 @@ public class HttpRequestService extends LogService {
      */
 
     private String doPostJson(Integer requestId, String url, String param) {
-        try {
-            LOGGER.info("### doPost url={},requestId={},param={} ###", url,
-                    requestId, param);
-            String response = HttpUtil.doRestfulByHttpConnection(url, param);
-            outRequestLogService.save(new OutRequestLog(requestId, url, param));
-            outResponseLogService.save(new OutResponseLog(requestId, response));
-            return response;
-        } catch (Exception e) {
-            LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
-                    url, requestId, param, e);
-            outRequestLogService.save(new OutRequestLog(requestId, url, param));
-            outResponseLogService.save(new OutResponseLog(requestId, e
-                    .getMessage()));
+        String bankOff = PropertiesUtil.getValue("bank-off");
+        if (!"true".equals(bankOff)) {
+            try {
+                LOGGER.info("### doPost url={},requestId={},param={} ###", url,
+                        requestId, param);
+                String response = HttpUtil.doRestfulByHttpConnection(url, param);
+                outRequestLogService.save(new OutRequestLog(requestId, url, param));
+                outResponseLogService.save(new OutResponseLog(requestId, response));
+                return response;
+            } catch (Exception e) {
+                LOGGER.error("### doPost url={}, requestId={},param={}, error={}",
+                        url, requestId, param, e);
+                outRequestLogService.save(new OutRequestLog(requestId, url, param));
+                outResponseLogService.save(new OutResponseLog(requestId, e
+                        .getMessage()));
+                return null;
+            }
+        } else {
             return null;
         }
     }

@@ -3,10 +3,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mocredit.integral.persistence.OrderMapper">
     <insert id="save" parameterType="com.mocredit.integral.entity.Order">
-		insert into
-		`ti_order`(request_id,card_num,store_id,activity_id,amt,order_id,old_order_id,en_code,card_exp_date,ctime,`status`,batch_no,search_no)
-		values(#{t.requestId},#{t.cardNum},#{t.storeId},#{t.activityId},#{t.amt},#{t.orderId},#{t.oldOrderId},#{t.enCode},#{t.cardExpDate},now(),#{t.status},#{t.batchno},#{t.searchno})
-	</insert>
+        insert into
+        `ti_order`(request_id,card_num,store_id,activity_id,amt,order_id,old_order_id,en_code,card_exp_date,ctime,`status`,batch_no,search_no)
+        values(#{t.requestId},#{t.cardNum},#{t.storeId},#{t.activityId},#{t.amt},#{t.orderId},#{t.oldOrderId},#{t.enCode},#{t.cardExpDate},now(),#{t.status},#{t.batchno},#{t.searchno})
+    </insert>
     <sql id="Base_Column">
         a.uuid as uuid,
 		a.order_id as orderId,
@@ -46,34 +46,101 @@
 		`ti_order` where order_id=#{orderId}
 	</select>
     <select id="synOrder" resultType="com.mocredit.integral.dto.OrderDto">
-		select
-		a.uuid as id,
-		a.order_id
-		as orderId,
-		a.activity_id as activityId,
-		b.activity_name as
-		activityName,
-		b.pub_enterprise_id as enterpriseId,
-		b.pub_enterprise_name as
-		enterpriseName,
-		a.shop_id as supEnterpriseId,
-		a.shop_name as
-		supEnterpriseName,
-		a.store_id as storeId,
-		a.store_name as
-		storeName,
-		a.status as status,
-		b.start_time as startTime,
-		b.end_time as
-		endTime,
-		a.bank as bank,
-		a.card_num as cardNum,
-		a.amount as integral,
-		a.ctime as
-		createTime
-		from ti_order a left join ti_activity b on
-		a.activity_id=b.activity_id
-		order by a.uuid asc limit
-		#{offset},#{pagesize}
-	</select>
+        select
+        a.uuid as id,
+        a.order_id
+        as orderId,
+        a.activity_id as activityId,
+        b.activity_name as
+        activityName,
+        b.pub_enterprise_id as enterpriseId,
+        b.pub_enterprise_name as
+        enterpriseName,
+        a.shop_id as supEnterpriseId,
+        a.shop_name as
+        supEnterpriseName,
+        a.store_id as storeId,
+        a.store_name as
+        storeName,
+        a.status as status,
+        b.start_time as startTime,
+        b.end_time as
+        endTime,
+        a.bank as bank,
+        a.card_num as cardNum,
+        a.amount as integral,
+        a.ctime as
+        createTime
+        from ti_order a left join ti_activity b on
+        a.activity_id=b.activity_id
+        order by a.uuid asc limit
+        #{offset},#{pagesize}
+    </select>
+
+    <select id="findOrderByList" resultType="java.util.HashMap" parameterType="com.mocredit.integral.dto.OrderDto">
+        select a.order_id as orderId,
+        b.pub_enterprise_name as enterpriseName,
+        c.shop_name as shopName,c.store_name as storeName,
+        b.activity_name as activityName,a.en_code as enCode,
+        a.ctime as orderTime,a.amt as amt,a.card_num as cardNo, a.`status` as `status`
+        from ti_order a LEFT JOIN ti_activity b ON a.activity_id=b.activity_id LEFT JOIN ti_store c ON
+        a.store_id=c.store_id and a.activity_id=c.activity_id WHERE 1=1
+        <if test="t.startTime!=null">
+            AND a.ctime >=#{t.startTime}
+        </if>
+        <if test="t.endTime!=null">
+            AND a.ctime &lt;=#{t.endTime}
+        </if>
+        <if test="t.activityName!=null">
+            AND b.activity_name=#{t.activityName}
+        </if>
+        <if test="t.enterpriseName!=null">
+            AND b.pub_enterprise_name=#{t.enterpriseName}
+        </if>
+        <if test="t.enCode!=null">
+            AND a.en_code=#{t.enCode}
+        </if>
+        <if test="t.cardNo!=null">
+            AND a.card_num=#{t.cardNo}
+        </if>
+        <if test="t.statusList!=null">
+            AND a.`status` IN
+            <foreach item="item" index="index" collection="t.statusList" open="("
+                     separator="," close=")">
+                ${item}
+            </foreach>
+        </if>
+        ORDER by a.ctime desc limit #{t.offset},#{t.pageSize}
+    </select>
+
+    <select id="findOrderByListCount" resultType="int" parameterType="com.mocredit.integral.dto.OrderDto">
+        select count(a.uuid)
+        from ti_order a LEFT JOIN ti_activity b ON a.activity_id=b.activity_id LEFT JOIN ti_store c ON
+        a.store_id=c.store_id and a.activity_id=c.activity_id WHERE 1=1
+        <if test="t.startTime!=null">
+            AND a.ctime >=#{t.startTime}
+        </if>
+        <if test="t.endTime!=null">
+            AND a.ctime &lt;=#{t.endTime}
+        </if>
+        <if test="t.activityName!=null">
+            AND b.activity_name=#{t.activityName}
+        </if>
+        <if test="t.enterpriseName!=null">
+            AND b.pub_enterprise_name=#{t.enterpriseName}
+        </if>
+        <if test="t.enCode!=null">
+            AND a.en_code=#{t.enCode}
+        </if>
+        <if test="t.cardNo!=null">
+            AND a.card_num=#{t.cardNo}
+        </if>
+        <if test="t.statusList!=null">
+            AND a.`status` IN
+            <foreach item="item" index="index" collection="t.statusList" open="("
+                     separator="," close=")">
+                ${item}
+            </foreach>
+        </if>
+    </select>
 </mapper>

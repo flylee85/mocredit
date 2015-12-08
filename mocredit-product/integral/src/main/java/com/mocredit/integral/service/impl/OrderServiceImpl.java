@@ -2,6 +2,7 @@ package com.mocredit.integral.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,5 +72,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrderBySearchNoAndBatchNo(String searchno, String batchno) {
         return orderMapper.getOrderBySearchNoAndBatchNo(searchno, batchno);
+    }
+
+    @Override
+    public List<Map<String, Object>> findOrderByList(OrderDto orderDto) {
+        return orderMapper.findOrderByList(orderDto);
+    }
+
+    @Override
+    public int findOrderByListCount(OrderDto orderDto) {
+        return orderMapper.findOrderByListCount(orderDto);
     }
 }

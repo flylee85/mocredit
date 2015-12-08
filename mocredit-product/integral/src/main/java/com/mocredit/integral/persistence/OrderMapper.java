@@ -1,6 +1,7 @@
 package com.mocredit.integral.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -63,4 +64,20 @@ public interface OrderMapper {
      * @return
      */
     Order getOrderBySearchNoAndBatchNo(@Param(value = "searchno") String searchno, @Param(value = "batchno") String batchno);
+
+    /**
+     * 根据条件查询订单流水
+     *
+     * @param orderDto
+     * @return
+     */
+    List<Map<String, Object>> findOrderByList(@Param(value = "t") OrderDto orderDto);
+
+    /**
+     * 根据条件查询订单流水
+     *
+     * @param orderDto
+     * @return
+     */
+    int findOrderByListCount(@Param(value = "t") OrderDto orderDto);
 }

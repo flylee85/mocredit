@@ -80,7 +80,14 @@ public class IntegralInterfaceController extends IntegralBaseController {
         try {
             Order order = JSON.parseObject(param, Order.class);
             saveInRequestLog(request, order.getOrderId(), param);
-            setOrderStoreId(order);
+            if (!setOrderStoreId(order)) {
+                LOGGER.info("### payment error param={} ###", param);
+                resp.setSuccess(false);
+                resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getValue());
+                resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getText());
+                return renderJSONString(false, resp.getErrorMsg(),
+                        resp.getErrorCode(), resp.getData());
+            }
             if (doPostJsonAndSaveOrder(param, order, resp)) {
                 LOGGER.info("### payment success param={} ###", param);
                 resp.setSuccess(true);
@@ -122,7 +129,14 @@ public class IntegralInterfaceController extends IntegralBaseController {
 //            order.setOrderId(ToolUtils.getPosno());
             order.setOrderId(orderId);
             saveInRequestLog(request, order.getOrderId(), param);
-            setOrderStoreId(order);
+            if (!setOrderStoreId(order)) {
+                LOGGER.info("### paymentOld error param={} ###", param);
+                resp.setSuccess(false);
+                resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getValue());
+                resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getText());
+                return renderJSONString(false, resp.getErrorMsg(),
+                        resp.getErrorCode(), resp.getData());
+            }
             if (doPostJsonAndSaveOrderForOld(param, order, resp)) {
                 LOGGER.info("### paymentOld success param={} ###", param);
                 resp.setSuccess(true);
@@ -163,7 +177,14 @@ public class IntegralInterfaceController extends IntegralBaseController {
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
             setOrderInfo(orderVo);
-            setOrderStoreId(orderVo);
+            if (!setOrderStoreId(orderVo)) {
+                LOGGER.info("### paymentRevoke error param={} ###", param);
+                resp.setSuccess(false);
+                resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getValue());
+                resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getText());
+                return renderJSONString(false, resp.getErrorMsg(),
+                        resp.getErrorCode(), resp.getData());
+            }
             if (paymentRevokeJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentRevoke success param={} ###", orderId);
                 return renderJSONString(true, "", "", "");
@@ -208,7 +229,14 @@ public class IntegralInterfaceController extends IntegralBaseController {
             orderVo.setOrderId(orderId);
             saveInRequestLog(request, orderId, param);
             setOrderInfoForOld(orderVo, searchno, batchno);
-            setOrderStoreId(orderVo);
+            if (!setOrderStoreId(orderVo)) {
+                LOGGER.info("### paymentRevokeOld error param={} ###", param);
+                resp.setSuccess(false);
+                resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getValue());
+                resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getText());
+                return renderJSONString(false, resp.getErrorMsg(),
+                        resp.getErrorCode(), resp.getData());
+            }
             Activity activity = activityService.getByActivityId(orderVo.getActivityId());
             if (paymentRevokeJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentRevokeOld success param={} ###", orderId);
@@ -251,7 +279,14 @@ public class IntegralInterfaceController extends IntegralBaseController {
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
             setOrderInfo(orderVo);
-            setOrderStoreId(orderVo);
+            if (!setOrderStoreId(orderVo)) {
+                LOGGER.info("### paymentReserval error param={} ###", param);
+                resp.setSuccess(false);
+                resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getValue());
+                resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getText());
+                return renderJSONString(false, resp.getErrorMsg(),
+                        resp.getErrorCode(), resp.getData());
+            }
             if (paymentReservalJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentReserval success param={} ###", param);
                 return renderJSONString(true, "", "", "");
@@ -289,7 +324,14 @@ public class IntegralInterfaceController extends IntegralBaseController {
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
             setOrderInfo(orderVo);
-            setOrderStoreId(orderVo);
+            if (!setOrderStoreId(orderVo)) {
+                LOGGER.info("### paymentRevokeReserval error param={} ###", param);
+                resp.setSuccess(false);
+                resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getValue());
+                resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getText());
+                return renderJSONString(false, resp.getErrorMsg(),
+                        resp.getErrorCode(), resp.getData());
+            }
             if (paymentRevokeReservalJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentRevokeReserval success param={} ###",
                         param);
@@ -330,7 +372,14 @@ public class IntegralInterfaceController extends IntegralBaseController {
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
             setOrderInfo(orderVo);
-            setOrderStoreId(orderVo);
+            if (!setOrderStoreId(orderVo)) {
+                LOGGER.info("### confirmInfo error param={} ###", param);
+                resp.setSuccess(false);
+                resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getValue());
+                resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getText());
+                return renderJSONString(false, resp.getErrorMsg(),
+                        resp.getErrorCode(), resp.getData());
+            }
             if (confirmInfoJson(param, orderVo, resp)) {
                 LOGGER.info("### confirmInfo success param={} ###", param);
                 return renderJSONString(true, "", "", "");
@@ -367,8 +416,9 @@ public class IntegralInterfaceController extends IntegralBaseController {
         try {
             // 使用ObjectMapper嵌套json转对象报错采用fastJson
             ActivityVo activity = JSON.parseObject(param, ActivityVo.class);
+            activity.setPubEnterpriseName(activity.getEnterpriseName());
             activity.setProductType(activity.getProductCode());
-            saveInRequestLog(request, null, param);
+//            saveInRequestLog(request, null, param);
             if (activityService.operActivityAndStore(activity, resp)) {
                 LOGGER.info(
                         "### request in success activityImport param={} ###",
@@ -386,7 +436,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
                     param, e);
             resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
             resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
-            saveInRequestLog(request, null, param);
+//            saveInRequestLog(request, null, param);
             return renderJSONString(false, resp.getErrorMsg(),
                     resp.getErrorCode(), resp.getData());
         }
@@ -727,12 +777,14 @@ public class IntegralInterfaceController extends IntegralBaseController {
      *
      * @param order
      */
-    public void setOrderStoreId(Order order) {
+    public boolean setOrderStoreId(Order order) {
         Terminal terminal = terminalService.getTerminalByEnCodeAndActivityId(order.getEnCode(), order.getActivityId());
-        order.setStoreId(terminal.getStoreId());
-//        if (terminal != null) {
-//            order.setStoreId(terminal.getStoreId());
-//        }
+        if (terminal != null) {
+            order.setStoreId(terminal.getStoreId());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -743,7 +795,6 @@ public class IntegralInterfaceController extends IntegralBaseController {
     public void setOrderInfo(Order order) {
         Order oldOrder = orderService.getOrderByOrderId(order.getOldOrderId());
         order.setStoreId(oldOrder.getStoreId());
-        order.setEnCode(oldOrder.getEnCode());
         order.setCardExpDate(oldOrder.getCardExpDate());
         order.setActivityId(oldOrder.getActivityId());
         order.setAmt(oldOrder.getAmt());
@@ -758,11 +809,10 @@ public class IntegralInterfaceController extends IntegralBaseController {
      */
     public void setOrderInfoForOld(Order order, String searchno, String batchno) {
         Order oldOrder = orderService.getOrderBySearchNoAndBatchNo(searchno, batchno);
-        order.setBatchno(batchno);
-        order.setSearchno(searchno);
+//        order.setBatchno(batchno);
+//        order.setSearchno(searchno);
         order.setOldOrderId(oldOrder.getOrderId());
         order.setStoreId(oldOrder.getStoreId());
-        order.setEnCode(oldOrder.getEnCode());
         order.setCardExpDate(oldOrder.getCardExpDate());
         order.setActivityId(oldOrder.getActivityId());
         order.setAmt(oldOrder.getAmt());

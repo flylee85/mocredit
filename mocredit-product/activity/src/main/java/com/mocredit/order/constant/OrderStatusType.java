@@ -7,7 +7,12 @@ package com.mocredit.order.constant;
  * @author ytq
  */
 public enum OrderStatusType {
-    SEND("01", "已发送"), EXCHANGE("02", "已兑换"), REVOCATION("03", "已撤回");
+    EXCHANGE("0", "消费"), REVOCATION("2", "撤消"),
+    PAYMENT("01", "积分消费"),
+    PAYMENT_REVOKE("02", "消费撤销"),
+    PAYMENT_REVERSAL("03", "积分冲正"),
+    PAYMENT_REVERSAL_REVOKE("04", "冲正撤销"),
+    CONFIRM_INFO("05", "积分查询");
     private String value;
     private String text;
 

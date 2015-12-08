@@ -416,8 +416,8 @@ public class SendCodeServiceImpl implements SendCodeService {
             }
             // 将新组建的码对象添加到列表中
             carryList.add(codeVO);
-            //保存订单
-            saveOrder(oc, act, enterpriseOri);
+//            //保存订单
+//            saveOrder(oc, act, enterpriseOri);
         }
         // 将列表添加到码批次对象中
         batchVO.setActivityCodeList(carryList);
@@ -447,32 +447,32 @@ public class SendCodeServiceImpl implements SendCodeService {
         return resultMap;
     }
 
-    /**
-     * 保存订单信息
-     *
-     * @param batchCode
-     * @param activity
-     * @param enterprise
-     * @return
-     */
-    public boolean saveOrder(BatchCode batchCode, Activity activity, Enterprise enterprise) {
-        Merchant merchant = merchantService.selectByEnterpriseId(enterprise.getId());
-        Order order = new Order();
-        order.setActivityId(activity.getId());
-        order.setActivityName(activity.getName());
-        order.setPubEnterpriseId(enterprise.getId());
-        order.setPubEnterpriseName(enterprise.getName());
-        order.setCode(batchCode.getCode());
-        order.setStartTime(DateUtil.dateToStr(activity.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
-        order.setEndTime(DateUtil.dateToStr(activity.getEndTime(), "yyyy-MM-dd HH:mm:ss"));
-        order.setStatus(OrderStatusType.SEND.getValue());
-        order.setTel(batchCode.getCustomerMobile());
-        order.setType(OrderType.CHECK_CODE_ORDER.getValue());
-        order.setId(IDUtil.getID());
-        order.setSupEnterpriseId(merchant.getId());
-        order.setSupEnterpriseName(merchant.getName());
-        return orderService.save(order);
-    }
+//    /**
+//     * 保存订单信息
+//     *
+//     * @param batchCode
+//     * @param activity
+//     * @param enterprise
+//     * @return
+//     */
+//    public boolean saveOrder(BatchCode batchCode, Activity activity, Enterprise enterprise) {
+//        Merchant merchant = merchantService.selectByEnterpriseId(enterprise.getId());
+//        Order order = new Order();
+//        order.setActivityId(activity.getId());
+//        order.setActivityName(activity.getName());
+//        order.setPubEnterpriseId(enterprise.getId());
+//        order.setPubEnterpriseName(enterprise.getName());
+//        order.setCode(batchCode.getCode());
+//        order.setStartTime(DateUtil.dateToStr(activity.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
+//        order.setEndTime(DateUtil.dateToStr(activity.getEndTime(), "yyyy-MM-dd HH:mm:ss"));
+//        order.setStatus(OrderStatusType.SEND.getValue());
+//        order.setTel(batchCode.getCustomerMobile());
+//        order.setType(OrderType.CHECK_CODE_ORDER.getValue());
+//        order.setId(IDUtil.getID());
+//        order.setSupEnterpriseId(merchant.getId());
+//        order.setSupEnterpriseName(merchant.getName());
+//        return orderService.save(order);
+//    }
 
     public String validatorMobile(String activityId, String name, String type, Map<String, Object> msgMap, Map<String, String> resultMap, List<List<Object>> excelList) {
         String actBatchId = null;
