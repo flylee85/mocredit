@@ -215,7 +215,7 @@
 			aa.`code` AS activityCode,
 			aa.out_code AS activityOutCode,
 			aa.exchange_type AS activityType,
-			aa.amount AS amt,
+			aa.integral AS amt,
 			aa.`name` AS activityName,
 			aa.start_time AS sTime,
 			aa.end_time AS eTime,
