@@ -90,6 +90,7 @@ public class TVerifiedCode {
     private String storeCode;
     private String batchNo;//批次号
     private String searchNo;//流水号
+    private int status;//记录状态（兑换成功、活动未开始等）
     
     Integer useCount=1 ;//封装用于http请求的时候接收参数。与数据库无关
 
@@ -114,6 +115,14 @@ public class TVerifiedCode {
 
 	public void setBatchNo(String batchNo) {
 		this.batchNo = batchNo;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	public String getSearchNo() {
