@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ddffffff"
+    android:orientation="vertical"
+    tools:context="com.weipass.wangpos.modules.checkcode.CheckCodeResultActivity" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="50dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/sign_error_icon" >
+            </ImageView>
+
+            <TextView
+                android:id="@+id/checkcode_result_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:text="查询兑换码出错"
+                android:textColor="#99000000"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请重新核对输入"
+                android:textColor="#99000000"
+                android:textSize="30sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/check_code_result_fail_back"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/code_result_print"
+        android:onClick="onClick"
+        android:text="返回"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
+
+</LinearLayout>

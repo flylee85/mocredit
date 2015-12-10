@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:padding="40dp"
+    tools:context="com.yimiehuijin.bonusconusmeapp.modules.setting.SettingActivity" >
+
+    <Button
+        android:id="@+id/setting_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/code_scan_confirm_button"
+        android:gravity="center"
+        android:onClick="onClick"
+        android:text="交易撤销" />
+
+    <Button
+        android:id="@+id/setting_settle"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/code_scan_confirm_button"
+        android:gravity="center"
+        android:onClick="onClick"
+        android:text="结算打印" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/setting_back"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/code_scan_confirm_button"
+        android:gravity="center"
+        android:onClick="onClick"
+        android:text="返回" />
+
+</LinearLayout>
