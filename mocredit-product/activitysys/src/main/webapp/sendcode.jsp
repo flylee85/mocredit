@@ -3,19 +3,20 @@
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
+<base href="<%=basePath%>" /> 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>发码管理</title>
-    <link rel="stylesheet" href="${path}/common/js/file-input/fileinput.css">
-    <link rel="stylesheet" href="${path}/common/css/switchery/style.css">
-    <link rel="stylesheet" href="${path}/common/css/bootstrap.css">
-    <link rel="stylesheet" href="${path}/common/css/font-awesome.min.css">
-    <link rel="stylesheet" href="${path}/common/css/style.css">
-    <link rel="stylesheet" href="${path}/common/css/plugin.css">
-    <script src="${path}/common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
-    <script src="${path}/common/js/file-input/fileinput.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="common/js/file-input/fileinput.css">
+    <link rel="stylesheet" href="common/css/switchery/style.css">
+    <link rel="stylesheet" href="common/css/bootstrap.css">
+    <link rel="stylesheet" href="common/css/font-awesome.min.css">
+    <link rel="stylesheet" href="common/css/style.css">
+    <link rel="stylesheet" href="common/css/plugin.css">
+    <script src="common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="common/js/file-input/fileinput.js" type="text/javascript"></script>
     <!--[if lt IE 9]>
     <script src="${path}/common/js/ie/respond.min.js"></script>
     <script src="${path}/common/js/ie/html5.js"></script>
@@ -43,7 +44,7 @@
     <section class="panel">
         <div class="tab-content">
             <div id="tima" class="tab-pane fade active in">
-                <form id="uploadAndSendForm" action="importCustomer" method="post"
+                <form id="uploadAndSendForm" action="sendCode/importCustomer" method="post"
                       class="form-horizontal form-inline"
                       enctype="multipart/form-data">
                     <div class="form-group">
@@ -68,7 +69,7 @@
                     </div>
                     <div class="form-group">
                         <div class="input-group col-2">
-                            <a href="downloadTemplate" id="" class="btn btn-primary ">
+                            <a href="sendCode/downloadTemplate" id="" class="btn btn-primary ">
                                 下载模板
                             </a>
                         </div>
@@ -127,24 +128,24 @@
 
 
 <!-- /.modal 发送提示 -->
-<script src="${path}/common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
-<script src="${path}/common/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="${path}/common/js/index.js" type="text/javascript"></script>
+<script src="common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="common/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="common/js/index.js" type="text/javascript"></script>
 <!-- 验证 -->
-<script src="${path}/common/js/parsley/parsley.js" type="text/javascript"></script>
+<script src="common/js/parsley/parsley.js" type="text/javascript"></script>
 <!-- checkbox -->
-<script src="${path}/common/js/fuelux/fuelux.js" type="text/javascript"></script>
+<script src="common/js/fuelux/fuelux.js" type="text/javascript"></script>
 
 <!-- datatables -->
-<script src="${path}/common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
+<script src="common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
 <script>
     if ("${success}" == "true") {
         sendMsg(true, "上传并发送成功");
-        window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+        window.location.href = "sendCode/sendcode?id=${actId}"
     }
     if ("${success}" == "false" && "${msg}" != "") {
         sendMsg(false, "${msg}");
-        window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+        window.location.href = "sendCode/sendcode?id=${actId}"
     }
 </script>
 <script>
@@ -154,7 +155,7 @@
         if ($.type(famaTable) != 'object') {
             famaTable = $('#tima').find('table[data-ride="datatables"]').DataTable({
                 "ajax": {
-                    url: "${path}/sendCode/queryPickCodePage?actId=${actId}",
+                    url: "sendCode/queryPickCodePage?actId=${actId}",
                     type: "post",
                 },
                 "processing": true,
@@ -223,7 +224,7 @@
                         "sortable": false,
                         "render": function (data, type, full) {
                             return '<a href="javascript:sendCode(\'' + data['id'] + '\')">发码</a>' +
-                                    '<a href="${path}/codedetail.html?' + data['id'] + '-${actId}' + '" target="_blank">详情</a>' +
+                                    '<a href="codedetail.html?' + data['id'] + '-${actId}' + '" target="_blank">详情</a>' +
                                     '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>';
                         }
                     }
@@ -234,27 +235,27 @@
 </script>
 <script>
     function sendCode(id) {
-        $.get("${path}/sendCode/sendCodeByBatchId", {
+        $.get("sendCode/sendCodeByBatchId", {
             "actId": "${actId}",
             "batchId": id
         }, function (result) {
             if (result.success) {
                 sendMsg(true, "发送短信成功");
-                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+                window.location.href = "sendCode/sendcode?id=${actId}"
             } else {
                 sendMsg(false, result.errorMsg);
-                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+                window.location.href = "sendCode/sendcode?id=${actId}"
             }
         }, 'json');
     }
     function delBatch(id) {
-        $.get("${path}/sendCode/delBatchById", {"batchId": id}, function (result) {
+        $.get("sendCode/delBatchById", {"batchId": id}, function (result) {
             if (result.success) {
                 sendMsg(true, "删除批次成功");
-                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+                window.location.href = "sendCode/sendcode?id=${actId}"
             } else {
                 sendMsg(false, result.errorMsg);
-                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+                window.location.href = "sendCode/sendcode?id=${actId}"
             }
         }, 'json');
     }
