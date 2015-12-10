@@ -16,6 +16,15 @@ public class OrderData {
     private Integer amt;//积分
     private String orderTime;//订单生成时间(yyyy-MM-dd HH:mm:ss)
     private String enCode;//设备编号
+    private String msg;//验证结果
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
     public String getEnCode() {
         return enCode;
