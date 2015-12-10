@@ -1,14 +1,10 @@
 package com.mocredit.activitysys.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mocredit.base.datastructure.ResponseData;
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
-import com.mocredit.base.pagehelper.PageHelper;
-import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.base.util.CSVUtil;
-import com.mocredit.base.util.DateUtil;
 import com.mocredit.base.util.ExcelTool;
 import com.mocredit.base.web.BaseController;
 import com.mocredit.order.constant.BaseExportTitle;
@@ -19,7 +15,6 @@ import com.mocredit.order.entity.Order;
 import com.mocredit.order.entity.OrderData;
 import com.mocredit.order.entity.OrderRespData;
 import com.mocredit.order.service.OrderService;
-import com.mocredit.order.vo.OrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -200,7 +195,7 @@ public class OrderController extends BaseController {
         setTitleAndKey(titleList, keyList, mapCsvTitle, orderDto.getType());
         List<Map> orderListMap = new ArrayList<Map>();
         List<Map> exportCsvData = new ArrayList<Map>();
-        String fileName = FILE_NAME + ".xlsx";
+        String fileName = FILE_NAME + ".xls";
         if (ExportType.CSV.getValue().equals(orderDto.getExportType())) {
             fileName = FILE_NAME + ".csv";
         }
@@ -277,8 +272,8 @@ public class OrderController extends BaseController {
                     } else {
                         orderListMap.add(dataMap);
                     }
-                    pageNum += 1;
                 }
+                pageNum += 1;
             }
         }
         try {

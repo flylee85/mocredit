@@ -55,6 +55,7 @@ $(function () {
                     {"data": "amt", "name": "amt", "width": "70px"},
                     {"data": "enCode", "name": "enCode", "width": "70px"},
                     {"data": "cardNo", "name": "cardNo", "width": "70px"},
+                    {"data": "msg", "name": "msg", "width": "70px"}
                 ], "columnDefs": [
                     {
                         "targets": 6,
@@ -151,6 +152,7 @@ $(function () {
                         {"data": "code", "name": "code", "width": "70px"},
                         {"data": "enCode", "name": "enCode", "width": "70px"},
                         {"data": "mobile", "name": "mobile", "width": "70px"},
+                        {"data": "msg", "name": "msg", "width": "70px"},
                         {"data": null, "width": "70px"}
                     ],
                     "columnDefs": [
@@ -177,7 +179,7 @@ $(function () {
                             }
                         },
                         {
-                            "targets": 10,
+                            "targets": 11,
                             "data": null,
                             "sortable": false,
                             "render": function (data, type, full) {

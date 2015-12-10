@@ -39,7 +39,7 @@
     </dependencies>
 
     <build>
-        <finalName>activitysys</finalName>
+        <finalName>/</finalName>
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
