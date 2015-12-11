@@ -7,6 +7,9 @@ import java.util.Map;
  * Created by ytq on 2015/11/19.
  */
 public class Bank {
+    public final static String ZX_BANK_CHANNEL = "1";
+    public final static String MS_BANK_CHANNEL = "2";
+    public final static String JT_BANK_CHANNEL = "3";
     final static Map<String, String> BANK_MAP = new HashMap<>();
 
     static {

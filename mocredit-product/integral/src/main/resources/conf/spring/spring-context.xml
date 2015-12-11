@@ -19,27 +19,14 @@
         </property>
 
     </bean>
-    <util:properties id="config" location="classpath:server.properties"/>
     <util:properties id="configproperties" location="classpath:/config.properties"/>
     <!--数据源配置 -->
-    <!--
-        <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-            <property name="jndiName" value="${jndiName}" />
-        </bean>
-    -->
-    <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">-->
-        <!--<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
-        <!--<property-->
-                <!--name="url" value="jdbc:mysql://127.0.0.1:3306/integral?characterEncoding=UTF-8"/>-->
-        <!--<property name="username" value="root"/>-->
-        <!--<property name="password" value="123456"/>-->
-    <!--</bean>-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="driverClassName" value="${database.driverClassName}"/>
         <property
-                name="url" value="jdbc:mysql://192.168.24.124:3306/integral?characterEncoding=UTF-8"/>
-        <property name="username" value="root"/>
-        <property name="password" value="eAhrpeDoq/ve39md"/>
+                name="url" value="${database.url}"/>
+        <property name="username" value="${database.username}"/>
+        <property name="password" value="${database.password}"/>
     </bean>
     <!-- transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager"

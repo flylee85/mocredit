@@ -191,12 +191,13 @@ public class HttpRequestService extends LogService {
             }
             url = integralBankAdapter.getPayment(activity.getChannel());
             String response = doPostJson(requestId, url, getPaymentDto(activity, order));
-            boolean anaFlag = analyJsonReponse(requestId, url, param, response,
+            boolean anaFlag = analyJsonReponse(requestId, activity.getChannel(), url, param, response,
                     resp);
+            order.setRequestId(requestId);
+            order.setStatus(OrderStatus.PAYMENT.getValue());
+            order.setMsg(resp.getErrorMsg());
             if (anaFlag) {
                 // 设置订单reuestId和交易完成状态
-                order.setRequestId(requestId);
-                order.setStatus(OrderStatus.PAYMENT.getValue());
                 if (!orderService.saveAndCount(order)) {
                     resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
                             .getValue());
@@ -207,6 +208,7 @@ public class HttpRequestService extends LogService {
                     return true;
                 }
             } else {
+                orderService.saveAndCount(order);
                 return anaFlag;
             }
         } catch (Exception e) {
@@ -290,12 +292,13 @@ public class HttpRequestService extends LogService {
             }
             url = integralBankAdapter.getPayment(activity.getChannel());
             String response = doPostJson(requestId, url, getPaymentDto(activity, order));
-            boolean anaFlag = analyJsonReponse(requestId, url, param, response,
+            boolean anaFlag = analyJsonReponse(requestId, activity.getChannel(), url, param, response,
                     resp);
+            // 设置订单reuestId和交易完成状态
+            order.setRequestId(requestId);
+            order.setStatus(OrderStatus.PAYMENT.getValue());
+            order.setMsg(resp.getErrorMsg());
             if (anaFlag) {
-                // 设置订单reuestId和交易完成状态
-                order.setRequestId(requestId);
-                order.setStatus(OrderStatus.PAYMENT.getValue());
                 if (!orderService.saveAndCount(order)) {
                     resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
                             .getValue());
@@ -308,6 +311,7 @@ public class HttpRequestService extends LogService {
                     return true;
                 }
             } else {
+                orderService.saveAndCount(order);
                 resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
                 return anaFlag;
             }
@@ -361,7 +365,7 @@ public class HttpRequestService extends LogService {
      * @param resp
      * @return
      */
-    public boolean analyJsonReponse(Integer requestId, String url,
+    public boolean analyJsonReponse(Integer requestId, String channel, String url,
                                     String param, String reponse, Response resp) {
         String bankOff = PropertiesUtil.getValue("bank-off");
         if (!"true".equals(bankOff)) {
@@ -377,14 +381,25 @@ public class HttpRequestService extends LogService {
                 resp.setErrorCode(responseData.getErrorCode());
                 resp.setErrorMsg(responseData.getErrorMsg());
                 resp.setSuccess(responseData.getSuccess());
-                // 判断bank端的接口响应是否是001(参数错误),002(系统错误)
-                if ("001".equals(resp.getErrorCode())) {
-                    resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
-                    resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
-                }
-                if ("002".equals(resp.getErrorCode())) {
-                    resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
-                    resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
+                switch (channel) {
+                    case Bank.ZX_BANK_CHANNEL: {
+                        if (BankStatus.getMsgByZX(responseData.getErrorCode()) != null) {
+                            resp.setErrorMsg(BankStatus.getMsgByZX(responseData.getErrorCode()));
+                        }
+                        break;
+                    }
+                    case Bank.MS_BANK_CHANNEL: {
+                        if (BankStatus.getMsgByMS(responseData.getErrorCode()) != null) {
+                            resp.setErrorMsg(BankStatus.getMsgByMS(responseData.getErrorCode()));
+                        }
+                        break;
+                    }
+                    case Bank.JT_BANK_CHANNEL: {
+                        if (BankStatus.getMsgByJT(responseData.getErrorCode()) != null) {
+                            resp.setErrorMsg(BankStatus.getMsgByJT(responseData.getErrorCode()));
+                        }
+                        break;
+                    }
                 }
                 return responseData.getSuccess();
             } catch (Exception e) {
@@ -420,11 +435,13 @@ public class HttpRequestService extends LogService {
             Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentRevoke(activity.getChannel());
             String response = doPostJson(requestId, url, getOrderIdAndOldOrderIdParam(orderVo));
-            boolean anaFlag = analyJsonReponse(requestId, url, param, response,
+            boolean anaFlag = analyJsonReponse(requestId, activity.getChannel(), url, param, response,
                     resp);
+            orderVo.setRequestId(requestId);
+            orderVo.setStatus(OrderStatus.PAYMENT_REVOKE.getValue());
+            orderVo.setMsg(resp.getErrorMsg());
             if (anaFlag) {
-                orderVo.setRequestId(requestId);
-                orderVo.setStatus(OrderStatus.PAYMENT_REVOKE.getValue());
+
                 if (/*!orderService.isExistOrderAndUpdate(orderVo.getOldOrderId()) || */!orderService.save(orderVo)) {
                     resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
                             .getValue());
@@ -435,6 +452,7 @@ public class HttpRequestService extends LogService {
                     return true;
                 }
             } else {
+                orderService.save(orderVo);
                 return anaFlag;
             }
         } catch (Exception e) {
@@ -463,10 +481,11 @@ public class HttpRequestService extends LogService {
             Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentReserval(activity.getChannel());
             String response = doPostJson(requestId, url, getOrderIdAndOldOrderIdParam(orderVo));
-            boolean anaFlag = analyJsonReponse(requestId, url, param, response, resp);
-            if (anaFlag) {
-                orderService.save(orderVo);
-            }
+            boolean anaFlag = analyJsonReponse(requestId, activity.getChannel(), url, param, response, resp);
+            orderVo.setRequestId(requestId);
+            orderVo.setStatus(OrderStatus.PAYMENT_REVERSAL.getValue());
+            orderVo.setMsg(resp.getErrorMsg());
+            orderService.save(orderVo);
             return anaFlag;
         } catch (Exception e) {
             resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
@@ -493,10 +512,11 @@ public class HttpRequestService extends LogService {
             Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentRevokeReserval(activity.getChannel());
             String response = doPostJson(requestId, url, getOrderIdAndOldOrderIdParam(orderVo));
-            boolean anaFlag = analyJsonReponse(requestId, url, param, response, resp);
-            if (anaFlag) {
-                orderService.save(orderVo);
-            }
+            boolean anaFlag = analyJsonReponse(requestId, activity.getChannel(), url, param, response, resp);
+            orderVo.setRequestId(requestId);
+            orderVo.setStatus(OrderStatus.PAYMENT_REVERSAL_REVOKE.getValue());
+            orderVo.setMsg(resp.getErrorMsg());
+            orderService.save(orderVo);
             return anaFlag;
         } catch (Exception e) {
             resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
@@ -557,7 +577,7 @@ public class HttpRequestService extends LogService {
 //                return false;
 //            }
             String response = doPostJson(requestId, url, getPaymentDto(activity, orderVo));
-            boolean anaFlag = analyJsonReponse(requestId, url, param, response, resp);
+            boolean anaFlag = analyJsonReponse(requestId, activity.getChannel(), url, param, response, resp);
             if (anaFlag) {
                 orderService.save(orderVo);
             }
@@ -762,7 +782,8 @@ public class HttpRequestService extends LogService {
             stringBuilder.append("<eitemtime>").append("null").append("</eitemtime>");
             stringBuilder.append("<trantype>").append("积分兑换").append("</trantype>");
             stringBuilder.append("<batchno>").append("").append("</batchno>");
-            stringBuilder.append("<orderid>").append(order.getOrderId()).append("</orderid>");
+            stringBuilder.append("<orderid>").append("000000000000").append("</orderid>");
+//            stringBuilder.append("<orderid>").append(order.getOrderId()).append("</orderid>");
             stringBuilder.append("<point>").append(activity.getIntegral()).append("</point>");
             stringBuilder.append("<trantime>").append(DateTimeUtils.getDate()).append("</trantime>");
             stringBuilder.append("<admin>").append("001").append("</admin>");
@@ -770,7 +791,8 @@ public class HttpRequestService extends LogService {
             stringBuilder.append("<eitemname>").append(activity.getActivityName()).append("</eitemname>");
             stringBuilder.append("<bankname>").append(Bank.getBankNameByBankId(activity.getChannel())).append("</bankname>");
             stringBuilder.append("<cardno>").append(order.getCardNum()).append("</cardno>");
-            stringBuilder.append("<posno>").append(order.getOrderId()).append("</posno>");
+            stringBuilder.append("<posno>").append("000000000000").append("</posno>");
+//            stringBuilder.append("<posno>").append(order.getOrderId()).append("</posno>");
             stringBuilder.append("<eitemid>").append(activity.getActivityId()).append("</eitemid>");
             //支付方式
             stringBuilder.append("<payway>").append(0 + activity.getExchangeType()).append("</payway>");

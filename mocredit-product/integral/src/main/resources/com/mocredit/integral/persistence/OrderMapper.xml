@@ -4,8 +4,8 @@
 <mapper namespace="com.mocredit.integral.persistence.OrderMapper">
     <insert id="save" parameterType="com.mocredit.integral.entity.Order">
         insert into
-        `ti_order`(request_id,card_num,store_id,activity_id,amt,order_id,old_order_id,en_code,card_exp_date,ctime,`status`,batch_no,search_no)
-        values(#{t.requestId},#{t.cardNum},#{t.storeId},#{t.activityId},#{t.amt},#{t.orderId},#{t.oldOrderId},#{t.enCode},#{t.cardExpDate},now(),#{t.status},#{t.batchno},#{t.searchno})
+        `ti_order`(request_id,card_num,store_id,activity_id,amt,order_id,old_order_id,en_code,card_exp_date,ctime,`status`,batch_no,search_no,msg)
+        values(#{t.requestId},#{t.cardNum},#{t.storeId},#{t.activityId},#{t.amt},#{t.orderId},#{t.oldOrderId},#{t.enCode},#{t.cardExpDate},now(),#{t.status},#{t.batchno},#{t.searchno},#{t.msg})
     </insert>
     <sql id="Base_Column">
         a.uuid as uuid,
@@ -82,9 +82,10 @@
         b.pub_enterprise_name as enterpriseName,
         c.shop_name as shopName,c.store_name as storeName,
         b.activity_name as activityName,a.en_code as enCode,
-        a.ctime as orderTime,a.amt as amt,a.card_num as cardNo, a.`status` as `status`
+        a.ctime as orderTime,a.amt as amt,a.card_num as cardNo, a.`status` as `status`,a.msg as msg
         from ti_order a LEFT JOIN ti_activity b ON a.activity_id=b.activity_id LEFT JOIN ti_store c ON
         a.store_id=c.store_id and a.activity_id=c.activity_id WHERE 1=1
+        AND a.uuid >= (select uuid from ti_order order by uuid limit #{t.offset}, 1)
         <if test="t.startTime!=null">
             AND a.ctime >=#{t.startTime}
         </if>
@@ -92,16 +93,16 @@
             AND a.ctime &lt;=#{t.endTime}
         </if>
         <if test="t.activityName!=null">
-            AND b.activity_name=#{t.activityName}
+            AND b.activity_name like CONCAT('%','${t.activityName}','%')
         </if>
         <if test="t.enterpriseName!=null">
-            AND b.pub_enterprise_name=#{t.enterpriseName}
+            AND b.pub_enterprise_name like CONCAT('%','${t.enterpriseName}','%')
         </if>
         <if test="t.enCode!=null">
-            AND a.en_code=#{t.enCode}
+            AND a.en_code like CONCAT('%','${t.enCode}','%')
         </if>
         <if test="t.cardNo!=null">
-            AND a.card_num=#{t.cardNo}
+            AND a.card_num like CONCAT('%','${t.cardNo}','%')
         </if>
         <if test="t.statusList!=null">
             AND a.`status` IN
@@ -110,7 +111,7 @@
                 ${item}
             </foreach>
         </if>
-        ORDER by a.ctime desc limit #{t.offset},#{t.pageSize}
+        limit #{t.pageSize}
     </select>
 
     <select id="findOrderByListCount" resultType="int" parameterType="com.mocredit.integral.dto.OrderDto">
@@ -124,16 +125,16 @@
             AND a.ctime &lt;=#{t.endTime}
         </if>
         <if test="t.activityName!=null">
-            AND b.activity_name=#{t.activityName}
+            AND b.activity_name like CONCAT('%','${t.activityName}','%')
         </if>
         <if test="t.enterpriseName!=null">
-            AND b.pub_enterprise_name=#{t.enterpriseName}
+            AND b.pub_enterprise_name like CONCAT('%','${t.enterpriseName}','%')
         </if>
         <if test="t.enCode!=null">
-            AND a.en_code=#{t.enCode}
+            AND a.en_code like CONCAT('%','${t.enCode}','%')
         </if>
         <if test="t.cardNo!=null">
-            AND a.card_num=#{t.cardNo}
+            AND a.card_num like CONCAT('%','${t.cardNo}','%')
         </if>
         <if test="t.statusList!=null">
             AND a.`status` IN

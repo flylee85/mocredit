@@ -124,7 +124,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
         String param = order.toString();
         LOGGER.info("### request in paymentOld param={} ###", param);
         Response resp = new Response();
-        String orderId = ToolUtils.getPosno();
+        String orderId =/* ToolUtils.getPosno();*/"P" + order.getEnCode() + order.getBatchno() + order.getSearchno();
         try {
 //            order.setOrderId(ToolUtils.getPosno());
             order.setOrderId(orderId);
@@ -176,7 +176,9 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
-            setOrderInfo(orderVo);
+            if (!setOrderInfo(orderVo)) {
+                return renderJSONString(true, "", "", "");
+            }
             if (!setOrderStoreId(orderVo)) {
                 LOGGER.info("### paymentRevoke error param={} ###", param);
                 resp.setSuccess(false);
@@ -222,22 +224,30 @@ public class IntegralInterfaceController extends IntegralBaseController {
         String param = "imei=" + imei + "&account=" + account + "&batchno=" + batchno + "&searchno=" + searchno;
         LOGGER.info("### request in paymentRevokeOld param={} ###", param);
         Response resp = new Response();
-        String orderId = ToolUtils.getPosno();
+        String orderId = /*ToolUtils.getPosno();*/"R" + imei + batchno + searchno;
         try {
             OrderVo orderVo = new OrderVo();
 //            String orderId = ToolUtils.getPosno();
             orderVo.setOrderId(orderId);
             saveInRequestLog(request, orderId, param);
-            setOrderInfoForOld(orderVo, searchno, batchno);
+            if (!setOrderInfoForOld(orderVo, searchno, batchno)) {
+                resp.setSuccess(false);
+                resp.setErrorCode(ErrorCodeType.NOT_EXIST_ORDER_ERROR.getValue());
+                resp.setErrorMsg(ErrorCodeType.NOT_EXIST_ORDER_ERROR.getText());
+                String xml = getPaymentRevokeOldForXml(false, null, orderVo, resp.getErrorCode(), resp.getErrorMsg());
+                saveReponseLog(getRequestId(), xml);
+                return xml;
+            }
+            Activity activity = activityService.getByActivityId(orderVo.getActivityId());
             if (!setOrderStoreId(orderVo)) {
                 LOGGER.info("### paymentRevokeOld error param={} ###", param);
                 resp.setSuccess(false);
                 resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getValue());
                 resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getText());
-                return renderJSONString(false, resp.getErrorMsg(),
-                        resp.getErrorCode(), resp.getData());
+                String xml = getPaymentRevokeOldForXml(false, activity, orderVo, resp.getErrorCode(), resp.getErrorMsg());
+                saveReponseLog(getRequestId(), xml);
+                return xml;
             }
-            Activity activity = activityService.getByActivityId(orderVo.getActivityId());
             if (paymentRevokeJson(param, orderVo, resp)) {
                 LOGGER.info("### paymentRevokeOld success param={} ###", orderId);
                 String xml = getPaymentRevokeOldForXml(true, activity, orderVo, null, null);
@@ -278,7 +288,9 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
-            setOrderInfo(orderVo);
+            if (!setOrderInfo(orderVo)) {
+                return renderJSONString(true, "", "", "");
+            }
             if (!setOrderStoreId(orderVo)) {
                 LOGGER.info("### paymentReserval error param={} ###", param);
                 resp.setSuccess(false);
@@ -323,7 +335,9 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
-            setOrderInfo(orderVo);
+            if (!setOrderInfo(orderVo)) {
+                return renderJSONString(true, "", "", "");
+            }
             if (!setOrderStoreId(orderVo)) {
                 LOGGER.info("### paymentRevokeReserval error param={} ###", param);
                 resp.setSuccess(false);
@@ -371,7 +385,9 @@ public class IntegralInterfaceController extends IntegralBaseController {
             OrderVo orderVo = JSON.parseObject(param, OrderVo.class);
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
-            setOrderInfo(orderVo);
+            if (!setOrderInfo(orderVo)) {
+                return renderJSONString(true, "", "", "");
+            }
             if (!setOrderStoreId(orderVo)) {
                 LOGGER.info("### confirmInfo error param={} ###", param);
                 resp.setSuccess(false);
@@ -792,14 +808,19 @@ public class IntegralInterfaceController extends IntegralBaseController {
      *
      * @param order
      */
-    public void setOrderInfo(Order order) {
+    public boolean setOrderInfo(Order order) {
         Order oldOrder = orderService.getOrderByOrderId(order.getOldOrderId());
-        order.setStoreId(oldOrder.getStoreId());
-        order.setCardExpDate(oldOrder.getCardExpDate());
-        order.setActivityId(oldOrder.getActivityId());
-        order.setAmt(oldOrder.getAmt());
-        order.setCardNum(oldOrder.getCardNum());
-        order.setEnCode(oldOrder.getEnCode());
+        if (null != oldOrder) {
+            order.setStoreId(oldOrder.getStoreId());
+            order.setCardExpDate(oldOrder.getCardExpDate());
+            order.setActivityId(oldOrder.getActivityId());
+            order.setAmt(oldOrder.getAmt());
+            order.setCardNum(oldOrder.getCardNum());
+            order.setEnCode(oldOrder.getEnCode());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -807,17 +828,22 @@ public class IntegralInterfaceController extends IntegralBaseController {
      *
      * @param order
      */
-    public void setOrderInfoForOld(Order order, String searchno, String batchno) {
+    public boolean setOrderInfoForOld(Order order, String searchno, String batchno) {
         Order oldOrder = orderService.getOrderBySearchNoAndBatchNo(searchno, batchno);
+        if (null != oldOrder) {
 //        order.setBatchno(batchno);
 //        order.setSearchno(searchno);
-        order.setOldOrderId(oldOrder.getOrderId());
-        order.setStoreId(oldOrder.getStoreId());
-        order.setCardExpDate(oldOrder.getCardExpDate());
-        order.setActivityId(oldOrder.getActivityId());
-        order.setAmt(oldOrder.getAmt());
-        order.setCardNum(oldOrder.getCardNum());
-        order.setEnCode(oldOrder.getEnCode());
+            order.setOldOrderId(oldOrder.getOrderId());
+            order.setStoreId(oldOrder.getStoreId());
+            order.setCardExpDate(oldOrder.getCardExpDate());
+            order.setActivityId(oldOrder.getActivityId());
+            order.setAmt(oldOrder.getAmt());
+            order.setCardNum(oldOrder.getCardNum());
+            order.setEnCode(oldOrder.getEnCode());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private String getPaymentRevokeOldForXml(boolean flag, Activity activity, Order order, String errorCode, String msg) {
@@ -835,7 +861,8 @@ public class IntegralInterfaceController extends IntegralBaseController {
             stringBuilder.append("<eitemtime>").append("null").append("</eitemtime>");
             stringBuilder.append("<trantype>").append("积分兑换").append("</trantype>");
             stringBuilder.append("<batchno>").append("").append("</batchno>");
-            stringBuilder.append("<orderid>").append(order.getOrderId()).append("</orderid>");
+            stringBuilder.append("<orderid>").append("000000000000").append("</orderid>");
+//            stringBuilder.append("<orderid>").append(order.getOrderId()).append("</orderid>");
             stringBuilder.append("<point>").append(activity.getIntegral()).append("</point>");
             stringBuilder.append("<trantime>").append(DateTimeUtils.getDate()).append("</trantime>");
             stringBuilder.append("<admin>").append("001").append("</admin>");
@@ -843,7 +870,8 @@ public class IntegralInterfaceController extends IntegralBaseController {
             stringBuilder.append("<eitemname>").append(activity.getActivityName()).append("</eitemname>");
             stringBuilder.append("<bankname>").append(Bank.getBankNameByBankId(activity.getChannel())).append("</bankname>");
             stringBuilder.append("<cardno>").append(order.getCardNum()).append("</cardno>");
-            stringBuilder.append("<posno>").append(order.getOrderId()).append("</posno>");
+            stringBuilder.append("<posno>").append("000000000000").append("</posno>");
+//            stringBuilder.append("<posno>").append(order.getOrderId()).append("</posno>");
             stringBuilder.append("<eitemid>").append(activity.getActivityId()).append("</eitemid>");
             //支付方式
             stringBuilder.append("<payway>").append(0 + activity.getExchangeType()).append("</payway>");
