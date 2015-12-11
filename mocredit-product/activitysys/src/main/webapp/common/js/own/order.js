@@ -183,10 +183,10 @@ $(function () {
                             "data": null,
                             "sortable": false,
                             "render": function (data, type, full) {
-                                if (full['status'] == "0") {
+                                if (full['status'] == "2") {
                                     return '<a href="#"></a>';
                                 }
-                                if (full['status'] == "2") {
+                                if (full['status'] == "0") {
                                     return '<a href="javascript:doUpdate(this,\'' + full['orderId'] + '\',\'' + full['enCode'] + '\')"data-id="' + full['orderId'] + '">撤消</a>';
                                 }
                             }

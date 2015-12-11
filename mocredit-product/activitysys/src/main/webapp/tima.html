@@ -105,6 +105,7 @@
 
 <!-- datatables -->
 <script src="common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
+<script src="static/js/bootbox.min.js" type="text/javascript"></script>
 <script>
     var url = window.location.search;
     var actId;
@@ -183,8 +184,8 @@
                         "sortable": false,
                         "render": function (data, type, full) {
                             return '<a href="sendCode/download?type=02&id=' + data['id'] + '&name=' + data['batch'] + '"target="_blank" >下载</a>' +
-                                    '<a href="timadetail.html?' + data['id'] + '-' + actId + '"target="_blank" >详情</a>' +
-                                    '<a href="javascript:delBatch(\'' + data['id'] + '\')" >删除</a>';
+                                    '<a href="timadetail.html?' + data['id'] + '-' + actId + '"target="_blank" >详情</a>'/* +
+                             '<a href="javascript:delBatch(\'' + data['id'] + '\')" >删除</a>'*/;
                         }
                     }
                 ]
@@ -214,13 +215,22 @@
         $.post("sendCode/isExistName", {"actId": actId, "name": formObject["name"]}, function (result) {
             if (result.success) {
                 window.location.href = "sendCode/download?type=03&id=" + actId + "&name=" + formObject["name"] + "&count=" + formObject["count"]
-            } else {
+                setTimeout(
+                        bootbox.confirm("你确定要刷新提码列表吗？", function (result) {
+                            if (result) {
+                                famaTable.ajax.reload();
+                            }
+                        }), 2000);
+
+            }
+            else {
                 sendMsg(false, result.errorMsg);
             }
         }, 'json');
-    });
+    })
+    ;
 </script>
-<script>
+<!--<script>
     function delBatch(id) {
         $.get("sendCode/delBatchById", {"batchId": id}, function (result) {
             if (result.success) {
@@ -232,6 +242,7 @@
             }
         }, 'json');
     }
-</script>
+</script>-->
+
 </body>
 </html>                
