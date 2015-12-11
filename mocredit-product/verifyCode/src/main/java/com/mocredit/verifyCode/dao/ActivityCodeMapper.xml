@@ -116,7 +116,7 @@
                 <foreach collection="activityCodes" item="item" index="index" separator=",">
                     (#{item.id},#{item.code},#{item.codeSerialNumber},#{item.activityId},#{item.activityName},#{item.maxNum},
                     #{item.amount},#{item.startTime},#{item.endTime},#{item.orderId},#{item.createTime},
-                    #{item.issueEnterpriseId},#{item.issueEnterpriseName},#{item.customMobile},#{item.releaseTime},#{item.contractId},#{item.selectDate},#{item.outCode},#{item.orderCode},#{item.enterpriseCode},#{item.customName},#{item.activityCode},#{status})
+                    #{item.issueEnterpriseId},#{item.issueEnterpriseName},#{item.customMobile},#{item.releaseTime},#{item.contractId},#{item.selectDate},#{item.outCode},#{item.orderCode},#{item.enterpriseCode},#{item.customName},#{item.activityCode},#{item.status})
                 </foreach>
             </when>
             <otherwise>

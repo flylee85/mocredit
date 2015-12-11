@@ -1,3 +1,6 @@
+if($("#currentId").val()!=""){
+	$(".addMerchant").hide();
+}
 oTable= $("#shangjia").find('[data-ride="datatables"]').DataTable( {
 	"ajax": {
 		"url": "merchant/list",
