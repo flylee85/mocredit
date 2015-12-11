@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CheckCodeApp.iml" filepath="$PROJECT_DIR$/CheckCodeApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bonusconusmeapp/bonusconusmeapp.iml" filepath="$PROJECT_DIR$/bonusconusmeapp/bonusconusmeapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/checkcodeapp/checkcodeapp.iml" filepath="$PROJECT_DIR$/checkcodeapp/checkcodeapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/codeandbonuslibrary/codeandbonuslibrary.iml" filepath="$PROJECT_DIR$/codeandbonuslibrary/codeandbonuslibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tempbonusconsume/tempbonusconsume.iml" filepath="$PROJECT_DIR$/tempbonusconsume/tempbonusconsume.iml" />
+    </modules>
+  </component>
+</project>

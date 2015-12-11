@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.base.util.IDUtil;
+import com.mocredit.manage.constant.Constant;
 import com.mocredit.manage.model.Enterprise;
 import com.mocredit.manage.persitence.ContractMapper;
 import com.mocredit.manage.persitence.EnterpriseMapper;
@@ -43,6 +44,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 		enterprise.setId(IDUtil.getID());
 		enterprise.setCreateTime(new Date());
 		enterprise.setStatus(Enterprise.STATUS_ACTIVED);
+		enterprise.setMmschannle(Constant.MMS_CHANNEL_DEFAULT);
 		return enterpriseMapper.insert(enterprise);
 	}
 

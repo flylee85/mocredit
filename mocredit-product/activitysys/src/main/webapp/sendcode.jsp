@@ -3,22 +3,23 @@
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
+<base href="<%=basePath%>"/>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>发码管理</title>
-    <link rel="stylesheet" href="${path}/common/js/file-input/fileinput.css">
-    <link rel="stylesheet" href="${path}/common/css/switchery/style.css">
-    <link rel="stylesheet" href="${path}/common/css/bootstrap.css">
-    <link rel="stylesheet" href="${path}/common/css/font-awesome.min.css">
-    <link rel="stylesheet" href="${path}/common/css/style.css">
-    <link rel="stylesheet" href="${path}/common/css/plugin.css">
-    <script src="${path}/common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
-    <script src="${path}/common/js/file-input/fileinput.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="common/js/file-input/fileinput.css">
+    <link rel="stylesheet" href="common/css/switchery/style.css">
+    <link rel="stylesheet" href="common/css/bootstrap.css">
+    <link rel="stylesheet" href="common/css/font-awesome.min.css">
+    <link rel="stylesheet" href="common/css/style.css">
+    <link rel="stylesheet" href="common/css/plugin.css">
+    <script src="common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="common/js/file-input/fileinput.js" type="text/javascript"></script>
     <!--[if lt IE 9]>
-    <script src="${path}/common/js/ie/respond.min.js"></script>
-    <script src="${path}/common/js/ie/html5.js"></script>
+    <script src="common/js/ie/respond.min.js"></script>
+    <script src="common/js/ie/html5.js"></script>
     <![endif]-->
 </head>
 <body>
@@ -43,7 +44,7 @@
     <section class="panel">
         <div class="tab-content">
             <div id="tima" class="tab-pane fade active in">
-                <form id="uploadAndSendForm" action="importCustomer" method="post"
+                <form id="uploadAndSendForm" action="sendCode/importCustomer" method="post"
                       class="form-horizontal form-inline"
                       enctype="multipart/form-data">
                     <div class="form-group">
@@ -67,12 +68,12 @@
                         </label>
                     </div>
                     <div class="form-group">
-                        <div class="input-group col-2">
-                            <a href="downloadTemplate" id="" class="btn btn-primary ">
+                        <div class="input-group col-1">
+                            <a href="sendCode/downloadTemplate" id="" class="btn btn-primary ">
                                 下载模板
                             </a>
                         </div>
-                        <div class="input-group col-4 text-left">
+                        <div class="input-group col-3 text-left">
                             <label class="col-lg-3 control-label" for="name">批次名称</label>
 
                             <div class="col-lg-9">
@@ -91,7 +92,11 @@
                             </div>
                         </div>
                         <div class="input-group col-2">
-                            <input type="submit" class="btn btn-primary" value="上传并发送"/>
+                            <input type="hidden" name="type" id="type" value="02"/>
+                            <input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>
+                        </div>
+                        <div class="input-group col-2">
+                            <input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>
                         </div>
                     </div>
 
@@ -127,24 +132,24 @@
 
 
 <!-- /.modal 发送提示 -->
-<script src="${path}/common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
-<script src="${path}/common/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="${path}/common/js/index.js" type="text/javascript"></script>
+<script src="common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="common/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="common/js/index.js" type="text/javascript"></script>
 <!-- 验证 -->
-<script src="${path}/common/js/parsley/parsley.js" type="text/javascript"></script>
+<script src="common/js/parsley/parsley.js" type="text/javascript"></script>
 <!-- checkbox -->
-<script src="${path}/common/js/fuelux/fuelux.js" type="text/javascript"></script>
+<script src="common/js/fuelux/fuelux.js" type="text/javascript"></script>
 
 <!-- datatables -->
-<script src="${path}/common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
+<script src="common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
 <script>
     if ("${success}" == "true") {
         sendMsg(true, "上传并发送成功");
-        window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+        window.location.href = "sendCode/sendcode?id=${actId}"
     }
     if ("${success}" == "false" && "${msg}" != "") {
         sendMsg(false, "${msg}");
-        window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+        window.location.href = "sendCode/sendcode?id=${actId}"
     }
 </script>
 <script>
@@ -154,7 +159,7 @@
         if ($.type(famaTable) != 'object') {
             famaTable = $('#tima').find('table[data-ride="datatables"]').DataTable({
                 "ajax": {
-                    url: "${path}/sendCode/queryPickCodePage?actId=${actId}",
+                    url: "sendCode/queryPickCodePage?actId=${actId}",
                     type: "post",
                 },
                 "processing": true,
@@ -214,6 +219,12 @@
                             if (data == "02") {
                                 sendSmsTypeText = "短信";
                             }
+                            if (data == "03") {
+                                sendSmsTypeText = "彩信";
+                            }
+                            if (data.indexOf("02") >= 0 && data.indexOf("03") >= 0) {
+                                sendSmsTypeText = "短信,彩信";
+                            }
                             return sendSmsTypeText;
                         }
                     },
@@ -222,9 +233,22 @@
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
-                            return '<a href="javascript:sendCode(\'' + data['id'] + '\')">发码</a>' +
-                                    '<a href="${path}/codedetail.html?' + data['id'] + '-${actId}' + '" target="_blank">详情</a>' +
-                                    '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>';
+                            if (full['sendSmsType'] == "03") {
+                                return '<a href="javascript:sendCodeMMS(\'' + data['id'] + '\')">彩信发码</a>' +
+                                        '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>' /*+
+                                 '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>'*/;
+                            }
+                            if (full['sendSmsType'] == "02") {
+                                return '<a href="javascript:sendCode(\'' + data['id'] + '\')">短信发码</a>' +
+                                        '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>' /*+
+                                 '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>'*/;
+                            }
+                            if (full['sendSmsType'].indexOf("03") >= 0 && full['sendSmsType'].indexOf("02") >= 0) {
+                                return '<a href="javascript:sendCode(\'' + data['id'] + '\')">短信发码</a>' +
+                                        '<a href="javascript:sendCodeMMS(\'' + data['id'] + '\')">彩信发码</a>' +
+                                        '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>' /*+
+                                 '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>'*/;
+                            }
                         }
                     }
                 ]
@@ -233,31 +257,58 @@
     })
 </script>
 <script>
+    function sms() {
+        $("#type").val("02");
+        $("form").submit();
+    }
+    function mms() {
+        $("#type").val("03");
+        $("form").submit();
+    }
+
+</script>
+<script>
     function sendCode(id) {
-        $.get("${path}/sendCode/sendCodeByBatchId", {
+        $.get("sendCode/sendCodeByBatchId", {
             "actId": "${actId}",
-            "batchId": id
+            "batchId": id,
+            "type": "02"
         }, function (result) {
             if (result.success) {
                 sendMsg(true, "发送短信成功");
-                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+                window.location.href = "sendCode/sendcode?id=${actId}"
             } else {
                 sendMsg(false, result.errorMsg);
-                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+                window.location.href = "sendCode/sendcode?id=${actId}"
             }
         }, 'json');
     }
-    function delBatch(id) {
-        $.get("${path}/sendCode/delBatchById", {"batchId": id}, function (result) {
+    function sendCodeMMS(id) {
+        $.get("sendCode/sendCodeByBatchId", {
+            "actId": "${actId}",
+            "batchId": id,
+            "type": "03"
+        }, function (result) {
             if (result.success) {
-                sendMsg(true, "删除批次成功");
-                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+                sendMsg(true, "发送彩信成功");
+                window.location.href = "sendCode/sendcode?id=${actId}"
             } else {
                 sendMsg(false, result.errorMsg);
-                window.location.href = "${path}/sendCode/sendcode?id=${actId}"
+                window.location.href = "sendCode/sendcode?id=${actId}"
             }
         }, 'json');
     }
+    /*   function delBatch(id) {
+     $.get("sendCode/delBatchById", {"batchId": id}, function (result) {
+     if (result.success) {
+     sendMsg(true, "删除批次成功");
+     window.location.href = "sendCode/sendcode?id=${actId}"
+     } else {
+     sendMsg(false, result.errorMsg);
+     window.location.href = "sendCode/sendcode?id=${actId}"
+     }
+     }, 'json');
+     }*/
 </script>
 </body>
 </html>

@@ -47,23 +47,30 @@ public class TActivityCode {
     }
     //------------封装部分方法---------------
 
+    /**
+     * 活动有效期校验
+     * 0:在有效期内；-1：活动尚未开始；1：活动已结束
+     * @return
+     */
     @JSONField(serialize = false)
-    public boolean isEffective(){
+    public int effective(){
 
         Date now = new Date();
         if( null==endTime ){ //无结束日期，认为是始终有效的
             if( startTime.before(now) ){
-                return true;
+                return 0;
             }else{
-                return false;
+                return -1;
             }
 
         }else{ // 开始时间和结束时间都存在的时候
-            if( startTime.before(now) && now.before(endTime)){
-                return true;
-            }else{
-                return false;
-            }
+        	if(now.before(startTime)){
+        		return -1;
+        	}
+        	if(now.after(endTime)){
+        		return 1;
+        	}
+            return 0;
         }
 
 

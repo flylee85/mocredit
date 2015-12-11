@@ -68,12 +68,12 @@
           id,code,code_serial_number,verify_time,activity_id,activity_name,
           amount,device,store_id,store_name,start_time,end_time,
           number,request_serial_number,issue_enterprise_id,issue_enterprise_name,
-          shop_id,shop_name,verify_type,contract_id
+          shop_id,shop_name,verify_type,contract_id,status
         )VALUES (
           #{id},#{code},#{codeSerialNumber},#{verifyTime},#{activityId},#{activityName},
           #{amount},#{device},#{storeId},#{storeName},#{startTime},#{endTime},
           #{number},#{requestSerialNumber},#{issueEnterpriseId},#{issueEnterpriseName},
-          #{shopId},#{shopName},#{verifyType},#{contractId}
+          #{shopId},#{shopName},#{verifyType},#{contractId},#{status}
         )
         ]]>
     </insert>
@@ -89,7 +89,8 @@
 			vc.`code`,
 			ac.custom_mobile as mobile,
 			vc.verify_time as orderTime,
-			vc.device as enCode
+			vc.device as enCode,
+			vc.status as msg
 		FROM
 			t_verified_code vc
 		LEFT JOIN t_activity_code ac ON vc.code_serial_number = ac.id 

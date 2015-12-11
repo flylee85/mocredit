@@ -20,6 +20,7 @@ import com.mocredit.base.enums.ActivityBlackListsType;
 import com.mocredit.base.enums.ActivityCodeStatus;
 import com.mocredit.base.enums.ErrorCode;
 import com.mocredit.base.enums.VerifyCodeStatus;
+import com.mocredit.base.enums.VerifyLogCode;
 import com.mocredit.base.util.ActivityCodeUtils;
 import com.mocredit.base.util.DateUtil;
 import com.mocredit.base.util.HttpUtil;
@@ -220,7 +221,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		Object[] verifyCode = verifyCode(ard, code, device, requestSerialNumber);
 		StringBuilder str = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet><Table>");
 		if (null == verifyCode) {
-			str.append("<isSuccess>false</isSuccess>").append("<error>").append(ard.getErrorMsg()).append("</error></Table></NewDataSet>");
+			str.append("<isSuccess>false</isSuccess>").append("<error>").append(ard.getErrorMsg())
+					.append("</error></Table></NewDataSet>");
 			return str.toString();
 		}
 
@@ -265,7 +267,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		}
 		str.append("</PrintTitle>");
 		str.append("<ShopNo>");
-		String batchno = "000000000001";//TODO 不确定作用
+		String batchno = "000000000001";// TODO 不确定作用
 		str.append(batchno);
 		str.append("</ShopNo>");
 		str.append("<TranType>权益兑换</TranType>");
@@ -366,6 +368,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			ard.setErrorMsg("当前券码已于时间" + DateUtil.dateToStr(oneCode.getVerifyTime(), "yyyy-MM-dd \n HH:mm:ss") + "在"
 					+ oneCode.getShopName() + oneCode.getStoreName() + "\n使用过。");
 			ard.setErrorCode(ErrorCode.CODE_51.getCode());
+			addLog(device, request_serial_number, activityCode, new ActActivityStore(), VerifyCodeStatus.VERIFYCODE,
+					VerifyLogCode.VERIFY_HAS_USED);
 			return null;
 		}
 
@@ -391,6 +395,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			ard.setSuccess(false);
 			ard.setErrorMsg("此券码不适用于当前门店!");
 			ard.setErrorCode(ErrorCode.CODE_59.getCode());
+			addLog(device, request_serial_number, activityCode, new ActActivityStore(), VerifyCodeStatus.VERIFYCODE,
+					VerifyLogCode.VERIFY_INVALID_STORE);
 			return null;
 		}
 
@@ -407,11 +413,15 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			ard.setSuccess(false);
 			ard.setErrorMsg("此券码不在适用星期范围内!");
 			ard.setErrorCode(ErrorCode.CODE_61.getCode());
+			addLog(device, request_serial_number, activityCode, activityStore, VerifyCodeStatus.VERIFYCODE,
+					VerifyLogCode.VERIFY_INVALID_WEEK);
 			return null;
 		}
 		// 判断活动有效期
-		if (activityCode.isEffective()) {
-			addLog(device, request_serial_number, activityCode, activityStore, VerifyCodeStatus.VERIFYCODE);
+		int effective = activityCode.effective();
+		if (0 == effective) {
+			addLog(device, request_serial_number, activityCode, activityStore, VerifyCodeStatus.VERIFYCODE,
+					VerifyLogCode.VERIFY_SUCCESS);
 
 			TActivityCode activityCodeForUpdate = new TActivityCode();
 			activityCodeForUpdate.setStatus(ActivityCodeStatus.USED.getValue());
@@ -420,12 +430,17 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			logger.debug("标记码已使用:" + code);
 
 			return new Object[] { activityCode, activityStore, activityInfo };
+		} else if (effective < 0) {
+			addLog(device, request_serial_number, activityCode, activityStore, VerifyCodeStatus.VERIFYCODE,
+					VerifyLogCode.VERIFY_NOT_STARTED);
 		} else {
-			ard.setSuccess(false);
-			ard.setErrorMsg("当前使用时间不在有效的活动时间范围内!");
-			ard.setErrorCode(ErrorCode.CODE_60.getCode());
-			return null;
+			addLog(device, request_serial_number, activityCode, activityStore, VerifyCodeStatus.VERIFYCODE,
+					VerifyLogCode.VERIFY_HAS_ENDED);
 		}
+		ard.setSuccess(false);
+		ard.setErrorMsg("当前使用时间不在有效的活动时间范围内!");
+		ard.setErrorCode(ErrorCode.CODE_60.getCode());
+		return null;
 	}
 
 	/**
@@ -437,7 +452,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 	 * @param activityStore
 	 */
 	private void addLog(String device, String request_serial_number, TActivityCode activityCode,
-			ActActivityStore activityStore, VerifyCodeStatus verifyCodeStatus) {
+			ActActivityStore activityStore, VerifyCodeStatus verifyCodeStatus, VerifyLogCode logCode) {
 		TVerifiedCode tvc = new TVerifiedCode();
 		tvc.setId(UUIDUtils.UUID32());
 		tvc.setCode(activityCode.getCode());
@@ -459,6 +474,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		tvc.setStoreName(activityStore.getStoreName());
 		tvc.setVerifyType(verifyCodeStatus.getValue()); // 设置状态为验码核销
 		tvc.setContractId(activityCode.getContractId());
+		tvc.setStatus(logCode.getValue());
 		int count = vcm.insertVerifiedCode(tvc);
 		logger.debug("使用记录:" + count);
 	}
@@ -497,7 +513,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		sb.append("</NewDataSet>");
 		return sb.toString();
 	}
-	
+
 	public AjaxResponseData revokeForSys(String request_serial_number, String device) {
 		AjaxResponseData ard = new AjaxResponseData();
 		// 码校验
@@ -534,6 +550,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			ard.setSuccess(false);
 			ard.setErrorMsg("非法类型请求操作：该码已被撤销！");
 			ard.setErrorCode(ErrorCode.CODE_51.getCode());
+			addLog(device, request_serial_number, activityCode, new ActActivityStore(), VerifyCodeStatus.REVOKE,
+					VerifyLogCode.REVOKE_HAS_REVOKED);
 			return null;
 		}
 
@@ -542,8 +560,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		activityCodeForUpdate.setStatus(ActivityCodeStatus.NOT_USED.getValue());
 		activityCodeForUpdate.setId(activityCode.getId());
 		acm.updateActivityCode(activityCodeForUpdate);
-		ActActivityStore activityStore = new ActActivityStore();
-		addLog(device, request_serial_number, activityCode, activityStore, VerifyCodeStatus.REVOKE);
+		addLog(device, request_serial_number, activityCode, new ActActivityStore(), VerifyCodeStatus.REVOKE,
+				VerifyLogCode.REVOKE_SUCCESS);
 
 		ard.setSuccess(true);
 		Map<String, Object> m = new HashMap<String, Object>();
@@ -610,18 +628,17 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		this.activityCodeBlackListsMapper.addBlackListsByActivityId(actActivityCodeVO.getActivityId(),
 				ActivityBlackListsType.LOCKING.getValue(), ActivityBlackListsType.LOCKING.getText());
 		// 2.更新 券码表中的数据
-		this.acm.updateActActivity(actActivityCodeVO.getActivityId(),
-				actActivityCodeVO.getActivityName(), actActivityCodeVO.getEnterpriseId(),
-				actActivityCodeVO.getEnterpriseName(), actActivityCodeVO.getContractId(), actActivityCodeVO.getAmount(),
-				actActivityCodeVO.getStartTime(), actActivityCodeVO.getEndTime(), actActivityCodeVO.getSelectDate(),
-				actActivityCodeVO.getMaxNumber(), actActivityCodeVO.getOutCode(), actActivityCodeVO.getEnterpriseCode(),
+		this.acm.updateActActivity(actActivityCodeVO.getActivityId(), actActivityCodeVO.getActivityName(),
+				actActivityCodeVO.getEnterpriseId(), actActivityCodeVO.getEnterpriseName(),
+				actActivityCodeVO.getContractId(), actActivityCodeVO.getAmount(), actActivityCodeVO.getStartTime(),
+				actActivityCodeVO.getEndTime(), actActivityCodeVO.getSelectDate(), actActivityCodeVO.getMaxNumber(),
+				actActivityCodeVO.getOutCode(), actActivityCodeVO.getEnterpriseCode(),
 				actActivityCodeVO.getActivityCode(), ActivityCodeStatus.NOT_USED.getValue());
 		// 3.更新活动关联的门店
 		this.actActivityStoreMapper.deleteByActivityId(actActivityCodeVO.getActivityId());
 		this.actActivityStoreMapper.batchSave(actActivityCodeVO.getActActivityStores());
 		// 4.解除黑名单的锁定
-		this.activityCodeBlackListsMapper
-				.deleteBlackListsByActivityId(actActivityCodeVO.getActivityId());
+		this.activityCodeBlackListsMapper.deleteBlackListsByActivityId(actActivityCodeVO.getActivityId());
 
 		// 5更新活动附属信息
 		activityInfoMapper.deleteByActivityId(actActivityCodeVO.getActivityId());

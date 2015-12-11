@@ -23,8 +23,7 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
 		"columnDefs": [
 			{
 				"render": function(oObj, type, full ) {
-					return '<a href="javascript:openUpdateEnterprise(\''+full[ 'id' ]+'\',0)">查看</a>'
-						+ '<a href="javascript:openUpdateEnterprise(\''+full[ 'id' ]+'\',1)">编辑</a>'
+					return '<a href="javascript:openUpdateEnterprise(\''+full[ 'id' ]+'\',1)">编辑</a>'
 						+ '<a href="#" onclick="javascript:doDelete(this)" data-id="'+full['id']+'">删除</a>'
 						+ '<a href="contract.html" class="changePage toContract" current-id="'+full[ 'id' ]+'">合同</a>'
 				},
