@@ -13,7 +13,7 @@ $("body").on("click", "a.changePage", function(event){
  */
 $.ajaxSetup({
 
-	timeout: 6000,
+	timeout: 30000,
 	beforeSend : function () {
 		$.loading();
 	},
