@@ -434,7 +434,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             ActivityVo activity = JSON.parseObject(param, ActivityVo.class);
             activity.setPubEnterpriseName(activity.getEnterpriseName());
             activity.setProductType(activity.getProductCode());
-//            saveInRequestLog(request, null, param);
+            saveInRequestLog(request, null, param);
             if (activityService.operActivityAndStore(activity, resp)) {
                 LOGGER.info(
                         "### request in success activityImport param={} ###",
@@ -452,7 +452,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
                     param, e);
             resp.setErrorCode(ErrorCodeType.PARAM_ERROR.getValue());
             resp.setErrorMsg(ErrorCodeType.PARAM_ERROR.getText());
-//            saveInRequestLog(request, null, param);
+            saveInRequestLog(request, null, param);
             return renderJSONString(false, resp.getErrorMsg(),
                     resp.getErrorCode(), resp.getData());
         }
