@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	活动-Mybatis Mapper文件
+	作者：william
+	日期：2015/12/09
+-->
+<mapper namespace="com.mocredit.activity.persitence.MmsframeMapper">
+
+	<insert id="saveMms" parameterType="com.mocredit.activity.model.Mms" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO 
+			t_mms(id,activityId,subject,isresend,code_no,mmsJson,createtime)
+		VALUES
+			(#{id},#{activityId},#{subject},#{isresend},#{code_no},#{mmsJson},#{createtime})
+	</insert>
+	
+	<select id="getMmsById" resultType="com.mocredit.activity.model.Mms" parameterType="java.lang.Long">
+		SELECT	
+			id,activityId,mmspackageid,subject,isresend,code_no,mmsJson,createtime
+		FROM 
+			t_mms
+		WHERE 
+			id = #{id}
+	</select>
+	
+	<update id="updateMms" parameterType="com.mocredit.activity.model.Mms">
+		UPDATE 
+			t_mms
+		SET
+			mmspackageid = #{mmspackageid}
+		WHERE
+			id = #{id}
+	</update>
+	
+	<select id="getMmsByActivityId" resultType="com.mocredit.activity.model.Mms" parameterType="java.lang.Long">
+		SELECT	
+			id,activityId,subject,isresend,code_no,mmsJson,createtime
+		FROM 
+			t_mms
+		WHERE 
+			activityId = #{activityId}
+	</select>
+	
+	<select id="getMmsframeById" resultType="com.mocredit.activity.model.Mmsframe" parameterType="java.lang.Long">
+		SELECT	
+			id,mmsId,pic,pictype,text,frame_no,createtime
+		FROM 
+			t_mmsframe
+		WHERE 
+			id = #{id}
+	</select>
+
+	<select id="getMmsframeListByMMSId" resultType="com.mocredit.activity.model.Mmsframe" parameterType="java.lang.Integer">
+		SELECT	
+			id,mmsId,pic,pictype,text,frame_no,createtime
+		FROM 
+			t_mmsframe
+		WHERE 
+			mmsId = #{mmsId}
+		ORDER BY frame_no
+	</select>
+	
+	<insert id="saveMmsframe" parameterType="com.mocredit.activity.model.Mmsframe" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO 
+			t_mmsframe(id,mmsId,pic,pictype,text,frame_no,createtime)
+		VALUES
+			(#{id},#{mmsId},#{pic},#{pictype},#{text},#{frame_no},#{createtime})
+	</insert>
+	
+	<delete id="deleteMmsframeById" parameterType="java.lang.Long">
+		DELETE FROM t_mmsframe WHERE id = #{id} 
+	</delete>
+
+	<update id="updateMmsframe" parameterType="com.mocredit.activity.model.Mmsframe">
+		UPDATE 
+			t_mmsframe
+		SET
+			pic = #{pic},pictype=#{pictype},text=#{text},frame_no=#{frame_no},createtime=#{createtime}
+		WHERE
+			id = #{id}
+	</update>
+	
+</mapper>

@@ -34,17 +34,10 @@
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property
-                name="url" value="jdbc:mysql://192.168.24.124:3306/activity_new?characterEncoding=UTF-8"/>
+                name="url" value="jdbc:mysql://127.0.0.1:3306/activity_new?characterEncoding=UTF-8"/>
         <property name="username" value="root"/>
-        <property name="password" value="eAhrpeDoq/ve39md"/>
+        <property name="password" value="root"/>
     </bean>
-    <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">-->
-        <!--<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
-        <!--<property-->
-                <!--name="url" value="jdbc:mysql://127.0.0.1:3306/activity_new?characterEncoding=UTF-8"/>-->
-        <!--<property name="username" value="root"/>-->
-        <!--<property name="password" value="123456"/>-->
-    <!--</bean>-->
     <!-- transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

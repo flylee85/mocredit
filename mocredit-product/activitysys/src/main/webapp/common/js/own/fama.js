@@ -1,4 +1,6 @@
-	// 验证
+
+
+// 验证
 	var form2 = $("#addActivityFamaForm").parsley();
 
 	// datepicker
@@ -47,6 +49,13 @@
 			$("#duanxinFama").hide().find('textarea').removeAttr('data-parsley-required').next('.parsley-errors-list').empty();
 		}
 	});
+	$("#caixin").click(function () {
+		if ($(this).prop("checked")) {
+			$("#caixinFama").show();
+		} else {
+			$("#caixinFama").hide();
+		}
+	});
 	$("#weixin").click(function () {
 		if ($(this).prop("checked")) {
 			$("#weixinFama").show();
@@ -57,6 +66,9 @@
 	$('.backToList').click(function () {
 		$('#content').load('activity.html');
 	});
+
+
+
 
 	/**
 	 * 添加发码活动确认按钮
@@ -84,6 +96,12 @@
 		if($("#duanxin").prop('checked')){
 			sendSmsType = '02';
 			noticeSmsMsg = $("#duanxinFama textarea").val();
+		}
+		if($("#caixin").prop('checked')){
+			sendSmsType = '03';
+			formObject.mmsJson = $("#endJson").attr('data-json');
+			formObject.codeno = $("#code-select").val();
+			formObject.subject = $("#subject").val();
 		}
 		formObject.sendSmsType = sendSmsType;
 		formObject.noticeSmsMsg = noticeSmsMsg;
@@ -283,3 +301,5 @@
 	}
 	openUpdateFamaActivity();
 	loadDictionary();
+
+

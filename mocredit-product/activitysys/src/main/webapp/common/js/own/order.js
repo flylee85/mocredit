@@ -7,91 +7,62 @@ $(function () {
             jifenTable = $('#jifen').find('table[data-ride="datatables"]').DataTable({
                 "ajax": {
                     url: "order/queryOrderPage?type=01",
-                    data: function (formObject) {
-                        //获取表单基本元素对象
-                        var formArray = $("#queryJifenOrderPage").serializeArray();
-                        $.each(formArray, function (index) {
-                            if (formObject[this['name']]) {
-                                formObject[this['name']] = formObject[this['name']] + "," + this['value'];
-                            } else {
-                                formObject[this['name']] = this['value'];
-                            }
-                        });
-                        //获取表单状态
-                        var statuses;
-                        var checkboxArray = $("#queryOrderPage input:checked");
-                        checkboxArray.each(function (i) {
-                            if (statuses == null || statuses == '') {
-                                statuses = $(this).val();
-                            } else {
-                                statuses += ',' + $(this).val();
-                            }
-                        });
-                        formObject.statuses = statuses;
-                        return formObject;
-                    },
                     type: "post",
                 },
                 "processing": true,
                 "serverSide": true,
-                "autoWidth": true,
-                "searching": false,
-                "searchDelay": 500,
-                "ordering": false,
-                "lengthChange": false,
-                "displayStart": parseInt(page) * 10 - 10,
-                "pagingType": "full_numbers",
                 "pageLength": 10,
+                "pagingType": "full_numbers",
+                "searchDelay": 500,
+                "displayStart": parseInt(page) * 10 - 10,
+                "autoWidth": true,
                 "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
                 "aaSorting": [[4, "desc"]],//默认排序
                 "columns": [
-                    {"data": "orderId", "name": "orderId", "width": "90px"},
-                    {"data": "enterpriseName", "name": "enterpriseName", "width": "70px"},
-                    {"data": "shopName", "name": "shopName", "width": "70px"},
-                    {"data": "storeName", "name": "storeName", "width": "70px"},
-                    {"data": "activityName", "name": "activityName", "width": "90px"},
-                    {"data": "orderTime", "name": "orderTime", "width": "90px"},
-                    {"data": "status", "name": "status", "width": "70px"},
-                    {"data": "amt", "name": "amt", "width": "70px"},
-                    {"data": "enCode", "name": "enCode", "width": "70px"},
-                    {"data": "cardNo", "name": "cardNo", "width": "70px"},
-                    {"data": "msg", "name": "msg", "width": "70px"}
-                ], "columnDefs": [
+                    {"data": "code", "name": "code", "width": "100px"},
+                    {"data": "storeCount", "name": "storeCount", "width": "90px", "sortable": false},
+                    {"data": "orderCount", "name": "orderCount", "width": "90px", "sortable": false},
+                    {"data": "name", "name": "name", "className": "name", "width": "180px"},
+                    {"data": "createtime", "name": "createtime", "width": "130px"},
+                    {"data": null, "name": "endTime", "width": "150px"},
+                    {"data": null, "width": "100px"},
+                    {"data": null, "width": "150px"}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 5,
+                        "data": null,
+                        "render": function (data, type, full) {
+                            var entTime = data['endTime'];
+                            return entTime.substring(0, 10);
+                        }
+                    },
                     {
                         "targets": 6,
-                        "data": "status",
+                        "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
-                            /**
-                             *PAYMENT("01", "积分消费"),
-                             PAYMENT_REVOKE("02", "消费撤销"),
-                             PAYMENT_REVERSAL("03", "积分冲正"),
-                             PAYMENT_REVERSAL_REVOKE("04", "冲正撤销"),
-                             CONFIRM_INFO("05", "积分查询");
-                             */
-                            var statusText = "";
-                            if (data == "01") {
-                                statusText = "积分消费";
+                            var html = '<div class="switch demo3">';
+                            if (data['status'] == "01") {
+                                html += '<input type="checkbox" checked value="' + data['status'] + '" data-id="' + data['id'] + '">';
+                            } else {
+                                html += '<input type="checkbox" value="' + data['status'] + '" data-id="' + data['id'] + '">';
                             }
-                            if (data == "02") {
-                                statusText = "消费撤销";
-                            }
-                            if (data == "03") {
-                                statusText = "积分冲正";
-                            }
-                            if (data == "04") {
-                                statusText = "冲正撤销";
-                            }
-                            return statusText;
+                            html += '<label><i data-on="启用" data-off="停用"></i></label>';
+                            html += '</div>';
+                            return html;
                         }
-                    }, {
-                        "targets": 5,
-                        "data": "orderTime",
+                    },
+                    {
+                        "targets": 7,
+                        "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
-                            return new Date(parseInt(data)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+                            return '<a href="javascript:openUpdateJifenActivity(\'' + data['id'] + '\',0)" >查看</a>' +
+                                '<a href="javascript:openUpdateJifenActivity(\'' + data['id'] + '\',1)" >编辑</a>' +
+                                '<a href="#" onclick="javascript:doDelete(this)" data-id="' + data['id'] + '">删除</a>';
                         }
-                    }
+                    },
                 ]
             });
         }
@@ -103,10 +74,10 @@ $(function () {
             famaTable = $('#fama').find('table[data-ride="datatables"]').DataTable({
                     "ajax": {
                         url: "order/queryOrderPage?type=02",
-                        data: function (formObject) {
+                        data: function () {
                             //获取表单基本元素对象
                             var formArray = $("#queryOrderPage").serializeArray();
-                            //var formObject = new Object();
+                            var formObject = new Object();
                             $.each(formArray, function (index) {
                                 if (formObject[this['name']]) {
                                     formObject[this['name']] = formObject[this['name']] + "," + this['value'];
@@ -143,51 +114,46 @@ $(function () {
                     "aaSorting": [[4, "desc"]],//默认排序
                     "columns": [
                         {"data": "orderId", "name": "orderId", "width": "90px"},
-                        {"data": "enterpriseName", "name": "enterpriseName", "width": "70px"},
-                        {"data": "shopName", "name": "shopName", "width": "70px"},
+                        {"data": "pubEnterpriseName", "name": "pubEnterpriseName", "width": "70px"},
+                        {"data": "supEnterpriseName", "name": "supEnterpriseName", "width": "70px"},
                         {"data": "storeName", "name": "storeName", "width": "70px"},
                         {"data": "activityName", "name": "activityName", "width": "90px"},
-                        {"data": "orderTime", "name": "orderTime", "width": "90px"},
+                        {"data": "startTime", "name": "startTime", "width": "90px"},
+                        {"data": "endTime", "name": "endTime", "width": "90px"},
                         {"data": "status", "name": "status", "width": "70px"},
                         {"data": "code", "name": "code", "width": "70px"},
-                        {"data": "enCode", "name": "enCode", "width": "70px"},
-                        {"data": "mobile", "name": "mobile", "width": "70px"},
-                        {"data": "msg", "name": "msg", "width": "70px"},
+                        {"data": "tel", "name": "tel", "width": "70px"},
                         {"data": null, "width": "70px"}
                     ],
                     "columnDefs": [
                         {
-                            "targets": 5,
-                            "data": "orderTime",
-                            "sortable": false,
-                            "render": function (data, type, full) {
-                                return new Date(parseInt(data)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-                            }
-                        }, {
-                            "targets": 6,
+                            "targets": 7,
                             "data": "status",
                             "sortable": false,
                             "render": function (data, type, full) {
-                                var statusText = "";
-                                if (data == "0") {
-                                    statusText = "消费";
+//    EXCHANGE("01", "已兑换"), SEND("02", "已发送"), REVOCATION("03", "已撤回");
+                                var statusText;
+                                if (data == "01") {
+                                    statusText = "已发送";
                                 }
-                                if (data == "2") {
-                                    statusText = "撤销";
+                                if (data == "02") {
+                                    statusText = "已兑换";
+                                }
+                                if (data == "03") {
+                                    statusText = "已撤回";
                                 }
                                 return statusText;
                             }
                         },
                         {
-                            "targets": 11,
+                            "targets": 10,
                             "data": null,
                             "sortable": false,
                             "render": function (data, type, full) {
-                                if (full['status'] == "2") {
-                                    return '<a href="#"></a>';
-                                }
-                                if (full['status'] == "0") {
-                                    return '<a href="javascript:doUpdate(this,\'' + full['orderId'] + '\',\'' + full['enCode'] + '\')"data-id="' + full['orderId'] + '">撤消</a>';
+                                if (full['orderId'] != null && full['orderId'] != "null" && full['orderId'] != "") {
+                                    return '<a href="javascript:doUpdate(this,\'' + full['orderId'] + '\')"data-id="' + full['orderId'] + '">撤回</a>';
+                                } else {
+                                    return;
                                 }
                             }
                         }
@@ -211,73 +177,32 @@ $(function () {
         initFamaTab(1);
     });
 
-    $("#searchFamaCond").click(function () {
+    $("#searchCond").click(function () {
         famaTable.ajax.reload();
     });
-    $("#searchJiFenCond").click(function () {
-        jifenTable.ajax.reload();
-    });
-    $("#exportJifen").click(function () {
-        //var formArray = $("#queryJifenOrderPage").serializeArray();
-        var formArray = $("#queryJifenOrderPage").serialize();
-        //var formObject = new Object();
-        //$.each(formArray, function (index) {
-        //    if (formObject[this['name']]) {
-        //        formObject[this['name']] = formObject[this['name']] + "," + this['value'];
-        //    } else {
-        //        formObject[this['name']] = this['value'];
-        //    }
-        //});
-        ////获取表单状态
-        //var statuses = "";
-        //var checkboxArray = $("#queryOrderPage input:checked");
-        //checkboxArray.each(function (i) {
-        //    if (statuses == null || statuses == '') {
-        //        statuses = $(this).val();
-        //    } else {
-        //        statuses += ',' + $(this).val();
-        //    }
-        //});
-        //formObject.statuses = statuses;
-        //formObject.type = "02";
-        window.location.href = "order/export?type=01&" + formArray;
-        //if (statuses != null) {
-        //    window.location.href = "order/export?type=01&statusList=" + statuses + "&startTime=" +
-        //        formObject["startTime"] + "&endTime=" + formObject["endTime"] + "&activityName=" +
-        //        formObject["activityName"] + "&enCode=" + formObject["enCode"] + "&mobile=" + formObject["mobile"] +
-        //        "&code=" + formObject["code"] + "&enterpriseName=" + formObject["enterpriseName"] + "&cardNo=" + formObject["cardNo"];
-        //} else {
-        //    window.location.href = "order/export?type=01&startTime=" +
-        //        formObject["startTime"] + "&endTime=" + formObject["endTime"] + "&activityName=" +
-        //        formObject["activityName"] + "&enCode=" + formObject["enCode"] + "&mobile=" + formObject["mobile"] +
-        //        "&code=" + formObject["code"] + "&enterpriseName=" + formObject["enterpriseName"] + "&cardNo=" + formObject["cardNo"];
-        //}
-    });
     $("#export").click(function () {
-        //var formArray = $("#queryOrderPage").serializeArray();
-        var formArray = $("#queryOrderPage").serialize();
-        window.location.href = "order/export?type=02&" + formArray;
-        //var formObject = new Object();
-        //$.each(formArray, function (index) {
-        //    if (formObject[this['name']]) {
-        //        formObject[this['name']] = formObject[this['name']] + "," + this['value'];
-        //    } else {
-        //        formObject[this['name']] = this['value'];
-        //    }
-        //});
-        ////获取表单状态
-        //var statuses = "";
-        //var checkboxArray = $("#queryOrderPage input:checked");
-        //checkboxArray.each(function (i) {
-        //    if (statuses == null || statuses == '') {
-        //        statuses = $(this).val();
-        //    } else {
-        //        statuses += ',' + $(this).val();
-        //    }
-        //});
-        //formObject.statuses = statuses;
-        //formObject.type = "02";
-        //window.location.href = "order/export?type=02&statuses=" + statuses + "&startTime=" + formObject["startTime"] + "&endTime=" + formObject["endTime"] + "&keywords=" + formObject["keywords"]
+        var formArray = $("#queryOrderPage").serializeArray();
+        var formObject = new Object();
+        $.each(formArray, function (index) {
+            if (formObject[this['name']]) {
+                formObject[this['name']] = formObject[this['name']] + "," + this['value'];
+            } else {
+                formObject[this['name']] = this['value'];
+            }
+        });
+        //获取表单状态
+        var statuses = "";
+        var checkboxArray = $("#queryOrderPage input:checked");
+        checkboxArray.each(function (i) {
+            if (statuses == null || statuses == '') {
+                statuses = $(this).val();
+            } else {
+                statuses += ',' + $(this).val();
+            }
+        });
+        formObject.statuses = statuses;
+        formObject.type = "02";
+        window.location.href = "order/export?type=02&statuses=" + statuses + "&startTime=" + formObject["startTime"] + "&endTime=" + formObject["endTime"] + "&keywords=" + formObject["keywords"]
     });
 
     if ($('#activityCurrentType').val() == "2") {
@@ -1085,41 +1010,17 @@ function cishuLimite(obj) {
     }
 }
 /**
- * check订单状态
- * @param obj
- */
-function doCheck(obj, id) {
-    //var id = $(obj).attr("data-id");
-    var contentTitle = $(obj).parent().prevAll(".name").text();
-    $.confirmUpdateDailog({
-        confirm: function () {
-            $.get("order/checkOrderById", {"id": id}, function (msg) {
-                if (msg.success) {
-                    sendMsg(true, "监测成功");
-                    if ($('#jifen').hasClass('active')) {
-                        $('#jifen').find('table').DataTable().ajax.reload();
-                    } else {
-                        $('#fama').find('table').DataTable().ajax.reload();
-                    }
-                } else {
-                    sendMsg(false, msg.errorMsg);
-                }
-            }, 'json');
-        },
-        target: id
-    });
-}
-/**
  * 更新订单状态数据
  * @param obj
  */
-function doUpdate(obj, id, enCode) {
+function doUpdate(obj, orderId) {
+    var id = $(obj).attr("data-id");
     var contentTitle = $(obj).parent().prevAll(".name").text();
     $.confirmUpdateDailog({
         confirm: function () {
-            $.get("order/updateOrderByOrderId", {"orderId": id, "enCode": enCode}, function (msg) {
+            $.get("order/updateOrderByOrderId", {"orderId": orderId}, function (msg) {
                 if (msg.success) {
-                    sendMsg(true, "撤消成功");
+                    sendMsg(true, "撤回成功");
                     if ($('#jifen').hasClass('active')) {
                         $('#jifen').find('table').DataTable().ajax.reload();
                     } else {
@@ -1130,7 +1031,7 @@ function doUpdate(obj, id, enCode) {
                 }
             }, 'json');
         },
-        target: id
+        target: orderId
     });
 }
 $.extend({
@@ -1191,7 +1092,7 @@ $.confirmUpdateDailog.default = {
 				</div>\
 			</div>',
     title: "确认",
-    content: "您确定要处理 <b>{target}</b> 吗？",
+    content: "您确定要撤销 <b>{target}</b> 吗？",
     target: "",
     confirm: null
 }

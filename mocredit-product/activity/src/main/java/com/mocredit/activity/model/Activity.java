@@ -40,6 +40,11 @@ public class Activity implements Serializable {
 	private String sendSmsType;
 	// 通知短信内容,notice_sms_msg
 	private String noticeSmsMsg;
+	// 二维码所在帧
+	private Integer codeno;
+	// 彩信标题
+	private String subject;
+	private String mmsJson;
 	// 开始时间,start_time
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private Date startTime;
@@ -178,6 +183,30 @@ public class Activity implements Serializable {
 
 	public void setNoticeSmsMsg(String noticeSmsMsg) {
 		this.noticeSmsMsg = noticeSmsMsg;
+	}
+
+	public Integer getCodeno() {
+		return codeno;
+	}
+
+	public void setCodeno(Integer codeno) {
+		this.codeno = codeno;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getMmsJson() {
+		return mmsJson;
+	}
+
+	public void setMmsJson(String mmsJson) {
+		this.mmsJson = mmsJson;
 	}
 
 	public Date getStartTime() {

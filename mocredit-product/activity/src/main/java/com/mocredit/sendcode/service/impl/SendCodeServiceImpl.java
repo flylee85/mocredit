@@ -1,40 +1,58 @@
 package com.mocredit.sendcode.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.mocredit.activity.model.*;
-import com.mocredit.activity.persitence.ActivityStoreMapper;
-import com.mocredit.activity.persitence.BatchCodeMapper;
-import com.mocredit.activity.persitence.BatchMapper;
-import com.mocredit.activity.service.ActivityService;
-import com.mocredit.base.exception.BusinessException;
-import com.mocredit.base.pagehelper.PageHelper;
-import com.mocredit.base.util.*;
-import cn.m.mt.common.MMSBO;
-import com.mocredit.manage.model.Enterprise;
-import com.mocredit.manage.model.Merchant;
-import com.mocredit.manage.persitence.EnterpriseMapper;
-import com.mocredit.manage.service.MerchantService;
-import com.mocredit.order.constant.OrderStatusType;
-import com.mocredit.order.constant.OrderType;
-import com.mocredit.order.entity.Order;
-import com.mocredit.order.service.OrderService;
-import com.mocredit.sendcode.constant.BatchCodeStatus;
-import com.mocredit.sendcode.constant.BatchStatus;
-import com.mocredit.sendcode.constant.DownloadType;
-import com.mocredit.sendcode.service.SendCodeService;
-import com.mocredit.sys.service.OptLogService;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
-import java.io.InputStream;
-import java.util.*;
+import com.alibaba.fastjson.JSON;
+import com.mocredit.activity.model.Activity;
+import com.mocredit.activity.model.ActivityStore;
+import com.mocredit.activity.model.Batch;
+import com.mocredit.activity.model.BatchBvo;
+import com.mocredit.activity.model.BatchCode;
+import com.mocredit.activity.model.BatchCodeBvo;
+import com.mocredit.activity.model.BatchCodeVO;
+import com.mocredit.activity.model.BatchVO;
+import com.mocredit.activity.model.Mms;
+import com.mocredit.activity.persitence.ActivityStoreMapper;
+import com.mocredit.activity.persitence.BatchCodeMapper;
+import com.mocredit.activity.persitence.BatchMapper;
+import com.mocredit.activity.service.ActivityService;
+import com.mocredit.activity.service.MmsframeService;
+import com.mocredit.base.exception.BusinessException;
+import com.mocredit.base.pagehelper.PageHelper;
+import com.mocredit.base.util.DateUtil;
+import com.mocredit.base.util.ExcelUtil;
+import com.mocredit.base.util.HttpUtil;
+import com.mocredit.base.util.PropertiesUtil;
+import com.mocredit.base.util.ValidatorUtil;
+import com.mocredit.manage.model.Enterprise;
+import com.mocredit.manage.persitence.EnterpriseMapper;
+import com.mocredit.manage.service.MerchantService;
+import com.mocredit.order.service.OrderService;
+import com.mocredit.sendcode.constant.BatchCodeStatus;
+import com.mocredit.sendcode.constant.BatchStatus;
+import com.mocredit.sendcode.constant.DownloadType;
+import com.mocredit.sendcode.service.SendCodeService;
+import com.mocredit.sys.service.OptLogService;
+
+import cn.m.mt.common.DateTimeUtils;
+import cn.m.mt.common.MMSBO;
+import cn.m.mt.common.Variable;
 
 /**
  * Created by ytq on 2015/10/23.
@@ -60,7 +78,8 @@ public class SendCodeServiceImpl implements SendCodeService {
     private OrderService orderService;
     @Autowired
     private MerchantService merchantService;
-
+    @Autowired
+	private MmsframeService mmsframeService;
     @Override
     @Transactional
     public List<BatchCode> downloadList(String type, String name, String id, Integer codeCount) {
@@ -357,6 +376,57 @@ public class SendCodeServiceImpl implements SendCodeService {
         carryVerifyCode(activity, batchId, batchCodeList);
     }
 
+    @Transactional()
+    public void sendCodeByMMS(String actId, String batchId, List<BatchCode> batchCodeList) {
+    	MMSBO mmsbo = new MMSBO();
+    	Activity activity = activityService.getActivityById(actId);
+    	Mms mms = mmsframeService.getMmsByActivityId(Long.parseLong(actId));
+    	for (BatchCode batchCode : batchCodeList) {
+//			mmsbo.setBatchid(batchId);
+			mmsbo.setCharcode(batchCode.getCode());
+			mmsbo.setNumberpwd("010073787632");
+			mmsbo.setBarcodeno(mms.getCode_no());
+			mmsbo.setTid("20150428111444117862");
+			mmsbo.setEorderid(5115538L);
+			mmsbo.setChannleno("25666");
+			mmsbo.setPackageid(mms.getMmspackageid());
+			mmsbo.setStatus(Variable.MMSSTATUS_WAITE);
+			mmsbo.setType(Variable.MMSBO_TYPE_MMS); // 发送类型为彩信
+			//mmsbo.setMttype(Variable.MMSBO_MTTYPE_DEFAULT);// 默认发送级别为 实时
+			mmsbo.setCreatetime(DateTimeUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+			mmsbo.setMobile(batchCode.getCustomerMobile());
+			mmsbo.setCustomer(batchCode.getCustomerName());
+//			mmsbo.setExtfield1(batchCode.getExtfield1());
+//			mmsbo.setExtfield2(batchCode.getExtfield2());
+//			mmsbo.setExtfield3(batchCode.getExtfield3());
+			mmsbo.setIsresend(mms.isIsresend() ? 1 : 0);
+			mmsbo.setMttype(1);//发送类型,直发
+			mmsbo.setStatuscode("NYYH");//发送者用户名
+			mmsbo.setEntid(46L);
+			mmsbo.setEitemid(Long.parseLong(activity.getId()));
+			mmsbo.setBarcodeid(73349609L);
+			
+			final MMSBO sendMsg = mmsbo;
+			jmsTemplate.send("subject", new MessageCreator() {
+                public Message createMessage(Session session) throws JMSException {
+                    ObjectMessage msg = session.createObjectMessage(sendMsg);
+                    return msg;
+                }
+            });
+
+            //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
+            // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
+            Map<String, Object> batchCodeMap = new HashMap<>();
+            batchCodeMap.put("id", batchCode.getId());
+            batchCodeMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
+            batchCodeMap.put("startTime", DateUtil.getLongCurDate());
+            batchCode.setStartTime(new Date());
+            batchCodeMapper.updateBatchCodeById(batchCodeMap);
+    	}
+        //送码
+        carryVerifyCode(activity, batchId, batchCodeList);
+    }
+    
     /**
      * 验码接口-送码
      *

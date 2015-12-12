@@ -21,12 +21,17 @@ import com.mocredit.activity.model.Batch;
 import com.mocredit.activity.model.BatchCode;
 import com.mocredit.activity.model.BatchCodeVO;
 import com.mocredit.activity.model.BatchVO;
+import com.mocredit.activity.model.Mms;
+import com.mocredit.activity.model.Mmsframe;
 import com.mocredit.activity.model.SelectStoreVO;
 import com.mocredit.activity.persitence.ActivityMapper;
 import com.mocredit.activity.persitence.ActivityStoreMapper;
 import com.mocredit.activity.persitence.BatchCodeMapper;
 import com.mocredit.activity.persitence.BatchMapper;
+import com.mocredit.activity.persitence.MmsframeMapper;
 import com.mocredit.activity.service.ActivityService;
+import com.mocredit.activity.service.SendMMSPackage;
+import com.mocredit.activity.utils.ResourceUtil;
 import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
@@ -74,6 +79,10 @@ public class ActivityServiceImpl implements ActivityService {
 	private StoreMapper storeMapper; // 门店mapper
 	@Autowired
 	private TerminalMapper terminalMapper;// 机具mapper
+	@Autowired
+	private MmsframeMapper mmsframeMapper;
+	@Autowired
+	private SendMMSPackage sendMMSPackage;
 	private boolean importFlag = true;
 
 	/**
@@ -241,6 +250,55 @@ public class ActivityServiceImpl implements ActivityService {
 		return activityStoreMapper.selectForChoose(param);
 	}
 
+	@Override
+	public void sendMMSPackage(String activityId) {
+		Activity activity = activityMapper.getActivityById(activityId);
+		Enterprise enterprise = new Enterprise();
+		enterprise.setId(activity.getEnterpriseId());
+		Enterprise ent = enterpriseMapper.selectOne(enterprise);
+		Mms mms = mmsframeMapper.getMmsByActivityId(Integer.parseInt(activityId));
+		Mmsframe mmsfram = new Mmsframe();
+		List<Mmsframe> list = mmsframeMapper.getMmsframeListByMMSId(mms.getId());
+		if(list!=null&&!list.isEmpty()){
+			StringBuilder packageXML = new StringBuilder("<mms>");
+			packageXML.append("<subject>").append(activity.getSubject()).append("</subject>");
+			packageXML.append("<pages>");
+			for(int i=0;i<list.size();i++){
+				mmsfram =list.get(i);
+				packageXML.append("<page dur=\"50\">");
+				if(mmsfram.getPic()!=null&&!mmsfram.getPic().isEmpty()){
+					packageXML.append("<img type=\""+mmsfram.getPictype()+"\">");
+					packageXML.append(mmsfram.getPic());
+					packageXML.append("</img>");
+				}
+				if(mmsfram.getText()!=null&&!mmsfram.getText().isEmpty()){
+					String txtContent = mmsfram.getText();
+					txtContent = txtContent.replace("$phone", "[[param01]]").replace("$name", "[[param02]]").replace("$pwd", "[[param03]]").replace("$f1", "[[param04]]").replace("$f2", "[[param05]]").replace("$f3", "[[param06]]");
+					packageXML.append("<text>");
+					packageXML.append(txtContent);
+					packageXML.append("</text>");
+				}
+				packageXML.append("</page>");
+				if (mms.getCode_no() - 1 == i + 1) {
+					packageXML.append("<page dur=\"50\"><img type=\"image/jpeg\">/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAPAAA/+4AJkFkb2JlAGTAAAAAAQMAFQQDBgoNAAABiQAAAaoAAAHaAAAB+//bAIQABgQEBAUEBgUFBgkGBQYJCwgGBggLDAoKCwoKDBAMDAwMDAwQDA4PEA8ODBMTFBQTExwbGxscHx8fHx8fHx8fHwEHBwcNDA0YEBAYGhURFRofHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8f/8IAEQgABQAFAwERAAIRAQMRAf/EAG4AAQAAAAAAAAAAAAAAAAAAAAcBAQAAAAAAAAAAAAAAAAAAAAEQAQAAAAAAAAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAASAQAAAAAAAAAAAAAAAAAAAAATAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQAAAUgP/9oACAEBAAEFAn//2gAIAQIAAQUCf//aAAgBAwABBQJ//9oACAECAgY/An//2gAIAQMCBj8Cf//aAAgBAQEGPwJ//9oACAEBAwE/IX//2gAIAQIDAT8hf//aAAgBAwMBPyF//9oADAMBAAIRAxEAABB//9oACAEBAwE/EH//2gAIAQIDAT8Qf//aAAgBAwMBPxB//9k=</img></page>");
+				}
+			}
+			packageXML.append("</pages>");
+			packageXML.append("</mms>");
+//			log.info("packageXML====="+packageXML.toString());
+			String packageId ="000";
+//			String token = ResourceUtil.MMSTOKENMAP.get(ent.getMmschannle());
+			String token = "7102566630630741";
+			packageId = sendMMSPackage.sendMMSPackage(packageXML.toString(),token);
+			 if (!packageId.startsWith("ERROR") && !"0".equals(packageId)){
+				 mms.setMmspackageid(Integer.parseInt(packageId));
+				 mmsframeMapper.updateMms(mms);
+             }else{
+            	 logger.warn("上传彩信模板包失败，服务器返回："+packageId);
+             }
+		}
+	}
+	
 	/**
 	 * 添加活动
 	 * 
@@ -327,14 +385,11 @@ public class ActivityServiceImpl implements ActivityService {
 			changeDescribe.append("积分：" + activity.getIntegral() + ";");
 
 			// 活动最大类型修改
-//			httpPostMap.put("maxType", activity.getMaxType().toString());
-			httpPostMap.put("maxType", "1");
-			
+			httpPostMap.put("maxType", activity.getMaxType().toString());
 			changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
 
 			// 活动使用次数
-//			httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
-			httpPostMap.put("maxNumber","1");
+			httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
 			changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
 
 			// 活动使用次数
@@ -352,10 +407,6 @@ public class ActivityServiceImpl implements ActivityService {
 			// 兑换类型
 			httpPostMap.put("exchangeType", activity.getExchangeType());
 			changeDescribe.append("兑换类型：" + activity.getExchangeType() + ";");
-
-			// 发行企业
-			httpPostMap.put("enterpriseName", activity.getEnterpriseName());
-			changeDescribe.append("发行企业：" + activity.getEnterpriseName() + ";");
 
 			// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 			List<Store> selectAllofActivity = storeMapper.selectAllofActivity(activity.getId());
@@ -527,13 +578,11 @@ public class ActivityServiceImpl implements ActivityService {
 				changeDescribe.append("积分：" + activity.getIntegral() + ";");
 
 				// 活动最大类型修改
-//				httpPostMap.put("maxType", activity.getMaxType().toString());
-				httpPostMap.put("maxType","1");
+				httpPostMap.put("maxType", activity.getMaxType().toString());
 				changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
 
 				// 活动使用次数
-//				httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
-				httpPostMap.put("maxNumber", "1");
+				httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
 				changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
 
 				// 活动状态 活动修改时的状态与原活动一致
@@ -555,10 +604,6 @@ public class ActivityServiceImpl implements ActivityService {
 				// 兑换类型
 				httpPostMap.put("exchangeType", activity.getExchangeType());
 				changeDescribe.append("兑换类型：" + activity.getExchangeType() + ";");
-
-				// 发行企业
-				httpPostMap.put("enterpriseName", activity.getEnterpriseName());
-				changeDescribe.append("发行企业：" + activity.getEnterpriseName() + ";");
 
 				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 				Map<String, Object> queryMap = new HashMap<String, Object>();
