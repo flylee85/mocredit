@@ -250,9 +250,6 @@ public class ActivityController {
 		try {
 			// 将前端传递过来的字符串数据解析为活动对象
 			Activity activity = JSON.parseObject(body, Activity.class);
-			Mms mms = JSON.parseObject(activity.getMmsJson(), Mms.class);
-			mms.setMmsJson(activity.getMmsJson());
-			activity.setCodeno(mms.getCode_no());
 			// 定义影响行数为0
 			Integer affectCount = 0;
 			// 如果活动对象中id不存在或者为空，则执行添加操作
@@ -266,22 +263,27 @@ public class ActivityController {
 				// 更新活动对象
 				affectCount = activityService.updateActivity(activity);
 			}
-			mms.setCreatetime(String.valueOf(System.currentTimeMillis()));
-			mms.setActivityId(Integer.parseInt(activity.getId()));
-			mmsframeService.saveMMS(mms);
-			
-			List<Mmsframe> frames = mms.getFrames();
-			for (Mmsframe mmsframe : frames) {
-				URL url = new URL(mmsframe.getPic()); 
-				String pictype = getpicType(url.getFile());
-		    	String picBase64str = getImageBase64Str(url);
-		    	mmsframe.setPic(picBase64str);
-		    	mmsframe.setPictype(pictype);
-				mmsframe.setMmsId(mms.getId());
-				mmsframe.setCreatetime(String.valueOf(System.currentTimeMillis()));
-				mmsframeService.saveMmsframe(mmsframe);
+			if(("02").equals(activity.getType())){
+				Mms mms = JSON.parseObject(activity.getMmsJson(), Mms.class);
+				mms.setMmsJson(activity.getMmsJson());
+				activity.setCodeno(mms.getCode_no());
+				mms.setCreatetime(String.valueOf(System.currentTimeMillis()));
+				mms.setActivityId(Integer.parseInt(activity.getId()));
+				mmsframeService.saveMMS(mms);
+				
+				List<Mmsframe> frames = mms.getFrames();
+				for (Mmsframe mmsframe : frames) {
+					URL url = new URL(mmsframe.getPic()); 
+					String pictype = getpicType(url.getFile());
+			    	String picBase64str = getImageBase64Str(url);
+			    	mmsframe.setPic(picBase64str);
+			    	mmsframe.setPictype(pictype);
+					mmsframe.setMmsId(mms.getId());
+					mmsframe.setCreatetime(String.valueOf(System.currentTimeMillis()));
+					mmsframeService.saveMmsframe(mmsframe);
+				}
+				activityService.sendMMSPackage(activity.getId());
 			}
-			activityService.sendMMSPackage(activity.getId());
 			// 如果程序执行到这里没有发生异常，则证明该操作成功执行,将获取到的数据放到返回页面的对象中
 			responseData.setData(affectCount);
 		} catch (Exception e) {

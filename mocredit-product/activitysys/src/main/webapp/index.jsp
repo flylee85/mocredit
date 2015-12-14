@@ -1,5 +1,4 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
-<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     String path = request.getContextPath();
@@ -31,7 +30,7 @@
     <ul class="nav navbar-nav navbar-avatar pull-right">
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <span class="hidden-sm-only">${username}</span>
+                <span class="hidden-sm-only"></span>
                 <span class="thumb-small avatar inline"><img src="common/images/avatar.jpg" alt="Mika Sokeil"
                                                              class="img-circle"></span>
                 <b class="caret hidden-sm-only"></b>
@@ -128,7 +127,7 @@
 <!-- nav -->
 <nav id="nav" class="nav-primary visible-lg nav-vertical">
     <ul class="nav" data-spy="affix" data-offset-top="50">
-        <%--  <li class="dropdown-submenu">
+        <li class="dropdown-submenu">
               <a href="activity.html" class="changePage"><i class="icon-list icon-xlarge"></i>活动管理</a>
           </li>
           <li class="dropdown-submenu">
@@ -149,7 +148,7 @@
                   <li><a href="signup.html" class="changePage">注册页面</a></li>
                   <li><a href="404.html" class="changePage">404页面</a></li>
               </ul>
-          </li>--%>
+          </li>
         <c:forEach items="${menus}" var="m">
             <li class="dropdown-submenu">
                 <a href="${m.url}" class="changePage"><i class="icon-list icon-xlarge"></i>${m.name}</a>
