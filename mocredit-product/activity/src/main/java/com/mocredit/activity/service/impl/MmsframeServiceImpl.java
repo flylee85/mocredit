@@ -29,8 +29,8 @@ public class MmsframeServiceImpl implements MmsframeService {
 		return mmsframeMapper.getMmsframeListByMMSId(mmsId);
 	}
 	@Override
-	public int deleteMmsframeById(long id) {
-		return mmsframeMapper.deleteMmsframeById(id);
+	public int deleteMmsframeByActivityId(long id) {
+		return mmsframeMapper.deleteMmsframeByActivityId(id);
 	}
 	@Override
 	public int updateMmsframe(Mmsframe mmsframe) {
@@ -51,6 +51,10 @@ public class MmsframeServiceImpl implements MmsframeService {
 	@Override
 	public int updateMms(Mms mms) {
 		return mmsframeMapper.updateMms(mms);
+	}
+	@Override
+	public int deleteMmsByActivityId(long activityId) {
+		return mmsframeMapper.deleteMmsByActivityId(activityId);
 	}
 	
 	

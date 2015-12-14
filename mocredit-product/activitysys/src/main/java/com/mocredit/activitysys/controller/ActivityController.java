@@ -262,6 +262,9 @@ public class ActivityController {
 			else {
 				// 更新活动对象
 				affectCount = activityService.updateActivity(activity);
+				long activityId = Long.parseLong(activity.getId());
+				mmsframeService.deleteMmsframeByActivityId(activityId);
+				mmsframeService.deleteMmsByActivityId(activityId);
 			}
 			if(("02").equals(activity.getType())){
 				Mms mms = JSON.parseObject(activity.getMmsJson(), Mms.class);

@@ -42,6 +42,10 @@
 			activityId = #{activityId}
 	</select>
 	
+	<delete id="deleteMmsByActivityId" parameterType="java.lang.Long">
+		DELETE FROM t_mms WHERE activityId = #{activityId} 
+	</delete>
+	
 	<select id="getMmsframeById" resultType="com.mocredit.activity.model.Mmsframe" parameterType="java.lang.Long">
 		SELECT	
 			id,mmsId,pic,pictype,text,frame_no,createtime
@@ -68,8 +72,8 @@
 			(#{id},#{mmsId},#{pic},#{pictype},#{text},#{frame_no},#{createtime})
 	</insert>
 	
-	<delete id="deleteMmsframeById" parameterType="java.lang.Long">
-		DELETE FROM t_mmsframe WHERE id = #{id} 
+	<delete id="deleteMmsframeByActivityId" parameterType="java.lang.Long">
+		DELETE FROM t_mmsframe WHERE mmsId IN (SELECT id FROM t_mms WHERE activityId = #{activityId})
 	</delete>
 
 	<update id="updateMmsframe" parameterType="com.mocredit.activity.model.Mmsframe">

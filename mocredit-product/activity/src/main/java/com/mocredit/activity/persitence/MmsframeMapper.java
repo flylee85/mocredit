@@ -22,6 +22,8 @@ public interface MmsframeMapper {
 
 	int updateMms(Mms mms);
 	
+	int deleteMmsByActivityId(long activityId);
+	
 	int saveMmsframe(Mmsframe mmsframe);
 
 	// 根据主键获取彩信帧
@@ -30,8 +32,8 @@ public interface MmsframeMapper {
 	// 根据活动id获取彩信帧
 	List<Mmsframe> getMmsframeListByMMSId(int mmsId);
 
-	// 根据主键删除彩信帧
-	int deleteMmsframeById(long id);
+	// 根据活动删除彩信帧
+	int deleteMmsframeByActivityId(long id);
 
 	// 修改一条彩信帧
 	int updateMmsframe(Mmsframe mmsframe);

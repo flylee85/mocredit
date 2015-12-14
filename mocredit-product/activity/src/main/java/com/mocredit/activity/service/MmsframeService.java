@@ -19,7 +19,7 @@ public interface MmsframeService {
 	
 	int updateMms(Mms mms);
 	Mms getMmsByActivityId(long activityId);
-	
+	int deleteMmsByActivityId(long activityId);
 	int saveMmsframe(Mmsframe mmsframe);
 	
 	// 根据主键获取彩信帧
@@ -29,7 +29,7 @@ public interface MmsframeService {
 	List<Mmsframe> getMmsframeListByMMSId(int activityId);
 
 	// 根据主键删除彩信帧
-	int deleteMmsframeById(long id);
+	int deleteMmsframeByActivityId(long id);
 
 	// 修改一条彩信帧
 	int updateMmsframe(Mmsframe mmsframe);
