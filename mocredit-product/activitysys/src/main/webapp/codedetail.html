@@ -154,7 +154,7 @@
                             if (tp == "03") {
                                 return '<a href="javascript:sendCodeMMS(\'' + data['id'] + '\')">彩信发码</a>';
                             }
-                            if (tp.indexOf("02") >= 0 && type.indexOf("03") >= 0) {
+                            if (tp.indexOf("02") >= 0 && tp.indexOf("03") >= 0) {
                                 return '<a href="javascript:sendCode(\'' + data['id'] + '\')" >发送短信</a>' +
                                         '<a href="javascript:sendCodeMMS(\'' + data['id'] + '\')">彩信发码</a>';
                             }
