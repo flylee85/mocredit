@@ -88,20 +88,23 @@
 			}
 		});
 		//获取表单特殊元素--发码方式,通知短信内容
-		var sendSmsType;
+		var sendSmsType="";
 		var noticeSmsMsg;
 		if($("#channelDownload").prop('checked')){
-			sendSmsType = '01';
+			sendSmsType += '01,';
 		}
 		if($("#duanxin").prop('checked')){
-			sendSmsType = '02';
+			sendSmsType += '02,';
 			noticeSmsMsg = $("#duanxinFama textarea").val();
 		}
 		if($("#caixin").prop('checked')){
-			sendSmsType = '03';
+			sendSmsType += '03,';
 			formObject.mmsJson = $("#endJson").attr('data-json');
 			formObject.codeno = $("#code-select").val();
 			formObject.subject = $("#subject").val();
+		}
+		if(sendSmsType.length>0){
+			sendSmsType=sendSmsType.substr(0,sendSmsType.length-1);
 		}
 		formObject.sendSmsType = sendSmsType;
 		formObject.noticeSmsMsg = noticeSmsMsg;
