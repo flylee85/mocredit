@@ -348,6 +348,8 @@ public class SendCodeServiceImpl implements SendCodeService {
         //定义短信内容对象
         MMSBO duanxin = new MMSBO();
         Activity activity = activityService.getActivityById(actId);
+        //送码
+        carryVerifyCode(activity, batchId, batchCodeList);
         String noticeSmsMsg = activity.getNoticeSmsMsg();
         ;//短信模版内容
         //获取是否推送短信开关
@@ -401,14 +403,17 @@ public class SendCodeServiceImpl implements SendCodeService {
                 batchCodeMapper.updateBatchCodeById(batchCodeMap);
             }
         }
-        //送码
-        carryVerifyCode(activity, batchId, batchCodeList);
+
     }
 
     @Transactional()
     public void sendCodeByMMS(String actId, String batchId, List<BatchCode> batchCodeList) {
+
         MMSBO mmsbo = new MMSBO();
         Activity activity = activityService.getActivityById(actId);
+        //送码
+        carryVerifyCode(activity, batchId, batchCodeList);
+
         Mms mms = mmsframeService.getMmsByActivityId(Long.parseLong(actId));
         for (BatchCode batchCode : batchCodeList) {
 //			mmsbo.setBatchid(batchId);
@@ -452,8 +457,6 @@ public class SendCodeServiceImpl implements SendCodeService {
             batchCode.setStartTime(new Date());
             batchCodeMapper.updateBatchCodeById(batchCodeMap);
         }
-        //送码
-        carryVerifyCode(activity, batchId, batchCodeList);
     }
 
     /**
