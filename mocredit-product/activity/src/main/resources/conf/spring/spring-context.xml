@@ -44,6 +44,8 @@
                 name="url" value="jdbc:mysql://192.168.24.124:3306/activity_new?characterEncoding=UTF-8"/>
         <property name="username" value="root"/>
         <property name="password" value="eAhrpeDoq/ve39md"/>
+        <property name="validationQuery" value="SELECT 1" />
+    	<property name="testOnBorrow" value="true"/>
     </bean>
     <!-- transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager"
