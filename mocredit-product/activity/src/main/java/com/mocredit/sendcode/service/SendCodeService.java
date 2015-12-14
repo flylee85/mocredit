@@ -69,7 +69,7 @@ public interface SendCodeService extends BaseService {
      *
      * @return 影响行数
      */
-    Map<String, Object> importCustomor(String activityId, String name, String type, InputStream in);
+    Map<String, Object> importCustomor(String activityId, String name, String type, String sType, InputStream in);
 
     /**
      * 查询活动id的批次列表
@@ -95,7 +95,7 @@ public interface SendCodeService extends BaseService {
      * @param batchId
      * @return
      */
-    boolean sendCodeByBatchId(String actId, String batchId);
+    boolean sendCodeByBatchId(String actId, String batchId, String type);
 
     /**
      * 查询活动id和商品码id并发送短信到队列
@@ -104,7 +104,7 @@ public interface SendCodeService extends BaseService {
      * @param id
      * @return
      */
-    boolean sendCodeById(String actId, String id);
+    boolean sendCodeById(String actId, String id, String type);
 
     /**
      * 判断活动中该批次的名称是否已经存在

@@ -16,6 +16,7 @@
         <module>activitysys</module>
         <module>manage</module>
         <module>integral</module>
+        <module>wememms</module>
     </modules>
 
     <build>

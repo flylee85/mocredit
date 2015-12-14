@@ -49,10 +49,11 @@ public class SendCodeController {
     }
 
     @RequestMapping("/sendcode")
-    public ModelAndView sendCode(String id) {
+    public ModelAndView sendCode(String id, String type) {
         //定义页面对象，用来跳转指定页面，下面一句代码的意思是：跳转到Web容器中的index.jsp页面
         ModelAndView mav = new ModelAndView("sendcode");
         mav.addObject("actId", id);
+        mav.addObject("type", type);
         return mav;
     }
 
@@ -60,7 +61,7 @@ public class SendCodeController {
     @ResponseBody
     public String sendCodeById(String actId, String id, String type) {
         ResponseData responseData = new AjaxResponseData();
-        if (!sendCodeService.sendCodeById(actId, id)) {
+        if (!sendCodeService.sendCodeById(actId, id, type)) {
             responseData.setSuccess(false);
             responseData.setErrorMsg("发送消息队列失败或送码失败");
         }
@@ -71,7 +72,7 @@ public class SendCodeController {
     @ResponseBody
     public String sendCodeByBatchId(String actId, String batchId, String type) {
         ResponseData responseData = new AjaxResponseData();
-        if (!sendCodeService.sendCodeByBatchId(actId, batchId)) {
+        if (!sendCodeService.sendCodeByBatchId(actId, batchId, type)) {
             responseData.setSuccess(false);
             responseData.setErrorMsg("发送消息队列失败或送码失败");
         }
@@ -277,7 +278,7 @@ public class SendCodeController {
                 if (!sendCodeService.isExistName(actId, name)) {
                     //如果文件大小大于0，说明文件上传成功
                     //调用导入联系人方法
-                    Map<String, Object> operMap = sendCodeService.importCustomor(actId, name, downloadChannel, selectExcel.getInputStream());
+                    Map<String, Object> operMap = sendCodeService.importCustomor(actId, name, downloadChannel, type, selectExcel.getInputStream());
                     //获取导入联系人方法执行结果
                     if (Boolean.parseBoolean(String.valueOf(operMap.get("success")))) {
                         //如果导入结果为true，则只需要将导入消息设置为data就可以，因为返回页面的对象中，默认为true。
@@ -308,6 +309,7 @@ public class SendCodeController {
         ModelAndView mav = new ModelAndView("sendcode");
         mav.addObject("actId", actId);
         mav.addObject("success", responseData.getSuccess());
+        mav.addObject("type", type);
         mav.addObject("msg", responseData.getData());
         return mav;
     }

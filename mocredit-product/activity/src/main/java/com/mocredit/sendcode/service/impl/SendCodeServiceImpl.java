@@ -12,6 +12,7 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
+import com.mocredit.sendcode.constant.ActivityStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -79,7 +80,8 @@ public class SendCodeServiceImpl implements SendCodeService {
     @Autowired
     private MerchantService merchantService;
     @Autowired
-	private MmsframeService mmsframeService;
+    private MmsframeService mmsframeService;
+
     @Override
     @Transactional
     public List<BatchCode> downloadList(String type, String name, String id, Integer codeCount) {
@@ -177,12 +179,21 @@ public class SendCodeServiceImpl implements SendCodeService {
     }
 
     @Override
-    public boolean sendCodeById(String actId, String id) {
+    public boolean sendCodeById(String actId, String id, String type) {
         try {
             List<BatchCode> batchCodeAllList = new ArrayList<>();
             BatchCode batchCode = batchCodeMapper.getBatchCodeById(id);
             batchCodeAllList.add(batchCode);
-            sendCode(actId, batchCode.getBatchId(), batchCodeAllList);
+            switch (type) {
+                case ActivityStatus.SMS: {
+                    sendCode(actId, batchCode.getBatchId(), batchCodeAllList);
+                    break;
+                }
+                case ActivityStatus.MMS: {
+                    sendCodeByMMS(actId, batchCode.getBatchId(), batchCodeAllList);
+                    break;
+                }
+            }
             //更新批次发送成功数量
             Batch batch = new Batch();
             batch.setId(batchCode.getBatchId());
@@ -199,7 +210,7 @@ public class SendCodeServiceImpl implements SendCodeService {
     }
 
     @Override
-    public boolean sendCodeByBatchId(String actId, String batchId) {
+    public boolean sendCodeByBatchId(String actId, String batchId, String type) {
         boolean sendSuccessFlag = true;
         try {
             Map<String, Object> batchMap = new HashMap<>();
@@ -224,7 +235,16 @@ public class SendCodeServiceImpl implements SendCodeService {
             StringBuffer optInfo1 = new StringBuffer();
             optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
             try {
-                sendCode(actId, batchId, batchCodeAllList);
+                switch (type) {
+                    case ActivityStatus.SMS: {
+                        sendCode(actId, batchId, batchCodeAllList);
+                        break;
+                    }
+                    case ActivityStatus.MMS: {
+                        sendCodeByMMS(actId, batchId, batchCodeAllList);
+                        break;
+                    }
+                }
                 batch.setSendSuccessNumber(getBatchCodeTotal(batchId, BatchCodeStatus.ALREADY_SEND.getValue()));
                 batch.setSendNumber(batchCodeAllList.size());
                 batch.setImportSuccessNumber(getBatchCodeTotal(batchId, null));
@@ -260,7 +280,7 @@ public class SendCodeServiceImpl implements SendCodeService {
 
     @Override
     @Transactional
-    public Map<String, Object> importCustomor(String activityId, String name, String type, InputStream in) {
+    public Map<String, Object> importCustomor(String activityId, String name, String type, String sType, InputStream in) {
         //定义一个返回Map
         Map<String, Object> msgMap = new HashMap<String, Object>();
         Map<String, String> resultMap = new HashMap<String, String>();
@@ -293,7 +313,16 @@ public class SendCodeServiceImpl implements SendCodeService {
         StringBuffer optInfo1 = new StringBuffer();
         optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
         try {
-            sendCode(activityId, actBatchId, batchCodeAllList);
+            switch (sType) {
+                case ActivityStatus.SMS: {
+                    sendCode(activityId, actBatchId, batchCodeAllList);
+                    break;
+                }
+                case ActivityStatus.MMS: {
+                    sendCodeByMMS(activityId, actBatchId, batchCodeAllList);
+                    break;
+                }
+            }
             batch.setSendSuccessNumber(batchCodeAllList.size());
             batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
             optInfo1.append("成功数量：" + batchCodeAllList.size() + ";");
@@ -378,36 +407,36 @@ public class SendCodeServiceImpl implements SendCodeService {
 
     @Transactional()
     public void sendCodeByMMS(String actId, String batchId, List<BatchCode> batchCodeList) {
-    	MMSBO mmsbo = new MMSBO();
-    	Activity activity = activityService.getActivityById(actId);
-    	Mms mms = mmsframeService.getMmsByActivityId(Long.parseLong(actId));
-    	for (BatchCode batchCode : batchCodeList) {
+        MMSBO mmsbo = new MMSBO();
+        Activity activity = activityService.getActivityById(actId);
+        Mms mms = mmsframeService.getMmsByActivityId(Long.parseLong(actId));
+        for (BatchCode batchCode : batchCodeList) {
 //			mmsbo.setBatchid(batchId);
-			mmsbo.setCharcode(batchCode.getCode());
-			mmsbo.setNumberpwd("010073787632");
-			mmsbo.setBarcodeno(mms.getCode_no());
-			mmsbo.setTid("20150428111444117862");
-			mmsbo.setEorderid(5115538L);
-			mmsbo.setChannleno("25666");
-			mmsbo.setPackageid(mms.getMmspackageid());
-			mmsbo.setStatus(Variable.MMSSTATUS_WAITE);
-			mmsbo.setType(Variable.MMSBO_TYPE_MMS); // 发送类型为彩信
-			//mmsbo.setMttype(Variable.MMSBO_MTTYPE_DEFAULT);// 默认发送级别为 实时
-			mmsbo.setCreatetime(DateTimeUtils.getDate("yyyy-MM-dd HH:mm:ss"));
-			mmsbo.setMobile(batchCode.getCustomerMobile());
-			mmsbo.setCustomer(batchCode.getCustomerName());
+            mmsbo.setCharcode(batchCode.getCode());
+            mmsbo.setNumberpwd("010073787632");
+            mmsbo.setBarcodeno(mms.getCode_no());
+            mmsbo.setTid("20150428111444117862");
+            mmsbo.setEorderid(5115538L);
+            mmsbo.setChannleno("25666");
+            mmsbo.setPackageid(mms.getMmspackageid());
+            mmsbo.setStatus(Variable.MMSSTATUS_WAITE);
+            mmsbo.setType(Variable.MMSBO_TYPE_MMS); // 发送类型为彩信
+            //mmsbo.setMttype(Variable.MMSBO_MTTYPE_DEFAULT);// 默认发送级别为 实时
+            mmsbo.setCreatetime(DateTimeUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+            mmsbo.setMobile(batchCode.getCustomerMobile());
+            mmsbo.setCustomer(batchCode.getCustomerName());
 //			mmsbo.setExtfield1(batchCode.getExtfield1());
 //			mmsbo.setExtfield2(batchCode.getExtfield2());
 //			mmsbo.setExtfield3(batchCode.getExtfield3());
-			mmsbo.setIsresend(mms.isIsresend() ? 1 : 0);
-			mmsbo.setMttype(1);//发送类型,直发
-			mmsbo.setStatuscode("NYYH");//发送者用户名
-			mmsbo.setEntid(46L);
-			mmsbo.setEitemid(Long.parseLong(activity.getId()));
-			mmsbo.setBarcodeid(73349609L);
-			
-			final MMSBO sendMsg = mmsbo;
-			jmsTemplate.send("subject", new MessageCreator() {
+            mmsbo.setIsresend(mms.isIsresend() ? 1 : 0);
+            mmsbo.setMttype(1);//发送类型,直发
+            mmsbo.setStatuscode("NYYH");//发送者用户名
+            mmsbo.setEntid(46L);
+            mmsbo.setEitemid(Long.parseLong(activity.getId()));
+            mmsbo.setBarcodeid(73349609L);
+
+            final MMSBO sendMsg = mmsbo;
+            jmsTemplate.send("subject", new MessageCreator() {
                 public Message createMessage(Session session) throws JMSException {
                     ObjectMessage msg = session.createObjectMessage(sendMsg);
                     return msg;
@@ -422,11 +451,11 @@ public class SendCodeServiceImpl implements SendCodeService {
             batchCodeMap.put("startTime", DateUtil.getLongCurDate());
             batchCode.setStartTime(new Date());
             batchCodeMapper.updateBatchCodeById(batchCodeMap);
-    	}
+        }
         //送码
         carryVerifyCode(activity, batchId, batchCodeList);
     }
-    
+
     /**
      * 验码接口-送码
      *

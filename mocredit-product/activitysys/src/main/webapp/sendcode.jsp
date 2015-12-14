@@ -1,4 +1,5 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@ page language="java" pageEncoding="UTF-8" %>
+<%--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>--%>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -83,7 +84,7 @@
                                        name="name">
                             </div>
                         </div>
-                        <div class="input-group col-4">
+                        <div class="input-group col-3">
                             <label class="col-lg-3 control-label" for="importExcel">导入联系人</label>
 
                             <div class="col-lg-9">
@@ -91,13 +92,46 @@
                                 <input id="importExcel" name="selectExcel" type="file" class="file-input">
                             </div>
                         </div>
-                        <div class="input-group col-2">
-                            <input type="hidden" name="type" id="type" value="02"/>
-                            <input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>
+                        <input type="hidden" name="type" id="type" value="02"/>
+
+                        <div id="sms" style="display: none">
+                            <div class="input-group col-2">
+                                <input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>
+                            </div>
                         </div>
-                        <div class="input-group col-2">
-                            <input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>
+                        <div id="mms" style="display: none">
+                            <div class="input-group col-2">
+                                <input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>
+                            </div>
                         </div>
+                        <div id="smms" style="display: none">
+                            <div class="input-group col-2">
+                                <input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>
+                            </div>
+                            <div class="input-group col-2">
+                                <input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>
+                            </div>
+                        </div>
+                        <%--  <c:choose>
+                              <c:when test="${type=='02'}">
+                                  <div class="input-group col-2">
+                                      <input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>
+                                  </div>
+                              </c:when>
+                              <c:when test="${type=='03'}">
+                                  <div class="input-group col-2">
+                                      <input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>
+                                  </div>
+                              </c:when>
+                              <c:otherwise>
+                                  <div class="input-group col-2">
+                                      <input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>
+                                  </div>
+                                  <div class="input-group col-2">
+                                      <input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>
+                                  </div>
+                              </c:otherwise>
+                          </c:choose>--%>
                     </div>
 
                 </form>
@@ -145,11 +179,20 @@
 <script>
     if ("${success}" == "true") {
         sendMsg(true, "上传并发送成功");
-        window.location.href = "sendCode/sendcode?id=${actId}"
+        window.location.href = "sendCode/sendcode?id=${actId}&type=${type}"
     }
     if ("${success}" == "false" && "${msg}" != "") {
         sendMsg(false, "${msg}");
-        window.location.href = "sendCode/sendcode?id=${actId}"
+        window.location.href = "sendCode/sendcode?id=${actId}&type=${type}"
+    }
+    if ("${type}" == "02") {
+        $("#sms").removeAttr("style");
+    }
+    if ("${type}" == "03") {
+        $("#mms").removeAttr("style");
+    }
+    if ("${type}".indexOf("02") >= 0 && "${type}".indexOf("03") >= 0) {
+        $("#smms").removeAttr("style");
     }
 </script>
 <script>

@@ -59,7 +59,7 @@ $(function () {
                         "sortable": false,
                         "render": function (data, type, full) {
                             return '<a href="javascript:openUpdateJifenActivity(\'' + data['id'] + '\',0)" >查看</a>' +
-                                '<a href="javascript:openUpdateJifenActivity(\'' + data['id'] + '\',1)" >编辑</a>' ;
+                                '<a href="javascript:openUpdateJifenActivity(\'' + data['id'] + '\',1)" >编辑</a>';
                         }
                     },
                 ]
@@ -137,8 +137,16 @@ $(function () {
                                     '<a href="tima.html?' + data['id'] + '"target="_blank" >批次管理</a>';
                             }
                             if (data['sendSmsType'] == "02") {
-                                href = '<a href="sendCode/sendcode?id=' + data['id'] + '"target="_blank" >发码</a>' +
-                                    '<a href="sendCode/sendcode?id=' + data['id'] + '"target="_blank" >批次管理</a>';
+                                href = '<a href="sendCode/sendcode?id=' + data['id'] + '&type=' + data['sendSmsType'] + '"target="_blank" >短信发码</a>' +
+                                    '<a href="sendCode/sendcode?id=' + data['id'] + '&type=' + data['sendSmsType'] + '"target="_blank" >批次管理</a>';
+                            }
+                            if (data['sendSmsType'] == "03") {
+                                href = '<a href="sendCode/sendcode?id=' + data['id'] + '&type=' + data['sendSmsType'] + '"target="_blank" >彩信发码</a>' +
+                                    '<a href="sendCode/sendcode?id=' + data['id'] + '&type=' + data['sendSmsType'] + '"target="_blank" >批次管理</a>';
+                            }
+                            if (data['sendSmsType'].indexOf("02") >= 0 && data['sendSmsType'].indexOf("03") >= 0) {
+                                href = '<a href="sendCode/sendcode?id=' + data['id'] + '&type=' + data['sendSmsType'] + '"target="_blank" >短彩信发码</a>' +
+                                    '<a href="sendCode/sendcode?id=' + data['id'] + '&type=' + data['sendSmsType'] + '"target="_blank" >批次管理</a>';
                             }
                             return href;
                         }
