@@ -27,9 +27,6 @@
     <!-- 默认的注解映射的支持 -->
     <mvc:annotation-driven/>
     <context:component-scan base-package="com.mocredit.*"/>
-    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
-        <property name="securityManager" ref="securityManager"/>
-    </bean>
     <!-- 静态资源访问处理方式 -->
     <mvc:default-servlet-handler/>
 
