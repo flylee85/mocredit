@@ -1,0 +1,139 @@
+
+body{
+	font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
+	overflow-x: hidden;
+}
+
+.container{
+	width: 100%;
+}
+
+.navbar{
+	margin-bottom: 10px;
+}
+
+/*翻页跳转*/
+.pagination{
+	margin-top: 0;
+}
+.pagination-jump{
+	float: left;
+	margin-left:10px;
+	display:block;
+	width:112px;
+}
+.pagination-jump .form-control{width: 50px;}
+/*红色字体*/
+.red{
+	color: red;
+}
+/*重设边距*/
+.p0{padding:0;}
+.plr10{padding:0 10px;}
+.ptb10{padding: 10px 0;}
+.m0{margin: 0;}
+.m10{margin: 10px;}
+.mt10{margin-top: 10px;}
+.pt10{padding-top: 10px;}
+.pb10{padding-bottom: 10px;}
+.mtb10{margin: 10px 0;}
+.ml10{margin-left: 10px;}
+.mr10{margin-right: 10px;}
+
+/*使用 form-control 时同一行中字体高*/
+.form-control-lh{
+	padding: 6px 0;
+	line-height: 1.42857143;
+}
+/*表格中包含按钮时 表格行高重置*/
+.table-hasbtn td{
+	line-height: 32px !important;
+}
+/*弹窗高度太高时自动显示滚动条*/
+.modal{
+	overflow: auto;
+}
+
+/*重置checkbox组件中的边距*/
+.checkbox-nomargin .checkbox{margin: 0;}
+.radio-nomargin .radio{margin: 0;}
+
+/*文字超出显示...*/
+.text-overflow{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space:nowrap;
+}
+
+.alert{
+	position: fixed;
+	bottom:0;left:0;
+	z-index: 9999;
+	width: 80%;
+	margin-left:10%;
+}
+
+.alert.fade{
+  -webkit-transition: -webkit-transform .3s ease-out;
+       -o-transition:      -o-transform .3s ease-out;
+          transition:         transform .3s ease-out;
+  -webkit-transform: translate3d(0, 25%, 0);
+       -o-transform: translate3d(0, 25%, 0);
+          transform: translate3d(0, 25%, 0);
+}
+.alert.in{
+  -webkit-transform: translate3d(0, 0, 0);
+       -o-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
+}
+.login{
+	background-color: #006397;
+}
+.login form{
+	max-width: 330px;
+	padding: 15px;
+	margin: 0 auto;
+}
+.login form input{
+	margin-bottom: 15px;
+	padding: 10px;
+	height: auto;
+}
+.login .modal{
+	display: block;
+}
+
+.logModal{
+	display: none;
+	position: fixed;
+	right:0;
+	top:0;
+	z-index: 1000;
+}
+.logModal .modal-dialog{
+	width: 300px;
+	margin: 0;
+	float: right;
+	height: 100%;
+}
+.logModal .modal-body{
+	word-break: break-word;
+}
+
+.index_top_input1{
+	border-style: none;
+	background-color: #F9F9F8;
+	height: 20px;
+	line-height: 20px;
+	width: 230px;
+	margin-left: 10px;
+}
+.fy{
+	float: right;
+}
+
+.fy_sw {
+border: 1px solid #D0CCC7;
+padding: 5px 10px 5px 10px;
+text-decoration: none;
+}

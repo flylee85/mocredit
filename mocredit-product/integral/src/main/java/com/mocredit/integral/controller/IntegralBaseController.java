@@ -50,6 +50,7 @@ public class IntegralBaseController extends BaseController {
 
     /**
      * 保存响应信息
+     *
      * @param requestId
      * @param jsonStr
      */
@@ -160,6 +161,17 @@ public class IntegralBaseController extends BaseController {
     public boolean updateTerminal(TerminalVo terminalVo, Response resp) {
         return httpRequstService.updateTerminal(getRequestId(), terminalVo, resp);
     }
+
+    /**
+     * 更新门店信息
+     *
+     * @param resp
+     * @return
+     */
+    public boolean updateStore(String oper, String storeId, Response resp) {
+        return httpRequstService.updateStore(getRequestId(), oper, storeId, resp);
+    }
+
 
     /**
      * 获取request_id

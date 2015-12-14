@@ -7,12 +7,23 @@ import java.util.Map;
  * Created by ytq on 2015/11/19.
  */
 public class Bank {
+    public final static String ZX_BANK_CHANNEL = "1";
+    public final static String MS_BANK_CHANNEL = "2";
+    public final static String JT_BANK_CHANNEL = "3";
     final static Map<String, String> BANK_MAP = new HashMap<>();
 
     static {
         BANK_MAP.put("1", "中信银行");
         BANK_MAP.put("2", "民生银行");
         BANK_MAP.put("3", "交通银行");
+        BANK_MAP.put("4", "招商银行");
+        BANK_MAP.put("5", "天津银行北京分行");
+        BANK_MAP.put("6", "中国银行");
+        BANK_MAP.put("7", "天津银行总行");
+        BANK_MAP.put("8", "北京银行");
+        BANK_MAP.put("9", "农行蛋糕券兑换");
+        BANK_MAP.put("10", "光大银行");
+
     }
 
     public static String getBankNameByBankId(String bankId) {

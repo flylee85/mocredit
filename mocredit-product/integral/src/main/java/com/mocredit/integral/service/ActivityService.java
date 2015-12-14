@@ -76,6 +76,14 @@ public interface ActivityService extends BaseService<Activity> {
     boolean deleteTerminalByEnCode(String enCode);
 
     /**
+     * 删除门店信息
+     *
+     * @param storeId
+     * @return
+     */
+    boolean deleteStoreByStoreId(String storeId);
+
+    /**
      * 根据机具号更新机具编码
      *
      * @param enCode

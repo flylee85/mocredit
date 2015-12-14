@@ -1,12 +1,16 @@
 package com.mocredit.integral.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.mocredit.integral.entity.Activity;
+import com.mocredit.integral.entity.ActivityTransRecord;
 import org.apache.ibatis.annotations.Param;
 
 import com.mocredit.integral.dto.OrderDto;
 import com.mocredit.integral.entity.Order;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 积分订单业务
@@ -14,6 +18,15 @@ import com.mocredit.integral.entity.Order;
  * @author ytq
  */
 public interface OrderService extends BaseService<Order> {
+    /**
+     * 保存订单信息并计数
+     *
+     * @param t
+     * @return
+     */
+    boolean saveAndCount(Order t);
+
+
     /**
      * 根据设备和订单id判断是否存在，存在及更新
      *
@@ -28,6 +41,7 @@ public interface OrderService extends BaseService<Order> {
      * @param orderId
      * @return
      */
+
     boolean isExistOrder(String orderId);
 
     /**
@@ -55,4 +69,8 @@ public interface OrderService extends BaseService<Order> {
      * @return
      */
     Order getOrderBySearchNoAndBatchNo(String searchno, String batchno);
+
+    List<Map<String, Object>> findOrderByList(OrderDto orderDto);
+
+    int findOrderByListCount(OrderDto orderDto);
 }

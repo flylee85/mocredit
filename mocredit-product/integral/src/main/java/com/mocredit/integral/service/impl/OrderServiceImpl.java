@@ -2,6 +2,7 @@ package com.mocredit.integral.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,13 +28,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public boolean save(Order t) {
+    public synchronized boolean saveAndCount(Order t) {
         ActivityTransRecord actRecod = new ActivityTransRecord();
         actRecod.setActivityId(t.getActivityId());
         actRecod.setTransCount(1);
         actRecod.setTransDate(new Date());
         return orderMapper.save(t) > 0
                 && activityMapper.saveActTransRecord(actRecod) > 0;
+    }
+
+    @Override
+    public boolean save(Order t) {
+        return orderMapper.save(t) > 0;
     }
 
     @Override
@@ -65,6 +71,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order getOrderBySearchNoAndBatchNo(String searchno, String batchno) {
-        return orderMapper.getOrderBySearchNoAndBatchNo(searchno,batchno);
+        return orderMapper.getOrderBySearchNoAndBatchNo(searchno, batchno);
+    }
+
+    @Override
+    public List<Map<String, Object>> findOrderByList(OrderDto orderDto) {
+        return orderMapper.findOrderByList(orderDto);
+    }
+
+    @Override
+    public int findOrderByListCount(OrderDto orderDto) {
+        return orderMapper.findOrderByListCount(orderDto);
     }
 }

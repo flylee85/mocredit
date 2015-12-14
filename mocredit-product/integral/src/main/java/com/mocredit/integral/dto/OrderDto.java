@@ -1,173 +1,145 @@
 package com.mocredit.integral.dto;
 
+import java.util.List;
+
 /**
- * 与订单管理系统数据传输
- * 
- * @author ytq
- * 
+ * Created by ytq on 2015/12/7.
  */
 public class OrderDto {
-	private Integer Id;
-	private String orderId;
-	private Integer activityId;
-	private String activityName;
-	private Integer enterpriseId;
-	private String enterpriseName;
-	private Integer supEnterpriseId;
-	private String supEnterpriseName;
-	private Integer storeId;
-	private String storeName;
-	private String status;
-	private String startTime;
-	private String endTime;
-	private String bank;
-	private String cardNum;
-	private Integer integral;
-	private String createTime;
+    private String startTime; //开始时间
+    private String endTime;    //结束时间
+    private String activityName; //活动名称
+    private String enterpriseName;//企业名称
+    private String enCode; //设备号
+    private String cardNo; //卡号
+    private String mobile; //手机号
+    private String code;   //码
+    private String type;   //类型（01，积分，02 码）
+    private List<String> statusList; //状态(01,已发码，02,已兑换，03，已撤回)
+    private Integer offset;
+    private Integer pageNum; //页数
+    private Integer pageSize; //页面大小
 
-	public Integer getId() {
-		return Id;
-	}
+    public Integer getOffset() {
+        return offset;
+    }
 
-	public void setId(Integer id) {
-		Id = id;
-	}
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
 
-	public String getOrderId() {
-		return orderId;
-	}
+    public String getStartTime() {
+        return startTime;
+    }
 
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
-	}
+    public void setStartTime(String startTime) {
+        if (!"".equals(startTime)) {
+            this.startTime = startTime;
+        }
+    }
 
-	public Integer getActivityId() {
-		return activityId;
-	}
+    public String getEndTime() {
+        return endTime;
+    }
 
-	public void setActivityId(Integer activityId) {
-		this.activityId = activityId;
-	}
 
-	public String getActivityName() {
-		return activityName;
-	}
+    public void setEndTime(String endTime) {
+        if (!"".equals(endTime)) {
+            this.endTime = endTime;
+        }
+    }
 
-	public void setActivityName(String activityName) {
-		this.activityName = activityName;
-	}
+    public String getActivityName() {
+        return activityName;
+    }
 
-	public Integer getEnterpriseId() {
-		return enterpriseId;
-	}
+    public void setActivityName(String activityName) {
+        if (!"".equals(activityName)) {
+            this.activityName = activityName;
+        }
+    }
 
-	public void setEnterpriseId(Integer enterpriseId) {
-		this.enterpriseId = enterpriseId;
-	}
+    public String getEnterpriseName() {
+        return enterpriseName;
+    }
 
-	public String getEnterpriseName() {
-		return enterpriseName;
-	}
+    public void setEnterpriseName(String enterpriseName) {
+        if (!"".equals(enterpriseName)) {
+            this.enterpriseName = enterpriseName;
+        }
+    }
 
-	public void setEnterpriseName(String enterpriseName) {
-		this.enterpriseName = enterpriseName;
-	}
+    public String getEnCode() {
+        return enCode;
+    }
 
-	public Integer getSupEnterpriseId() {
-		return supEnterpriseId;
-	}
+    public void setEnCode(String enCode) {
+        if (!"".equals(enCode)) {
+            this.enCode = enCode;
+        }
+    }
 
-	public void setSupEnterpriseId(Integer supEnterpriseId) {
-		this.supEnterpriseId = supEnterpriseId;
-	}
+    public String getCardNo() {
+        return cardNo;
+    }
 
-	public String getSupEnterpriseName() {
-		return supEnterpriseName;
-	}
+    public void setCardNo(String cardNo) {
+        if (!"".equals(cardNo)) {
+            this.cardNo = cardNo;
+        }
+    }
 
-	public void setSupEnterpriseName(String supEnterpriseName) {
-		this.supEnterpriseName = supEnterpriseName;
-	}
 
-	public Integer getStoreId() {
-		return storeId;
-	}
+    public String getMobile() {
+        return mobile;
+    }
 
-	public void setStoreId(Integer storeId) {
-		this.storeId = storeId;
-	}
+    public void setMobile(String mobile) {
+        if (!"".equals(mobile)) {
+            this.mobile = mobile;
+        }
+    }
 
-	public String getStoreName() {
-		return storeName;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public void setStoreName(String storeName) {
-		this.storeName = storeName;
-	}
+    public void setCode(String code) {
+        if (!"".equals(code)) {
+            this.code = code;
+        }
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public String getStartTime() {
-		if (startTime != null && startTime.endsWith(".0")) {
-			startTime = startTime.substring(0, startTime.length() - 2);
-		}
-		return startTime;
-	}
+    public List<String> getStatusList() {
+        return statusList;
+    }
 
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
+    public void setStatusList(List<String> statusList) {
+        this.statusList = statusList;
+    }
 
-	public String getEndTime() {
-		if (endTime != null && endTime.endsWith(".0")) {
-			endTime = endTime.substring(0, endTime.length() - 2);
-		}
-		return endTime;
-	}
+    public Integer getPageNum() {
+        return pageNum;
+    }
 
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
+    }
 
-	public String getBank() {
-		return bank;
-	}
+    public Integer getPageSize() {
+        return pageSize;
+    }
 
-	public void setBank(String bank) {
-		this.bank = bank;
-	}
-
-	public String getCardNum() {
-		return cardNum;
-	}
-
-	public void setCardNum(String cardNum) {
-		this.cardNum = cardNum;
-	}
-
-	public Integer getIntegral() {
-		return integral;
-	}
-
-	public void setIntegral(Integer integral) {
-		this.integral = integral;
-	}
-
-	public String getCreateTime() {
-		if (createTime != null && createTime.endsWith(".0")) {
-			createTime = createTime.substring(0, createTime.length() - 2);
-		}
-		return createTime;
-	}
-
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
-	}
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
 
 }

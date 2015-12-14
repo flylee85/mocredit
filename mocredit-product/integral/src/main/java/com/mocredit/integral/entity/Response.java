@@ -2,59 +2,67 @@ package com.mocredit.integral.entity;
 
 /**
  * 响应对象
- * 
+ *
  * @author liaoying Created on 2015年8月17日
- * 
  */
 public class Response {
-	private boolean success = true;
-	private String errorMsg;
-	private String errorCode;
-	private Object data;
+    private boolean success = true;
+    private String errorMsg;
+    private String errorCode;
+    private Object extraData;
+    private Object data;
 
-	public Response(boolean success, String errorMsg, String errorCode,
-			Object data) {
-		super();
-		this.success = success;
-		this.errorMsg = errorMsg;
-		this.errorCode = errorCode;
-		this.data = data;
-	}
+    public Response(boolean success, String errorMsg, String errorCode,
+                    Object data) {
+        super();
+        this.success = success;
+        this.errorMsg = errorMsg;
+        this.errorCode = errorCode;
+        this.data = data;
+    }
 
-	public Response() {
-		super();
-	}
+    public Object getExtraData() {
+        return extraData;
+    }
 
-	public boolean getSuccess() {
-		return success;
-	}
+    public void setExtraData(Object extraData) {
+        this.extraData = extraData;
+    }
 
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
+    public Response() {
+        super();
+    }
 
-	public String getErrorMsg() {
-		return errorMsg;
-	}
+    public boolean getSuccess() {
+        return success;
+    }
 
-	public void setErrorMsg(String errorMsg) {
-		this.errorMsg = errorMsg;
-	}
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 
-	public String getErrorCode() {
-		return errorCode;
-	}
+    public String getErrorMsg() {
+        return errorMsg;
+    }
 
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
-	}
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
 
-	public Object getData() {
-		return data;
-	}
+    public String getErrorCode() {
+        return errorCode;
+    }
 
-	public void setData(Object data) {
-		this.data = data;
-	}
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
 
 }

@@ -1,0 +1,24 @@
+{"aaData":[
+	{
+		"no":"12345",
+		"receivable":"10000",
+		"Assigned":"5000",
+		"undistributed":"5000",
+		"collectionDate":"2015-07-19"
+	},
+	{
+		"no":"12345",
+		"receivable":"10000",
+		"Assigned":"5000",
+		"undistributed":"5000",
+		"collectionDate":"2015-07-19"
+	},
+	{
+		"no":"12345",
+		"receivable":"10000",
+		"Assigned":"5000",
+		"undistributed":"5000",
+		"collectionDate":"2015-07-19"
+	}
+
+]}

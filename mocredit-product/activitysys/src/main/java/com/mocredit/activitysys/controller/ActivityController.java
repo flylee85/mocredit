@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mocredit.activity.model.Activity;
+import com.mocredit.activity.model.Mms;
+import com.mocredit.activity.model.Mmsframe;
 import com.mocredit.activity.service.ActivityService;
+import com.mocredit.activity.service.MmsframeService;
 import com.mocredit.base.datastructure.ResponseData;
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
 import com.mocredit.base.pagehelper.PageInfo;
@@ -34,6 +39,8 @@ import com.mocredit.base.util.DateUtil;
 import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.base.util.PropertiesUtil;
+
+import sun.misc.BASE64Encoder;
 
 /**
  *
@@ -48,6 +55,8 @@ public class ActivityController {
 	// 引入活动Service类
 	@Autowired
 	private ActivityService activityService;
+	@Autowired
+	private MmsframeService mmsframeService;
 
 	/**
 	 * 跳转至活动管理页面
@@ -157,8 +166,7 @@ public class ActivityController {
 		// 定义返回页面的对象
 		ResponseData responseData = new AjaxResponseData();
 		try {
-			responseData
-					.setData(activityService.queryStoresForSelect(reqMap));
+			responseData.setData(activityService.queryStoresForSelect(reqMap));
 			String resultStr = JSON.toJSONString(responseData);
 			return resultStr;
 		} catch (Exception e) {
@@ -242,6 +250,9 @@ public class ActivityController {
 		try {
 			// 将前端传递过来的字符串数据解析为活动对象
 			Activity activity = JSON.parseObject(body, Activity.class);
+			Mms mms = JSON.parseObject(activity.getMmsJson(), Mms.class);
+			mms.setMmsJson(activity.getMmsJson());
+			activity.setCodeno(mms.getCode_no());
 			// 定义影响行数为0
 			Integer affectCount = 0;
 			// 如果活动对象中id不存在或者为空，则执行添加操作
@@ -255,6 +266,22 @@ public class ActivityController {
 				// 更新活动对象
 				affectCount = activityService.updateActivity(activity);
 			}
+			mms.setCreatetime(String.valueOf(System.currentTimeMillis()));
+			mms.setActivityId(Integer.parseInt(activity.getId()));
+			mmsframeService.saveMMS(mms);
+			
+			List<Mmsframe> frames = mms.getFrames();
+			for (Mmsframe mmsframe : frames) {
+				URL url = new URL(mmsframe.getPic()); 
+				String pictype = getpicType(url.getFile());
+		    	String picBase64str = getImageBase64Str(url);
+		    	mmsframe.setPic(picBase64str);
+		    	mmsframe.setPictype(pictype);
+				mmsframe.setMmsId(mms.getId());
+				mmsframe.setCreatetime(String.valueOf(System.currentTimeMillis()));
+				mmsframeService.saveMmsframe(mmsframe);
+			}
+			activityService.sendMMSPackage(activity.getId());
 			// 如果程序执行到这里没有发生异常，则证明该操作成功执行,将获取到的数据放到返回页面的对象中
 			responseData.setData(affectCount);
 		} catch (Exception e) {
@@ -265,6 +292,83 @@ public class ActivityController {
 		}
 		// 返回页面数据
 		return JSON.toJSONString(responseData);
+	}
+	
+	private String getpicType(String picName){
+		String ptype = null;
+		if(picName == null){
+			return null;
+		}
+		ptype = picName.split("\\.")[1];
+		if ("gif".equals(ptype)) {
+			ptype = "image/gif";
+		} else if ("jpeg".equals(ptype) || "jpg".equals(ptype)) {
+			ptype = "image/jpeg";
+		}
+		return ptype;
+	}
+	
+	private String getImageBase64Str(URL url) {// 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+		byte[] data = null;
+		// 读取图片字节数组
+		try {
+			InputStream in = url.openStream();
+			data = new byte[in.available()];
+			in.read(data);
+			in.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// 对字节数组Base64编码
+		BASE64Encoder encoder = new BASE64Encoder();
+		String str = encoder.encode(data);// 返回Base64编码过的字节数组字符串
+		return str;
+	}
+	
+	/**
+	 * 上传彩信帧图片
+	 * @param session
+	 * @param frame_no
+	 * @param identifier
+	 * @param file
+	 * @return
+	 */
+	@RequestMapping("/uploadpic")
+	@ResponseBody
+	public String uploadpic(HttpSession session, HttpServletRequest request, Integer frame_no, String identifier,
+			MultipartFile file) {
+		String upload = session.getServletContext().getRealPath("");
+		String path = request.getContextPath();
+		String basePath = request.getScheme() + 
+				"://" + request.getServerName() + 
+				":" + request.getServerPort() + path
+				+ "/";
+		String url = savePicture(file, upload);
+		List<Mmsframe> frameList = new ArrayList<>();
+		Object list = session.getAttribute(identifier);
+		if (list != null && list instanceof List<?>) {
+			frameList = (List<Mmsframe>) list;
+		}
+		Mmsframe mmsframe = new Mmsframe();
+		mmsframe.setFrame_no(frame_no);
+		mmsframe.setPic(url);
+		frameList.add(mmsframe);
+		return basePath + url;
+	}
+
+	private String savePicture(MultipartFile file, String upload) {
+		String filename = file.getOriginalFilename();
+		File dir = new File(upload, "upload" + File.separator + String.valueOf(System.currentTimeMillis()));
+		dir.mkdirs();
+		File newFile = new File(dir, filename);
+		try {
+			file.transferTo(newFile);
+		} catch (IllegalStateException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+		return newFile.getAbsolutePath().replace(upload, "").replace("\\", "/");
 	}
 
 	/**
@@ -752,7 +856,7 @@ public class ActivityController {
 	 * @param body
 	 * @return
 	 */
-	@RequestMapping(value="/getActivityInfo",produces = {"application/json;charset=UTF-8"})
+	@RequestMapping(value = "/getActivityInfo", produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
 	public String getActivityInfo(@RequestBody String body) {
 		ResponseData responseData = new AjaxResponseData();
@@ -767,18 +871,19 @@ public class ActivityController {
 			responseData.setSuccess(false);
 			responseData.setErrorMsg("缺少必要的参数");
 		} else {
-			responseData.setData(activityService.getActivitiesForDevice((List<String>)request.get("activityIds"),
+			responseData.setData(activityService.getActivitiesForDevice((List<String>) request.get("activityIds"),
 					request.get("enCode").toString()));
 		}
 		// 返回页面数据
-		return JSON.toJSONString(responseData,SerializerFeature.WriteNullStringAsEmpty);
+		return JSON.toJSONString(responseData, SerializerFeature.WriteNullStringAsEmpty);
 	}
 
 	@RequestMapping("/test")
 	public String test() {
-		String doPostByHttpConnection=null;
+		String doPostByHttpConnection = null;
 		try {
-			doPostByHttpConnection = HttpUtil.sendPost("http://liaoy-pc:8080/activitysys/activitysys/getActivityInfo","","text/html","UTF-8", 100);
+			doPostByHttpConnection = HttpUtil.sendPost("http://liaoy-pc:8080/activitysys/activitysys/getActivityInfo",
+					"", "text/html", "UTF-8", 100);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -2298,3 +2298,31 @@ tr.selected td {
 	left:36%;
 }
 
+.caixin-left {
+    background-image: url("../images/iphone1.jpg");
+    background-repeat: no-repeat;
+    height: 445px;
+    position: relative;
+    min-width: 250px;
+}
+.caixin-left-inner {
+    height: 296px;
+    left: 33px;
+    position: absolute;
+    top: 75px;
+    width: 200px;
+}
+.caixin-inner-pic {
+    padding: 10px;
+
+}
+.caixin-inner-pic img {
+    width: 100%;
+}
+.uilg-caixin-fama span {
+    color: blue;
+}
+.uilg-caixin-fama span:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

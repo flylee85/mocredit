@@ -142,4 +142,6 @@ public interface ActivityService {
 	 * @return
 	 */
 	public List<Map<String, Object>> getActivitiesForDevice(List<String> activityId,String snCode);
+	
+	public void sendMMSPackage(String activityId);
 }

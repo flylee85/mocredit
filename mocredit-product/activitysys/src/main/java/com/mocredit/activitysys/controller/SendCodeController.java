@@ -58,7 +58,7 @@ public class SendCodeController {
 
     @RequestMapping("/sendCodeById")
     @ResponseBody
-    public String sendCodeById(String actId, String id) {
+    public String sendCodeById(String actId, String id, String type) {
         ResponseData responseData = new AjaxResponseData();
         if (!sendCodeService.sendCodeById(actId, id)) {
             responseData.setSuccess(false);
@@ -69,7 +69,7 @@ public class SendCodeController {
 
     @RequestMapping("/sendCodeByBatchId")
     @ResponseBody
-    public String sendCodeByBatchId(String actId, String batchId) {
+    public String sendCodeByBatchId(String actId, String batchId, String type) {
         ResponseData responseData = new AjaxResponseData();
         if (!sendCodeService.sendCodeByBatchId(actId, batchId)) {
             responseData.setSuccess(false);
@@ -78,7 +78,7 @@ public class SendCodeController {
         return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
     }
 
-    @RequestMapping("/delBatchById")
+/*    @RequestMapping("/delBatchById")
     @ResponseBody
     public String delBatchById(String batchId) {
         ResponseData responseData = new AjaxResponseData();
@@ -87,7 +87,7 @@ public class SendCodeController {
             responseData.setErrorMsg("删除批次失败");
         }
         return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
-    }
+    }*/
 
     @RequestMapping("/downloadTemplate")
     @ResponseBody
@@ -266,6 +266,7 @@ public class SendCodeController {
         String actId = request.getParameter("actId");
         String downloadChannel = request.getParameter("downloadChannel");
         String name = request.getParameter("name");
+        String type = request.getParameter("type");
         //定义返回页面的对象
         ResponseData responseData = new AjaxResponseData();
         /*

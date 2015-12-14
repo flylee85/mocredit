@@ -5,7 +5,11 @@ package com.mocredit.order.service;
 
 import java.util.List;
 
+import com.mocredit.base.datastructure.ResponseData;
+import com.mocredit.base.datastructure.impl.AjaxResponseData;
+import com.mocredit.order.dto.OrderDto;
 import com.mocredit.order.entity.Order;
+import com.mocredit.order.entity.OrderData;
 import com.mocredit.order.vo.OrderVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
@@ -18,7 +22,9 @@ public interface OrderService extends BaseService<Order> {
 
     List<Order> findOrderList(OrderVo orderVo);
 
-    int updateOrderStatusByOrderId(String orderId, String status);
+    ResponseData findOrderList(OrderDto orderDto);
+
+    boolean revokeOrderByOrderId(String orderId, String enCode,ResponseData responseData);
 
     int updateOrderByCode(Order order);
 
@@ -30,4 +36,10 @@ public interface OrderService extends BaseService<Order> {
      */
     Order findOrderByOrderId(String orderId);
 
+    /**
+     * 根据流水id监测订单
+     *
+     * @return
+     */
+    int checkOrderById(String id);
 }
