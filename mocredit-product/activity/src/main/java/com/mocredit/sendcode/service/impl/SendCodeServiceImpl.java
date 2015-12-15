@@ -440,13 +440,8 @@ public class SendCodeServiceImpl implements SendCodeService {
             mmsbo.setEitemid(Long.parseLong(activity.getId()));
             mmsbo.setBarcodeid(73349609L);
 
-            final MMSBO sendMsg = mmsbo;
-            jmsTemplate.send("subject", new MessageCreator() {
-                public Message createMessage(Session session) throws JMSException {
-                    ObjectMessage msg = session.createObjectMessage(sendMsg);
-                    return msg;
-                }
-            });
+            this.jmsTemplate.setDeliveryPersistent(true);
+        	this.jmsTemplate.convertAndSend(mmsbo);
 
             //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
             // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
