@@ -85,6 +85,7 @@
 		<if test="storeName != null" >
 		 and a.store_name=#{storeName}
 		</if>
+		and st.status=1
 	</where>
 	order by a.activity_id asc
 	<if test="pageInfoStart != null and pageInfoLimit != null" >

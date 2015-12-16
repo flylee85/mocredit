@@ -16,10 +16,11 @@
         var module_node = $('.caixin-left-inner');
         var modulePic_node = $(".caixin-inner-pic");
         var caixin_inner_txt = module_node.find('.caixin-inner-txt');
-        opts.file_form =  $('opts.file_form')
+        opts.file_form =  $(opts.file_form);
         var endJson = $('#endJson');
         var jsonHidden = $.parseJSON(endJson.attr('data-json'));
-
+        var random = parseInt(10000*Math.random());
+        $("#identifier").val(random);
         opts.input_text.keyup(function () {
             var thisNode = $(this);
             caixin_inner_txt.text(thisNode.val());
@@ -28,6 +29,64 @@
         $('#choosePic').click(function () {
             opts.file_upload.trigger('click');
         });
+
+        opts.file_upload.fileinput({
+            uploadUrl: opts.url_save, // server upload action
+            language: 'zh',
+            uploadAsync: false,
+            showUpload: false, // hide upload button
+            showRemove: false, // hide remove button
+            showPreview: false,
+            msgInvalidFileExtension: "{name}" + "{extensions}" ,
+            minFileCount: 1,
+            maxFileCount: 1,
+            showCaption: false,
+            uploadExtraData: function(previewId, index){
+            	var curOne = parseInt(opts.frame_select.find('option:selected').val());
+            	return {"frame_no" : curOne, "identifier" : $("#identifier").val()};
+            }
+        }).on("filebatchselected", function(event, files) {
+            for(var i=0;i<files.length;i++){
+                var file = files[i];
+                var fileName = file.name;
+                var index1 = fileName.lastIndexOf(".");
+                var index2= fileName.length;
+                var suffix=fileName.substring(index1,index2);
+                if(suffix!='.jpg'&& suffix!='.jpeg' && suffix!='.gif'){
+                    sendMsg(false, "只能上传.gif,.jpg,.jpeg格式的图片");
+                    return false;
+                }
+                if(file.size > 20000){
+                    sendMsg(false, '单个图片不能大于20K');
+                    return false;
+                }
+            }
+            opts.file_upload.fileinput("upload");
+
+        }).on("filebatchuploadsuccess", function(event, data, previewId, index) {
+        	console.log('File batch upload success');
+        	console.log(data.response.data);
+            var remsg = data.response.data.split("|");
+            if (remsg[0] == "1") {
+                sendMsg(true, '文件上传成功');
+                modulePic_node.empty().append('<img src="'+remsg[1]+'">');
+                $('#imgSrc').val(remsg[1]);
+            } else {
+                sendMsg(false, '文件上传失败'  + remsg[2]);
+                //$("img").attr({ "src": "project/Images/msg_error.png" });
+            }
+        }).on("fileerror", function(event, data){
+        	console.log('fileerror');
+    		console.log(data.id);
+    		console.log(data.index);
+    		console.log(data.file);
+    		console.log(data.reader);
+    		console.log(data.files);
+    	}).on('filebatchuploadcomplete', function(event, files, extra) {
+    	    console.log('File batch upload complete');
+    	});
+
+/*
         // 图片上传
         opts.file_upload.change(function (e) {
             var $thisfile = $(this)[0].files[0];
@@ -67,7 +126,7 @@
                 }
             });
             return false;
-        });
+        });*/
         // 选择帧
         opts.frame_select.change(function () {
             module_node.find('div').empty();
@@ -208,7 +267,7 @@
         code_select : '#code-select',
         input_text : '#input-text',
         file_form : '#file-form',
-        url_save : '/activitysys/uploadpic'       //保存url
+        url_save : 'activitysys/uploadpic'       //保存url
     };
 
 

@@ -26,6 +26,10 @@
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">  
         <!-- 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 -->  
         <property name="connectionFactory" ref="connectionFactory"/>  
+        <property name="defaultDestinationName" value="subject" />
+
+		<!-- 区别它采用的模式为false是p2p为true是订阅 -->
+		<property name="pubSubDomain" value="false" />
 <!--         <property name="defaultDestination" ref="normalDishQueue" />   -->
 <!--        <property name="messageConverter" ref="commMessageConverter" />  -->
 <!--         <property name="pubSubDomain" value="false" />   -->

@@ -136,14 +136,13 @@ public class ActivityCodeController {
 				ard.setSuccess(false);
 				ard.setErrorMsg("请求过程发生事务异常!");
 				ard.setErrorCode(ErrorCode.CODE_98.getCode());
-				logger.error(e.toString());
 				e.printStackTrace();
 			}
+			// 日志
+			TVerifyLog log = this.buildVerifyLog(ard, verifiedCode);
+			VerifyCodeLogTask.verifyogList.add(log);
 		}
 
-		// 日志
-		TVerifyLog log = this.buildVerifyLog(ard, verifiedCode);
-		VerifyCodeLogTask.verifyogList.add(log);
 		// SimplePropertyPreFilter spfilter=new
 		// SimplePropertyPreFilter(TActivityCode.class);
 		// spfilter.getExcludes().add("effective");
@@ -178,19 +177,19 @@ public class ActivityCodeController {
 				returnStr = "<?xml version='1.0' encoding='UTF-8'?><NewDataSet><Table><isSuccess>false</isSuccess><error>请求过程发生事务异常!</error></Table></NewDataSet>";
 				ard.setSuccess(false);
 				ard.setErrorMsg("请求过程发生事务异常!");
-				logger.error(e.toString());
 				e.printStackTrace();
 			}
+
+			TVerifiedCode verifiedCode = new TVerifiedCode();
+			verifiedCode.setBatchNo(batchNo);
+			verifiedCode.setSearchNo(searchNo);
+			verifiedCode.setDevice(device);
+			verifiedCode.setCode(code);
+			// 日志
+			TVerifyLog log = this.buildVerifyLog(ard, verifiedCode);
+			VerifyCodeLogTask.verifyogList.add(log);
 		}
 
-		TVerifiedCode verifiedCode = new TVerifiedCode();
-		verifiedCode.setBatchNo(batchNo);
-		verifiedCode.setSearchNo(searchNo);
-		verifiedCode.setDevice(device);
-		verifiedCode.setCode(code);
-		// 日志
-		TVerifyLog log = this.buildVerifyLog(ard, verifiedCode);
-		VerifyCodeLogTask.verifyogList.add(log);
 		// SimplePropertyPreFilter spfilter=new
 		// SimplePropertyPreFilter(TActivityCode.class);
 		// spfilter.getExcludes().add("effective");
@@ -238,7 +237,6 @@ public class ActivityCodeController {
 			ard.setSuccess(false);
 			ard.setErrorMsg("请求过程发生事务异常!");
 			ard.setErrorCode(ErrorCode.CODE_30.getCode());
-			logger.error(e.toString());
 			e.printStackTrace();
 		}
 		return JSON.toJSONStringWithDateFormat(ard, DateUtil.FORMAT_YYYYMMDD_HHMMSS);
@@ -269,7 +267,6 @@ public class ActivityCodeController {
 			returnStr = this.activityCodeService.revokeForOldPos(batchNo, searchNo, device);
 		} catch (Exception e) {
 			returnStr = "<?xml version='1.0' encoding='UTF-8'?><NewDataSet><Table><isSuccess>false</isSuccess><error>请求过程发生事务异常!</error></Table></NewDataSet>";
-			logger.error(e.toString());
 			e.printStackTrace();
 		}
 		return returnStr;
@@ -304,7 +301,6 @@ public class ActivityCodeController {
 			ard.setSuccess(false);
 			ard.setErrorMsg("请求过程发生事务异常!");
 			ard.setErrorCode(ErrorCode.CODE_30.getCode());
-			logger.error(e.toString());
 			e.printStackTrace();
 		}
 		return JSON.toJSONStringWithDateFormat(ard, DateUtil.FORMAT_YYYYMMDD_HHMMSS);
@@ -715,6 +711,20 @@ public class ActivityCodeController {
 		}
 
 		return actActivitySynLog;
+	}
+
+	public static String getRemoteIpAddr(HttpServletRequest request) {
+		String ip = request.getHeader("x-forwarded-for");
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}
+		return ip;
 	}
 
 	public static void main(String[] args) {
