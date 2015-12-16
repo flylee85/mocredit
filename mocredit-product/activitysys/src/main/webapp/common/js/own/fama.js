@@ -102,6 +102,7 @@
 			formObject.mmsJson = $("#endJson").attr('data-json');
 			formObject.codeno = $("#code-select").val();
 			formObject.subject = $("#subject").val();
+			console.log(formObject.mmsJson);
 		}
 		if(sendSmsType.length>0){
 			sendSmsType=sendSmsType.substr(0,sendSmsType.length-1);
@@ -191,10 +192,14 @@
 		var type = $("#activityDetailType").val();
 
 		var addActivityFamaForm = $("#addActivityFamaForm");
-		$.get("activitysys/getActivityById",{id:activityId},function(result){
-			if(result.success){
-
-				var dataObject = result.data;
+		$.ajax({
+	        url : 'activitysys/getActivityById',
+	        type : 'get',
+	        dataType : 'json',
+	        async : false,
+	        data : {id:activityId},
+	        success :  function(result){
+	        	var dataObject = result.data;
 				addActivityFamaForm.find("input[name='id']").val(dataObject.id);
 				addActivityFamaForm.find("input[name='name']").val(dataObject.name);
 				addActivityFamaForm.find("input[name='code']").val(dataObject.code);
@@ -209,7 +214,6 @@
 				addActivityFamaForm.find("input[name='posSuccessMsg']").val(dataObject.posSuccessMsg);
 				addActivityFamaForm.find("input[name='successSmsMsg']").val(dataObject.successSmsMsg);
 				addActivityFamaForm.find("input[name='endJson']").attr('data-json', dataObject.mmsJson);
-				$.caixinFama();
 				if(dataObject.storeCount != 0){
 					addActivityFamaForm.find(".chooseShop").addClass('popFloat').text("已选择 " + dataObject.storeCount + " 家门店");
 				}else{
@@ -243,8 +247,16 @@
 					$("#channelSend").prop('checked', true).next('i').addClass('checked');
 					$("#caixin").prop('checked', true).next('i').addClass('checked');
 					$("#caixinFama").show();
-					//赋值
-					$("#duanxinFama textarea").val(dataObject.noticeSmsMsg);
+				}else if(dataObject.sendSmsType=='02,03'){
+					//显示直接发送区域
+					$('.parentNode').addClass('active');
+					$("#channelSend").prop('checked', true).next('i').addClass('checked');
+					$("#duanxin").prop('checked', true).next('i').addClass('checked');
+					$("#duanxinFama").show();
+					$("#duanxinFama textarea").val(dataObject.noticeSmsMsg);//赋值
+					
+					$("#caixin").prop('checked', true).next('i').addClass('checked');
+					$("#caixinFama").show();
 				}
 
 				addActivityFamaForm.find("input[name='startTime']").val(dataObject.startTime);
@@ -256,10 +268,18 @@
 						$("#selectDateFamaCheckboxFormGroup").find("input[value='"+value+"']").prop('checked', true).next('i').addClass('checked');
 					}
 				}
-			}else{
-				alert('失败！' + result.errorMsg);
-			}
-		},'json');
+				$.caixinFama();
+	        }
+	    });
+
+//		$.get("activitysys/getActivityById",{id:activityId},function(result){
+//			if(result.success){
+//
+//				
+//			}else{
+//				alert('失败！' + result.errorMsg);
+//			}
+//		},'json');
 
 		$('.look').children('.toModify').off('click').click(function () {
 			$('div.add').show();
