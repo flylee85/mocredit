@@ -208,6 +208,8 @@
 				addActivityFamaForm.find("textarea[name='receiptPrint']").val(dataObject.receiptPrint);
 				addActivityFamaForm.find("input[name='posSuccessMsg']").val(dataObject.posSuccessMsg);
 				addActivityFamaForm.find("input[name='successSmsMsg']").val(dataObject.successSmsMsg);
+				addActivityFamaForm.find("input[name='endJson']").attr('data-json', dataObject.mmsJson);
+				$.caixinFama();
 				if(dataObject.storeCount != 0){
 					addActivityFamaForm.find(".chooseShop").addClass('popFloat').text("已选择 " + dataObject.storeCount + " 家门店");
 				}else{
@@ -233,6 +235,14 @@
 					$("#channelSend").prop('checked', true).next('i').addClass('checked');
 					$("#duanxin").prop('checked', true).next('i').addClass('checked');
 					$("#duanxinFama").show();
+					//赋值
+					$("#duanxinFama textarea").val(dataObject.noticeSmsMsg);
+				}else if(dataObject.sendSmsType=='03'){
+					//显示直接发送区域
+					$('.parentNode').addClass('active');
+					$("#channelSend").prop('checked', true).next('i').addClass('checked');
+					$("#caixin").prop('checked', true).next('i').addClass('checked');
+					$("#caixinFama").show();
 					//赋值
 					$("#duanxinFama textarea").val(dataObject.noticeSmsMsg);
 				}

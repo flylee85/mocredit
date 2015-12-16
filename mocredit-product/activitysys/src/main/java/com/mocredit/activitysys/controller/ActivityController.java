@@ -8,8 +8,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -196,6 +198,10 @@ public class ActivityController {
 			 * 根据id获取活动对象 如果程序执行到这里没有发生异常，则证明该操作成功执行,将获取到的数据放到返回页面的对象中
 			 */
 			Activity activity = activityService.getActivityById(id);
+			Mms mms = mmsframeService.getMmsByActivityId(Long.parseLong(id));
+			if (mms != null) {
+				activity.setMmsJson(mms.getMmsJson());
+			}
 			responseData.setData(activity);
 		} catch (Exception e) {
 			// 如果抛出异常，则将返回页面的对象设置为false
@@ -276,11 +282,14 @@ public class ActivityController {
 				
 				List<Mmsframe> frames = mms.getFrames();
 				for (Mmsframe mmsframe : frames) {
-					URL url = new URL(mmsframe.getPic()); 
-					String pictype = getpicType(url.getFile());
-			    	String picBase64str = getImageBase64Str(url);
-			    	mmsframe.setPic(picBase64str);
-			    	mmsframe.setPictype(pictype);
+					String pic = mmsframe.getPic();
+					if (!"".equals(pic)) {
+						URL url = new URL(pic); 
+						String pictype = getpicType(url.getFile());
+				    	String picBase64str = getImageBase64Str(url);
+				    	mmsframe.setPic(picBase64str);
+				    	mmsframe.setPictype(pictype);
+					}
 					mmsframe.setMmsId(mms.getId());
 					mmsframe.setCreatetime(String.valueOf(System.currentTimeMillis()));
 					mmsframeService.saveMmsframe(mmsframe);
@@ -342,23 +351,35 @@ public class ActivityController {
 	@ResponseBody
 	public String uploadpic(HttpSession session, HttpServletRequest request, Integer frame_no, String identifier,
 			MultipartFile file) {
+		ResponseData responseData = new AjaxResponseData();
 		String upload = session.getServletContext().getRealPath("");
 		String path = request.getContextPath();
 		String basePath = request.getScheme() + 
 				"://" + request.getServerName() + 
 				":" + request.getServerPort() + path
 				+ "/";
-		String url = savePicture(file, upload);
-		List<Mmsframe> frameList = new ArrayList<>();
-		Object list = session.getAttribute(identifier);
-		if (list != null && list instanceof List<?>) {
-			frameList = (List<Mmsframe>) list;
+		try {
+			String url = savePicture(file, upload);
+			Map<Integer, Mmsframe> frameMap = new HashMap<>();
+			Object map = session.getAttribute(identifier);
+			if (map != null && map instanceof Map<?, ?>) {
+				frameMap = (Map<Integer, Mmsframe>) map;
+			}
+			Mmsframe mmsframe = new Mmsframe();
+			mmsframe.setFrame_no(frame_no);
+			mmsframe.setPic(basePath + url);
+			frameMap.put(frame_no, mmsframe);
+			session.setAttribute(identifier, frameMap);
+			responseData.setSuccess(true);
+			responseData.setData("1|" + basePath + url);
+			responseData.setCode("1");
+			return JSON.toJSONString(responseData);
+		} catch (Exception e) {
+			responseData.setSuccess(false);
+			responseData.setData("2|error|文件上传失败");
+			responseData.setCode("2");
+			return JSON.toJSONString(responseData);
 		}
-		Mmsframe mmsframe = new Mmsframe();
-		mmsframe.setFrame_no(frame_no);
-		mmsframe.setPic(url);
-		frameList.add(mmsframe);
-		return basePath + url;
 	}
 
 	private String savePicture(MultipartFile file, String upload) {
