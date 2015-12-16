@@ -105,10 +105,10 @@
 				and ac.custom_mobile=#{mobile}
 			</if>
 			<if test="startTime != null">
-				and vc.start_time &gt;=#{startTime,jdbcType=TIMESTAMP}
+				and vc.verify_time &gt;=#{startTime,jdbcType=TIMESTAMP}
 			</if>
 			<if test="endTime != null">
-				and vc.end_time&lt;=#{endTime,jdbcType=TIMESTAMP}
+				and vc.verify_time&lt;=#{endTime,jdbcType=TIMESTAMP}
 			</if>
 			<if test="type != null">
 				and vc.verify_type in (${type})
@@ -142,10 +142,10 @@
 				and ac.custom_mobile=#{mobile}
 			</if>
 			<if test="startTime != null">
-				and vc.start_time &gt;=#{startTime,jdbcType=TIMESTAMP}
+				and vc.verify_time &gt;=#{startTime,jdbcType=TIMESTAMP}
 			</if>
 			<if test="endTime != null">
-				and vc.end_time&lt;=#{endTime,jdbcType=TIMESTAMP}
+				and vc.verify_time&lt;=#{endTime,jdbcType=TIMESTAMP}
 			</if>
 			<if test="type != null">
 				and vc.verify_type in (${type})
