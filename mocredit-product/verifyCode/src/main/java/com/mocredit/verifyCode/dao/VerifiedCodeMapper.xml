@@ -111,13 +111,13 @@
 				and vc.end_time&lt;=#{endTime,jdbcType=TIMESTAMP}
 			</if>
 			<if test="type != null">
-				and ac.verify_type in (${type})
+				and vc.verify_type in (${type})
 			</if>
 			<if test="activityName != null">
 				and vc.activity_name like '${activityName}'
 			</if>
 			<if test="enterpriseName != null">
-				and ac.issue_enterprise_name like '${enterpriseName}'
+				and vc.issue_enterprise_name like '${enterpriseName}'
 			</if>
 		</where>
 		limit #{pageStart},#{pageSize}
@@ -128,7 +128,9 @@
 			count(1)
 		FROM
 			t_verified_code vc
+		<if test="mobile != null">
 		LEFT JOIN t_activity_code ac ON vc.code_serial_number = ac.id 
+		</if>
 		<where>
 			<if test="code != null">
 				vc.code=#{code}
@@ -152,7 +154,7 @@
 				and vc.activity_name like '${activityName}'
 			</if>
 			<if test="enterpriseName != null">
-				and ac.issue_enterprise_name like '${enterpriseName}'
+				and vc.issue_enterprise_name like '${enterpriseName}'
 			</if>
 		</where>
 	</select>
