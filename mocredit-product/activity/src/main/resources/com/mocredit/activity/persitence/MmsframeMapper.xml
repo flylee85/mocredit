@@ -14,7 +14,7 @@
 		VALUES
 			(#{id},#{activityId},#{subject},#{isresend},#{code_no},#{mmsJson},#{createtime})
 	</insert>
-	
+
 	<select id="getMmsById" resultType="com.mocredit.activity.model.Mms" parameterType="java.lang.Long">
 		SELECT	
 			id,activityId,mmspackageid,subject,isresend,code_no,mmsJson,createtime
@@ -23,7 +23,7 @@
 		WHERE 
 			id = #{id}
 	</select>
-	
+
 	<update id="updateMms" parameterType="com.mocredit.activity.model.Mms">
 		UPDATE 
 			t_mms
@@ -32,20 +32,20 @@
 		WHERE
 			id = #{id}
 	</update>
-	
+
 	<select id="getMmsByActivityId" resultType="com.mocredit.activity.model.Mms" parameterType="java.lang.Long">
 		SELECT	
-			id,activityId,subject,isresend,code_no,mmsJson,createtime
+			id,activityId,mmspackageid,subject,isresend,code_no,mmsJson,createtime
 		FROM 
 			t_mms
 		WHERE 
 			activityId = #{activityId}
 	</select>
-	
+
 	<delete id="deleteMmsByActivityId" parameterType="java.lang.Long">
 		DELETE FROM t_mms WHERE activityId = #{activityId} 
 	</delete>
-	
+
 	<select id="getMmsframeById" resultType="com.mocredit.activity.model.Mmsframe" parameterType="java.lang.Long">
 		SELECT	
 			id,mmsId,pic,pictype,text,frame_no,createtime
@@ -64,14 +64,14 @@
 			mmsId = #{mmsId}
 		ORDER BY frame_no
 	</select>
-	
+
 	<insert id="saveMmsframe" parameterType="com.mocredit.activity.model.Mmsframe" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO 
 			t_mmsframe(id,mmsId,pic,pictype,text,frame_no,createtime)
 		VALUES
 			(#{id},#{mmsId},#{pic},#{pictype},#{text},#{frame_no},#{createtime})
 	</insert>
-	
+
 	<delete id="deleteMmsframeByActivityId" parameterType="java.lang.Long">
 		DELETE FROM t_mmsframe WHERE mmsId IN (SELECT id FROM t_mms WHERE activityId = #{activityId})
 	</delete>
@@ -84,5 +84,5 @@
 		WHERE
 			id = #{id}
 	</update>
-	
+
 </mapper>

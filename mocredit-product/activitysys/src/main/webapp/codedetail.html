@@ -203,7 +203,7 @@
 </script>
 <script>
     function sendCodeMMS(id) {
-        $.get("sendCode/sendCodeById", {"actId": actId, "id": id, "type": "01"}, function (result) {
+        $.get("sendCode/sendCodeById", {"actId": actId, "id": id, "type": "03"}, function (result) {
             if (result.success) {
                 sendMsg(true, "发送彩信成功");
                 window.location.reload();
