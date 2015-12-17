@@ -93,6 +93,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="type" id="type" value="02"/>
+                        <input type="hidden" name="types" id="types" value="${type}"/>
 
                         <div id="sms" style="display: none">
                             <div class="input-group col-2">
