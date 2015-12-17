@@ -268,7 +268,7 @@
 						$("#selectDateFamaCheckboxFormGroup").find("input[value='"+value+"']").prop('checked', true).next('i').addClass('checked');
 					}
 				}
-				$.caixinFama();
+//				$.caixinFama();
 	        }
 	    });
 
