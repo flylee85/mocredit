@@ -440,7 +440,7 @@ public class SendCodeServiceImpl implements SendCodeService {
         for (BatchCode batchCode : batchCodeList) {
 //			mmsbo.setBatchid(batchId);
             mmsbo.setCharcode(batchCode.getCode());
-            mmsbo.setNumberpwd("010073787632");
+            mmsbo.setNumberpwd(batchCode.getCode());
             mmsbo.setBarcodeno(mms.getCode_no());
             mmsbo.setTid("20150428111444117862");
             mmsbo.setEorderid(5115538L);
