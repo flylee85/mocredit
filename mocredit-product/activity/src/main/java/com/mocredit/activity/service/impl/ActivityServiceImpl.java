@@ -83,7 +83,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private MmsframeMapper mmsframeMapper;
 	@Autowired
 	private SendMMSPackage sendMMSPackage;
-	private boolean importFlag = true;
+	private boolean importFlag = false;
 
 	/**
 	 * 获取一条活动，根据主键
@@ -1417,6 +1417,7 @@ public class ActivityServiceImpl implements ActivityService {
 				oc.setBatchId(batch.getId());
 				oc.setCodeId(String.valueOf(codeMap.get("id")));
 				oc.setCode(String.valueOf(codeMap.get("code")));
+				oc.setStartTime(activity.getStartTime());
 				oc.setEndTime(activity.getEndTime());
 				oc.setStatus("01");// 01：已提码
 
