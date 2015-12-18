@@ -165,7 +165,7 @@ public class SendCodeController {
     }
 
     /**
-     * 提码列表页
+     * 码批次列表页
      *
      * @param reqMap
      * @param draw
@@ -210,7 +210,7 @@ public class SendCodeController {
     }
 
     /**
-     * 提码列表页
+     * 批次详情页
      *
      * @param reqMap
      * @param draw

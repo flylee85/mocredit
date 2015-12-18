@@ -325,6 +325,7 @@
         a.pick_number as pickNumber,
         a.import_number as importNumber,
         a.import_success_number as importSuccessNumber,
+        a.send_number as sendNumber,
         a.send_success_number as sendSuccessNumber,
         a.createtime as createtime,
         a.`status`,

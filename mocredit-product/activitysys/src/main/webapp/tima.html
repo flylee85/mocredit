@@ -71,7 +71,7 @@
                                 <table class="table table-striped m-b-none" data-ride="datatables">
                                     <thead>
                                     <tr>
-                                        <th>批次号</th>
+                                        <!--<th>批次号</th>-->
                                         <th>名称</th>
                                         <th>数量</th>
                                         <th>短信发送</th>
@@ -133,7 +133,7 @@
                 "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
                 "aaSorting": [[6, "desc"]],//默认排序
                 "columns": [
-                    {"data": "id", "name": "id", "width": "100px"},
+//                    {"data": "id", "name": "id", "width": "100px"},
                     {"data": "batch", "name": "batch", "width": "90px", "sortable": false},
                     {"data": "pickNumber", "name": "pickNumber", "width": "90px", "sortable": false},
                     {"data": "sendSuccessNumber", "name": "sendSuccessNumber", "className": "name", "width": "100px"},
@@ -145,7 +145,7 @@
                 "columnDefs": [
                     {"searchable": false, "targets": [2]},
                     {
-                        "targets": 5,
+                        "targets": 4,
                         "data": "status",
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -167,7 +167,7 @@
                         }
                     },
                     {
-                        "targets": 6,
+                        "targets": 5,
                         "data": "sendSmsType",
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -179,7 +179,7 @@
                         }
                     },
                     {
-                        "targets": 7,
+                        "targets": 6,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
