@@ -40,6 +40,13 @@
 		$('#duanxin').removeAttr('data-parsley-required').parent().next('.parsley-errors-list').empty();
 		$("#duanxin").add("#weixin").prop("checked", false).next().removeClass("checked");
 		$("#duanxinFama").add("#weixinFama").hide().find("textarea").val("");
+		
+		$("#caixin").prop("checked", false).next().removeClass("checked");
+		$('#subject').removeAttr('data-parsley-required');
+		$('#frame-select').removeAttr('data-parsley-required');
+		$('#code-select').removeAttr('data-parsley-required');
+		$("#caixinFama").hide();
+		$('#caixin').removeAttr('data-parsley-required')
 	});
 
 	$("#duanxin").click(function () {
@@ -52,8 +59,14 @@
 	$("#caixin").click(function () {
 		if ($(this).prop("checked")) {
 			$("#caixinFama").show();
+			$('#subject').attr('data-parsley-required',true);
+			$('#frame-select').attr('data-parsley-required',true);
+			$('#code-select').attr('data-parsley-required',true);
 		} else {
 			$("#caixinFama").hide();
+			$('#subject').removeAttr('data-parsley-required');
+			$('#frame-select').removeAttr('data-parsley-required');
+			$('#code-select').removeAttr('data-parsley-required');
 		}
 	});
 	$("#weixin").click(function () {
