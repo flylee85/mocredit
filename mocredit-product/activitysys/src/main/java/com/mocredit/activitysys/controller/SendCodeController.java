@@ -165,7 +165,7 @@ public class SendCodeController {
     }
 
     /**
-     * 提码列表页
+     * 码批次列表页
      *
      * @param reqMap
      * @param draw
@@ -210,7 +210,7 @@ public class SendCodeController {
     }
 
     /**
-     * 提码列表页
+     * 批次详情页
      *
      * @param reqMap
      * @param draw
@@ -268,6 +268,7 @@ public class SendCodeController {
         String downloadChannel = request.getParameter("downloadChannel");
         String name = request.getParameter("name");
         String type = request.getParameter("type");
+        String types = request.getParameter("types");
         //定义返回页面的对象
         ResponseData responseData = new AjaxResponseData();
         /*
@@ -309,7 +310,7 @@ public class SendCodeController {
         ModelAndView mav = new ModelAndView("sendcode");
         mav.addObject("actId", actId);
         mav.addObject("success", responseData.getSuccess());
-        mav.addObject("type", type);
+        mav.addObject("type", types);
         mav.addObject("msg", responseData.getData());
         return mav;
     }

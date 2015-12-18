@@ -179,7 +179,7 @@
 										<div class="caixin-inner-txt"></div>
 									</div>
 								</div>
-								<input type="hidden" name="endJson" id="endJson" data-json='{}' value="">
+								<input type="hidden" name="endJson" id="endJson" data-json='' value="">
 								<input type="hidden" id="imgSrc" value="">
 								<input type="hidden" id="identifier" value="">
 								<div class="caixin-right col-lg-9">
@@ -187,7 +187,7 @@
 										<label class="col-lg-2 control-label">彩信标题</label>
 										<div class="col-lg-4">
 											<input type="text" tabindex="9" class="form-control input-small parsley-validated"
-												   data-parsley-required="true" placeholder="彩信标题" id="subject" name="subject">
+												   placeholder="彩信标题" id="subject" name="subject">
 										</div>
 										<div class="col-lg-2">
 											<div class="checkbox">
@@ -360,5 +360,8 @@
 	   <script src="common/js/jquery-form.js" type="text/javascript"></script>
 	   <script src="common/js/own/caixinFama.js" type="text/javascript"></script>
 	   <script src="common/js/own/fama.js" type="text/javascript"></script>
+	   <script>
+			$.caixinFama();
+		</script>
 	</body>
 </html>

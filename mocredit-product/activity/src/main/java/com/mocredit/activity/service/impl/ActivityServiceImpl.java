@@ -255,13 +255,12 @@ public class ActivityServiceImpl implements ActivityService {
 		Activity activity = activityMapper.getActivityById(activityId);
 		Enterprise enterprise = new Enterprise();
 		enterprise.setId(activity.getEnterpriseId());
-		Enterprise ent = enterpriseMapper.selectOne(enterprise);
 		Mms mms = mmsframeMapper.getMmsByActivityId(Integer.parseInt(activityId));
 		Mmsframe mmsfram = new Mmsframe();
 		List<Mmsframe> list = mmsframeMapper.getMmsframeListByMMSId(mms.getId());
 		if(list!=null&&!list.isEmpty()){
 			StringBuilder packageXML = new StringBuilder("<mms>");
-			packageXML.append("<subject>").append(activity.getSubject()).append("</subject>");
+			packageXML.append("<subject>").append(mms.getSubject()).append("</subject>");
 			packageXML.append("<pages>");
 			for(int i=0;i<list.size();i++){
 				mmsfram =list.get(i);

@@ -250,7 +250,7 @@ public class ActivityController {
 	 */
 	@RequestMapping("/saveActivity")
 	@ResponseBody
-	public String saveActivity(@RequestBody String body) {
+	public String saveActivity(HttpSession session, HttpServletRequest request, @RequestBody String body) {
 		// 定义返回页面的对象
 		ResponseData responseData = new AjaxResponseData();
 		try {
@@ -273,28 +273,36 @@ public class ActivityController {
 				mmsframeService.deleteMmsByActivityId(activityId);
 			}
 			if(("02").equals(activity.getType())){
-				Mms mms = JSON.parseObject(activity.getMmsJson(), Mms.class);
-				mms.setMmsJson(activity.getMmsJson());
-				activity.setCodeno(mms.getCode_no());
-				mms.setCreatetime(String.valueOf(System.currentTimeMillis()));
-				mms.setActivityId(Integer.parseInt(activity.getId()));
-				mmsframeService.saveMMS(mms);
-				
-				List<Mmsframe> frames = mms.getFrames();
-				for (Mmsframe mmsframe : frames) {
-					String pic = mmsframe.getPic();
-					if (!"".equals(pic)) {
-						URL url = new URL(pic); 
-						String pictype = getpicType(url.getFile());
-				    	String picBase64str = getImageBase64Str(url);
-				    	mmsframe.setPic(picBase64str);
-				    	mmsframe.setPictype(pictype);
+				if(activity.getSendSmsType().contains("03")){//彩信
+					Mms mms = JSON.parseObject(activity.getMmsJson(), Mms.class);
+					mms.setMmsJson(activity.getMmsJson());
+					activity.setCodeno(mms.getCode_no());
+					mms.setCreatetime(String.valueOf(System.currentTimeMillis()));
+					mms.setActivityId(Integer.parseInt(activity.getId()));
+					mmsframeService.saveMMS(mms);
+					
+					String upload = session.getServletContext().getRealPath("");
+					String path = request.getContextPath();
+					String basePath = request.getScheme() + 
+							"://" + request.getServerName() + 
+							":" + request.getServerPort() + path
+							+ "/";
+					List<Mmsframe> frames = mms.getFrames();
+					for (Mmsframe mmsframe : frames) {
+						String pic = mmsframe.getPic();
+						if (!"".equals(pic)) {
+							File file = new File(pic.replace(basePath, upload));
+							String pictype = getpicType(file.getName());
+					    	String picBase64str = getImageBase64Str(file);
+					    	mmsframe.setPic(picBase64str);
+					    	mmsframe.setPictype(pictype);
+						}
+						mmsframe.setMmsId(mms.getId());
+						mmsframe.setCreatetime(String.valueOf(System.currentTimeMillis()));
+						mmsframeService.saveMmsframe(mmsframe);
 					}
-					mmsframe.setMmsId(mms.getId());
-					mmsframe.setCreatetime(String.valueOf(System.currentTimeMillis()));
-					mmsframeService.saveMmsframe(mmsframe);
+					activityService.sendMMSPackage(activity.getId());
 				}
-				activityService.sendMMSPackage(activity.getId());
 			}
 			// 如果程序执行到这里没有发生异常，则证明该操作成功执行,将获取到的数据放到返回页面的对象中
 			responseData.setData(affectCount);
@@ -322,11 +330,11 @@ public class ActivityController {
 		return ptype;
 	}
 	
-	private String getImageBase64Str(URL url) {// 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+	private String getImageBase64Str(File file) {// 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
 		byte[] data = null;
 		// 读取图片字节数组
 		try {
-			InputStream in = url.openStream();
+			InputStream in = new FileInputStream(file);
 			data = new byte[in.available()];
 			in.read(data);
 			in.close();

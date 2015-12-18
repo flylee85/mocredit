@@ -434,7 +434,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             ActivityVo activity = JSON.parseObject(param, ActivityVo.class);
             activity.setPubEnterpriseName(activity.getEnterpriseName());
             activity.setProductType(activity.getProductCode());
-            saveInRequestLog(request, null, param);
+            saveInRequestLog(request, null, activity.toString());
             if (activityService.operActivityAndStore(activity, resp)) {
                 LOGGER.info(
                         "### request in success activityImport param={} ###",
@@ -663,6 +663,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
                 }
                 LOGGER.info("### request in success activityOldSyn param={} ###", param);
                 sb.append("</NewDataSet>");
+                saveReponseLog(getRequestId(), sb.toString());
                 return sb.toString();
             } else {
                 LOGGER.error(
@@ -674,6 +675,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
                 sb.append("<resultInfo>").append(ErrorCodeType.ACTIVITY_SYN_ERROR.getText()).append("</resultInfo>");
                 sb.append("</Table>");
                 sb.append("</NewDataSet>");
+                saveReponseLog(getRequestId(), sb.toString());
                 return sb.toString();
             }
         } catch (Exception e) {
@@ -720,6 +722,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
                 }
             }
             sb.append("</NewDataSet>");
+            saveReponseLog(getRequestId(), sb.toString());
             return sb.toString();
 
         } catch (Exception e) {
@@ -730,6 +733,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             sb.append("<resultInfo>").append("获取银行列表失败").append("</resultInfo>");
             sb.append("</Table>");
             sb.append("</NewDataSet>");
+            saveReponseLog(getRequestId(), sb.toString());
             return sb.toString();
         }
     }
@@ -774,6 +778,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
                 }
             }
             sb.append("</NewDataSet>");
+            saveReponseLog(getRequestId(), sb.toString());
             return sb.toString();
 
         } catch (Exception e) {
@@ -784,6 +789,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
             sb.append("<resultInfo>").append("获取活动列表失败").append("</resultInfo>");
             sb.append("</Table>");
             sb.append("</NewDataSet>");
+            saveReponseLog(getRequestId(), sb.toString());
             return sb.toString();
         }
     }

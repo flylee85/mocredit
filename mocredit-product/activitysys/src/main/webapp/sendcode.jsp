@@ -69,12 +69,12 @@
                         </label>
                     </div>
                     <div class="form-group">
-                        <div class="input-group col-1">
+                        <div class="input-group col-2">
                             <a href="sendCode/downloadTemplate" id="" class="btn btn-primary ">
                                 下载模板
                             </a>
                         </div>
-                        <div class="input-group col-3 text-left">
+                        <div class="input-group col-4 text-left">
                             <label class="col-lg-3 control-label" for="name">批次名称</label>
 
                             <div class="col-lg-9">
@@ -84,7 +84,7 @@
                                        name="name">
                             </div>
                         </div>
-                        <div class="input-group col-3">
+                        <div class="input-group col-4">
                             <label class="col-lg-3 control-label" for="importExcel">导入联系人</label>
 
                             <div class="col-lg-9">
@@ -93,25 +93,24 @@
                             </div>
                         </div>
                         <input type="hidden" name="type" id="type" value="02"/>
+                        <input type="hidden" name="types" id="types" value="${type}"/>
 
-                        <div id="sms" style="display: none">
-                            <div class="input-group col-2">
-                                <input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>
-                            </div>
+                        <div class="input-group col-2">
+                            <input type="button" onclick="upload()" class="btn btn-primary" value="导入联系人"/>
                         </div>
-                        <div id="mms" style="display: none">
-                            <div class="input-group col-2">
-                                <input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>
-                            </div>
-                        </div>
-                        <div id="smms" style="display: none">
-                            <div class="input-group col-2">
-                                <input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>
-                            </div>
-                            <div class="input-group col-2">
-                                <input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>
-                            </div>
-                        </div>
+                        <%--<div id="mms" style="display: none">--%>
+                        <%--<div class="input-group col-2">--%>
+                        <%--<input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>--%>
+                        <%--</div>--%>
+                        <%--</div>--%>
+                        <%--<div id="smms" style="display: none">--%>
+                        <%--<div class="input-group col-2">--%>
+                        <%--<input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>--%>
+                        <%--</div>--%>
+                        <%--<div class="input-group col-2">--%>
+                        <%--<input type="button" onclick="mms()" class="btn btn-primary" value="导入彩信用户"/>--%>
+                        <%--</div>--%>
+                        <%--</div>--%>
                         <%--  <c:choose>
                               <c:when test="${type=='02'}">
                                   <div class="input-group col-2">
@@ -142,10 +141,10 @@
                                 <table class="table table-striped m-b-none" data-ride="datatables">
                                     <thead>
                                     <tr>
-                                        <th>批次号</th>
+                                        <%--<th>批次号</th>--%>
                                         <th>名称</th>
-                                        <th>数量</th>
-                                        <th>短信发送</th>
+                                        <th>导入数量</th>
+                                        <th>发送数量</th>
                                         <th>导入时间</th>
                                         <th>状态</th>
                                         <th>发码类型</th>
@@ -178,22 +177,22 @@
 <script src="common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
 <script>
     if ("${success}" == "true") {
-        sendMsg(true, "上传并发送成功");
+        sendMsg(true, "上传成功");
         window.location.href = "sendCode/sendcode?id=${actId}&type=${type}"
     }
     if ("${success}" == "false" && "${msg}" != "") {
         sendMsg(false, "${msg}");
         window.location.href = "sendCode/sendcode?id=${actId}&type=${type}"
     }
-    if ("${type}" == "02") {
-        $("#sms").removeAttr("style");
-    }
-    if ("${type}" == "03") {
-        $("#mms").removeAttr("style");
-    }
-    if ("${type}".indexOf("02") >= 0 && "${type}".indexOf("03") >= 0) {
-        $("#smms").removeAttr("style");
-    }
+    <%--if ("${type}" == "02") {--%>
+    <%--$("#sms").removeAttr("style");--%>
+    <%--}--%>
+    <%--if ("${type}" == "03") {--%>
+    <%--$("#mms").removeAttr("style");--%>
+    <%--}--%>
+    <%--if ("${type}".indexOf("02") >= 0 && "${type}".indexOf("03") >= 0) {--%>
+    <%--$("#smms").removeAttr("style");--%>
+    <%--}--%>
 </script>
 <script>
     var famaTable;
@@ -215,12 +214,12 @@
                 "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
                 "aaSorting": [[6, "desc"]],//默认排序
                 "columns": [
-                    {"data": "id", "name": "id", "width": "100px"},
+//                    {"data": "id", "name": "id", "width": "100px"},
                     {"data": "batch", "name": "batch", "width": "90px", "sortable": false},
                     {"data": "importNumber", "name": "importNumber", "width": "90px", "sortable": false},
                     {
-                        "data": "importSuccessNumber",
-                        "name": "importSuccessNumber",
+                        "data": "sendNumber",
+                        "name": "sendNumber",
                         "className": "name",
                         "width": "100px"
                     },
@@ -232,7 +231,7 @@
                 "columnDefs": [
                     {"searchable": false, "targets": [2]},
                     {
-                        "targets": 5,
+                        "targets": 4,
                         "data": "status",
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -254,7 +253,7 @@
                         }
                     },
                     {
-                        "targets": 6,
+                        "targets": 5,
                         "data": "sendSmsType",
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -272,7 +271,7 @@
                         }
                     },
                     {
-                        "targets": 7,
+                        "targets": 6,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -306,6 +305,13 @@
     }
     function mms() {
         $("#type").val("03");
+        $("form").submit();
+    }
+    function sms() {
+        $("#type").val("02");
+        $("form").submit();
+    }
+    function upload() {
         $("form").submit();
     }
 

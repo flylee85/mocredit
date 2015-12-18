@@ -54,6 +54,7 @@ import com.mocredit.sys.service.OptLogService;
 import cn.m.mt.common.DateTimeUtils;
 import cn.m.mt.common.MMSBO;
 import cn.m.mt.common.Variable;
+import org.springframework.util.StringUtils;
 
 /**
  * Created by ytq on 2015/10/23.
@@ -275,7 +276,14 @@ public class SendCodeServiceImpl implements SendCodeService {
             }
         }
         PageHelper.startPage(pageNum, pageSize);
-        return batchMapper.getActBatchCodeList(batchMap);
+        List<BatchCodeBvo> batchCodeBvoList = batchMapper.getActBatchCodeList(batchMap);
+        for (BatchCodeBvo batchCodeBvo : batchCodeBvoList) {
+            String code = batchCodeBvo.getCode();
+            if (code != null && code.length() >= 8) {
+                batchCodeBvo.setCode(code.substring(0, 4) + "***" + code.substring(code.length() - 4, code.length()));
+            }
+        }
+        return batchCodeBvoList;
     }
 
     @Override
@@ -283,62 +291,65 @@ public class SendCodeServiceImpl implements SendCodeService {
     public Map<String, Object> importCustomor(String activityId, String name, String type, String sType, InputStream in) {
         //定义一个返回Map
         Map<String, Object> msgMap = new HashMap<String, Object>();
+        msgMap.put("success", true);
         Map<String, String> resultMap = new HashMap<String, String>();
         //解析excel流,并生成list
         List<List<Object>> excelList = ExcelUtil.excel2List(in);
         String actBatchId = validatorMobile(activityId, name, type, msgMap, resultMap, excelList);
-        Map<String, Object> batchMap = new HashMap<>();
-        batchMap.put("batchId", actBatchId);
-        batchMap.put("status", BatchStatus.IMPORT_NOT_CARRY.getValue());
-        List<BatchCode> batchCodeAllList = new ArrayList<>();
-        int pageNum = 1;
-        boolean isFinish = false;
-        while (!isFinish) {
-            PageHelper.startPage(pageNum, pageSize);
-            List<BatchCode> batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
-            if (batchCodeList.isEmpty()) {
-                isFinish = true;
-            } else {
-                batchCodeAllList.addAll(batchCodeList);
-                pageNum += 1;
-            }
-        }
+//        Map<String, Object> batchMap = new HashMap<>();
+//        batchMap.put("batchId", actBatchId);
+//        batchMap.put("status", BatchStatus.IMPORT_NOT_CARRY.getValue());
+//        List<BatchCode> batchCodeAllList = new ArrayList<>();
+//        int pageNum = 1;
+//        boolean isFinish = false;
+//        while (!isFinish) {
+//            PageHelper.startPage(pageNum, pageSize);
+//            List<BatchCode> batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
+//            if (batchCodeList.isEmpty()) {
+//                isFinish = true;
+//            } else {
+//                batchCodeAllList.addAll(batchCodeList);
+//                pageNum += 1;
+//            }
+//        }
         //更新批次导入数量和成功数量
         Batch batch = new Batch();
         batch.setId(actBatchId);
-        batch.setImportNumber(batchCodeAllList.size());
-        batch.setImportSuccessNumber(batchCodeAllList.size());
-        batch.setSendNumber(batchCodeAllList.size());
+        batch.setImportNumber(excelList.size() - 1);
+        batch.setImportSuccessNumber(excelList.size() - 1);
+        batch.setStatus(BatchStatus.IMPORT_NOT_CARRY.getValue());
+        batch.setSendNumber(0);
+//        batch.setSendNumber(batchCodeAllList.size());
         //记录发送短信和保存发码两个步骤的日志
         StringBuffer optInfo1 = new StringBuffer();
-        optInfo1.append("发送数量：" + batchCodeAllList.size() + ";");
-        try {
-            switch (sType) {
-                case ActivityStatus.SMS: {
-                    sendCode(activityId, actBatchId, batchCodeAllList);
-                    break;
-                }
-                case ActivityStatus.MMS: {
-                    sendCodeByMMS(activityId, actBatchId, batchCodeAllList);
-                    break;
-                }
-            }
-            batch.setSendSuccessNumber(batchCodeAllList.size());
-            batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
-            optInfo1.append("成功数量：" + batchCodeAllList.size() + ";");
-            msgMap.put("success", true);
-            msgMap.put("msg", "上传并发送成功" + batchCodeAllList.size() + "条");
-
-        } catch (Exception e) {
-            batch.setSendSuccessNumber(0);
-            batch.setSendFailNumber(batchCodeAllList.size());
-            batch.setStatus(BatchStatus.IMPORT_NOT_CARRY.getValue());
-            optInfo1.append("失败数量：" + batchCodeAllList.size() + ";");
-            msgMap.put("success", false);
-            msgMap.put("msg", "发送失败" + batchCodeAllList.size() + "条");
-        }
+        optInfo1.append("导入数量：" + (excelList.size() - 1) + ";");
+//        try {
+//            switch (sType) {
+//                case ActivityStatus.SMS: {
+//                    sendCode(activityId, actBatchId, batchCodeAllList);
+//                    break;
+//                }
+//                case ActivityStatus.MMS: {
+//                    sendCodeByMMS(activityId, actBatchId, batchCodeAllList);
+//                    break;
+//                }
+//            }
+//            batch.setSendSuccessNumber(batchCodeAllList.size());
+//            batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
+//            optInfo1.append("成功数量：" + batchCodeAllList.size() + ";");
+//            msgMap.put("success", true);
+//            msgMap.put("msg", "上传并发送成功" + batchCodeAllList.size() + "条");
+//
+//        } catch (Exception e) {
+//            batch.setSendSuccessNumber(0);
+//            batch.setSendFailNumber(batchCodeAllList.size());
+//            batch.setStatus(BatchStatus.IMPORT_NOT_CARRY.getValue());
+//            optInfo1.append("失败数量：" + batchCodeAllList.size() + ";");
+//            msgMap.put("success", false);
+//            msgMap.put("msg", "发送失败" + batchCodeAllList.size() + "条");
+//        }
         batchMapper.updateBatch(batch);
-        optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + actBatchId, "", "发送短信并保存发码记录-----" + optInfo1.toString());
+        optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + actBatchId, "", "导入联系人-----" + optInfo1.toString());
         //返回数据
         return msgMap;
     }
@@ -377,11 +388,31 @@ public class SendCodeServiceImpl implements SendCodeService {
 
         }
         if (isPushSms) {
-            for (BatchCode batchCode : batchCodeList) {
+            List<BatchCode> batchCodes = new ArrayList<>();
+            Map<String, List<String>> listMap = new HashMap<>();
+            for (final BatchCode batchCode : batchCodeList) {
+                if (listMap.containsKey(batchCode.getCustomerMobile())) {
+                    listMap.get(batchCode.getCustomerMobile()).add(batchCode.getCode());
+                } else {
+                    listMap.put(batchCode.getCustomerMobile(), new ArrayList<String>() {{
+                        add(batchCode.getCode());
+                    }});
+                    batchCodes.add(batchCode);
+                }
+                //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
+                // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
+                Map<String, Object> batchCodeMap = new HashMap<>();
+                batchCodeMap.put("id", batchCode.getId());
+                batchCodeMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
+                batchCodeMap.put("startTime", DateUtil.getLongCurDate());
+                batchCode.setStartTime(new Date());
+                batchCodeMapper.updateBatchCodeById(batchCodeMap);
+            }
+            for (BatchCode batchCode : batchCodes) {
                 duanxin.setMobile(batchCode.getCustomerMobile());
                 duanxin.setCustomer(batchCode.getCustomerName());
                 if (noticeSmsMsg != null) {
-                    String content = noticeSmsMsg.replace("$name", batchCode.getCustomerName()).replace("$pwd", batchCode.getCode());//批量替换
+                    String content = noticeSmsMsg.replace("$name", batchCode.getCustomerName()).replace("$pwd", StringUtils.collectionToDelimitedString(listMap.get(batchCode.getCustomerMobile()), ","));//批量替换
                     duanxin.setContent(content);
                 }
                 final MMSBO sendMsg = duanxin;
@@ -392,15 +423,6 @@ public class SendCodeServiceImpl implements SendCodeService {
                         return msg;
                     }
                 });
-
-                //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
-                // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
-                Map<String, Object> batchCodeMap = new HashMap<>();
-                batchCodeMap.put("id", batchCode.getId());
-                batchCodeMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
-                batchCodeMap.put("startTime", DateUtil.getLongCurDate());
-                batchCode.setStartTime(new Date());
-                batchCodeMapper.updateBatchCodeById(batchCodeMap);
             }
         }
 
@@ -418,7 +440,7 @@ public class SendCodeServiceImpl implements SendCodeService {
         for (BatchCode batchCode : batchCodeList) {
 //			mmsbo.setBatchid(batchId);
             mmsbo.setCharcode(batchCode.getCode());
-            mmsbo.setNumberpwd("010073787632");
+            mmsbo.setNumberpwd(batchCode.getCode());
             mmsbo.setBarcodeno(mms.getCode_no());
             mmsbo.setTid("20150428111444117862");
             mmsbo.setEorderid(5115538L);
@@ -441,7 +463,7 @@ public class SendCodeServiceImpl implements SendCodeService {
             mmsbo.setBarcodeid(73349609L);
 
             this.jmsTemplate.setDeliveryPersistent(true);
-        	this.jmsTemplate.convertAndSend(mmsbo);
+            this.jmsTemplate.convertAndSend(mmsbo);
 
             //batch_code 状态，状态暂定为01：已提码，02：已导入，03：已送码，未发码，04：已发码
             // batch 00：已删除 01：已提码，未导入联系人  02：已导入联系人，待送码  03：已送码，待发码 04：已发码
@@ -574,47 +596,47 @@ public class SendCodeServiceImpl implements SendCodeService {
     public String validatorMobile(String activityId, String name, String type, Map<String, Object> msgMap, Map<String, String> resultMap, List<List<Object>> excelList) {
         String actBatchId = null;
         try {
-            if ("01".equals(type)) {
-                for (int i = 1; i < excelList.size(); i++) {
-                    String customerMobile = excelList.get(i).get(0) + "";
-                    String customerName = excelList.get(i).get(1) + "";
-                    resultMap.put(customerMobile, customerName);
-                    //如果不是正确的手机格式，则返回错误信息
-                    if (!ValidatorUtil.isMobile(customerMobile)) {
-                        msgMap.put("success", false);
-                        msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
-                        throw new BusinessException(msgMap.get("msg") + "");
-                    }
+//            if ("01".equals(type)) {
+//                for (int i = 1; i < excelList.size(); i++) {
+//                    String customerMobile = excelList.get(i).get(0) + "";
+//                    String customerName = excelList.get(i).get(1) + "";
+//                    resultMap.put(customerMobile, customerName);
+//                    //如果不是正确的手机格式，则返回错误信息
+//                    if (!ValidatorUtil.isMobile(customerMobile)) {
+//                        msgMap.put("success", false);
+//                        msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
+//                        throw new BusinessException(msgMap.get("msg") + "");
+//                    }
+//                }
+//                actBatchId = activityService.extractedCode(activityId, name, resultMap.size());
+//                for (String key : resultMap.keySet()) {
+//                    String customerMobile = key;
+//                    String customerName = resultMap.get(key);
+//                    Map<String, Object> batchMap = new HashMap<>();
+//                    batchMap.put("batchId", actBatchId);
+//                    batchMap.put("customerMobile", customerMobile);
+//                    batchMap.put("customerName", customerName);
+//                    batchCodeMapper.updateBatchCodeByBatchId(batchMap);
+//                }
+//            }
+//            if ("02".equals(type)) {
+            actBatchId = activityService.extractedCode(activityId, name, excelList.size() - 1);
+            for (int i = 1; i < excelList.size(); i++) {
+                String customerMobile = excelList.get(i).get(0) + "";
+                String customerName = excelList.get(i).get(1) + "";
+                //如果不是正确的手机格式，则返回错误信息
+                if (!ValidatorUtil.isMobile(customerMobile)) {
+                    msgMap.put("success", false);
+                    msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
+                    throw new BusinessException(msgMap.get("msg") + "");
                 }
-                actBatchId = activityService.extractedCode(activityId, name, resultMap.size());
-                for (String key : resultMap.keySet()) {
-                    String customerMobile = key;
-                    String customerName = resultMap.get(key);
-                    Map<String, Object> batchMap = new HashMap<>();
-                    batchMap.put("batchId", actBatchId);
-                    batchMap.put("customerMobile", customerMobile);
-                    batchMap.put("customerName", customerName);
-                    batchCodeMapper.updateBatchCodeByBatchId(batchMap);
-                }
+                Map<String, Object> batchMap = new HashMap<>();
+                batchMap.put("batchId", actBatchId);
+                batchMap.put("customerMobile", customerMobile);
+                batchMap.put("customerName", customerName);
+                batchCodeMapper.updateBatchCodeByBatchId(batchMap);
             }
-            if ("02".equals(type)) {
-                actBatchId = activityService.extractedCode(activityId, name, excelList.size() - 1);
-                for (int i = 1; i < excelList.size(); i++) {
-                    String customerMobile = excelList.get(i).get(0) + "";
-                    String customerName = excelList.get(i).get(1) + "";
-                    //如果不是正确的手机格式，则返回错误信息
-                    if (!ValidatorUtil.isMobile(customerMobile)) {
-                        msgMap.put("success", false);
-                        msgMap.put("msg", "第" + (i + 1) + "行发生错误，错误原因：不是正确的手机号格式");
-                        throw new BusinessException(msgMap.get("msg") + "");
-                    }
-                    Map<String, Object> batchMap = new HashMap<>();
-                    batchMap.put("batchId", actBatchId);
-                    batchMap.put("customerMobile", customerMobile);
-                    batchMap.put("customerName", customerName);
-                    batchCodeMapper.updateBatchCodeByBatchId(batchMap);
-                }
-            }
+//            }
         } catch (BusinessException be) {
             throw be;
         } catch (Exception e) {
