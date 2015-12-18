@@ -250,7 +250,7 @@ public class ActivityController {
 	 */
 	@RequestMapping("/saveActivity")
 	@ResponseBody
-	public String saveActivity(@RequestBody String body) {
+	public String saveActivity(HttpSession session, HttpServletRequest request, @RequestBody String body) {
 		// 定义返回页面的对象
 		ResponseData responseData = new AjaxResponseData();
 		try {
@@ -280,13 +280,19 @@ public class ActivityController {
 				mms.setActivityId(Integer.parseInt(activity.getId()));
 				mmsframeService.saveMMS(mms);
 				
+				String upload = session.getServletContext().getRealPath("");
+				String path = request.getContextPath();
+				String basePath = request.getScheme() + 
+						"://" + request.getServerName() + 
+						":" + request.getServerPort() + path
+						+ "/";
 				List<Mmsframe> frames = mms.getFrames();
 				for (Mmsframe mmsframe : frames) {
 					String pic = mmsframe.getPic();
 					if (!"".equals(pic)) {
-						URL url = new URL(pic); 
-						String pictype = getpicType(url.getFile());
-				    	String picBase64str = getImageBase64Str(url);
+						File file = new File(pic.replace(basePath, upload));
+						String pictype = getpicType(file.getName());
+				    	String picBase64str = getImageBase64Str(file);
 				    	mmsframe.setPic(picBase64str);
 				    	mmsframe.setPictype(pictype);
 					}
@@ -322,11 +328,11 @@ public class ActivityController {
 		return ptype;
 	}
 	
-	private String getImageBase64Str(URL url) {// 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+	private String getImageBase64Str(File file) {// 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
 		byte[] data = null;
 		// 读取图片字节数组
 		try {
-			InputStream in = url.openStream();
+			InputStream in = new FileInputStream(file);
 			data = new byte[in.available()];
 			in.read(data);
 			in.close();
