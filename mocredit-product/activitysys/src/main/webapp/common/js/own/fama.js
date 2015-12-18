@@ -43,6 +43,7 @@
 		
 		$("#caixin").prop("checked", false).next().removeClass("checked");
 		$('#subject').removeAttr('data-parsley-required');
+		$('#input-text').removeAttr('data-parsley-required');
 		$('#frame-select').removeAttr('data-parsley-required');
 		$('#code-select').removeAttr('data-parsley-required');
 		$("#caixinFama").hide();
@@ -60,11 +61,13 @@
 		if ($(this).prop("checked")) {
 			$("#caixinFama").show();
 			$('#subject').attr('data-parsley-required',true);
+			$('#input-text').attr('data-parsley-required',true);
 			$('#frame-select').attr('data-parsley-required',true);
 			$('#code-select').attr('data-parsley-required',true);
 		} else {
 			$("#caixinFama").hide();
 			$('#subject').removeAttr('data-parsley-required');
+			$('#input-text').removeAttr('data-parsley-required');
 			$('#frame-select').removeAttr('data-parsley-required');
 			$('#code-select').removeAttr('data-parsley-required');
 		}
