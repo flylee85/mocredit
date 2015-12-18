@@ -404,8 +404,6 @@ public class SendCodeServiceImpl implements SendCodeService {
                 Map<String, Object> batchCodeMap = new HashMap<>();
                 batchCodeMap.put("id", batchCode.getId());
                 batchCodeMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
-                batchCodeMap.put("startTime", DateUtil.getLongCurDate());
-                batchCode.setStartTime(new Date());
                 batchCodeMapper.updateBatchCodeById(batchCodeMap);
             }
             for (BatchCode batchCode : batchCodes) {
@@ -470,8 +468,6 @@ public class SendCodeServiceImpl implements SendCodeService {
             Map<String, Object> batchCodeMap = new HashMap<>();
             batchCodeMap.put("id", batchCode.getId());
             batchCodeMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
-            batchCodeMap.put("startTime", DateUtil.getLongCurDate());
-            batchCode.setStartTime(new Date());
             batchCodeMapper.updateBatchCodeById(batchCodeMap);
         }
     }
