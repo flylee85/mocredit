@@ -15,7 +15,15 @@ public class ToolUtils {
         return increase1 + currDate1;
     }
 
+    public static String getSearchNo() {
+        Random rd = new Random();
+        return String.format("%06d", rd.nextInt(999999));
+    }
+
     public static void main(String[] args) {
+        for (int i = 0; i < 10000; i++) {
+            System.out.println(getSearchNo());
+        }
         String orderid = Calendar.getInstance().getTimeInMillis() + "";
         orderid = orderid + RandomUtil.getString(19 - orderid.length());
         System.out.println(orderid);
