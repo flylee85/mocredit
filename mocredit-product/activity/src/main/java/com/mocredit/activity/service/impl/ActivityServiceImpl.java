@@ -83,7 +83,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private MmsframeMapper mmsframeMapper;
 	@Autowired
 	private SendMMSPackage sendMMSPackage;
-	private boolean importFlag = false;
+	private boolean importFlag = true;
 
 	/**
 	 * 获取一条活动，根据主键
