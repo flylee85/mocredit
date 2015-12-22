@@ -128,7 +128,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
         //测试卡
         String cardNum = PropertiesUtil.getValue("bank_white_num");
         String orderId =/* ToolUtils.getPosno();*/"P" + order.getEnCode() + order.getBatchno() + order.getSearchno();
-        if (cardNum.equals(order.getCardNum())) {
+        if (cardNum.contains(order.getCardNum())) {
             orderId = ToolUtils.getPosno();
             order.setSearchno(ToolUtils.getSearchNo());
         }
@@ -228,7 +228,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
     @ResponseBody
     public String paymentRevokeOld(HttpServletRequest request,
                                    HttpServletResponse response, String imei, String account, String batchno, String searchno) {
-        String param = "imei=" + imei + "&account=" + account + "&batchno=" + batchno + "&searchno=" + searchno;
+        String param = "imei=" + imei + "&account=" + account + "& =" + batchno + "&searchno=" + searchno;
         LOGGER.info("### request in paymentRevokeOld param={} ###", param);
         Response resp = new Response();
         String orderId = /*ToolUtils.getPosno();*/"R" + imei + batchno + searchno;
