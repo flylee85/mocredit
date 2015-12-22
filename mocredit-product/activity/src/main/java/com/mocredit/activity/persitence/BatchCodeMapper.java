@@ -24,6 +24,9 @@ public interface BatchCodeMapper {
     //查询发码批次码列表，根据条件
     List<BatchCode> queryBatchCodeList(Map<String, Object> batchCodeMap);
 
+    //查询发码批次码列表，根据条件
+    List<BatchCode> queryBPBatchCodeList(Map<String, Object> batchCodeMap);
+
     //获取发码批次码总数量，根据条件
     int getBatchCodeTotal(Map<String, Object> batchCodeMap);
 

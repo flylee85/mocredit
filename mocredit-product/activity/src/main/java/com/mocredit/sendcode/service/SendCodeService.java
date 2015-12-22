@@ -95,7 +95,7 @@ public interface SendCodeService extends BaseService {
      * @param batchId
      * @return
      */
-    boolean sendCodeByBatchId(String actId, String batchId, String type);
+    boolean sendCodeByBatchId(String actId, String batchId, String type, String sendType);
 
     /**
      * 查询活动id和商品码id并发送短信到队列
