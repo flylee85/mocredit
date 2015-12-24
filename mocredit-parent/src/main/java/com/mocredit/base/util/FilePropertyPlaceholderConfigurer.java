@@ -1,12 +1,15 @@
 package com.mocredit.base.util;
 
+import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.Properties;
 
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 public class FilePropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
+	private Properties props;
 
 	@Override
 	public void setLocations(Resource[] locations) {
@@ -14,6 +17,13 @@ public class FilePropertyPlaceholderConfigurer extends PropertyPlaceholderConfig
 			locations[i] = convertPath(locations[i]);
 		}
 		super.setLocations(locations);
+	}
+
+	@Override
+	protected Properties mergeProperties() throws IOException {
+		props = super.mergeProperties();
+		PropertiesUtil.init(props);
+		return props;
 	}
 
 	@Override

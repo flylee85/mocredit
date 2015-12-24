@@ -3,7 +3,9 @@ package com.mocredit.verifyCode.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -194,6 +196,51 @@ public class ActivityCodeController {
 		// SimplePropertyPreFilter(TActivityCode.class);
 		// spfilter.getExcludes().add("effective");
 		return returnStr;
+	}
+
+	/**
+	 * 充值验码
+	 * 
+	 * 请求参数格式 { code,orderId}
+	 * 
+	 * @param request
+	 * @param response
+	 * @param param
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping(value = "/verifyCodeForRecharge", produces = { "application/json;charset=UTF-8" })
+	public String verifyCodeForRecharge(HttpServletRequest request, HttpServletResponse response, String code,
+			String orderId) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		AjaxResponseData ard = new AjaxResponseData();
+		if (StringUtils.isEmpty(code) || code.length() > 30 || StringUtils.isEmpty(orderId)) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("参数数据不合法!");
+			returnMap.put("isSuccess", false);
+			returnMap.put("errorMsg", "参数数据不合法!");
+		} else {
+			try {
+				ard = this.activityCodeService.verifyCodeForRecharge(orderId, code);
+				returnMap = (Map<String, Object>) ard.getData();
+			} catch (Exception e) {
+				ard.setSuccess(false);
+				ard.setErrorMsg("请求过程发生事务异常!");
+				returnMap.put("isSuccess", false);
+				returnMap.put("errorMsg", "请求过程发生事务异常!");
+				e.printStackTrace();
+			}
+
+			TVerifiedCode verifiedCode = new TVerifiedCode();
+			verifiedCode.setCode(code);
+			verifiedCode.setRequestSerialNumber(orderId);
+			// 日志
+			TVerifyLog log = this.buildVerifyLog(ard, verifiedCode);
+			VerifyCodeLogTask.verifyogList.add(log);
+		}
+
+		return JSON.toJSONString(returnMap);
 	}
 
 	/**

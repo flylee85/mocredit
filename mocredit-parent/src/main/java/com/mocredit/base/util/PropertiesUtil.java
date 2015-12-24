@@ -5,33 +5,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
 /**
  * Properties工具类
  * 
  * @author lzl
  * @version 2012-9-11 下午01:10:22
  */
-@Component
 public class PropertiesUtil {
-	@Autowired
-	@Qualifier("configproperties")
 	private Properties properties;
-	private static PropertiesUtil piu;
+	private static PropertiesUtil piu =new PropertiesUtil();
 
-	/**
-	 * 初始化工具类默认属性
-	 */
-	@PostConstruct
-	public void init() {
-		piu =  this;
-		piu.properties = this.properties;
-	}
 
 	public static String getValue(String key) {
 		return piu.properties.getProperty(key, null);
@@ -59,5 +42,8 @@ public class PropertiesUtil {
 			}
 		}
 		return propMap;
+	}
+	public static void  init(Properties prop){
+		piu.properties=prop;
 	}
 }

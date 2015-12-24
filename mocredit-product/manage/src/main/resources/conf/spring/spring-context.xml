@@ -14,12 +14,11 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">  
   
   <!--配置文件集成-->
-	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean id="propertyConfigurer" class="com.mocredit.base.util.FilePropertyPlaceholderConfigurer">
   	<property name="location">
     	<value>classpath:config.properties</value>
   	</property>
 	</bean>
-    <util:properties id="configproperties" location="classpath:/config.properties"/>
 	<!--数据源配置-->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${jdbc.driver}"/>
