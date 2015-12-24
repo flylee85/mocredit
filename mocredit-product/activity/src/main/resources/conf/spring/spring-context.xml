@@ -19,14 +19,14 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd">
 
-    <!--配置文件集成 -->
+    <!--配置文件集成
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location">
             <value>classpath:config.properties</value>
         </property>
     </bean>
-    <util:properties id="configproperties" location="classpath:/config.properties"/>
+    <util:properties id="configproperties" location="classpath:/config.properties"/> -->
     <!--数据源配置 -->
     <!--<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">-->
     <!--<property name="jndiName" value="${jndiName}" />-->
@@ -39,11 +39,11 @@
     <!--<property name="password" value="root"/>-->
     <!--</bean>-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="driverClassName" value="${jdbc.driver}"/>
         <property
-                name="url" value="jdbc:mysql://192.168.24.124:3306/activity_new?characterEncoding=UTF-8"/>
-        <property name="username" value="root"/>
-        <property name="password" value="eAhrpeDoq/ve39md"/>
+                name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.pwd}"/>
         <property name="validationQuery" value="SELECT 1" />
     	<property name="testOnBorrow" value="true"/>
     </bean>
