@@ -12,6 +12,11 @@ public enum ErrorCodeType {
      * INVALID_SHOP("007","该商户没有权限"),
      * INVALID_BANK("008","未签约银行"),
      */
+    ACTIVITY_DAY_MAX_OUT("600", "本日活动使用超过次数"),
+    ACTIVITY_WEEK_MAX_OUT("601", "本周活动使用超过次数"),
+    ACTIVITY_MONTH_MAX_OUT("602", "本月活动使用超过次数"),
+    ACTIVITY_YEAR_MAX_OUT("603", "本年活动使用超过次数"),
+    ACTIVITY_TOTAL_MAX_OUT("604", "本活动使用超过次数"),
     POST_BANK_ERROR("400", "请求Bank出错"),
     ANA_RESPONSE_ERROR("401", "解析Bank响应出错"),
     SYSTEM_ERROR("500", "系统出错"),

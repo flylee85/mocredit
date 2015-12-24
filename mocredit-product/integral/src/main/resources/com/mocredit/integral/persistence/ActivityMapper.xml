@@ -77,11 +77,10 @@
 		DELETE FROM `ti_store` WHERE store_id = #{storeId}
 	</delete>
     <insert id="saveActTransRecord" parameterType="com.mocredit.integral.entity.ActivityTransRecord">
-		INSERT INTO
-		`ti_activity_trans_record` (activity_id,trans_date,trans_count)
-		VALUES
-		(#{activityId},NOW(),#{transCount}) ON DUPLICATE KEY UPDATE
-		trans_count=trans_count+1;
+		insert into
+		`ti_activity_trans_record`(activity_id,trans_type,trans_count,expire_date,ctime,utime)
+		values(#{t.activityId},#{t.transType},#{t.transCount},#{t.expireDate},now(),now()) ON
+		DUPLICATE KEY UPDATE tran_count=tran_count+1,utime=now();
 	</insert>
     <select id="statCountByTime" resultType="com.mocredit.integral.entity.ActivityTransRecord">
 		SELECT
