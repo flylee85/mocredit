@@ -124,11 +124,6 @@ public class TerminalServiceImpl implements TerminalService {
 	 */
 	@Override
 	public void synGateway(Terminal terminal, OperType oper) {
-		// 只同步新网关机具
-		if (!Gateway.NEW.getValue().equals(terminal.getGateway())) {
-			return;
-		}
-		String importUrl = PropertiesUtil.getValue("syn.gateway.deviceImport");
 		Map<String, Object> postMap = new HashMap<>();
 		postMap.put("oper", oper.getValue());
 		switch (oper) {
@@ -141,15 +136,30 @@ public class TerminalServiceImpl implements TerminalService {
 			postMap.put("id", terminal.getId());
 			break;
 		}
+
+		boolean isNewPos = Gateway.NEW.getValue().equals(terminal.getGateway());
+		// 网关URL
+		String importUrl = isNewPos ? PropertiesUtil.getValue("syn.gateway.deviceImport")
+				: PropertiesUtil.getValue("syn.gateway.deviceImportOld");
 		// 是否开启同步
 		if (!"1".equals(PropertiesUtil.getValue("syn.switch"))) {
 			logger.debug("connect url：" + importUrl);
 			logger.debug("connect data：" + JSON.toJSONString(postMap));
 			return;
 		}
-		String returnstr = HttpUtil.doRestfulByHttpConnection(importUrl, JSON.toJSONString(postMap));
-		if (!returnstr.equals("0")) {
-			throw new BusinessException("向新网关同步机具信息失败");
+
+		// 同步新网关
+		if (isNewPos) {
+			String returnstr = HttpUtil.doRestfulByHttpConnection(importUrl, JSON.toJSONString(postMap));
+			if (!returnstr.equals("0")) {
+				throw new BusinessException("向新网关同步机具信息失败");
+			}
+			// 同步老网关
+		} else if (OperType.ADD.equals(oper) || OperType.UPDATE.equals(oper)) {
+			String returnstr = HttpUtil.doPostByHttpConnection(importUrl, postMap);
+			if (!returnstr.equals("0")) {
+				throw new BusinessException("向老网关同步机具信息失败");
+			}
 		}
 	}
 
@@ -211,10 +221,10 @@ public class TerminalServiceImpl implements TerminalService {
 		}
 		return null == terminalMapper.checkSnCode(param);
 	}
-	
+
 	@Override
 	public String getStoreIdByCode(String code) {
-		 Terminal terminal = terminalMapper.selectStoreIdByCode(code);
-		 return null==terminal?"":terminal.getStoreId();
+		Terminal terminal = terminalMapper.selectStoreIdByCode(code);
+		return null == terminal ? "" : terminal.getStoreId();
 	}
 }

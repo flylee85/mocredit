@@ -67,6 +67,14 @@ public interface ActivityCodeService {
 	String verifyCodeForOldPos(String batchNo, String searchNo, String device, String code);
 
 	/**
+	 * 充值验码
+	 * @param orderId 订单号
+	 * @param code 码
+	 * @return
+	 */
+	AjaxResponseData verifyCodeForRecharge(String orderId, String code);
+
+	/**
 	 *
 	 * 新机具撤销 某个券码
 	 * 

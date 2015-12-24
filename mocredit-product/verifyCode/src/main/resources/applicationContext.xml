@@ -33,9 +33,15 @@
               </mvc:message-converters>
        </mvc:annotation-driven>
        <context:component-scan base-package="com.mocredit"/>
-       <context:property-placeholder location="classpath:jdbc.properties"/>
-       <util:properties id="configproperties" location="classpath:/config.properties"/>
-
+     	<!--配置文件集成-->
+		<bean id="propertyConfigurer" class="com.mocredit.base.util.FilePropertyPlaceholderConfigurer">
+		  	<property name="locations">
+			  	<list>
+		    		<value>classpath:jdbc.properties</value>
+		    		<value>classpath:config.properties</value>
+			  	</list>
+		  	</property>
+		</bean>
        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
               <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
               <property name="prefix" value="/WEB-INF/jsp/"></property>
