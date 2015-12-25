@@ -397,6 +397,7 @@ public class SendCodeServiceImpl implements SendCodeService {
             //duanxin.setCreatetime(activity.getEndTime());
 
         }
+
         if (isPushSms) {
             List<BatchCode> batchCodes = new ArrayList<>();
             Map<String, List<String>> listMap = new HashMap<>();
