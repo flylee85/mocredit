@@ -162,7 +162,98 @@
         </div>
     </section>
 </section>
-
+<div id="send" class="modal fade">
+    <div class="modal-dialog" style="width: 400px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
+                        class="icon-remove"></i></button>
+                <h4 class="modal-title myModalLabel" align="center">短信发码</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-lg-2">
+                            <input type="hidden" id="sendBatchId" name="sendBatchId" value="">
+                        </label>
+                        <label class="col-lg-4">
+                            <div class="radio">
+                                <label class="radio-custom">
+                                    <input type="radio" id="bpSend" checked="checked" name="sendType"
+                                           value="01">
+                                    <i class="icon-circle-blank"></i>
+                                    断点续发
+                                </label>
+                            </div>
+                        </label>
+                        <label class="col-lg-4">
+                            <div class="radio">
+                                <label class="radio-custom">
+                                    <input type="radio" id="allSend" name="sendType" value="02">
+                                    <i class="icon-circle-blank"></i>
+                                    全部发送
+                                </label>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row add">
+                    <button type="button" class="btn btn-default backToList" data-dismiss="modal">取 消</button>
+                    <button id="sendConfirm" type="button" class="btn btn-primary">确 认</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+</div>
+<div id="sendMMS" class="modal fade">
+    <div class="modal-dialog" style="width: 400px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
+                        class="icon-remove"></i></button>
+                <h4 class="modal-title myModalLabel" align="center">彩信发码</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-lg-2">
+                            <input type="hidden" id="sendMMSBatchId" name="sendMMSBatchId" value="">
+                        </label>
+                        <label class="col-lg-4">
+                            <div class="radio">
+                                <label class="radio-custom">
+                                    <input type="radio" id="bpSendMMS" checked="checked" name="sendType"
+                                           value="01">
+                                    <i class="icon-circle-blank"></i>
+                                    断点续发
+                                </label>
+                            </div>
+                        </label>
+                        <label class="col-lg-4">
+                            <div class="radio">
+                                <label class="radio-custom">
+                                    <input type="radio" id="allSendMMS" name="sendType" value="02">
+                                    <i class="icon-circle-blank"></i>
+                                    全部发送
+                                </label>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row add">
+                    <button type="button" class="btn btn-default backToList" data-dismiss="modal">取 消</button>
+                    <button id="sendMMSConfirm" type="button" class="btn btn-primary">确 认</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+</div>
 
 <!-- /.modal 发送提示 -->
 <script src="common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
@@ -214,7 +305,6 @@
                 "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
                 "aaSorting": [[6, "desc"]],//默认排序
                 "columns": [
-//                    {"data": "id", "name": "id", "width": "100px"},
                     {"data": "batch", "name": "batch", "width": "90px", "sortable": false},
                     {"data": "importNumber", "name": "importNumber", "width": "90px", "sortable": false},
                     {
@@ -249,6 +339,9 @@
                             if (data == "04") {
                                 statusText = "已发码";
                             }
+                            if (data == "05") {
+                                statusText = "部分已发码";
+                            }
                             return statusText;
                         }
                     },
@@ -276,20 +369,37 @@
                         "sortable": false,
                         "render": function (data, type, full) {
                             if (full['sendSmsType'] == "03") {
-                                return '<a href="javascript:sendCodeMMS(\'' + data['id'] + '\')">彩信发码</a>' +
-                                        '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>' /*+
-                                 '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>'*/;
+                                if (full['status'] == "05") {
+                                    return '<a href="javascript:sendCodeMMS(\'' + data['id'] + '\')">彩信发码</a>' +
+                                            '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>' /*+
+                                     '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>'*/;
+                                } else {
+                                    return '<a href="javascript:sendCodeMMSAll(\'' + data['id'] + '\')">彩信发码</a>' +
+                                            '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>'
+                                }
                             }
                             if (full['sendSmsType'] == "02") {
-                                return '<a href="javascript:sendCode(\'' + data['id'] + '\')">短信发码</a>' +
-                                        '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>' /*+
-                                 '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>'*/;
+                                if (full['status'] == "05") {
+                                    return '<a href="javascript:sendCode(\'' + data['id'] + '\')">短信发码</a>' +
+                                            '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>' /*+
+                                     '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>'*/;
+                                } else {
+                                    return '<a href="javascript:sendCodeAll(\'' + data['id'] + '\')">短信发码</a>' +
+                                            '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>'
+                                }
+
                             }
                             if (full['sendSmsType'].indexOf("03") >= 0 && full['sendSmsType'].indexOf("02") >= 0) {
-                                return '<a href="javascript:sendCode(\'' + data['id'] + '\')">短信发码</a>' +
-                                        '<a href="javascript:sendCodeMMS(\'' + data['id'] + '\')">彩信发码</a>' +
-                                        '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>' /*+
-                                 '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>'*/;
+                                if (full['status'] == "05") {
+                                    return '<a href="javascript:sendCode(\'' + data['id'] + '\')">短信发码</a>' +
+                                            '<a href="javascript:sendCodeMMS(\'' + data['id'] + '\')">彩信发码</a>' +
+                                            '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>' /*+
+                                     '<a href="javascript:delBatch(\'' + data['id'] + '\')">删除</a>'*/;
+                                } else {
+                                    return '<a href="javascript:sendCodeAll(\'' + data['id'] + '\')">短信发码</a>' +
+                                            '<a href="javascript:sendCodeMMSAll(\'' + data['id'] + '\')">彩信发码</a>' +
+                                            '<a href="codedetail.html?' + data['id'] + '-${actId}' + '-' + full['sendSmsType'] + '" target="_blank">详情</a>'
+                                }
                             }
                         }
                     }
@@ -314,14 +424,41 @@
     function upload() {
         $("form").submit();
     }
-
-</script>
-<script>
-    function sendCode(id) {
+    $("#send").on("show.bs.modal", function () {
+        $("#allSend").attr("checked", false).next("i").removeClass("checked");
+        $("#bpSend").attr("checked", true).next("i").addClass("checked");
+    });
+    $("#sendMMS").on("show.bs.modal", function () {
+        $("#allSendMMS").attr("checked", false).next("i").removeClass("checked");
+        $("#bpSendMMS").attr("checked", true).next("i").addClass("checked");
+    });
+    $("#sendMMSConfirm").click(function () {
+        var id = $("#sendMMSBatchId").val();
+        var sendType = $('#sendMMS input[name="sendType"]:checked ').val();
         $.get("sendCode/sendCodeByBatchId", {
             "actId": "${actId}",
             "batchId": id,
-            "type": "02"
+            "type": "03",
+            "sendType": sendType
+        }, function (result) {
+            if (result.success) {
+                sendMsg(true, "发送彩信成功");
+                window.location.href = "sendCode/sendcode?id=${actId}"
+            } else {
+                sendMsg(false, result.errorMsg);
+                window.location.href = "sendCode/sendcode?id=${actId}"
+            }
+        }, 'json');
+        $("#sendMMS").modal("hide");
+    })
+    $("#sendConfirm").click(function () {
+        var id = $("#sendBatchId").val();
+        var sendType = $('#send input[name="sendType"]:checked ').val();
+        $.get("sendCode/sendCodeByBatchId", {
+            "actId": "${actId}",
+            "batchId": id,
+            "type": "02",
+            "sendType": sendType
         }, function (result) {
             if (result.success) {
                 sendMsg(true, "发送短信成功");
@@ -331,12 +468,43 @@
                 window.location.href = "sendCode/sendcode?id=${actId}"
             }
         }, 'json');
+        $("#send").modal("hide");
+    })
+</script>
+<script>
+    function sendCode(id) {
+        $("#sendBatchId").val(id);
+        $("#send").modal("show");
+
     }
     function sendCodeMMS(id) {
+        $("#sendMMSBatchId").val(id);
+        $("#sendMMS").modal("show");
+    }
+
+    function sendCodeAll(id) {
         $.get("sendCode/sendCodeByBatchId", {
             "actId": "${actId}",
             "batchId": id,
-            "type": "03"
+            "type": "02",
+            "sendType": "02"
+        }, function (result) {
+            if (result.success) {
+                sendMsg(true, "发送短信成功");
+                window.location.href = "sendCode/sendcode?id=${actId}"
+            } else {
+                sendMsg(false, result.errorMsg);
+                window.location.href = "sendCode/sendcode?id=${actId}"
+            }
+        }, 'json');
+
+    }
+    function sendCodeMMSAll(id) {
+        $.get("sendCode/sendCodeByBatchId", {
+            "actId": "${actId}",
+            "batchId": id,
+            "type": "03",
+            "sendType": "01"
         }, function (result) {
             if (result.success) {
                 sendMsg(true, "发送彩信成功");

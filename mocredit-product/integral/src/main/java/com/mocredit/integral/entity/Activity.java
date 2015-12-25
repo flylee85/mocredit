@@ -36,6 +36,15 @@ public class Activity {
     private String exchangeType;
     private String bins;
     private String channel;
+    private String rule;
+
+    public String getRule() {
+        return rule;
+    }
+
+    public void setRule(String rule) {
+        this.rule = rule;
+    }
 
     public String getExchangeType() {
         return exchangeType;

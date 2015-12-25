@@ -70,9 +70,9 @@ public class SendCodeController {
 
     @RequestMapping("/sendCodeByBatchId")
     @ResponseBody
-    public String sendCodeByBatchId(String actId, String batchId, String type) {
+    public String sendCodeByBatchId(String actId, String batchId, String type, String sendType) {
         ResponseData responseData = new AjaxResponseData();
-        if (!sendCodeService.sendCodeByBatchId(actId, batchId, type)) {
+        if (!sendCodeService.sendCodeByBatchId(actId, batchId, type, sendType)) {
             responseData.setSuccess(false);
             responseData.setErrorMsg("发送消息队列失败或送码失败");
         }

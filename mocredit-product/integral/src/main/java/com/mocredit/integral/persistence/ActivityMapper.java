@@ -80,7 +80,7 @@ public interface ActivityMapper {
      * @param actRecod
      * @return
      */
-    int saveActTransRecord(ActivityTransRecord actRecod);
+    int saveActTransRecord(@Param(value = "t") ActivityTransRecord actRecod);
 
     /**
      * 开始时间和结束时间段统计次数
@@ -140,5 +140,29 @@ public interface ActivityMapper {
      * @return
      */
     int updateTerminalByEnCode(@Param(value = "enCode") String enCode, @Param(value = "oldEnCode") String oldEnCode);
+
+    /**
+     * 根据活动id查询活动兑换统计
+     *
+     * @param actId
+     * @return
+     */
+    List<ActivityTransRecord> getTranRecordByActId(@Param("activityId") String actId);
+
+    /**
+     * 将过期记录计数器归零
+     *
+     * @param expireDate
+     * @return
+     */
+    int updateByExpireDate(@Param(value = "expireDate") String expireDate);
+
+    /**
+     * 根据活动id计数器减一
+     *
+     * @param actId
+     * @return
+     */
+    int minusCountByActId(@Param(value = "actId") String actId);
 
 }

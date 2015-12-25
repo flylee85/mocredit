@@ -76,6 +76,14 @@
         </if>
     </select>
 
+    <!--  查询发码批次码列表，根据条件    -->
+    <select id="queryBPBatchCodeList" resultType="com.mocredit.activity.model.BatchCode" parameterType="java.util.Map">
+        select
+        <include refid="base_batchCode_column_list"/>
+        from act_batch_code oc
+        where oc.batch_id = #{batchId}
+        and oc.status != #{status}
+    </select>
     <!--  获取发码批次码总数量，根据条件    -->
     <select id="getBatchCodeTotal" resultType="java.lang.Integer" parameterType="java.util.Map">
         select
@@ -210,11 +218,11 @@
 		where  batch_id=#{batchId} AND `status`='01' limit 1
 	</update>
     <update id="updateBatchCodeById" parameterType="java.util.Map">
-        update act_batch_code SET  `status`=#{status}
+        update act_batch_code SET `status`=#{status}
         <if test="startTime != null">
-             ,start_time = #{startTime}
+            ,start_time = #{startTime}
         </if>
-        where  id=#{id}
+        where id=#{id}
     </update>
     <!-- ===================发码批次码,结束======================== -->
 </mapper>

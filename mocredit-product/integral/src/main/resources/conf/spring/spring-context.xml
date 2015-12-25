@@ -10,11 +10,11 @@
 
     <!--配置文件集成 -->
     <bean id="propertyConfigurer"
-          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+          class="com.mocredit.base.util.FilePropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath:config.properties</value>
-                <value>classpath:redis.properties</value>
+                <value>file:./../../../config.properties</value>
+                <value>file:./../../../redis.properties</value>
             </list>
         </property>
 
@@ -27,8 +27,8 @@
                 name="url" value="${database.url}"/>
         <property name="username" value="${database.username}"/>
         <property name="password" value="${database.password}"/>
-        <property name="validationQuery" value="SELECT 1" />
-    	<property name="testOnBorrow" value="true"/>
+        <property name="validationQuery" value="SELECT 1"/>
+        <property name="testOnBorrow" value="true"/>
     </bean>
     <!-- transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager"

@@ -3,6 +3,7 @@ package com.mocredit.integral.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.integral.constant.Bank;
 import com.mocredit.integral.constant.ErrorCodeType;
 import com.mocredit.integral.entity.*;
@@ -124,7 +125,13 @@ public class IntegralInterfaceController extends IntegralBaseController {
         String param = order.toString();
         LOGGER.info("### request in paymentOld param={} ###", param);
         Response resp = new Response();
+        //测试卡
+        String cardNum = PropertiesUtil.getValue("bank_white_num");
         String orderId =/* ToolUtils.getPosno();*/"P" + order.getEnCode() + order.getBatchno() + order.getSearchno();
+        if (cardNum.contains(order.getCardNum())) {
+            orderId = ToolUtils.getPosno();
+            order.setSearchno(ToolUtils.getSearchNo());
+        }
         try {
 //            order.setOrderId(ToolUtils.getPosno());
             order.setOrderId(orderId);
@@ -221,7 +228,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
     @ResponseBody
     public String paymentRevokeOld(HttpServletRequest request,
                                    HttpServletResponse response, String imei, String account, String batchno, String searchno) {
-        String param = "imei=" + imei + "&account=" + account + "&batchno=" + batchno + "&searchno=" + searchno;
+        String param = "imei=" + imei + "&account=" + account + "& =" + batchno + "&searchno=" + searchno;
         LOGGER.info("### request in paymentRevokeOld param={} ###", param);
         Response resp = new Response();
         String orderId = /*ToolUtils.getPosno();*/"R" + imei + batchno + searchno;

@@ -14,8 +14,11 @@ public class ActivityTransRecord {
      */
     private Integer uuid;
     private String activityId;
-    private Date transDate;
-    private int transCount;
+    private String transType;
+    private Integer transCount;
+    private Date expireDate;
+    private Date cTime;
+    private Date uTime;
 
     public Integer getUuid() {
         return uuid;
@@ -33,20 +36,43 @@ public class ActivityTransRecord {
         this.activityId = activityId;
     }
 
-    public Date getTransDate() {
-        return transDate;
+    public String getTransType() {
+        return transType;
     }
 
-    public void setTransDate(Date transDate) {
-        this.transDate = transDate;
+    public void setTransType(String transType) {
+        this.transType = transType;
     }
 
-    public int getTransCount() {
+    public Integer getTransCount() {
         return transCount;
     }
 
-    public void setTransCount(int transCount) {
+    public void setTransCount(Integer transCount) {
         this.transCount = transCount;
     }
 
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
+    }
+
+    public Date getcTime() {
+        return cTime;
+    }
+
+    public void setcTime(Date cTime) {
+        this.cTime = cTime;
+    }
+
+    public Date getuTime() {
+        return uTime;
+    }
+
+    public void setuTime(Date uTime) {
+        this.uTime = uTime;
+    }
 }

@@ -156,6 +156,24 @@ public class HttpRequestService extends LogService {
                     resp.setErrorMsg(ErrorCodeType.ACTIVITY_OUT_DATE.getText());
                     return false;
                 }
+                if (activity.getRule() != null && !"".equals(activity.getRule())) {
+                    // 3,判断使用次数是否超过最大使用次数限制
+                    List<ActivityTransRecord> tranRecords = activityService.getTranRecordByActId(order.getActivityId());
+                    if (!tranRecords.isEmpty()) {
+                        for (String rule : activity.getRule().split(";")) {
+                            String ruleName = rule.split(":")[0];
+                            String ruleValue = rule.split(":")[1];
+                            for (ActivityTransRecord tranRecord : tranRecords) {
+                                if (ruleName.equals(tranRecord.getTransType())) {
+                                    compareRuleAndMax(ruleName, Integer.valueOf(ruleValue), tranRecord.getTransCount(), resp);
+                                    if (!resp.getSuccess()) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
           /*      // 3,判断使用次数是否超过最大使用次数限制
                 if (activity.getMaxType() != null
                         && !"".equals(activity.getMaxType())) {
@@ -803,5 +821,45 @@ public class HttpRequestService extends LogService {
         }
         stringBuilder.append("</Table>").append("</NewDataSet>");
         return stringBuilder.toString();
+    }
+
+    public void compareRuleAndMax(String ruleName, Integer ruleValue, Integer currentValue, Response resp) {
+        switch (ruleName) {
+            case ActivityRule.DayMax:
+                if (currentValue >= ruleValue) {
+                    resp.setSuccess(false);
+                    resp.setErrorCode(ErrorCodeType.ACTIVITY_DAY_MAX_OUT.getValue());
+                    resp.setErrorMsg(ErrorCodeType.ACTIVITY_DAY_MAX_OUT.getText());
+                }
+                break;
+            case ActivityRule.WeekMax:
+                if (currentValue >= ruleValue) {
+                    resp.setSuccess(false);
+                    resp.setErrorCode(ErrorCodeType.ACTIVITY_WEEK_MAX_OUT.getValue());
+                    resp.setErrorMsg(ErrorCodeType.ACTIVITY_WEEK_MAX_OUT.getText());
+                }
+                break;
+            case ActivityRule.MonthMax:
+                if (currentValue >= ruleValue) {
+                    resp.setSuccess(false);
+                    resp.setErrorCode(ErrorCodeType.ACTIVITY_MONTH_MAX_OUT.getValue());
+                    resp.setErrorMsg(ErrorCodeType.ACTIVITY_MONTH_MAX_OUT.getText());
+                }
+                break;
+            case ActivityRule.YearMax:
+                if (currentValue >= ruleValue) {
+                    resp.setSuccess(false);
+                    resp.setErrorCode(ErrorCodeType.ACTIVITY_YEAR_MAX_OUT.getValue());
+                    resp.setErrorMsg(ErrorCodeType.ACTIVITY_YEAR_MAX_OUT.getText());
+                }
+                break;
+            case ActivityRule.TotalMax:
+                if (currentValue >= ruleValue) {
+                    resp.setSuccess(false);
+                    resp.setErrorCode(ErrorCodeType.ACTIVITY_TOTAL_MAX_OUT.getValue());
+                    resp.setErrorMsg(ErrorCodeType.ACTIVITY_TOTAL_MAX_OUT.getText());
+                }
+                break;
+        }
     }
 }

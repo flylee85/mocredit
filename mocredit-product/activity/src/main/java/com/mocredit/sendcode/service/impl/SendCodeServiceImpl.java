@@ -12,7 +12,7 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
-import com.mocredit.sendcode.constant.ActivityStatus;
+import com.mocredit.sendcode.constant.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -45,9 +45,6 @@ import com.mocredit.manage.model.Enterprise;
 import com.mocredit.manage.persitence.EnterpriseMapper;
 import com.mocredit.manage.service.MerchantService;
 import com.mocredit.order.service.OrderService;
-import com.mocredit.sendcode.constant.BatchCodeStatus;
-import com.mocredit.sendcode.constant.BatchStatus;
-import com.mocredit.sendcode.constant.DownloadType;
 import com.mocredit.sendcode.service.SendCodeService;
 import com.mocredit.sys.service.OptLogService;
 
@@ -211,17 +208,25 @@ public class SendCodeServiceImpl implements SendCodeService {
     }
 
     @Override
-    public boolean sendCodeByBatchId(String actId, String batchId, String type) {
+    public boolean sendCodeByBatchId(String actId, String batchId, String type, String sendType) {
         boolean sendSuccessFlag = true;
         try {
+            List<BatchCode> batchCodeAllList = new ArrayList<>();
             Map<String, Object> batchMap = new HashMap<>();
             batchMap.put("batchId", batchId);
-            List<BatchCode> batchCodeAllList = new ArrayList<>();
+            if (SendType.BREAKPOINT_SEND.getValue().equals(sendType)) {
+                batchMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
+            }
             int pageNum = 1;
             boolean isFinish = false;
             while (!isFinish) {
                 PageHelper.startPage(pageNum, pageSize);
-                List<BatchCode> batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
+                List<BatchCode> batchCodeList;
+                if (SendType.BREAKPOINT_SEND.getValue().equals(sendType)) {
+                    batchCodeList = batchCodeMapper.queryBPBatchCodeList(batchMap);
+                } else {
+                    batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
+                }
                 if (batchCodeList.isEmpty()) {
                     isFinish = true;
                 } else {
@@ -252,11 +257,16 @@ public class SendCodeServiceImpl implements SendCodeService {
                 batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
                 optInfo1.append("成功数量：" + batchCodeAllList.size() + ";");
             } catch (Exception e) {
-                batch.setSendSuccessNumber(getBatchCodeTotal(batchId, BatchCodeStatus.ALREADY_SEND.getValue()));
+                int sendSucNum = getBatchCodeTotal(batchId, BatchCodeStatus.ALREADY_SEND.getValue());
+                if (sendSucNum > 0) {
+                    batch.setStatus(BatchStatus.PART_ALREADY_SEND.getValue());
+                } else {
+                    batch.setStatus(BatchStatus.IMPORT_NOT_CARRY.getValue());
+                }
+                batch.setSendSuccessNumber(sendSucNum);
                 batch.setSendNumber(batchCodeAllList.size());
                 batch.setImportSuccessNumber(getBatchCodeTotal(batchId, null));
-                batch.setStatus(BatchStatus.IMPORT_NOT_CARRY.getValue());
-                optInfo1.append("失败数量：" + batchCodeAllList.size() + ";");
+                optInfo1.append("失败数量：" + (batchCodeAllList.size() - sendSucNum) + ";");
                 sendSuccessFlag = false;
             }
             batchMapper.updateBatch(batch);
@@ -404,8 +414,6 @@ public class SendCodeServiceImpl implements SendCodeService {
                 Map<String, Object> batchCodeMap = new HashMap<>();
                 batchCodeMap.put("id", batchCode.getId());
                 batchCodeMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
-                batchCodeMap.put("startTime", DateUtil.getLongCurDate());
-                batchCode.setStartTime(new Date());
                 batchCodeMapper.updateBatchCodeById(batchCodeMap);
             }
             for (BatchCode batchCode : batchCodes) {
@@ -470,8 +478,6 @@ public class SendCodeServiceImpl implements SendCodeService {
             Map<String, Object> batchCodeMap = new HashMap<>();
             batchCodeMap.put("id", batchCode.getId());
             batchCodeMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
-            batchCodeMap.put("startTime", DateUtil.getLongCurDate());
-            batchCode.setStartTime(new Date());
             batchCodeMapper.updateBatchCodeById(batchCodeMap);
         }
     }
