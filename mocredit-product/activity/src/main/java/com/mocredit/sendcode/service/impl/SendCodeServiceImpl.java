@@ -527,6 +527,7 @@ public class SendCodeServiceImpl implements SendCodeService {
             codeVO.setOutCode(act.getOutCode());
             codeVO.setOrderCode(batchId);
             codeVO.setActivityCode(act.getCode());
+            codeVO.setExchangeChannel(act.getExchangeChannel());//兑换渠道
             Enterprise enterprise = new Enterprise();
             enterprise.setId(act.getEnterpriseId());
             Enterprise enterpriseOri = enterpriseMapper.selectOne(enterprise);

@@ -41,7 +41,8 @@
 		a.modifier as modifier,
 		a.bins as bins,
 		a.exchange_type as exchangeType,
-		a.channel as channel
+		a.channel as channel,
+		a.exchange_channel as exchangeChannel
 	</sql>
 	
 	<!--  公用查询条件，包含活动所有字段的查询条件     -->
@@ -279,7 +280,8 @@
 			modifier,
 			bins,
 			exchange_type,
-			channel
+			channel,
+			exchange_channel
 	</trim>
 	<trim prefix="values (" suffix=")" suffixOverrides="," >
 			#{name},
@@ -311,7 +313,8 @@
 			#{modifier},
 			#{bins},
 			#{exchangeType},
-			#{channel}
+			#{channel},
+			#{exchangeChannel}
 	</trim>
 	</insert>
 	
@@ -411,6 +414,9 @@
 	</if>
 	<if test="channel != null" >
 		channel = #{channel},
+	</if>
+	<if test="exchangeChannel != null" >
+		exchange_channel = #{exchangeChannel},
 	</if>
 	</set>
 	where id = #{id}

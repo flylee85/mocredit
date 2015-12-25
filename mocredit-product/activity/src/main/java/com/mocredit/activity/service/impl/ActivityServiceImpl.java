@@ -740,6 +740,12 @@ public class ActivityServiceImpl implements ActivityService {
 				Enterprise enterprise = enterpriseMapper.selectOne(param);
 				httpPostMap.put("enterpriseCode", enterprise.getCode());
 				changeDescribe.append("企业编码：" + enterprise.getCode() + ";");
+				// 兑换渠道
+				if (oldActivity.getExchangeChannel() != null && activity.getExchangeChannel() != null
+						&& !oldActivity.getExchangeChannel().equals(activity.getExchangeChannel())) {
+					httpPostMap.put("exchangeChannel", activity.getExchangeChannel().toString());
+					changeDescribe.append("兑换渠道：" + activity.getExchangeChannel() + ";");
+				}
 
 				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 				Map<String, Object> queryMap = new HashMap<String, Object>();
