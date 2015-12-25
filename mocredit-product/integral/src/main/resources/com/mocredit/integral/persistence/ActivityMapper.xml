@@ -19,6 +19,7 @@
         <result column="exchange_type" property="exchangeType"/>
         <result column="bins" property="bins"/>
         <result column="channel" property="channel"/>
+        <result column="rule" property="rule"/>
     </resultMap>
 
     <insert id="save" parameterType="com.mocredit.integral.entity.Activity">
@@ -82,6 +83,12 @@
 		values(#{t.activityId},#{t.transType},#{t.transCount},#{t.expireDate},now(),now()) ON
 		DUPLICATE KEY UPDATE tran_count=tran_count+1,utime=now();
 	</insert>
+    <select id="getTranRecordByActId" resultType="com.mocredit.integral.entity.ActivityTransRecord">
+		select uuid as uuid,activity_id as activityId,
+		trans_type as transType,trans_count as transCout,
+		expire_date as expireDate,ctime as cTime,utime as uTime
+		from `ti_activity_trans_record` where activity_id #{activityId}
+    </select>
     <select id="statCountByTime" resultType="com.mocredit.integral.entity.ActivityTransRecord">
 		SELECT
 		`uuid`,activity_id

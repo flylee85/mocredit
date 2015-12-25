@@ -190,4 +190,9 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
     public boolean saveTerminal(Terminal t) {
         return activityMapper.saveTerminal(t) > 0;
     }
+
+    @Override
+    public List<ActivityTransRecord> getTranRecordByActId(String actId) {
+        return null;
+    }
 }

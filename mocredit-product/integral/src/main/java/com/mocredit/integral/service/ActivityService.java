@@ -107,4 +107,12 @@ public interface ActivityService extends BaseService<Activity> {
      * @return
      */
     boolean saveTerminal(Terminal t);
+
+    /**
+     * 根据活动id查询活动兑换统计
+     *
+     * @param actId
+     * @return
+     */
+    List<ActivityTransRecord> getTranRecordByActId(String actId);
 }
