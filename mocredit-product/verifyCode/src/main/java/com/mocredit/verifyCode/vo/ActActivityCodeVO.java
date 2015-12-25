@@ -61,6 +61,7 @@ public class ActActivityCodeVO {
     private String customName;
     private String orderCode;//发码批次
     private String activityCode;
+    private String exchangeChannel;//兑换渠道
     //-----------------------------
 
     /** 操作类型 **/
@@ -101,7 +102,15 @@ public class ActActivityCodeVO {
         return operType;
     }
 
-    public void setOperType(ActActivityCodeOperType operType) {
+    public String getExchangeChannel() {
+		return exchangeChannel;
+	}
+
+	public void setExchangeChannel(String exchangeChannel) {
+		this.exchangeChannel = exchangeChannel;
+	}
+
+	public void setOperType(ActActivityCodeOperType operType) {
         this.operType = operType;
     }
 

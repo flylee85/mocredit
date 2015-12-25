@@ -31,6 +31,7 @@ public class TActivityCode {
     private String customName;
     private String orderCode;//发码批次
     private String activityCode;//活动编码
+    private String exchangeChannel;//兑换渠道
 
     /** 冗余字段。合同ID **/
     private String contractId ;
@@ -42,7 +43,15 @@ public class TActivityCode {
         return selectDate;
     }
 
-    public void setSelectDate(String selectDate) {
+    public String getExchangeChannel() {
+		return exchangeChannel;
+	}
+
+	public void setExchangeChannel(String exchangeChannel) {
+		this.exchangeChannel = exchangeChannel;
+	}
+
+	public void setSelectDate(String selectDate) {
         this.selectDate = selectDate;
     }
     //------------封装部分方法---------------

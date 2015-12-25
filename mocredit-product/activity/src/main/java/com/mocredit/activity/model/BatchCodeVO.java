@@ -51,6 +51,16 @@ public class BatchCodeVO implements Serializable{
 	private String outCode;//活动外部编码
     private String enterpriseCode;
     private String orderCode;//发码批次
+    private String exchangeChannel;//兑换渠道
+    
+
+	public String getExchangeChannel() {
+		return exchangeChannel;
+	}
+
+	public void setExchangeChannel(String exchangeChannel) {
+		this.exchangeChannel = exchangeChannel;
+	}
 
 	public String getActivityCode() {
 		return activityCode;

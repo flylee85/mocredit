@@ -96,6 +96,16 @@ public class Activity implements Serializable {
 	private String enterpriseName;
 	// 合同名称
 	private String contractName;
+	// 兑换渠道(验码)
+	private String exchangeChannel;
+
+	public String getExchangeChannel() {
+		return exchangeChannel;
+	}
+
+	public void setExchangeChannel(String exchangeChannel) {
+		this.exchangeChannel = exchangeChannel;
+	}
 
 	public String getId() {
 		return id;

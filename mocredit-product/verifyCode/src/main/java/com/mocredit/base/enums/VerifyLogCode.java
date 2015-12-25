@@ -8,6 +8,8 @@ public enum VerifyLogCode {
 	VERIFY_INVALID_WEEK(5,"不在适用星期范围内"),
 	VERIFY_INVALID_STORE(6,"不适用于当前门店"),
 	VERIFY_HAS_USED(7,"码已使用"),
+	VERIFY_INVALID_CHANNEL(9,"不能用于该兑换方式"),
+	
 	REVOKE_HAS_REVOKED(8,"已撤销过");
 
 	private int value;

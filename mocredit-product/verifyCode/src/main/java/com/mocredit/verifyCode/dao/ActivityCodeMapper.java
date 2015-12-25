@@ -102,6 +102,7 @@ public interface ActivityCodeMapper {
                                  @Param("outCode")        String outCode,
                                  @Param("enterpriseCode")        String enterpriseCode,
                                  @Param("activityCode")        String activityCode,
-                                 @Param("status")  String status
+                                 @Param("status")  String status,
+                                 @Param("exchangeChannel")  String exchangeChannel
                                 );
 }
