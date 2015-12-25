@@ -89,6 +89,12 @@
 		expire_date as expireDate,ctime as cTime,utime as uTime
 		from `ti_activity_trans_record` where activity_id #{activityId}
     </select>
+    <update id="updateByExpireDate">
+		update `ti_activity_trans_record` set trans_count=0 where expire_date=#{expireDate}
+	</update>
+    <update id="minusCountByActId">
+		update `ti_activity_trans_record` set trans_count=trans_count-1 where trans_count >0 and activity_id=#{actId}
+	</update>
     <select id="statCountByTime" resultType="com.mocredit.integral.entity.ActivityTransRecord">
 		SELECT
 		`uuid`,activity_id

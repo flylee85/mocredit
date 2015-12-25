@@ -149,4 +149,20 @@ public interface ActivityMapper {
      */
     List<ActivityTransRecord> getTranRecordByActId(@Param("activityId") String actId);
 
+    /**
+     * 将过期记录计数器归零
+     *
+     * @param expireDate
+     * @return
+     */
+    int updateByExpireDate(@Param(value = "expireDate") String expireDate);
+
+    /**
+     * 根据活动id计数器减一
+     *
+     * @param actId
+     * @return
+     */
+    int minusCountByActId(@Param(value = "actId") String actId);
+
 }

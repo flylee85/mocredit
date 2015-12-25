@@ -193,6 +193,11 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
 
     @Override
     public List<ActivityTransRecord> getTranRecordByActId(String actId) {
-        return null;
+        return activityMapper.getTranRecordByActId(actId);
+    }
+
+    @Override
+    public boolean updateByExpireDate(String expireDate) {
+        return activityMapper.updateByExpireDate(expireDate) > 0;
     }
 }

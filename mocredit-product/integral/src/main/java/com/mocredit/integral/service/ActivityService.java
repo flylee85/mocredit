@@ -115,4 +115,12 @@ public interface ActivityService extends BaseService<Activity> {
      * @return
      */
     List<ActivityTransRecord> getTranRecordByActId(String actId);
+
+    /**
+     * 将过期记录计数器归零
+     *
+     * @param expireDate
+     * @return
+     */
+    boolean updateByExpireDate(String expireDate);
 }
