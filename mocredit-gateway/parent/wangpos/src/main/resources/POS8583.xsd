@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.icitic.com/ns/artery/project/POS8583/" targetNamespace="http://www.icitic.com/ns/artery/project/POS8583/" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <annotation>
+    <documentation>POSP8583接口</documentation>
+  </annotation>
+  <element name="header_length" type="hexBinary">
+    <annotation>
+      <documentation>头长</documentation>
+      <appinfo>
+        <format kind="F" id="-1" compress="0" align="L" blank="" length="1" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="header_flag" type="hexBinary">
+    <annotation>
+      <documentation>头标识</documentation>
+      <appinfo>
+        <format kind="F" id="-2" compress="0" align="L" blank="" length="1" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="total_length" type="string">
+    <annotation>
+      <appinfo>
+        <format kind="F" id="-3" compress="0" align="R" blank="0" length="4" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="dest_ID" type="string">
+    <annotation>
+      <documentation>目的ID</documentation>
+      <appinfo>
+        <format kind="F" id="-4" compress="0" align="L" blank=" " length="11" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="sour_ID" type="string">
+    <annotation>
+      <documentation>源ID</documentation>
+      <appinfo>
+        <format kind="F" id="-5" compress="0" align="L" blank=" " length="11" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="reser_for_use" type="hexBinary">
+    <annotation>
+      <appinfo>
+        <format kind="F" id="-6" compress="0" align="L" blank="0" length="3" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="batch_num" type="hexBinary">
+    <annotation>
+      <appinfo>
+        <format kind="F" id="-7" compress="0" align="L" blank="" length="1" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="tran_info" type="string">
+    <annotation>
+      <appinfo>
+        <format kind="F" id="-8" compress="0" align="L" blank=" " length="8" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="user_info" type="hexBinary">
+    <annotation>
+      <appinfo>
+        <format kind="F" id="-9" compress="0" align="L" blank="" length="1" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="reject_code" type="string">
+    <annotation>
+      <appinfo>
+        <format kind="F" id="-10" compress="0" align="L" blank=" " length="5" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="messtype" type="string">
+    <annotation>
+      <documentation>报文类型</documentation>
+      <appinfo>
+        <format kind="F" id="0" compress="0" align="L" blank=" " length="4" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="bitmap" type="string">
+    <annotation>
+      <documentation>位图</documentation>
+      <appinfo>
+        <format kind="F" id="1" compress="0" align="L" blank=" " length="8" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field02_Primary_Account_Number" type="string">
+    <annotation>
+      <documentation>主账号</documentation>
+      <appinfo>
+        <format kind="V" id="2" compress="1">
+          <head align="L" blank="0" length="2" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field03_Processing_Code" type="string">
+    <annotation>
+      <documentation>交易处理码</documentation>
+      <appinfo>
+        <format kind="F" id="3" compress="1" align="L" blank="0" length="6" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field04_Amount_Of_Transactions" type="string">
+    <annotation>
+      <documentation>交易金额</documentation>
+      <appinfo>
+        <format kind="F" id="4" compress="1" align="L" blank="0" length="12" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field05_Mobile_Number" type="string">
+    <annotation>
+      <documentation>卡商标识</documentation>
+      <appinfo>
+        <format kind="V" id="5" compress="1">
+          <head align="R" blank="0" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+   <element name="field06" type="string">
+    <annotation>
+      <documentation>二维码</documentation>
+      <appinfo>
+        <format kind="V" id="6" compress="1">
+          <head align="R" blank="" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+   <!--
+    <element name="field05_Mobile_Number" type="string">
+    <annotation>
+      <documentation>手机号</documentation>
+      <appinfo>
+        <format kind="F" id="5" compress="0" align="L" blank="0" length="11" endian="big" />
+      </appinfo>
+    </annotation>
+  </element> -->
+   <element name="field09" type="string">
+    <annotation>
+      <documentation>活动ID</documentation>
+      <appinfo>
+        <format kind="F" id="9" compress="0" align="L" blank="0" length="10" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field11_System_Trace_Audit_Number" type="string">
+    <annotation>
+      <documentation>系统跟踪号</documentation>
+      <appinfo>
+        <format kind="F" id="11" compress="1" align="L" blank="0" length="6" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field12_Time_Of_Local_Transaction" type="string">
+    <annotation>
+      <documentation>受卡方所在地时间</documentation>
+      <appinfo>
+        <format kind="F" id="12" compress="1" align="L" blank="0" length="6" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field13_Date_Of_Local_Transaction" type="string">
+    <annotation>
+      <documentation>受卡方所在地日期</documentation>
+      <appinfo>
+        <format kind="F" id="13" compress="1" align="L" blank=" " length="4" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field14_Date_Of_Expired" type="string">
+    <annotation>
+      <documentation>卡有效期</documentation>
+      <appinfo>
+        <format kind="F" id="14" compress="1" align="L" blank="0" length="4" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field15_Date_Of_Settlement" type="string">
+    <annotation>
+      <documentation>清算日期</documentation>
+      <appinfo>
+        <format kind="F" id="15" compress="1" align="L" blank="" length="4" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field22_Point_Of_Service_Entry_Mode" type="string">
+    <annotation>
+      <documentation>服务点输入方式码</documentation>
+      <appinfo>
+        <format kind="F" id="22" compress="1" align="R" blank="0" length="3" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field23_Card_SN" type="string">
+    <annotation>
+      <documentation>卡序列号</documentation>
+      <appinfo>
+        <format kind="F" id="23" compress="1" align="R" blank="0" length="3" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field25_Point_Of_Service_Condition_Mode" type="string">
+    <annotation>
+      <documentation>服务点条件码</documentation>
+      <appinfo>
+        <format kind="F" id="25" compress="1" align="L" blank="0" length="2" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field26_POS_PIN_Capture_Code" type="string">
+    <annotation>
+      <documentation>服务点PIN获取码</documentation>
+      <appinfo>
+        <format kind="F" id="26" compress="1" align="L" blank="0" length="2" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field32_Acquiring_Institution" type="string">
+    <annotation>
+      <documentation>受理方标识码</documentation>
+      <appinfo>
+        <format kind="V" id="32" compress="1">
+          <head align="R" blank="0" length="2" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field35_Track2_Data" type="string">
+    <annotation>
+      <documentation>第二磁道数据</documentation>
+      <appinfo>
+        <format kind="V" id="35" compress="1">
+          <head align="L" blank="0" length="2" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field36_Track3_Data" type="string">
+    <annotation>
+      <documentation>第三磁道数据</documentation>
+      <appinfo>
+        <format kind="V" id="36" compress="1">
+          <head align="R" blank="0" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field37_Retrieval_Reference_Number" type="string">
+    <annotation>
+      <documentation>检索参考号</documentation>
+      <appinfo>
+        <format kind="F" id="37" compress="0" align="L" blank="0" length="12" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field38_Authorization_Identification_Response" type="string">
+    <annotation>
+      <documentation>授权标识应答码</documentation>
+      <appinfo>
+        <format kind="F" id="38" compress="0" align="L" blank="0" length="6" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field39_Response_Code" type="string">
+    <annotation>
+      <documentation>应答码</documentation>
+      <appinfo>
+        <format kind="F" id="39" compress="0" align="L" blank="0" length="2" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field41_Card_Acceptor_Terminal_ID" type="string">
+    <annotation>
+      <documentation>受卡机终端标识码</documentation>
+      <appinfo>
+        <format kind="F" id="41" compress="0" align="L" blank=" " length="8" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field42_Card_Acceptor_ID" type="string">
+    <annotation>
+      <documentation>受卡方标识码</documentation>
+      <appinfo>
+        <format kind="F" id="42" compress="0" align="L" blank=" " length="15" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+   <element name="field43" type="string">
+    <annotation>
+      <documentation>商户信息</documentation>
+      <appinfo>
+        <format kind="V" id="43" compress="0" align="L" blank="0">
+          <head align="R" blank="0" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element> 
+  <element name="field44_Additional_Response_Data" type="string">
+    <annotation>
+      <documentation>附加响应数据</documentation>
+      <appinfo>
+        <format kind="V" id="44" compress="0">
+          <head align="R" blank="0" length="2" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field48_Additional_Data" type="string">
+    <annotation>
+      <documentation>附加数据－私有</documentation>
+      <appinfo>
+        <format kind="V" id="48" compress="1">
+          <head align="R" blank="0" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field49_Currency_Code_Of_Transaction" type="string">
+    <annotation>
+      <documentation>交易货币代码</documentation>
+      <appinfo>
+        <format kind="F" id="49" compress="0" align="L" blank=" " length="3" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field52_PIN_Data" type="hexBinary">
+    <annotation>
+      <documentation>个人标识码数据</documentation>
+      <appinfo>
+        <format kind="F" id="52" compress="1" align="L" blank=" " length="8" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field53_Security_Control_Information" type="string">
+    <annotation>
+      <documentation>安全控制信息</documentation>
+      <appinfo>
+        <format kind="F" id="53" compress="1" align="L" blank=" " length="16" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field54_Balance_Amount" type="string">
+    <annotation>
+      <documentation>附加金额</documentation>
+       <appinfo>
+        <format kind="V" id="54" compress="0">
+          <head align="R" blank="0" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field55_IC_DATA" type="hexBinary">
+    <annotation>
+      <documentation>IC卡数据域</documentation>
+      <appinfo>
+        <format kind="V" id="55" compress="1">
+          <head align="R" blank="0" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field58_PBOC_ELECTRONIC_DATA" type="string">
+    <annotation>
+      <documentation>PBOC电子钱包标准的交易信息</documentation>
+      <appinfo>
+        <format kind="V" id="58" compress="0">
+          <head align="R" blank="0" length="3" radix="10" compress="0" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field60_Reserved_Private" type="string">
+    <annotation>
+      <documentation>自定义域</documentation>
+      <appinfo>
+        <format kind="V" id="60" compress="0" align="L" blank="0">
+          <head align="R" blank="0" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>  
+  <element name="field61_Original_Message" type="string">
+    <annotation>
+      <documentation>原始信息域</documentation>
+      <appinfo>
+        <format kind="V" id="61" compress="0">
+          <head align="R" blank="0" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field62_Reserved_Private" type="string">
+    <annotation>
+      <documentation>自定义域</documentation>
+      <appinfo>
+        <format kind="V" id="62" compress="0">
+          <head align="R" blank="0" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field63_Reserved_Private" type="string">
+    <annotation>
+      <documentation>自定义域</documentation>
+      <appinfo>
+        <format kind="V" id="63" compress="0">
+          <head align="R" blank="0" length="3" radix="10" compress="1" />
+        </format>
+      </appinfo>
+    </annotation>
+  </element>
+  <element name="field64_MAC" type="string">
+    <annotation>
+      <documentation>报文鉴别码</documentation>
+      <appinfo>
+        <format kind="F" id="64" compress="1" align="L" blank="0" length="16" endian="big" />
+      </appinfo>
+    </annotation>
+  </element>
+</schema>
+
