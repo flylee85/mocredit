@@ -1,0 +1,480 @@
+[2015-12-05 00:51:57.425  INFO PID 36488 thread pool-1-thread-1] line 26 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务开始：每隔半小时连接一下数据库  
+
+[2015-12-05 00:51:57.437 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT '每隔一段时间连接一下网关数据库'   
+
+[2015-12-05 00:51:57.437  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': getConnection ( null )...  
+
+[2015-12-05 00:51:57.437  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': init...  
+
+[2015-12-05 00:51:57.442  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling prepareStatement(SELECT '每隔一段时间连接一下网关数据库' )...  
+
+[2015-12-05 00:51:57.443  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: isClosed()...  
+
+[2015-12-05 00:51:57.444  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling getWarnings...  
+
+[2015-12-05 00:51:57.444  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling clearWarnings...  
+
+[2015-12-05 00:51:57.444  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: close()...  
+
+[2015-12-05 00:51:57.445 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT 'ÿ��һ��ʱ������һ���������ݿ�'   
+
+[2015-12-05 00:51:57.445  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': getConnection ( null )...  
+
+[2015-12-05 00:51:57.446  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': init...  
+
+[2015-12-05 00:51:57.446  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling prepareStatement(SELECT 'ÿ��һ��ʱ������һ���������ݿ�' )...  
+
+[2015-12-05 00:51:57.447  WARN PID 36488 thread pool-1-thread-1] line 232 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+SQL Warning Code: 1366, SQLState: HY000  
+
+[2015-12-05 00:51:57.447  WARN PID 36488 thread pool-1-thread-1] line 233 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+Incorrect string value: '\xD6\xD0\xB9\xFA\xB1\xEA...' for column 'VARIABLE_VALUE' at row 1  
+
+[2015-12-05 00:51:57.447  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: isClosed()...  
+
+[2015-12-05 00:51:57.448  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling getWarnings...  
+
+[2015-12-05 00:51:57.448  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling clearWarnings...  
+
+[2015-12-05 00:51:57.448  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: close()...  
+
+[2015-12-05 00:51:57.448  INFO PID 36488 thread pool-1-thread-1] line 29 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务结束：每隔半小时连接一下数据库  
+
+[2015-12-05 01:00:00.002  INFO PID 36488 thread pool-1-thread-1] line 26 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务开始：每隔半小时连接一下数据库  
+
+[2015-12-05 01:00:00.003 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT '每隔一段时间连接一下网关数据库'   
+
+[2015-12-05 01:00:00.003  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': getConnection ( null )...  
+
+[2015-12-05 01:00:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': init...  
+
+[2015-12-05 01:00:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling prepareStatement(SELECT '每隔一段时间连接一下网关数据库' )...  
+
+[2015-12-05 01:00:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: isClosed()...  
+
+[2015-12-05 01:00:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling getWarnings...  
+
+[2015-12-05 01:00:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling clearWarnings...  
+
+[2015-12-05 01:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: close()...  
+
+[2015-12-05 01:00:00.006 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT 'ÿ��һ��ʱ������һ���������ݿ�'   
+
+[2015-12-05 01:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': getConnection ( null )...  
+
+[2015-12-05 01:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': init...  
+
+[2015-12-05 01:00:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling prepareStatement(SELECT 'ÿ��һ��ʱ������һ���������ݿ�' )...  
+
+[2015-12-05 01:00:00.008  WARN PID 36488 thread pool-1-thread-1] line 232 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+SQL Warning Code: 1366, SQLState: HY000  
+
+[2015-12-05 01:00:00.008  WARN PID 36488 thread pool-1-thread-1] line 233 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+Incorrect string value: '\xD6\xD0\xB9\xFA\xB1\xEA...' for column 'VARIABLE_VALUE' at row 1  
+
+[2015-12-05 01:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: isClosed()...  
+
+[2015-12-05 01:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling getWarnings...  
+
+[2015-12-05 01:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling clearWarnings...  
+
+[2015-12-05 01:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: close()...  
+
+[2015-12-05 01:00:00.009  INFO PID 36488 thread pool-1-thread-1] line 29 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务结束：每隔半小时连接一下数据库  
+
+[2015-12-05 01:30:00.000  INFO PID 36488 thread pool-1-thread-1] line 26 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务开始：每隔半小时连接一下数据库  
+
+[2015-12-05 01:30:00.001 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT '每隔一段时间连接一下网关数据库'   
+
+[2015-12-05 01:30:00.001  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': getConnection ( null )...  
+
+[2015-12-05 01:30:00.001  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': init...  
+
+[2015-12-05 01:30:00.002  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling prepareStatement(SELECT '每隔一段时间连接一下网关数据库' )...  
+
+[2015-12-05 01:30:00.003  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: isClosed()...  
+
+[2015-12-05 01:30:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling getWarnings...  
+
+[2015-12-05 01:30:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling clearWarnings...  
+
+[2015-12-05 01:30:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: close()...  
+
+[2015-12-05 01:30:00.005 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT 'ÿ��һ��ʱ������һ���������ݿ�'   
+
+[2015-12-05 01:30:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': getConnection ( null )...  
+
+[2015-12-05 01:30:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': init...  
+
+[2015-12-05 01:30:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling prepareStatement(SELECT 'ÿ��һ��ʱ������һ���������ݿ�' )...  
+
+[2015-12-05 01:30:00.007  WARN PID 36488 thread pool-1-thread-1] line 232 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+SQL Warning Code: 1366, SQLState: HY000  
+
+[2015-12-05 01:30:00.007  WARN PID 36488 thread pool-1-thread-1] line 233 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+Incorrect string value: '\xD6\xD0\xB9\xFA\xB1\xEA...' for column 'VARIABLE_VALUE' at row 1  
+
+[2015-12-05 01:30:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: isClosed()...  
+
+[2015-12-05 01:30:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling getWarnings...  
+
+[2015-12-05 01:30:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling clearWarnings...  
+
+[2015-12-05 01:30:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: close()...  
+
+[2015-12-05 01:30:00.008  INFO PID 36488 thread pool-1-thread-1] line 29 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务结束：每隔半小时连接一下数据库  
+
+[2015-12-05 02:00:00.002  INFO PID 36488 thread pool-1-thread-1] line 26 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务开始：每隔半小时连接一下数据库  
+
+[2015-12-05 02:00:00.003 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT '每隔一段时间连接一下网关数据库'   
+
+[2015-12-05 02:00:00.003  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': getConnection ( null )...  
+
+[2015-12-05 02:00:00.003  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': init...  
+
+[2015-12-05 02:00:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling prepareStatement(SELECT '每隔一段时间连接一下网关数据库' )...  
+
+[2015-12-05 02:00:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: isClosed()...  
+
+[2015-12-05 02:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling getWarnings...  
+
+[2015-12-05 02:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling clearWarnings...  
+
+[2015-12-05 02:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: close()...  
+
+[2015-12-05 02:00:00.008 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT 'ÿ��һ��ʱ������һ���������ݿ�'   
+
+[2015-12-05 02:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': getConnection ( null )...  
+
+[2015-12-05 02:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': init...  
+
+[2015-12-05 02:00:00.009  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling prepareStatement(SELECT 'ÿ��һ��ʱ������һ���������ݿ�' )...  
+
+[2015-12-05 02:00:00.010  WARN PID 36488 thread pool-1-thread-1] line 232 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+SQL Warning Code: 1366, SQLState: HY000  
+
+[2015-12-05 02:00:00.010  WARN PID 36488 thread pool-1-thread-1] line 233 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+Incorrect string value: '\xD6\xD0\xB9\xFA\xB1\xEA...' for column 'VARIABLE_VALUE' at row 1  
+
+[2015-12-05 02:00:00.010  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: isClosed()...  
+
+[2015-12-05 02:00:00.010  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling getWarnings...  
+
+[2015-12-05 02:00:00.010  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling clearWarnings...  
+
+[2015-12-05 02:00:00.011  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: close()...  
+
+[2015-12-05 02:00:00.011  INFO PID 36488 thread pool-1-thread-1] line 29 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务结束：每隔半小时连接一下数据库  
+
+[2015-12-05 02:30:00.000  INFO PID 36488 thread pool-1-thread-1] line 26 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务开始：每隔半小时连接一下数据库  
+
+[2015-12-05 02:30:00.001 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT '每隔一段时间连接一下网关数据库'   
+
+[2015-12-05 02:30:00.001  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': getConnection ( null )...  
+
+[2015-12-05 02:30:00.001  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': init...  
+
+[2015-12-05 02:30:00.002  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling prepareStatement(SELECT '每隔一段时间连接一下网关数据库' )...  
+
+[2015-12-05 02:30:00.003  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: isClosed()...  
+
+[2015-12-05 02:30:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling getWarnings...  
+
+[2015-12-05 02:30:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling clearWarnings...  
+
+[2015-12-05 02:30:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: close()...  
+
+[2015-12-05 02:30:00.005 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT 'ÿ��һ��ʱ������һ���������ݿ�'   
+
+[2015-12-05 02:30:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': getConnection ( null )...  
+
+[2015-12-05 02:30:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': init...  
+
+[2015-12-05 02:30:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling prepareStatement(SELECT 'ÿ��һ��ʱ������һ���������ݿ�' )...  
+
+[2015-12-05 02:30:00.006  WARN PID 36488 thread pool-1-thread-1] line 232 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+SQL Warning Code: 1366, SQLState: HY000  
+
+[2015-12-05 02:30:00.007  WARN PID 36488 thread pool-1-thread-1] line 233 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+Incorrect string value: '\xD6\xD0\xB9\xFA\xB1\xEA...' for column 'VARIABLE_VALUE' at row 1  
+
+[2015-12-05 02:30:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: isClosed()...  
+
+[2015-12-05 02:30:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling getWarnings...  
+
+[2015-12-05 02:30:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling clearWarnings...  
+
+[2015-12-05 02:30:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: close()...  
+
+[2015-12-05 02:30:00.007  INFO PID 36488 thread pool-1-thread-1] line 29 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务结束：每隔半小时连接一下数据库  
+
+[2015-12-05 03:00:00.002  INFO PID 36488 thread pool-1-thread-1] line 26 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务开始：每隔半小时连接一下数据库  
+
+[2015-12-05 03:00:00.003 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT '每隔一段时间连接一下网关数据库'   
+
+[2015-12-05 03:00:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': getConnection ( null )...  
+
+[2015-12-05 03:00:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': init...  
+
+[2015-12-05 03:00:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling prepareStatement(SELECT '每隔一段时间连接一下网关数据库' )...  
+
+[2015-12-05 03:00:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: isClosed()...  
+
+[2015-12-05 03:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling getWarnings...  
+
+[2015-12-05 03:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling clearWarnings...  
+
+[2015-12-05 03:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: close()...  
+
+[2015-12-05 03:00:00.007 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT 'ÿ��һ��ʱ������һ���������ݿ�'   
+
+[2015-12-05 03:00:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': getConnection ( null )...  
+
+[2015-12-05 03:00:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': init...  
+
+[2015-12-05 03:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling prepareStatement(SELECT 'ÿ��һ��ʱ������һ���������ݿ�' )...  
+
+[2015-12-05 03:00:00.009  WARN PID 36488 thread pool-1-thread-1] line 232 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+SQL Warning Code: 1366, SQLState: HY000  
+
+[2015-12-05 03:00:00.009  WARN PID 36488 thread pool-1-thread-1] line 233 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+Incorrect string value: '\xD6\xD0\xB9\xFA\xB1\xEA...' for column 'VARIABLE_VALUE' at row 1  
+
+[2015-12-05 03:00:00.009  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: isClosed()...  
+
+[2015-12-05 03:00:00.009  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling getWarnings...  
+
+[2015-12-05 03:00:00.010  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling clearWarnings...  
+
+[2015-12-05 03:00:00.010  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: close()...  
+
+[2015-12-05 03:00:00.010  INFO PID 36488 thread pool-1-thread-1] line 29 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务结束：每隔半小时连接一下数据库  
+
+[2015-12-05 03:30:00.002  INFO PID 36488 thread pool-1-thread-1] line 26 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务开始：每隔半小时连接一下数据库  
+
+[2015-12-05 03:30:00.003 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT '每隔一段时间连接一下网关数据库'   
+
+[2015-12-05 03:30:00.003  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': getConnection ( null )...  
+
+[2015-12-05 03:30:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': init...  
+
+[2015-12-05 03:30:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling prepareStatement(SELECT '每隔一段时间连接一下网关数据库' )...  
+
+[2015-12-05 03:30:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: isClosed()...  
+
+[2015-12-05 03:30:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling getWarnings...  
+
+[2015-12-05 03:30:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling clearWarnings...  
+
+[2015-12-05 03:30:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: close()...  
+
+[2015-12-05 03:30:00.006 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT 'ÿ��һ��ʱ������һ���������ݿ�'   
+
+[2015-12-05 03:30:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': getConnection ( null )...  
+
+[2015-12-05 03:30:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': init...  
+
+[2015-12-05 03:30:00.007  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling prepareStatement(SELECT 'ÿ��һ��ʱ������һ���������ݿ�' )...  
+
+[2015-12-05 03:30:00.008  WARN PID 36488 thread pool-1-thread-1] line 232 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+SQL Warning Code: 1366, SQLState: HY000  
+
+[2015-12-05 03:30:00.008  WARN PID 36488 thread pool-1-thread-1] line 233 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+Incorrect string value: '\xD6\xD0\xB9\xFA\xB1\xEA...' for column 'VARIABLE_VALUE' at row 1  
+
+[2015-12-05 03:30:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: isClosed()...  
+
+[2015-12-05 03:30:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling getWarnings...  
+
+[2015-12-05 03:30:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling clearWarnings...  
+
+[2015-12-05 03:30:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: close()...  
+
+[2015-12-05 03:30:00.009  INFO PID 36488 thread pool-1-thread-1] line 29 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务结束：每隔半小时连接一下数据库  
+
+[2015-12-05 04:00:00.000  INFO PID 36488 thread pool-1-thread-1] line 26 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务开始：每隔半小时连接一下数据库  
+
+[2015-12-05 04:00:00.001 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT '每隔一段时间连接一下网关数据库'   
+
+[2015-12-05 04:00:00.001  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': getConnection ( null )...  
+
+[2015-12-05 04:00:00.001  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads1': init...  
+
+[2015-12-05 04:00:00.002  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling prepareStatement(SELECT '每隔一段时间连接一下网关数据库' )...  
+
+[2015-12-05 04:00:00.003  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: isClosed()...  
+
+[2015-12-05 04:00:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling getWarnings...  
+
+[2015-12-05 04:00:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: calling clearWarnings...  
+
+[2015-12-05 04:00:00.004  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@7c70aae1: close()...  
+
+[2015-12-05 04:00:00.005 DEBUG PID 36488 thread pool-1-thread-1] line 109 org.hibernate.SQL#logStatement 
+SELECT 'ÿ��һ��ʱ������һ���������ݿ�'   
+
+[2015-12-05 04:00:00.005  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': getConnection ( null )...  
+
+[2015-12-05 04:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AbstractDataSourceBean#logInfo 
+AtomikosDataSoureBean 'xads2': init...  
+
+[2015-12-05 04:00:00.006  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling prepareStatement(SELECT 'ÿ��һ��ʱ������һ���������ݿ�' )...  
+
+[2015-12-05 04:00:00.007  WARN PID 36488 thread pool-1-thread-1] line 232 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+SQL Warning Code: 1366, SQLState: HY000  
+
+[2015-12-05 04:00:00.008  WARN PID 36488 thread pool-1-thread-1] line 233 org.hibernate.engine.jdbc.spi.SqlExceptionHelper#logWarning 
+Incorrect string value: '\xD6\xD0\xB9\xFA\xB1\xEA...' for column 'VARIABLE_VALUE' at row 1  
+
+[2015-12-05 04:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: isClosed()...  
+
+[2015-12-05 04:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling getWarnings...  
+
+[2015-12-05 04:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: calling clearWarnings...  
+
+[2015-12-05 04:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 16 com.atomikos.jdbc.AtomikosConnectionProxy#logInfo 
+atomikos connection proxy for com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper@65af05b2: close()...  
+
+[2015-12-05 04:00:00.008  INFO PID 36488 thread pool-1-thread-1] line 29 cn.mocredit.gateway.task.MyTask$$EnhancerBySpringCGLIB$$9d96087c#keepJdbcContected 
+任务结束：每隔半小时连接一下数据库  
+
