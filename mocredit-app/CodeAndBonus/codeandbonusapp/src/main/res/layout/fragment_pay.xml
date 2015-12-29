@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/p120"
+        android:background="#ffffff"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/pay_bankname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="银行名称"
+            android:textStyle="bold"
+            android:textColor="#aa000000"
+            android:textSize="@dimen/p40" />
+
+        <TextView
+            android:id="@+id/pay_cardid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="00000000000000"
+            android:textColor="#aa000000"
+            android:textSize="@dimen/p30" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#99ffffff" />
+
+    <ListView
+        android:id="@+id/pay_activities"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#cccccc"
+        android:divider="#00ffffff"
+        android:dividerHeight="@dimen/p20"
+        android:padding="@dimen/p20" >
+    </ListView>
+    <TextView android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone"
+        android:gravity="center"
+        android:background="#ccffffff"
+        android:textSize="@dimen/p40"
+        android:text="暂无任何可用活动"
+        android:textColor="#88000000"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#99ffffff" />
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/p80"
+    android:orientation="horizontal">
+    <Button
+        android:id="@+id/pay_back"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="@dimen/p80"
+        android:textSize="@dimen/p20"
+        android:textColor="#ffffff"
+        android:background="@drawable/code_result_back"
+        android:text="返\t\t\t回" />
+    <Button
+        android:id="@+id/pay_confirm"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="@dimen/p80"
+        android:textSize="@dimen/p20"
+        android:textColor="#ffffff"
+        android:background="@drawable/code_result_print"
+        android:text="确\t\t\t定" />
+</LinearLayout>
+
+
+
+</LinearLayout>
