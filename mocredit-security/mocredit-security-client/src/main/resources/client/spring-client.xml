@@ -8,7 +8,4 @@
 
     <context:property-placeholder location="classpath:client/shiro-client-default.properties,classpath:client/shiro-client.properties"/>
 
-    <import resource="spring-client-remote-service.xml"/>
-    <import resource="spring-client-shiro.xml"/>
-
 </beans>

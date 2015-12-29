@@ -98,36 +98,33 @@
     </dependencies>
     <build>
         <finalName>verify_code</finalName>
-
-        <!-- 资源 -->
-        <resources>
-            <!--<resource>-->
-                <!--<directory>src/main/resources/META-INF</directory>-->
-                <!--<filtering>true</filtering>-->
-                <!--<targetPath>META-INF</targetPath>-->
-            <!--</resource>-->
-            <!-- 复制非class文件 -->
-            <resource>
-                <directory>src/main/java/com/mocredit/verifyCode/dao</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*.xml</include>
-                </includes>
-                <targetPath>${project.build.directory}/classes/com/mocredit/verifyCode/dao</targetPath>
-            </resource>
-        </resources>
-
-        <plugins>
+		<plugins>
             <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.0-SNAPSHOT</version>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.8.v20121106</version>
                 <configuration>
-                    <url>http://127.0.0.1:8080/manager/html</url>
-                    <server>tomcat</server>
+                    <webAppConfig>
+                        <contextPath>/</contextPath>
+                    </webAppConfig>
+                    <connectors>
+                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>8080</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <path>/${project.build.finalName}</path>
+                </configuration>
+
+            </plugin>
         </plugins>
 
     </build>

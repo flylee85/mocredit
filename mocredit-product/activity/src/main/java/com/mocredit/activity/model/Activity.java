@@ -57,8 +57,13 @@ public class Activity implements Serializable {
 	private Double amount;
 	// 最大类型,max_type,暂定01代表每日，02代表每周，03代表每月，空代表不限制
 	private String maxType;
-	// 最大次数,max_number
-	private Integer maxNumber;
+	// 最大次数,max_number 
+//	DayMax  一天次数限制
+//	WeekMax 一个星期次数限制
+//	MonthMax 一个月次数限制
+//	YearMax  一年次数限制
+//	TotalMax  总次数限制
+	private String maxNumber;
 	// 积分活动,integral_activity
 	private String integralActivity;
 	// 积分,integral
@@ -259,11 +264,11 @@ public class Activity implements Serializable {
 		this.maxType = maxType;
 	}
 
-	public Integer getMaxNumber() {
+	public String getMaxNumber() {
 		return maxNumber;
 	}
 
-	public void setMaxNumber(Integer maxNumber) {
+	public void setMaxNumber(String maxNumber) {
 		this.maxNumber = maxNumber;
 	}
 

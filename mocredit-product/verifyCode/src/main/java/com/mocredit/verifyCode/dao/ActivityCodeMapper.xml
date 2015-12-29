@@ -33,12 +33,11 @@
     <!-- ²åÈëÂë -->
     <insert id="insertActivityCode" parameterType="com.mocredit.verifyCode.model.TActivityCode">
         <![CDATA[
-        INSERT  INTO t_activity_code (
-          id,code,code_serial_number,activity_id,activity_name,max_num,
+        INSERT  INTO t_activity_code (code,code_serial_number,activity_id,activity_name,max_num,
           amount,start_time,end_time,order_id,createtime,
           issue_enterprise_id,issue_enterprise_name,custom_mobile,release_time,contract_id,out_code,order_code,enterprise_code,custom_name,activity_code,status,exchange_channel
         )VALUES (
-          #{id},#{code},#{codeSerialNumber},#{activityId},#{activityName},#{maxNum},
+          #{code},#{codeSerialNumber},#{activityId},#{activityName},#{maxNum},
           #{amount},#{startTime},#{endTime},#{orderId},#{createTime},
           #{issueEnterpriseId},#{issueEnterpriseName},#{customMobile},#{releaseTime},#{contractId},#{outCode},#{orderCode},#{enterpriseCode},#{customName},#{activityCode},#{status},#{exchangeChannel}
         )
@@ -110,12 +109,12 @@
         <choose>
             <when test=" null !=activityCodes and activityCodes.size >0 ">
                 INSERT INTO t_activity_code (
-                id,code,code_serial_number,activity_id,activity_name,max_num,
+                code,code_serial_number,activity_id,activity_name,max_num,
                 amount,start_time,end_time,order_id,createtime,
                 issue_enterprise_id,issue_enterprise_name,custom_mobile,release_time,contract_id,select_date,out_code,order_code,enterprise_code,custom_name,activity_code,status,exchange_channel
                 )VALUES
                 <foreach collection="activityCodes" item="item" index="index" separator=",">
-                    (#{item.id},#{item.code},#{item.codeSerialNumber},#{item.activityId},#{item.activityName},#{item.maxNum},
+                    (#{item.code},#{item.codeSerialNumber},#{item.activityId},#{item.activityName},#{item.maxNum},
                     #{item.amount},#{item.startTime},#{item.endTime},#{item.orderId},#{item.createTime},
                     #{item.issueEnterpriseId},#{item.issueEnterpriseName},#{item.customMobile},#{item.releaseTime},#{item.contractId},#{item.selectDate},#{item.outCode},#{item.orderCode},#{item.enterpriseCode},#{item.customName},#{item.activityCode},#{item.status},#{item.exchangeChannel})
                 </foreach>

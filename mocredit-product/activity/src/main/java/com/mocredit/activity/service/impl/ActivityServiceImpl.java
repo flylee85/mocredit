@@ -31,7 +31,6 @@ import com.mocredit.activity.persitence.BatchMapper;
 import com.mocredit.activity.persitence.MmsframeMapper;
 import com.mocredit.activity.service.ActivityService;
 import com.mocredit.activity.service.SendMMSPackage;
-import com.mocredit.activity.utils.ResourceUtil;
 import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
@@ -83,7 +82,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private MmsframeMapper mmsframeMapper;
 	@Autowired
 	private SendMMSPackage sendMMSPackage;
-	private boolean importFlag = true;
+	private boolean importFlag = false;
 
 	/**
 	 * 获取一条活动，根据主键
@@ -258,46 +257,49 @@ public class ActivityServiceImpl implements ActivityService {
 		Mms mms = mmsframeMapper.getMmsByActivityId(Integer.parseInt(activityId));
 		Mmsframe mmsfram = new Mmsframe();
 		List<Mmsframe> list = mmsframeMapper.getMmsframeListByMMSId(mms.getId());
-		if(list!=null&&!list.isEmpty()){
+		if (list != null && !list.isEmpty()) {
 			StringBuilder packageXML = new StringBuilder("<mms>");
 			packageXML.append("<subject>").append(mms.getSubject()).append("</subject>");
 			packageXML.append("<pages>");
-			for(int i=0;i<list.size();i++){
-				mmsfram =list.get(i);
+			for (int i = 0; i < list.size(); i++) {
+				mmsfram = list.get(i);
 				packageXML.append("<page dur=\"50\">");
-				if(mmsfram.getPic()!=null&&!mmsfram.getPic().isEmpty()){
-					packageXML.append("<img type=\""+mmsfram.getPictype()+"\">");
+				if (mmsfram.getPic() != null && !mmsfram.getPic().isEmpty()) {
+					packageXML.append("<img type=\"" + mmsfram.getPictype() + "\">");
 					packageXML.append(mmsfram.getPic());
 					packageXML.append("</img>");
 				}
-				if(mmsfram.getText()!=null&&!mmsfram.getText().isEmpty()){
+				if (mmsfram.getText() != null && !mmsfram.getText().isEmpty()) {
 					String txtContent = mmsfram.getText();
-					txtContent = txtContent.replace("$phone", "[[param01]]").replace("$name", "[[param02]]").replace("$pwd", "[[param03]]").replace("$f1", "[[param04]]").replace("$f2", "[[param05]]").replace("$f3", "[[param06]]");
+					txtContent = txtContent.replace("$phone", "[[param01]]").replace("$name", "[[param02]]")
+							.replace("$pwd", "[[param03]]").replace("$f1", "[[param04]]").replace("$f2", "[[param05]]")
+							.replace("$f3", "[[param06]]");
 					packageXML.append("<text>");
 					packageXML.append(txtContent);
 					packageXML.append("</text>");
 				}
 				packageXML.append("</page>");
 				if (mms.getCode_no() - 1 == i + 1) {
-					packageXML.append("<page dur=\"50\"><img type=\"image/jpeg\">/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAPAAA/+4AJkFkb2JlAGTAAAAAAQMAFQQDBgoNAAABiQAAAaoAAAHaAAAB+//bAIQABgQEBAUEBgUFBgkGBQYJCwgGBggLDAoKCwoKDBAMDAwMDAwQDA4PEA8ODBMTFBQTExwbGxscHx8fHx8fHx8fHwEHBwcNDA0YEBAYGhURFRofHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8f/8IAEQgABQAFAwERAAIRAQMRAf/EAG4AAQAAAAAAAAAAAAAAAAAAAAcBAQAAAAAAAAAAAAAAAAAAAAEQAQAAAAAAAAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAASAQAAAAAAAAAAAAAAAAAAAAATAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQAAAUgP/9oACAEBAAEFAn//2gAIAQIAAQUCf//aAAgBAwABBQJ//9oACAECAgY/An//2gAIAQMCBj8Cf//aAAgBAQEGPwJ//9oACAEBAwE/IX//2gAIAQIDAT8hf//aAAgBAwMBPyF//9oADAMBAAIRAxEAABB//9oACAEBAwE/EH//2gAIAQIDAT8Qf//aAAgBAwMBPxB//9k=</img></page>");
+					packageXML.append(
+							"<page dur=\"50\"><img type=\"image/jpeg\">/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAPAAA/+4AJkFkb2JlAGTAAAAAAQMAFQQDBgoNAAABiQAAAaoAAAHaAAAB+//bAIQABgQEBAUEBgUFBgkGBQYJCwgGBggLDAoKCwoKDBAMDAwMDAwQDA4PEA8ODBMTFBQTExwbGxscHx8fHx8fHx8fHwEHBwcNDA0YEBAYGhURFRofHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8f/8IAEQgABQAFAwERAAIRAQMRAf/EAG4AAQAAAAAAAAAAAAAAAAAAAAcBAQAAAAAAAAAAAAAAAAAAAAEQAQAAAAAAAAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAASAQAAAAAAAAAAAAAAAAAAAAATAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQAAAUgP/9oACAEBAAEFAn//2gAIAQIAAQUCf//aAAgBAwABBQJ//9oACAECAgY/An//2gAIAQMCBj8Cf//aAAgBAQEGPwJ//9oACAEBAwE/IX//2gAIAQIDAT8hf//aAAgBAwMBPyF//9oADAMBAAIRAxEAABB//9oACAEBAwE/EH//2gAIAQIDAT8Qf//aAAgBAwMBPxB//9k=</img></page>");
 				}
 			}
 			packageXML.append("</pages>");
 			packageXML.append("</mms>");
-//			log.info("packageXML====="+packageXML.toString());
-			String packageId ="000";
-//			String token = ResourceUtil.MMSTOKENMAP.get(ent.getMmschannle());
+			// log.info("packageXML====="+packageXML.toString());
+			String packageId = "000";
+			// String token = ResourceUtil.MMSTOKENMAP.get(ent.getMmschannle());
 			String token = "7102566630630741";
-			packageId = sendMMSPackage.sendMMSPackage(packageXML.toString(),token);
-			 if (!packageId.startsWith("ERROR") && !"0".equals(packageId)){
-				 mms.setMmspackageid(Integer.parseInt(packageId));
-				 mmsframeMapper.updateMms(mms);
-             }else{
-            	 logger.warn("上传彩信模板包失败，服务器返回："+packageId);
-             }
+			packageId = sendMMSPackage.sendMMSPackage(packageXML.toString(), token);
+			if (!packageId.startsWith("ERROR") && !"0".equals(packageId)) {
+				mms.setMmspackageid(Integer.parseInt(packageId));
+				mmsframeMapper.updateMms(mms);
+			} else {
+				logger.warn("上传彩信模板包失败，服务器返回：" + packageId);
+			}
 		}
 	}
-	
+
 	/**
 	 * 添加活动
 	 * 
@@ -347,9 +349,6 @@ public class ActivityServiceImpl implements ActivityService {
 		/*
 		 * 积分同步活动
 		 */
-		if (!importFlag) {
-			return affectCount;
-		}
 		if ("01".equals(activity.getType())) {
 			// 获取验码系统中-修改活动，启动活动，停止活动的ＵＲＬ，并定义一个请求这些地址时，所需要的参数Map,将活动Id和活动名称都放在这个Map中
 			String changeActivityUrl = PropertiesUtil.getValue("integral.activityImport");
@@ -383,12 +382,15 @@ public class ActivityServiceImpl implements ActivityService {
 			httpPostMap.put("integral", activity.getIntegral());
 			changeDescribe.append("积分：" + activity.getIntegral() + ";");
 
-			// 活动最大类型修改
-			httpPostMap.put("maxType", "1");
-			changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
-
+			// // 活动最大类型修改
+			// httpPostMap.put("maxType", "1");
+			// changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
+			//
+			// // 活动使用次数
+			// httpPostMap.put("maxNumber", "1");
+			// changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
 			// 活动使用次数
-			httpPostMap.put("maxNumber", "1");
+			httpPostMap.put("rule", activity.getMaxNumber());
 			changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
 
 			// 活动使用次数
@@ -428,6 +430,9 @@ public class ActivityServiceImpl implements ActivityService {
 			// 将修改信息发送至验码系统
 			httpPostMap.put("operCode", "1");
 			// System.out.println(JSON.toJSONString(httpPostMap));
+			if (!importFlag) {
+				return affectCount;
+			}
 			String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, JSON.toJSONString(httpPostMap));
 			Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
 			boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
@@ -511,9 +516,6 @@ public class ActivityServiceImpl implements ActivityService {
 	 * @param storeList
 	 */
 	private void synOthers(Activity activity, Activity oldActivity) {
-		if (!importFlag) {
-			return;
-		}
 		// 积分同步
 		if ("01".equals(activity.getType())) {
 			// 获取验码系统中-修改活动，启动活动，停止活动的ＵＲＬ，并定义一个请求这些地址时，所需要的参数Map,将活动Id和活动名称都放在这个Map中
@@ -533,12 +535,14 @@ public class ActivityServiceImpl implements ActivityService {
 
 					// 调用验码模块-停止活动接口
 					httpPostMap.put("operCode", "3");
-					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-							JSON.toJSONString(httpPostMap));
-					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-					if (!isSuccess) {
-						throw new BusinessException("向积分核销系统停止活动失败");
+					if (importFlag) {
+						String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+								JSON.toJSONString(httpPostMap));
+						Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+						boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+						if (!isSuccess) {
+							throw new BusinessException("向积分核销系统停止活动失败");
+						}
 					}
 					// 保存送信息到验码系统的日志
 					optLogService.addOptLog("活动Id:" + activity.getId(), "",
@@ -550,12 +554,14 @@ public class ActivityServiceImpl implements ActivityService {
 
 					// 调用验码模块--启用活动接口
 					httpPostMap.put("operCode", "4");
-					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-							JSON.toJSONString(httpPostMap));
-					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-					if (!isSuccess) {
-						throw new BusinessException("向积分核销系统启用活动失败");
+					if (importFlag) {
+						String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+								JSON.toJSONString(httpPostMap));
+						Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+						boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+						if (!isSuccess) {
+							throw new BusinessException("向积分核销系统启用活动失败");
+						}
 					}
 					// 保存送信息到验码系统的日志
 					optLogService.addOptLog("活动Id:" + activity.getId(), "",
@@ -576,12 +582,16 @@ public class ActivityServiceImpl implements ActivityService {
 				httpPostMap.put("integral", activity.getIntegral().toString());
 				changeDescribe.append("积分：" + activity.getIntegral() + ";");
 
-				// 活动最大类型修改
-				httpPostMap.put("maxType", "1");
-				changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
-
+				// // 活动最大类型修改
+				// httpPostMap.put("maxType", "1");
+				// changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
+				//
+				// // 活动使用次数
+				// httpPostMap.put("maxNumber", "1");
+				// changeDescribe.append("最大次数：" + activity.getMaxNumber() +
+				// ";");
 				// 活动使用次数
-				httpPostMap.put("maxNumber", "1");
+				httpPostMap.put("rule", activity.getMaxNumber());
 				changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
 
 				// 活动状态 活动修改时的状态与原活动一致
@@ -624,13 +634,14 @@ public class ActivityServiceImpl implements ActivityService {
 
 				// 将修改信息发送至验码系统
 				httpPostMap.put("operCode", "2");
-				// System.out.println(JSON.toJSONString(httpPostMap));
-				String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-						JSON.toJSONString(httpPostMap));
-				Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-				boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-				if (!isSuccess) {
-					throw new BusinessException("向积分核销系统同步信息失败");
+				if (importFlag) {
+					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+							JSON.toJSONString(httpPostMap));
+					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+					if (!isSuccess) {
+						throw new BusinessException("向积分核销系统同步信息失败");
+					}
 				}
 				// 保存送信息到验码系统的日志
 				optLogService.addOptLog("活动Id:" + activity.getId(), "",
@@ -658,12 +669,14 @@ public class ActivityServiceImpl implements ActivityService {
 
 					// 调用验码模块-停止活动接口
 					httpPostMap.put("operType", "CANCEL");
-					String returnJson = HttpUtil.doRestfulByHttpConnection(stopActivityUrl,
-							JSON.toJSONString(httpPostMap));
-					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-					if (!isSuccess) {
-						throw new BusinessException("向验码系统停止活动失败");
+					if (importFlag) {
+						String returnJson = HttpUtil.doRestfulByHttpConnection(stopActivityUrl,
+								JSON.toJSONString(httpPostMap));
+						Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+						boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+						if (!isSuccess) {
+							throw new BusinessException("向验码系统停止活动失败");
+						}
 					}
 					// 保存送信息到验码系统的日志
 					optLogService.addOptLog("活动Id:" + activity.getId(), "",
@@ -675,12 +688,14 @@ public class ActivityServiceImpl implements ActivityService {
 
 					// 调用验码模块--启用活动接口
 					httpPostMap.put("operType", "START_USING");
-					String returnJson = HttpUtil.doRestfulByHttpConnection(startActivityUrl,
-							JSON.toJSONString(httpPostMap));
-					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-					if (!isSuccess) {
-						throw new BusinessException("向验码系统启用活动失败");
+					if (importFlag) {
+						String returnJson = HttpUtil.doRestfulByHttpConnection(startActivityUrl,
+								JSON.toJSONString(httpPostMap));
+						Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+						boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+						if (!isSuccess) {
+							throw new BusinessException("向验码系统启用活动失败");
+						}
 					}
 					// 保存送信息到验码系统的日志
 					optLogService.addOptLog("活动Id:" + activity.getId(), "",
@@ -688,8 +703,7 @@ public class ActivityServiceImpl implements ActivityService {
 				}
 			} else {
 				// 活动指定日期修改，该处临时这样判断
-				if (oldActivity.getSelectDate() != null && activity.getSelectDate() != null
-						&& !oldActivity.getSelectDate().equals(activity.getSelectDate())) {
+				if (activity.getSelectDate() != null && !activity.getSelectDate().equals(oldActivity.getSelectDate())) {
 					httpPostMap.put("selectDate", activity.getSelectDate());// 指定日期
 					changeDescribe.append("指定日期：" + activity.getSelectDate() + ";");
 				}
@@ -713,6 +727,26 @@ public class ActivityServiceImpl implements ActivityService {
 						&& !oldActivity.getAmount().equals(activity.getAmount())) {
 					httpPostMap.put("amount", activity.getAmount().toString());
 					changeDescribe.append("价格：" + activity.getAmount() + ";");
+				}
+				// 小票标题
+				if (activity.getReceiptTitle() != null) {
+					httpPostMap.put("ticketTitle", activity.getReceiptTitle().toString());
+					changeDescribe.append("小票标题：" + activity.getReceiptTitle() + ";");
+				}
+				// 小票内容
+				if (activity.getReceiptPrint() != null) {
+					httpPostMap.put("ticketContent", activity.getReceiptPrint().toString());
+					changeDescribe.append("小票内容：" + activity.getReceiptPrint() + ";");
+				}
+				// POS成功提示
+				if (activity.getPosSuccessMsg() != null) {
+					httpPostMap.put("posSuccessMsg", activity.getPosSuccessMsg().toString());
+					changeDescribe.append("POS成功提示：" + activity.getPosSuccessMsg() + ";");
+				}
+				// 短信成功提示
+				if (activity.getSuccessSmsMsg() != null) {
+					httpPostMap.put("successSmsMsg", activity.getSuccessSmsMsg().toString());
+					changeDescribe.append("短信成功提示：" + activity.getSuccessSmsMsg() + ";");
 				}
 
 				// 活动使用次数
@@ -762,13 +796,14 @@ public class ActivityServiceImpl implements ActivityService {
 
 				// 将修改信息发送至验码系统
 				httpPostMap.put("operType", "UPDATE");
-				System.out.println(JSON.toJSONString(httpPostMap));
-				String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-						JSON.toJSONString(httpPostMap));
-				Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-				boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-				if (!isSuccess) {
-					throw new BusinessException("向验码系统同步信息失败");
+				if (importFlag) {
+					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+							JSON.toJSONString(httpPostMap));
+					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
+					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+					if (!isSuccess) {
+						throw new BusinessException("向验码系统同步信息失败");
+					}
 				}
 				// 保存送信息到验码系统的日志
 				optLogService.addOptLog("活动Id:" + activity.getId(), "", "验码接口修改活动信息-----" + changeDescribe.toString());
@@ -1419,7 +1454,6 @@ public class ActivityServiceImpl implements ActivityService {
 			// 遍历列表，将列表中的数据拼装后放入到临时列表中
 			for (Map<String, Object> codeMap : codeList) {
 				BatchCode oc = new BatchCode();
-				oc.setId(IDUtil.getID());
 				oc.setBatchId(batch.getId());
 				oc.setCodeId(String.valueOf(codeMap.get("id")));
 				oc.setCode(String.valueOf(codeMap.get("code")));
