@@ -2,6 +2,7 @@ package com.mocredit.security.service;
 
 import com.mocredit.security.dao.UserDao;
 import com.mocredit.security.entity.User;
+import com.mocredit.security.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
      */
     public User createUser(User user) {
         //加密密码
+        user.setMd5Pwd(MD5Util.MD5(user.getPassword()));
         passwordHelper.encryptPassword(user);
         return userDao.createUser(user);
     }
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user, User oUser) {
         if (!oUser.getPassword().equals(user.getPassword())) {
+            user.setMd5Pwd(MD5Util.MD5(user.getPassword()));
             passwordHelper.encryptPassword(user);
         }
         return userDao.updateUser(user);

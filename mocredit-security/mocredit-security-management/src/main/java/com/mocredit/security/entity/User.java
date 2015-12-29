@@ -13,6 +13,7 @@ public class User implements Serializable {
     private Long organizationId; //所属公司
     private String username; //用户名
     private String password; //密码
+    private String md5Pwd;//md5密码
     private String ctime;//创建时间
     private String utime;//更新时间
     private String salt; //加密密码的盐
@@ -36,6 +37,14 @@ public class User implements Serializable {
             ctime = ctime.substring(0, ctime.length() - 2);
         }
         this.ctime = ctime;
+    }
+
+    public String getMd5Pwd() {
+        return md5Pwd;
+    }
+
+    public void setMd5Pwd(String md5Pwd) {
+        this.md5Pwd = md5Pwd;
     }
 
     public String getUtime() {

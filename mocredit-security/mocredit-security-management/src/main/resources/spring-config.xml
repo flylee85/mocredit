@@ -9,8 +9,17 @@
           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-    <util:properties id="shiroClient" location="classpath:config/shiro-client.properties"/>
-    <context:property-placeholder location="classpath:resources.properties"/>
+    <bean id="configproperties"
+          class="com.mocredit.security.utils.FilePropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <!--<value>file:./../../../resources.properties</value>-->
+                <!--<value>file:./../../../shiro-client.properties</value>-->
+                <value>classpath:resources.properties</value>
+                <value>classpath:shiro-client.properties</value>
+            </list>
+        </property>
+    </bean>
 
     <!-- 扫描注解Bean -->
     <context:component-scan base-package="com.mocredit.security">
