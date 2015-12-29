@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mocredit.gateway.persistence.RecordMapper">
+    <resultMap id="BaseResultMap" type="com.mocredit.gateway.entity.Record">
+        <result column="id" property="id"/>
+        <result column="request_id" property="requestId"/>
+        <result column="req_type" property="reqType"/>
+        <result column="order_id" property="orderId"/>
+        <result column="old_order_id" property="oldOrderId"/>
+        <result column="code" property="code"/>
+        <result column="card_num" property="cardNum"/>
+        <result column="card_exp_date" property="cardExpDate"/>
+        <result column="tran_amt" property="tranAmt"/>
+        <result column="ctime" property="cTime"/>
+    </resultMap>
+    <insert id="save" parameterType="com.mocredit.gateway.entity.Record">
+		insert into
+		`record`(request_id,req_type,order_id,old_order_id,code,card_num,card_exp_date,tran_amt,ctime)
+		values(#{t.requestId},#{t.reqType},#{t.orderId},#{t.oldOrderId},#{t.code},#{t.cardNum},#{t.cardExpDate},#{t.tranAmt},now())
+	</insert>
+    <select id="selectByOldOrderIdCount" resultType="int">
+		select count(1) from `record` where old_order_id=#{orderId}
+    </select>
+    <select id="selectByOrderId" resultMap="BaseResultMap">
+       select * from `record` where order_id=#{orderId}
+    </select>
+</mapper>
