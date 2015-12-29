@@ -214,15 +214,13 @@ public class SendCodeServiceImpl implements SendCodeService {
             List<BatchCode> batchCodeAllList = new ArrayList<>();
             Map<String, Object> batchMap = new HashMap<>();
             batchMap.put("batchId", batchId);
-            if (SendType.BREAKPOINT_SEND.getValue().equals(sendType)) {
-                batchMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
-            }
             int pageNum = 1;
             boolean isFinish = false;
             while (!isFinish) {
                 PageHelper.startPage(pageNum, pageSize);
                 List<BatchCode> batchCodeList;
                 if (SendType.BREAKPOINT_SEND.getValue().equals(sendType)) {
+                    batchMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
                     batchCodeList = batchCodeMapper.queryBPBatchCodeList(batchMap);
                 } else {
                     batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);

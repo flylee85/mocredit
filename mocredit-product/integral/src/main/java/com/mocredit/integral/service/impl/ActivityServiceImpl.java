@@ -200,4 +200,9 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
     public boolean updateByExpireDate(String expireDate) {
         return activityMapper.updateByExpireDate(expireDate) > 0;
     }
+
+    @Override
+    public boolean minusCountByActivityId(String activityId) {
+        return activityMapper.minusCountByActId(activityId) > 0;
+    }
 }

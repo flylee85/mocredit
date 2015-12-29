@@ -40,6 +40,7 @@ public class Order {
     private Integer amt;//积分
     private String batchno; //老机具批次号
     private String searchno;//老机具流水号
+    private Integer isSuccess;
     private String msg;
 
     public String getBatchno() {
@@ -152,6 +153,14 @@ public class Order {
 
     public void setCtime(Date ctime) {
         this.ctime = ctime;
+    }
+
+    public Integer getIsSuccess() {
+        return isSuccess;
+    }
+
+    public void setIsSuccess(Integer isSuccess) {
+        this.isSuccess = isSuccess;
     }
 
     public String getMsg() {

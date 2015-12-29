@@ -47,6 +47,14 @@ public interface OrderMapper {
     int isExistOrder(@Param(value = "orderId") String orderId);
 
     /**
+     * 判断订单是否存在
+     *
+     * @param orderId
+     * @return
+     */
+    int isExistOldOrder(@Param(value = "orderId") String orderId);
+
+    /**
      * 给订单管理系统提供同步订单接口
      *
      * @param offset
