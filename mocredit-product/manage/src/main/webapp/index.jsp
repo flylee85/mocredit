@@ -8,6 +8,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <base href="<%=basePath %>" />
     <title>亿美汇金</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="common/css/bootstrap.css">
@@ -124,7 +125,7 @@
 <!-- nav -->
 <nav id="nav" class="nav-primary visible-lg nav-vertical">
     <ul class="nav" data-spy="affix" data-offset-top="50">
-        <%--  <li class="dropdown-submenu">
+        <li class="dropdown-submenu">
               <a href="enterprise.html" class="changePage"><i class="icon-th icon-xlarge"></i>企业管理</a>
           </li>
           <li class="dropdown-submenu">
@@ -132,7 +133,7 @@
           </li>
           <li class="dropdown-submenu">
               <a href="store.html" class="changePage"><i class="icon-th icon-xlarge"></i>门店管理</a>
-          </li>--%>
+          </li>
         <c:forEach items="${menus}" var="m">
             <li class="dropdown-submenu">
                 <a href="${m.url}" class="changePage"><i class="icon-list icon-xlarge"></i>${m.name}</a>

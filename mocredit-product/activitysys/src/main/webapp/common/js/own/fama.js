@@ -118,14 +118,12 @@
 			formObject.mmsJson = $("#endJson").attr('data-json');
 			formObject.codeno = $("#code-select").val();
 			formObject.subject = $("#subject").val();
-			console.log(formObject.mmsJson);
 		}
 		if(sendSmsType.length>0){
 			sendSmsType=sendSmsType.substr(0,sendSmsType.length-1);
 		}
 		formObject.sendSmsType = sendSmsType;
 		formObject.noticeSmsMsg = noticeSmsMsg;
-
 		formObject.storeList = [];
 		$("#addActivityFamaForm .choosedStore span").each(function () {
 			var $this = $(this);
@@ -274,7 +272,17 @@
 					$("#caixin").prop('checked', true).next('i').addClass('checked');
 					$("#caixinFama").show();
 				}
-
+				
+				//兑换渠道
+				var exchangeChannel=dataObject.exchangeChannel;
+				console.log(dataObject.exchangeChannel);
+				if(exchangeChannel){
+					var exchangeChannels= exchangeChannel.split(",");
+					for(var i in exchangeChannels){
+						console.log($("input[name=exchangeChannel][value="+exchangeChannels[i]+"]"));
+						$("input[name=exchangeChannel][value="+exchangeChannels[i]+"]").siblings("i").click();
+					}
+				}
 				addActivityFamaForm.find("input[name='startTime']").val(dataObject.startTime);
 				addActivityFamaForm.find("input[name='endTime']").val(dataObject.endTime);
 				if( dataObject.selectDate){

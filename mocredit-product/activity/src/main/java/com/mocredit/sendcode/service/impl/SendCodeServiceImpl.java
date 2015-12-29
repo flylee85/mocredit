@@ -214,13 +214,15 @@ public class SendCodeServiceImpl implements SendCodeService {
             List<BatchCode> batchCodeAllList = new ArrayList<>();
             Map<String, Object> batchMap = new HashMap<>();
             batchMap.put("batchId", batchId);
+            if (SendType.BREAKPOINT_SEND.getValue().equals(sendType)) {
+                batchMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
+            }
             int pageNum = 1;
             boolean isFinish = false;
             while (!isFinish) {
                 PageHelper.startPage(pageNum, pageSize);
                 List<BatchCode> batchCodeList;
                 if (SendType.BREAKPOINT_SEND.getValue().equals(sendType)) {
-                    batchMap.put("status", BatchCodeStatus.ALREADY_SEND.getValue());
                     batchCodeList = batchCodeMapper.queryBPBatchCodeList(batchMap);
                 } else {
                     batchCodeList = batchCodeMapper.queryBatchCodeList(batchMap);
@@ -511,7 +513,7 @@ public class SendCodeServiceImpl implements SendCodeService {
             BatchCode oc = batchCodeList.get(i);
             // 组件新的活动批次码对象
             BatchCodeVO codeVO = new BatchCodeVO();
-            codeVO.setCodeSerialNumber(String.valueOf(oc.getCodeId()));// 码库提码的id
+            codeVO.setCodeSerialNumber(oc.getId());//码ID
             codeVO.setCode(String.valueOf(oc.getCode()));// 码库提码的码值
             codeVO.setActivityId(act.getId());// 活动Id
             codeVO.setActivityName(act.getName());// 活动名称

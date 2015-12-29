@@ -160,49 +160,49 @@
 						   <div class="col-lg-8 weekCheck clearfix">
 							   <div class="checkbox">
 								   <label class="checkbox-custom">
-									   <input type="checkbox" value="1" >
+									   <input type="checkbox" value="1" name="aaaa" data-parsley-required="true" data-parsley-mincheck="1" >
 									   <i class="icon-unchecked "></i>
 									   星期一
 								   </label>
 							   </div>
 							   <div class="checkbox">
 								   <label class="checkbox-custom">
-									   <input type="checkbox" value="2">
+									   <input type="checkbox" name="aaaa" value="2">
 									   <i class="icon-unchecked "></i>
 									   星期二
 								   </label>
 							   </div>
 							   <div class="checkbox">
 								   <label class="checkbox-custom">
-									   <input type="checkbox" value="3">
+									   <input type="checkbox" name="aaaa" value="3">
 									   <i class="icon-unchecked "></i>
 									   星期三
 								   </label>
 							   </div>
 							   <div class="checkbox">
 								   <label class="checkbox-custom">
-									   <input type="checkbox" value="4">
+									   <input type="checkbox" name="aaaa" value="4">
 									   <i class="icon-unchecked "></i>
 									   星期四
 								   </label>
 							   </div>
 							   <div class="checkbox">
 								   <label class="checkbox-custom">
-									   <input type="checkbox" value="5">
+									   <input type="checkbox" name="aaaa" value="5">
 									   <i class="icon-unchecked "></i>
 									   星期五
 								   </label>
 							   </div>
 							   <div class="checkbox">
 								   <label class="checkbox-custom">
-									   <input type="checkbox" value="6">
+									   <input type="checkbox" name="aaaa" value="6">
 									   <i class="icon-unchecked "></i>
 									   星期六
 								   </label>
 							   </div>
 							   <div class="checkbox">
 								   <label class="checkbox-custom">
-									   <input type="checkbox" value="7">
+									   <input type="checkbox" name="aaaa" value="7">
 									   <i class="icon-unchecked "></i>
 									   星期日
 								   </label>
@@ -211,26 +211,38 @@
 
 					   </div>
 				   </div>
-				   <!-- <div class="panel clearfix">
-					   <header class="panel-heading bg-white">其他设定</header>
+				   <div class="panel clearfix  maxNumber">
+					   <header class="panel-heading bg-white">活动次数限制</header>
 					   <div class="form-group">
-						   <label class="col-lg-2 control-label">活动次数限制</label>
-
-						   <div class="col-lg-2">
-							   <select name="maxType" tabindex="14" onchange="cishuLimite(this)" class="day form-control input-small " style="width: auto;">
-								   <option value="01">每日</option>
-								   <option value="02">每周</option>
-								   <option value="03">每月</option>
-								   <option value="">不限制</option>
-							   </select>
-						   </div>
-						   <div class="col-lg-6" id="maxTypeText">
+						   <label class="col-lg-2 control-label">日最大次数</label>
+						   <div class="col-lg-2" id="maxTypeText">
 							   <input type="text" tabindex="15" class="form-control input-small parsley-validated"
-									 data-parsley-type="integer" data-parsley-min="1" name="maxNumber" data-parsley-required="true">
+									 data-parsley-type="integer" data-parsley-min="1"  id="DayMax">
+						   </div>
+						   <label class="col-lg-2 control-label">周最大次数</label>
+						   <div class="col-lg-2" id="maxTypeText">
+							   <input type="text" tabindex="15" class="form-control input-small parsley-validated"
+									 data-parsley-type="integer" data-parsley-min="1" id="WeekMax">
+						   </div>
+						   <label class="col-lg-2 control-label">月最大次数</label>
+						   <div class="col-lg-2" id="maxTypeText">
+							   <input type="text" tabindex="15" class="form-control input-small parsley-validated"
+									 data-parsley-type="integer" data-parsley-min="1" id="MonthMax">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						  <label class="col-lg-2 control-label">年最大次数</label>
+						   <div class="col-lg-2" id="maxTypeText">
+							   <input type="text" tabindex="15" class="form-control input-small parsley-validated"
+									 data-parsley-type="integer" data-parsley-min="1" id="YearMax">
+						   </div>
+						   <label class="col-lg-2 control-label">总最大次数</label>
+						   <div class="col-lg-2" id="maxTypeText">
+							   <input type="text" tabindex="15" class="form-control input-small parsley-validated"
+									 data-parsley-type="integer" data-parsley-min="1" id="TotalMax">
 						   </div>
 					   </div>
 				   </div>
-				    -->
 				   <div class="panel clearfix" style="position:relative;">
 					   <header class="panel-heading bg-white">适用于门店</header>
 					   <button type="button" class="btn btn-default col-lg-12 chooseShop popEnter" href="#">选择门店</button>

@@ -103,7 +103,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 	 */
 	public AjaxResponseData verifyCodeForNewPos(String device, String request_serial_number, String code) {
 		AjaxResponseData ard = new AjaxResponseData();
-		Object[] verifyCode = verifyCode(ard, code, device, request_serial_number, true,ExchangeChannel.POS);
+		Object[] verifyCode = verifyCode(ard, code, device, request_serial_number, true, ExchangeChannel.POS);
 
 		if (null == verifyCode) {
 			return ard;
@@ -218,7 +218,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 	public String verifyCodeForOldPos(String batchNo, String searchNo, String device, String code) {
 		AjaxResponseData ard = new AjaxResponseData();
 		String requestSerialNumber = genRequestSerailNumber(batchNo, searchNo, device);
-		Object[] verifyCode = verifyCode(ard, code, device, requestSerialNumber, true,ExchangeChannel.POS);
+		Object[] verifyCode = verifyCode(ard, code, device, requestSerialNumber, true, ExchangeChannel.POS);
 		StringBuilder str = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?><NewDataSet><Table>");
 		if (null == verifyCode) {
 			str.append("<isSuccess>false</isSuccess>").append("<error>").append(ard.getErrorMsg())
@@ -289,11 +289,11 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		return str.toString();
 	}
 
-	public AjaxResponseData verifyCodeForRecharge(String orderId, String code) {
+	public AjaxResponseData verifyCodeForRecharge(String orderId, String code, String phone) {
 		AjaxResponseData ard = new AjaxResponseData();
-		Object[] verifyCode = verifyCode(ard, code, "", orderId, false,ExchangeChannel.RECHARGE);
+		Object[] verifyCode = verifyCode(ard, code, phone, orderId, false, ExchangeChannel.RECHARGE);
 
-		//返回数据
+		// 返回数据
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		if (null == verifyCode) {
 			returnMap.put("isSuccess", false);
@@ -306,6 +306,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		if (activityCode != null) { // 属于有效的
 			returnMap.put("orderId", orderId);
 			returnMap.put("code", code);
+			returnMap.put("codeId", activityCode.getCodeSerialNumber());
 			returnMap.put("activityOutCode", activityCode.getOutCode());
 			returnMap.put("amount", activityCode.getAmount());
 			returnMap.put("isSuccess", true);
@@ -339,14 +340,14 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 	 * 
 	 * @param ard
 	 * @param code
-	 * @param device
+	 * @param device 设备号；充值时为手机号
 	 * @param request_serial_number
 	 * @param checkDevice
 	 *            是否校验设备号
 	 * @return 返回码、门店、活动信息对象，如果校验未通过，返回null
 	 */
 	private Object[] verifyCode(AjaxResponseData ard, String code, String device, String request_serial_number,
-			boolean checkDevice,ExchangeChannel channel) {
+			boolean checkDevice, ExchangeChannel channel) {
 		// 判断券码的规则合法性
 		if (!ActivityCodeUtils.verifyActivityCode(code)) {
 			ard.setSuccess(false);
@@ -387,14 +388,22 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 					VerifyLogCode.VERIFY_HAS_USED);
 			return null;
 		}
-		
-		//兑换渠道校验
-		if(!channel.getValue().equals(activityCode.getExchangeChannel())){
+
+		// 兑换渠道校验
+		if (null == activityCode.getExchangeChannel()
+				|| !activityCode.getExchangeChannel().contains(channel.getValue())) {
 			ard.setSuccess(false);
 			ard.setErrorMsg("此券码不适用于该兑换方式!");
 			ard.setErrorCode(ErrorCode.CODE_14.getCode());
 			addLog(device, request_serial_number, activityCode, new ActActivityStore(), VerifyCodeStatus.VERIFYCODE,
 					VerifyLogCode.VERIFY_INVALID_CHANNEL);
+			return null;
+		}
+		//手机充值时校验手机号
+		if (channel.equals(ExchangeChannel.RECHARGE)&&!device.equals(activityCode.getCustomMobile())) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("不能用于该手机号");
+			ard.setErrorCode(ErrorCode.CODE_14.getCode());
 			return null;
 		}
 		// 判断券码是否适用当前的门店 ，活动和门店的映射
@@ -614,7 +623,6 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		this.actActivityStoreMapper.batchSave(actActivityCodeVO.getActActivityStores());
 		List<TActivityCode> newCodes = new ArrayList<TActivityCode>();
 		for (TActivityCode c : actActivityCodeVO.getActivityCodeList()) {
-			c.setId(UUIDUtils.UUID32());
 			c.setStatus(ActivityCodeStatus.NOT_USED.getValue());
 			newCodes.add(c);
 		}
@@ -662,7 +670,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 				actActivityCodeVO.getContractId(), actActivityCodeVO.getAmount(), actActivityCodeVO.getStartTime(),
 				actActivityCodeVO.getEndTime(), actActivityCodeVO.getSelectDate(), actActivityCodeVO.getMaxNumber(),
 				actActivityCodeVO.getOutCode(), actActivityCodeVO.getEnterpriseCode(),
-				actActivityCodeVO.getActivityCode(), ActivityCodeStatus.NOT_USED.getValue(),actActivityCodeVO.getExchangeChannel());
+				actActivityCodeVO.getActivityCode(), ActivityCodeStatus.NOT_USED.getValue(),
+				actActivityCodeVO.getExchangeChannel());
 		// 3.更新活动关联的门店
 		this.actActivityStoreMapper.deleteByActivityId(actActivityCodeVO.getActivityId());
 		this.actActivityStoreMapper.batchSave(actActivityCodeVO.getActActivityStores());

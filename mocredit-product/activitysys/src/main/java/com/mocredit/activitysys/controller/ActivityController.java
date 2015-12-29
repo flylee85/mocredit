@@ -261,7 +261,6 @@ public class ActivityController {
 			// 如果活动对象中id不存在或者为空，则执行添加操作
 			if ("".equals(activity.getId()) || activity.getId() == null) {
 				// 生成一个12位的,并添加活动对象
-				activity.setMaxNumber(1);
 				affectCount = activityService.addActivity(activity);
 			}
 			// 如果活动对象中id存在且不为空，则执行更新操作

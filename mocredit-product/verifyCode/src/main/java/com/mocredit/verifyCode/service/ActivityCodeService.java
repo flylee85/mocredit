@@ -72,7 +72,7 @@ public interface ActivityCodeService {
 	 * @param code 码
 	 * @return
 	 */
-	AjaxResponseData verifyCodeForRecharge(String orderId, String code);
+	AjaxResponseData verifyCodeForRecharge(String orderId, String code,String phone);
 
 	/**
 	 *

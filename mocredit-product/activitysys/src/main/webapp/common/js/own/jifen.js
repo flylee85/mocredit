@@ -75,6 +75,12 @@
 		formObject.endTime = formObject.endTime+' 23:59:59';
 		formObject.enterpriseName=$("#addActivityJifenForm select[name=enterpriseId] option:selected").text();
 		formObject.contractName=$("#addActivityJifenForm select[name=contractId] option:selected").text();
+		//次数限制处理
+		formObject.maxNumber="";
+		$(".maxNumber input").each(function(){
+			var $this=$(this);
+			formObject.maxNumber+=this.id+":"+$this.val()+";";
+		})
 		//提交
 		$.ajax({
 			type: "post",
@@ -148,7 +154,6 @@
 				addActivityFamaForm.find("textarea[name='bins']").val(dataObject.bins);
 				addActivityFamaForm.find("select[name='channel']").val(dataObject.channel);
 				addActivityFamaForm.find("select[name='channel']").attr('data-val',dataObject.channel);
-				console.log(addActivityFamaForm.find("input[name='exchangeType'][value="+dataObject.exchangeType+"]"));
 				addActivityFamaForm.find("input[name='exchangeType'][value="+dataObject.exchangeType+"]").attr("checked","checked");
 				if(dataObject.storeCount != 0){
 					addActivityFamaForm.find(".chooseShop").addClass('popFloat').text("已选择 " + dataObject.storeCount + " 家门店");
@@ -170,6 +175,14 @@
 					for(var i=0;i<selectDateArray.length;i++){
 						var value = selectDateArray[i];
 						$("#selectDateJifenCheckboxFormGroup").find("input[value='"+value+"']").prop('checked', true).next('i').addClass('checked');
+					}
+				}
+				//处理次数限制
+				if(dataObject.maxNumber){
+					var max=dataObject.maxNumber.split(";");
+					for(var i in max){
+						var value=max[i].split(":");
+						$("#"+value[0]).val(value[1]);
 					}
 				}
 			}else{

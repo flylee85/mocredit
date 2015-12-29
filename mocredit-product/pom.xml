@@ -18,6 +18,7 @@
         <module>integral</module>
         <module>eGateway</module>
         <module>wememms</module>
+        <module>recharge</module>
     </modules>
 
     <build>

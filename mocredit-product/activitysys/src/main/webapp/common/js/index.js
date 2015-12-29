@@ -134,3 +134,5 @@ function sendMsg(isOk,msg,callback){
 		window.setTimeout('$("#operaState").modal("hide")', 1000);
 	}
 }
+
+$("#nav a:first").click();
