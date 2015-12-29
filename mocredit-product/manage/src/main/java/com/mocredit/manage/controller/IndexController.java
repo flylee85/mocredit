@@ -1,6 +1,7 @@
 package com.mocredit.manage.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.security.web.ShiroBaseController;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,6 @@ import java.util.Properties;
  */
 @RestController
 public class IndexController extends ShiroBaseController {
-    @Qualifier("shiroClient")
-    @Autowired
-    private Properties shiroClient;
-
     @RequestMapping("/")
     public ModelAndView index() {
         ModelAndView mav = new ModelAndView("login");
@@ -51,7 +48,7 @@ public class IndexController extends ShiroBaseController {
         Map<String, String> param = new HashMap<>();
         param.put("username", username);
         param.put("password", password);
-        getMenus(shiroClient.getProperty("client.app.key"), shiroClient.getProperty("client.app.loginUrl"), JSON.toJSONString(param), request);
+        getMenus(PropertiesUtil.getValue("client.app.key"), PropertiesUtil.getValue("client.app.loginUrl"), JSON.toJSONString(param), request);
         if ((boolean) request.getAttribute("isSuccess")) {
             mav = new ModelAndView("index");
             mav.addObject("menus", request.getAttribute("menusList"));
@@ -74,7 +71,7 @@ public class IndexController extends ShiroBaseController {
 //        //定义页面对象，用来跳转指定页面，下面一句代码的意思是：跳转到Web容器中的index.jsp页面
 //        ModelAndView mav = new ModelAndView("index");
 ////        List<Resource> menus = (List<Resource>) SecurityUtils.getSubject().getSession().getAttribute("menus");
-//        mav.addObject("menus", getMenus(shiroClient.getProperty("client.app.key"),shiroClient.getProperty("client.app.loginUrl")));
+//        mav.addObject("menus", getMenus(PropertiesUtil.getValue("client.app.key"), PropertiesUtil.getValue("client.app.loginUrl")));
 //        return mav;
 //    }
    /* @RequestMapping("/logout")
