@@ -340,7 +340,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 	 * 
 	 * @param ard
 	 * @param code
-	 * @param device 设备号；充值时为手机号
+	 * @param device
+	 *            设备号；充值时为手机号
 	 * @param request_serial_number
 	 * @param checkDevice
 	 *            是否校验设备号
@@ -399,8 +400,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 					VerifyLogCode.VERIFY_INVALID_CHANNEL);
 			return null;
 		}
-		//手机充值时校验手机号
-		if (channel.equals(ExchangeChannel.RECHARGE)&&!device.equals(activityCode.getCustomMobile())) {
+		// 手机充值时校验手机号
+		if (channel.equals(ExchangeChannel.RECHARGE) && !device.equals(activityCode.getCustomMobile())) {
 			ard.setSuccess(false);
 			ard.setErrorMsg("不能用于该手机号");
 			ard.setErrorCode(ErrorCode.CODE_14.getCode());
@@ -698,6 +699,19 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 
 		this.activityCodeBlackListsMapper.deleteBlackListsByActivityId(activity_id);
 		ard.setSuccess(true);
+		return ard;
+	}
+
+	public AjaxResponseData delayForSys(Date endTime, String codeId) {
+		AjaxResponseData ard = new AjaxResponseData();
+		TActivityCode activityCode = new TActivityCode();
+		activityCode.setEndTime(endTime);
+		activityCode.setId(codeId);
+		int count = acm.updateActivityCode(activityCode);
+		if (count == 0) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("码不存在，延期失败");
+		}
 		return ard;
 	}
 }

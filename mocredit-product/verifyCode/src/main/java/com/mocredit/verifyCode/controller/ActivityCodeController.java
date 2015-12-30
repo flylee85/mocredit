@@ -23,6 +23,7 @@ import com.alibaba.fastjson.JSON;
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
 import com.mocredit.base.enums.ActActivityCodeOperType;
 import com.mocredit.base.enums.ErrorCode;
+import com.mocredit.base.enums.SysCodeOper;
 import com.mocredit.base.util.DateUtil;
 import com.mocredit.base.util.UUIDUtils;
 import com.mocredit.log.task.VerifyCodeLogTask;
@@ -320,6 +321,22 @@ public class ActivityCodeController {
 		return returnStr;
 	}
 
+	/**
+	 * 用于系统管理员操作码 <br />
+	 * { <br />
+	 * oper :1撤销 2延期,默认为撤销 <br />
+	 * requestSerialNumber 订单号 <br />
+	 * device 机具号 <br />
+	 * endTime 结束时间 <br />
+	 * id 码ID <br />
+	 * .............. <br />
+	 * }
+	 * 
+	 * @param request
+	 * @param response
+	 * @param param
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/revokeActivityCodeForSys", produces = { "application/json;charset=UTF-8" })
 	public String revokeActivityCodeForSys(HttpServletRequest request, HttpServletResponse response,
@@ -335,21 +352,45 @@ public class ActivityCodeController {
 			ard.setErrorCode(ErrorCode.CODE_30.getCode());
 			return JSON.toJSONString(ard);
 		}
-		// 判断是否传递了POS序列号与券码
-		if (StringUtils.isEmpty(verifiedCode.getRequestSerialNumber())) {
-			ard.setSuccess(false);
-			ard.setErrorMsg("POS序列号或券码为空！");
-			ard.setErrorCode(ErrorCode.CODE_15.getCode());
-			return JSON.toJSONString(ard);
-		}
-		try {
-			ard = this.activityCodeService.revokeForSys(verifiedCode.getRequestSerialNumber(),
-					verifiedCode.getDevice());
-		} catch (Exception e) {
-			ard.setSuccess(false);
-			ard.setErrorMsg("请求过程发生事务异常!");
-			ard.setErrorCode(ErrorCode.CODE_30.getCode());
-			e.printStackTrace();
+		/* 判断操作类型 不同操作码走不同业务 */
+		SysCodeOper oper = SysCodeOper.getEnumTypeByValue(verifiedCode.getOper());
+		switch (null == oper ? SysCodeOper.DEFAULT : oper) {
+		default:
+		case REVOKE:
+			// 判断是否传递了POS序列号与券码
+			if (StringUtils.isEmpty(verifiedCode.getRequestSerialNumber())) {
+				ard.setSuccess(false);
+				ard.setErrorMsg("POS序列号或券码为空！");
+				ard.setErrorCode(ErrorCode.CODE_30.getCode());
+				return JSON.toJSONString(ard);
+			}
+			try {
+				ard = this.activityCodeService.revokeForSys(verifiedCode.getRequestSerialNumber(),
+						verifiedCode.getDevice());
+			} catch (Exception e) {
+				ard.setSuccess(false);
+				ard.setErrorMsg("请求过程发生事务异常!");
+				ard.setErrorCode(ErrorCode.CODE_30.getCode());
+				e.printStackTrace();
+			}
+			break;
+		case DELAY:
+			// 判断是参数
+			if (null == verifiedCode.getEndTime() || StringUtils.isEmpty(verifiedCode.getId())) {
+				ard.setSuccess(false);
+				ard.setErrorMsg("劵码或延期时间为空");
+				ard.setErrorCode(ErrorCode.CODE_30.getCode());
+				return JSON.toJSONString(ard);
+			}
+			try {
+				ard = this.activityCodeService.delayForSys(verifiedCode.getEndTime(), verifiedCode.getId());
+			} catch (Exception e) {
+				ard.setSuccess(false);
+				ard.setErrorMsg("请求过程发生事务异常!");
+				ard.setErrorCode(ErrorCode.CODE_30.getCode());
+				e.printStackTrace();
+			}
+			break;
 		}
 		return JSON.toJSONStringWithDateFormat(ard, DateUtil.FORMAT_YYYYMMDD_HHMMSS);
 	}
