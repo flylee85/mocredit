@@ -57,6 +57,7 @@ import cn.mocredit.gateway.wangpos.bo.CheXiaoQingQiuData;
 import cn.mocredit.gateway.wangpos.bo.CodeRevokeBo;
 import cn.mocredit.gateway.wangpos.bo.EitemBo;
 import cn.mocredit.gateway.wangpos.bo.EitemListBo;
+import cn.mocredit.gateway.wangpos.bo.EitemRevertBo;
 import cn.mocredit.gateway.wangpos.bo.Huodongliebiao;
 import cn.mocredit.gateway.wangpos.bo.JiaMiCeShiData;
 import cn.mocredit.gateway.wangpos.bo.JieSuanXiangYingData;
@@ -318,11 +319,13 @@ public class ControllerServiceImpl implements ControllerService {
             CodeRevokeBo crb = jsonToObject(jsonData.getjData(),CodeRevokeBo.class);
             if(crb != null){
             	CheckCodeRecord ccr = checkCodeRecordRepository.getCheckCodeRecordByBatchno(crb.batchno);
-                EitemBo eitem = codeRevokeOld(ccr.getImei(),ccr.getBatchno(),ccr.getSearchno(),crb.posno);
+            	EitemRevertBo eitem = codeRevokeOld(ccr.getImei(),ccr.getBatchno(),ccr.getSearchno(),crb.posno);
                 String isSuccess = eitem.getIsSuccess();
 
                 ret.setRtnFlag("true".equals(isSuccess) ? "0" : "1");
                 ret.setErrorMes(eitem.getResultInfo());
+                ret.setDes(eitem.getDescription());
+                ret.setPrintInfo(eitem.getXiaoTiao());
                 jsonData.setjData(objectToJson(ret));
                 jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
                 String content = objectToJson(jsonData);
@@ -356,7 +359,7 @@ public class ControllerServiceImpl implements ControllerService {
         return eitemlist.get(0);
     }
 
-    private EitemBo codeRevokeOld(String imei,String batchno,String searchno,String posno){
+    private EitemRevertBo codeRevokeOld(String imei,String batchno,String searchno,String posno){
         Args a = new Args();
         a.setMethodName("redVBarcode");
 //        a.setImei("test1234");
@@ -369,7 +372,7 @@ public class ControllerServiceImpl implements ControllerService {
         a.setSearchno(searchno);
         String retxml = callBarcodeservice(a, String.class);
         logger.info("xml from barcodeservice http yanma" + retxml);
-        List<EitemBo> eitemlist = (List<EitemBo>) XmlUtil.getBO(new EitemBo().getClass(), retxml);
+        List<EitemRevertBo> eitemlist = (List<EitemRevertBo>) XmlUtil.getBO(new EitemRevertBo().getClass(), retxml);
         return eitemlist.get(0);
     }
 
