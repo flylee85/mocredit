@@ -29,7 +29,7 @@ public class HelloController extends ShiroBaseController {
 
     @RequestMapping("/hello")
     public String hello(Model model) {
-        model.addAttribute("menus", getMenus(shiroClient.getProperty("client.app.key")));
+//        model.addAttribute("menus", getMenus(shiroClient.getProperty("client.app.key")));
         return "success";
     }
 

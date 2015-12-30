@@ -60,21 +60,21 @@
             </table>
             <c:if test="${pageTotal>=1}">
                 <ul class="pagination">
-                    <li><a href="role?page=1">首页</a></li>
+                    <li><a href="app?page=1">首页</a></li>
                     <c:if test="${page>1}">
-                        <li><a href="role?page=${page-1 }">上一页</a></li>
+                        <li><a href="app?page=${page-1 }">上一页</a></li>
                     </c:if>
                     <c:if test="${page<=1}">
                         <li class="disabled"><a href="#">上一页</a></li>
                     </c:if>
                     <li><a>${page}/${pageTotal}</a></li>
                     <c:if test="${pageTotal-page>=1}">
-                        <li><a href="role?page=${page+1 }">下一页</a></li>
+                        <li><a href="app?page=${page+1 }">下一页</a></li>
                     </c:if>
                     <c:if test="${pageTotal-page<1}">
                         <li class="disabled"><a href="#">下一页</a></li>
                     </c:if>
-                    <li><a href="role?page=${pageTotal}">末页</a></li>
+                    <li><a href="app?page=${pageTotal}">末页</a></li>
                 </ul>
             </c:if>
         </div>

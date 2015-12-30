@@ -4,8 +4,8 @@
 <mapper namespace="com.mocredit.integral.persistence.OrderMapper">
     <insert id="save" parameterType="com.mocredit.integral.entity.Order">
         insert into
-        `ti_order`(request_id,card_num,store_id,activity_id,amt,order_id,old_order_id,en_code,card_exp_date,ctime,`status`,batch_no,search_no,msg)
-        values(#{t.requestId},#{t.cardNum},#{t.storeId},#{t.activityId},#{t.amt},#{t.orderId},#{t.oldOrderId},#{t.enCode},#{t.cardExpDate},now(),#{t.status},#{t.batchno},#{t.searchno},#{t.msg})
+        `ti_order`(request_id,card_num,store_id,activity_id,amt,order_id,old_order_id,en_code,card_exp_date,ctime,`status`,batch_no,search_no,msg,is_success)
+        values(#{t.requestId},#{t.cardNum},#{t.storeId},#{t.activityId},#{t.amt},#{t.orderId},#{t.oldOrderId},#{t.enCode},#{t.cardExpDate},now(),#{t.status},#{t.batchno},#{t.searchno},#{t.msg},#{t.isSuccess})
     </insert>
     <sql id="Base_Column">
         a.uuid as uuid,
@@ -21,7 +21,9 @@
 		createTime,
 		a.card_exp_date as cardExpDate,
 		a.batch_no as batchno,
-		a.search_no as searchno
+		a.search_no as searchno,
+		a.msg as msg,
+		a.is_success as isSuccess
 	</sql>
     <select id="getOrderByOrderId" resultType="com.mocredit.integral.entity.Order">
         select
@@ -45,6 +47,10 @@
 		select count(1) from
 		`ti_order` where order_id=#{orderId}
 	</select>
+    <select id="isExistOldOrder" resultType="int">
+        select count(1) from
+        `ti_order` where old_order_id=#{orderId} and is_success=1
+    </select>
     <select id="synOrder" resultType="com.mocredit.integral.dto.OrderDto">
         select
         a.uuid as id,

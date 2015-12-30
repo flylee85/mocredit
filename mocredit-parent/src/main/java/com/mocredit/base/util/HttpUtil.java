@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.log4j.Logger;
 
 /**
  * @title :http相关的功能处理工具类
@@ -26,7 +25,6 @@ import org.apache.log4j.Logger;
 public class HttpUtil {
 
 	// 日志对象
-	private static Logger logger = Logger.getLogger(HttpUtil.class);
 	private static int connectTimeout = 3000;// 连接超时值 ,单位:毫秒
 
 	/**
@@ -130,7 +128,6 @@ public class HttpUtil {
 			// "300000");
 			// System.setProperty("sun.net.client.defaultReadTimeout",
 			// "300000");
-			logger.info("connect url:"+urlPath);
 			httpConnection = (HttpURLConnection) url.openConnection();
 			// 设置超时时间，这两句好像不起作用
 			// httpConnection.setConnectTimeout(300000);
@@ -140,7 +137,6 @@ public class HttpUtil {
 			httpConnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");// 头文件必须这样写，否则无效
 
 			printWriter = new PrintWriter(new OutputStreamWriter(httpConnection.getOutputStream(), "UTF-8"));
-			logger.info("connect parameters:"+jsonStr);
 			printWriter.write(jsonStr);
 			// flush输出流的缓冲
 			printWriter.flush();

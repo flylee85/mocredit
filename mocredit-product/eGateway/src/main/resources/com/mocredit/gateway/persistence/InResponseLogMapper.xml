@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mocredit.gateway.persistence.InResponseLogMapper">
+	<insert id="save" parameterType="com.mocredit.gateway.entity.InResponseLog">
+		insert into
+		`in_response_log`(request_id,response,ctime)
+		values(#{t.requestId},#{t.response},now())
+	</insert>
+</mapper>

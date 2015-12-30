@@ -263,17 +263,42 @@ public class HttpRequestUtil {
         System.out
                 .println(doPostJson(
 
-                        "http://117.121.20.146:9092/integral/paymentReserval",
-                        "{\"orderId\":\"34411531133611165\",\"oldOrderId\":\"903110527579\"}"));
-
+                        "http://117.121.20.146:9092/integral/paymentRevoke",
+                        "{\"orderId\":\"r628112839238 \",\"oldOrderId\":\"628112839238\"}"));
         System.out
                 .println(doPostJson(
 
-                        "http://117.121.20.146:9092/integral/paymentReserval",
-                        "{\"orderId\":\"344111105333163365\",\"oldOrderId\":\"748110527607\"}"));
-
-
+                        "http://117.121.20.146:9092/integral/paymentRevoke",
+                        "{\"orderId\":\"r156112841477\",\"oldOrderId\":\"15611284·1477\"}"));
         System.out
+                .println(doPostJson(
+
+                        "http://117.121.20.146:9092/integral/paymentRevoke",
+                        "{\"orderId\":\"r158112932363\",\"oldOrderId\":\"158112932363\"}"));
+        System.out
+                .println(doPostJson(
+
+                        "http://117.121.20.146:9092/integral/paymentRevoke",
+                        "{\"orderId\":\"r490111933863\",\"oldOrderId\":\"490111933863\"}"));
+        System.out
+                .println(doPostJson(
+
+                        "http://117.121.20.146:9092/integral/paymentRevoke",
+                        "{\"orderId\":\"r644111936881\",\"oldOrderId\":\"644111936881\"}"));
+        System.out
+                .println(doPostJson(
+
+                        "http://117.121.20.146:9092/integral/paymentRevoke",
+                        "{\"orderId\":\"r490111933863\",\"oldOrderId\":\"490111933863\"}"));
+
+       /* System.out
+                .println(doPostJson(
+
+                        "http://117.121.20.146:9092/integral/paymentReserval",
+                        "{\"orderId\":\"344111105333163365\",\"oldOrderId\":\"748110527607\"}"));*/
+
+
+      /*  System.out
                 .println(doPostJson(
 
                         "http://117.121.20.146:9092/integral/paymentRevoke",
@@ -290,7 +315,7 @@ public class HttpRequestUtil {
                 .println(doPostJson(
 
                         "http://117.121.20.146:9092/integral/paymentRevoke",
-                        "{\"orderId\":\"19031105275791\",\"oldOrderId\":\"903110527579\"}"));
+                        "{\"orderId\":\"19031105275791\",\"oldOrderId\":\"903110527579\"}"));*/
 
       /*  System.out
                 .println(doPostJson(

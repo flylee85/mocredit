@@ -1,0 +1,2 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+	<script type="text/javascript" src="common/lib/jquery/jquery-1.11.1.min.js"></script>

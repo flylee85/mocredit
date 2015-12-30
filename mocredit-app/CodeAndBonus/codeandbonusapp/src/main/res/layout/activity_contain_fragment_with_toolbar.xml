@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar"/>
+    <android.support.v4.widget.DrawerLayout
+        android:layout_width="match_parent"
+        android:id="@+id/drawer"
+        android:layout_height="match_parent">
+        <RelativeLayout
+
+            android:id="@+id/container_main_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ProgressBar
+                android:id="@+id/signin_progressbar"
+                android:layout_width="@dimen/p150"
+                android:layout_above="@+id/signin_running_msg"
+                android:layout_height="@dimen/p150"
+                android:layout_centerHorizontal="true"
+                style="@android:style/Widget.Holo.ProgressBar.Large"
+                android:indeterminate="false" />
+            <TextView
+                android:id="@+id/signin_running_msg"
+                android:layout_centerInParent="true"
+                style="@style/App.Layout.TextView.Normal"
+                android:layout_marginTop="@dimen/p20"/>
+        </RelativeLayout>
+>
+    <LinearLayout
+        android:layout_width="@dimen/p300"
+        android:layout_gravity="start"
+        android:clickable="true"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/left_menu_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"></ListView>
+        <TextView
+            android:id="@+id/version"
+            style="@style/App.Layout.Item"
+            android:clickable="false"
+            android:background="#00ffffff"
+            android:textColor="@color/theme_color1"
+            android:text="版本号：V1.0"/>
+    </LinearLayout>
+    </android.support.v4.widget.DrawerLayout>
+</LinearLayout>

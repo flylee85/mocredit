@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>商家管理</title>
+</head>
+<body>
+<section class="main padder">
+	<div class="clearfix">
+		<h4><i class="icon-list"></i> 商家管理</h4>
+	</div>
+	<div class="clearfix">
+		<ul class="breadcrumb">
+			<li><a href="#"><i class="icon-home"></i>首页</a></li>
+			<li class="null-hide"><a href="contract.html" class="changePage"><i class="icon-list-ul"></i>合同列表</a></li>
+			<li class="active">商家列表</li>
+		</ul>
+	</div>
+	<section class="panel">
+		<div class="tab-content">
+			<div id="shangjia" class="tab-pane fade active in">
+				<div class="m-t-small">
+					<a href="#addShangjia" data-toggle="modal" class="btn btn-primary addMerchant btn-info">
+						<i class="icon-plus"></i> 添加商家
+					</a>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<section class="panel">
+							<div class="pull-out">
+								<table class="table table-striped m-b-none" data-ride="datatables">
+									<thead>
+									<tr>
+										<th width="25%">商家名称</th>
+										<th width="25%">创建时间</th>
+										<th width="25%">门店数量</th>
+										<th width="25%">操作</th>
+									</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</section>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</section>
+<!-- .modal -->
+<div id="addShangjia" class="modal fade" data-backdrop="static">
+	<form class="form-horizontal" >
+		<div class="modal-dialog pos-abt modal-lger" style="margin-top:-235px; top:50%">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+					<h4 class="modal-title myModalLabel">添加商家</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="form-group">
+							<label class="col-lg-3 control-label">商家名称</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control input-small parsley-validated" data-parsley-required="true" placeholder="商家名称" name="name">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-3 control-label">联系人</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control input-small parsley-validated" data-parsley-required="true" placeholder="联系人" name="linkman">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-3 control-label">联系电话</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control input-small parsley-validated" data-parsley-required="true" placeholder="联系电话" name="linkphone">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-3 control-label">联系地址</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control input-small parsley-validated" data-parsley-required="true" placeholder="联系地址" name="address">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-3 control-label">备注</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control input-small parsley-validated"  placeholder="备注" name="descr">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+				 <div class="row add">
+					  <button type="button" class="btn btn-default backToList" data-dismiss="modal">取 消</button>
+					  <button id="addItem" type="button" class="btn btn-primary">确 认</button>
+				  </div>
+				</div>
+			</div><!-- /.modal-content -->
+		</div>
+	</form>
+</div>
+<!-- / .modal -->
+<script src="common/js/own/merchant.js"></script>
+</body>
+</html>

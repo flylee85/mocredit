@@ -73,4 +73,29 @@ public interface OrderService extends BaseService<Order> {
     List<Map<String, Object>> findOrderByList(OrderDto orderDto);
 
     int findOrderByListCount(OrderDto orderDto);
+
+    /**
+     * 根据订单id判断订单是否已经被撤销了
+     *
+     * @param orderId
+     * @return
+     */
+
+    boolean isExistOldOrder(String orderId);
+
+    /**
+     * 保存撤销流水并计数减一
+     *
+     * @param order
+     * @return
+     */
+    boolean savePaymentRevoke(Order order);
+
+    /**
+     * 保存冲正流水并计数减一
+     *
+     * @param order
+     * @return
+     */
+    boolean savePaymentReserval(Order order);
 }

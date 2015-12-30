@@ -215,20 +215,17 @@ public class HttpRequestService extends LogService {
             order.setStatus(OrderStatus.PAYMENT.getValue());
             order.setMsg(resp.getErrorMsg());
             if (anaFlag) {
-                // 设置订单reuestId和交易完成状态
-                if (!orderService.saveAndCount(order)) {
-                    resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
-                            .getValue());
-                    resp.setErrorMsg(ErrorCodeType.SAVE_DATEBASE_ERROR
-                            .getText());
-                    return false;
-                } else {
-                    return true;
-                }
+                order.setIsSuccess(1);
             } else {
-                orderService.saveAndCount(order);
-                return anaFlag;
+                order.setIsSuccess(0);
             }
+            if (anaFlag) {
+                // 设置订单reuestId和交易完成状态
+                orderService.saveAndCount(order);
+            } else {
+                orderService.save(order);
+            }
+            return anaFlag;
         } catch (Exception e) {
             resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
             resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
@@ -300,6 +297,24 @@ public class HttpRequestService extends LogService {
                     resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
                     return false;
                 }
+                if (activity.getRule() != null && !"".equals(activity.getRule())) {
+                    // 3,判断使用次数是否超过最大使用次数限制
+                    List<ActivityTransRecord> tranRecords = activityService.getTranRecordByActId(order.getActivityId());
+                    if (!tranRecords.isEmpty()) {
+                        for (String rule : activity.getRule().split(";")) {
+                            String ruleName = rule.split(":")[0];
+                            String ruleValue = rule.split(":")[1];
+                            for (ActivityTransRecord tranRecord : tranRecords) {
+                                if (ruleName.equals(tranRecord.getTransType())) {
+                                    compareRuleAndMax(ruleName, Integer.valueOf(ruleValue), tranRecord.getTransCount(), resp);
+                                    if (!resp.getSuccess()) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             } else {
                 resp.setErrorCode(ErrorCodeType.NOT_EXIST_ACTIVITY_ERROR
                         .getValue());
@@ -317,22 +332,18 @@ public class HttpRequestService extends LogService {
             order.setStatus(OrderStatus.PAYMENT.getValue());
             order.setMsg(resp.getErrorMsg());
             if (anaFlag) {
-                if (!orderService.saveAndCount(order)) {
-                    resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
-                            .getValue());
-                    resp.setErrorMsg(ErrorCodeType.SAVE_DATEBASE_ERROR
-                            .getText());
-                    resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
-                    return false;
-                } else {
-                    resp.setData(getPaymentOldForXml(true, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
-                    return true;
-                }
+                order.setIsSuccess(1);
             } else {
-                orderService.saveAndCount(order);
-                resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
-                return anaFlag;
+                order.setIsSuccess(0);
             }
+            if (anaFlag) {
+                orderService.saveAndCount(order);
+                resp.setData(getPaymentOldForXml(true, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
+            } else {
+                orderService.save(order);
+                resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
+            }
+            return anaFlag;
         } catch (Exception e) {
             resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
             resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
@@ -450,6 +461,9 @@ public class HttpRequestService extends LogService {
                         .getText());
                 return false;
             }
+            if (orderService.isExistOldOrder(orderVo.getOldOrderId())) {
+                return true;
+            }
             Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentRevoke(activity.getChannel());
             String response = doPostJson(requestId, url, getOrderIdAndOldOrderIdParam(orderVo));
@@ -459,20 +473,11 @@ public class HttpRequestService extends LogService {
             orderVo.setStatus(OrderStatus.PAYMENT_REVOKE.getValue());
             orderVo.setMsg(resp.getErrorMsg());
             if (anaFlag) {
-
-                if (/*!orderService.isExistOrderAndUpdate(orderVo.getOldOrderId()) || */!orderService.save(orderVo)) {
-                    resp.setErrorCode(ErrorCodeType.SAVE_DATEBASE_ERROR
-                            .getValue());
-                    resp.setErrorMsg(ErrorCodeType.SAVE_DATEBASE_ERROR
-                            .getText());
-                    return false;
-                } else {
-                    return true;
-                }
+                orderService.savePaymentRevoke(orderVo);
             } else {
                 orderService.save(orderVo);
-                return anaFlag;
             }
+            return anaFlag;
         } catch (Exception e) {
             resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());
             resp.setErrorMsg(ErrorCodeType.SYSTEM_ERROR.getText());
@@ -496,6 +501,10 @@ public class HttpRequestService extends LogService {
                                        String param, OrderVo orderVo, Response resp) {
         String url = "";
         try {
+            //判断订单是否已经被撤销了
+            if (orderService.isExistOldOrder(orderVo.getOldOrderId())) {
+                return true;
+            }
             Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentReserval(activity.getChannel());
             String response = doPostJson(requestId, url, getOrderIdAndOldOrderIdParam(orderVo));
@@ -503,7 +512,11 @@ public class HttpRequestService extends LogService {
             orderVo.setRequestId(requestId);
             orderVo.setStatus(OrderStatus.PAYMENT_REVERSAL.getValue());
             orderVo.setMsg(resp.getErrorMsg());
-            orderService.save(orderVo);
+            if (anaFlag) {
+                orderService.savePaymentReserval(orderVo);
+            } else {
+                orderService.save(orderVo);
+            }
             return anaFlag;
         } catch (Exception e) {
             resp.setErrorCode(ErrorCodeType.SYSTEM_ERROR.getValue());

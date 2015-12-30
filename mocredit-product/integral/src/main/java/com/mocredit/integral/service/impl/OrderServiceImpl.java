@@ -92,6 +92,27 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.findOrderByListCount(orderDto);
     }
 
+    @Override
+    public boolean isExistOldOrder(String orderId) {
+        return orderMapper.isExistOldOrder(orderId) > 0;
+    }
+
+    @Override
+    @Transactional
+    public boolean savePaymentRevoke(Order order) {
+        orderMapper.save(order);
+        activityMapper.minusCountByActId(order.getActivityId());
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean savePaymentReserval(Order order) {
+        orderMapper.save(order);
+        activityMapper.minusCountByActId(order.getActivityId());
+        return true;
+    }
+
     public void saveOrderAndTranRecord(Order order) {
         orderMapper.save(order);
         for (String tranType : TranRecordType.tranTypes) {

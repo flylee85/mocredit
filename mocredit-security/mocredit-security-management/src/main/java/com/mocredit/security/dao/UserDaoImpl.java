@@ -29,7 +29,7 @@ public class UserDaoImpl implements UserDao {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         java.util.Date date = new java.util.Date();
         final String ctime = sdf.format(date);
-        final String sql = "insert into sys_user(username, password, salt, locked,c_time) values(?,?,?,?,?)";
+        final String sql = "insert into sys_user(username, password,md5_pwd, salt, locked,c_time) values(?,?,?,?,?,?)";
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
@@ -40,6 +40,7 @@ public class UserDaoImpl implements UserDao {
 //                psst.setLong(count++, user.getOrganizationId());
                 psst.setString(count++, user.getUsername());
                 psst.setString(count++, user.getPassword());
+                psst.setString(count++, user.getMd5Pwd());
                 psst.setString(count++, user.getSalt());
                 psst.setBoolean(count++, user.getLocked());
                 psst.setString(count++, ctime);
@@ -55,10 +56,10 @@ public class UserDaoImpl implements UserDao {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         java.util.Date date = new java.util.Date();
         String utime = sdf.format(date);
-        String sql = "update sys_user set organization_id=?,username=?, password=?, salt=?, locked=?,u_time=? where id=?";
+        String sql = "update sys_user set organization_id=?,username=?, password=?, md5_pwd=?, salt=?, locked=?,u_time=? where id=?";
         jdbcTemplate.update(
                 sql,
-                user.getOrganizationId(), user.getUsername(), user.getPassword(), user.getSalt(), user.getLocked(), utime, user.getId());
+                user.getOrganizationId(), user.getUsername(), user.getPassword(), user.getMd5Pwd(), user.getSalt(), user.getLocked(), utime, user.getId());
         return user;
     }
 
@@ -86,7 +87,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findByUsername(String username) {
-        String sql = "select id, organization_id, username, password, salt, locked from sys_user where username=?";
+        String sql = "select id, organization_id, username, password,md5_pwd as md5Pwd, salt, locked from sys_user where username=?";
         List<User> userList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(User.class), username);
         if (userList.size() == 0) {
             return null;

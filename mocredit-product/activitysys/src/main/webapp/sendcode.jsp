@@ -179,7 +179,7 @@
                         <label class="col-lg-4">
                             <div class="radio">
                                 <label class="radio-custom">
-                                    <input type="radio" id="bpSend" checked="checked" name="sendType"
+                                    <input type="radio" id="bpSend" name="sendType"
                                            value="01">
                                     <i class="icon-circle-blank"></i>
                                     断点续发
@@ -225,7 +225,7 @@
                         <label class="col-lg-4">
                             <div class="radio">
                                 <label class="radio-custom">
-                                    <input type="radio" id="bpSendMMS" checked="checked" name="sendType"
+                                    <input type="radio" id="bpSendMMS" name="sendType"
                                            value="01">
                                     <i class="icon-circle-blank"></i>
                                     断点续发
@@ -425,12 +425,14 @@
         $("form").submit();
     }
     $("#send").on("show.bs.modal", function () {
-        $("#allSend").attr("checked", false).next("i").removeClass("checked");
-        $("#bpSend").attr("checked", true).next("i").addClass("checked");
+//        $("#allSend").attr("checked", false).next("i").removeClass("checked");
+//        $("#bpSend").attr("checked", true).next("i").addClass("checked");
+        $("#bpSend").next("i").click();
     });
     $("#sendMMS").on("show.bs.modal", function () {
-        $("#allSendMMS").attr("checked", false).next("i").removeClass("checked");
-        $("#bpSendMMS").attr("checked", true).next("i").addClass("checked");
+//        $("#allSendMMS").attr("checked", false).next("i").removeClass("checked");
+//        $("#bpSendMMS").attr("checked", true).next("i").addClass("checked");
+        $("#bpSendMMS").next("i").click();
     });
     $("#sendMMSConfirm").click(function () {
         var id = $("#sendMMSBatchId").val();

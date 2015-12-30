@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mocredit.gateway.persistence.ActivityMapper">
+    <resultMap id="BaseResultMap" type="com.mocredit.gateway.entity.Activity">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="enterprise_name" property="enterpriseName"/>
+        <result column="merchant_id" property="merchantId"/>
+        <result column="merchant_name" property="merchantName"/>
+        <result column="rule" property="rule"/>
+        <result column="status" property="status"/>
+        <result column="ctime" property="cTime"/>
+        <result column="utime" property="uTime"/>
+    </resultMap>
+    <resultMap id="BaseResultMapVo" type="com.mocredit.gateway.vo.ActivityVo">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="enterprise_name" property="enterpriseName"/>
+        <result column="merchant_id" property="merchantId"/>
+        <result column="merchant_name" property="merchantName"/>
+        <result column="rule" property="rule"/>
+        <result column="status" property="status"/>
+        <result column="ctime" property="cTime"/>
+        <result column="utime" property="uTime"/>
+    </resultMap>
+    <insert id="save" parameterType="com.mocredit.gateway.entity.Activity">
+		insert into
+		`activity`(name,code,enterprise_name,merchant_id,merchant_name,rule,status,ctime,utime)
+		values(#{t.name},#{t.code},#{t.enterpriseName},#{t.merchantId},#{t.merchantName},#{t.rule},#{t.status},now(),now())
+	</insert>
+    <select id="getByActivityCode" resultMap="BaseResultMap">
+		select * from
+		`activity` where code=#{code}
+	</select>
+    <select id="getActivityById" resultMap="BaseResultMapVo">
+        select * from
+		`activity` where id=#{id}
+    </select>
+    <!--获取批次列表-->
+    <select id="queryActivityPage" resultType="com.mocredit.gateway.entity.Activity" parameterType="java.util.Map">
+        select a.id,
+        a.name,
+        a.code,
+        a.enterprise_name as enterpriseName,
+        a.merchant_id as merchantId,
+        a.merchant_name as merchantName,
+        a.rule as rule,
+        a.status,
+        a.ctime as cTime,
+        a.utime as uTime
+        from
+        `activity` a where 1=1
+        <if test="searchInfoContent != null">
+            and a.name like '%${searchInfoContent}%'
+        </if>
+        order by a.ctime desc
+    </select>
+    <update id="updateActivityById">
+        update `activity`SET utime=now()
+        <if test="t.status!=null">
+            ,status=#{t.status}
+        </if>
+        <if test="t.name!=null">
+            ,`name`=#{t.name}
+        </if>
+        <if test="t.code!=null">
+            ,code=#{t.code}
+        </if>
+        <if test="t.enterpriseName!=null">
+            ,enterprise_name=#{t.enterpriseName}
+        </if>
+        <if test="t.merchantId!=null">
+            ,merchant_id=#{t.merchantId}
+        </if>
+        <if test="t.merchantName!=null">
+            ,merchant_name=#{t.merchantName}
+        </if>
+        <if test="t.rule!=null">
+            ,rule=#{t.rule}
+        </if>
+        where id=#{t.id}
+    </update>
+</mapper>

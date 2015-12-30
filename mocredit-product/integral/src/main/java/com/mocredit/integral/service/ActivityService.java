@@ -123,4 +123,12 @@ public interface ActivityService extends BaseService<Activity> {
      * @return
      */
     boolean updateByExpireDate(String expireDate);
+
+    /**
+     * 根据活动id计数器减一
+     *
+     * @param activityId
+     * @return
+     */
+    boolean minusCountByActivityId(String activityId);
 }

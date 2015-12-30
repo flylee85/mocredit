@@ -212,17 +212,18 @@ public class ActivityCodeController {
 	@ResponseBody
 	@RequestMapping(value = "/verifyCodeForRecharge", produces = { "application/json;charset=UTF-8" })
 	public String verifyCodeForRecharge(HttpServletRequest request, HttpServletResponse response, String code,
-			String orderId) {
+			String orderId, String phone) {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		AjaxResponseData ard = new AjaxResponseData();
-		if (StringUtils.isEmpty(code) || code.length() > 30 || StringUtils.isEmpty(orderId)) {
+		if (StringUtils.isEmpty(code) || code.length() > 30 || StringUtils.isEmpty(orderId)
+				|| StringUtils.isEmpty(phone)) {
 			ard.setSuccess(false);
 			ard.setErrorMsg("参数数据不合法!");
 			returnMap.put("isSuccess", false);
 			returnMap.put("errorMsg", "参数数据不合法!");
 		} else {
 			try {
-				ard = this.activityCodeService.verifyCodeForRecharge(orderId, code);
+				ard = this.activityCodeService.verifyCodeForRecharge(orderId, code, phone);
 				returnMap = (Map<String, Object>) ard.getData();
 			} catch (Exception e) {
 				ard.setSuccess(false);

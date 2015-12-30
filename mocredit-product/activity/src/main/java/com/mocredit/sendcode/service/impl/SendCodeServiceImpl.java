@@ -513,7 +513,7 @@ public class SendCodeServiceImpl implements SendCodeService {
             BatchCode oc = batchCodeList.get(i);
             // 组件新的活动批次码对象
             BatchCodeVO codeVO = new BatchCodeVO();
-            codeVO.setCodeSerialNumber(String.valueOf(oc.getCodeId()));// 码库提码的id
+            codeVO.setCodeSerialNumber(oc.getId());//码ID
             codeVO.setCode(String.valueOf(oc.getCode()));// 码库提码的码值
             codeVO.setActivityId(act.getId());// 活动Id
             codeVO.setActivityName(act.getName());// 活动名称

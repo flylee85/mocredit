@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.util.StringUtils;
+
 /**
  * 主要负责 短信、小票内容的模板的替换
  * Created by YHL on 15/7/31 16:17.
@@ -38,12 +40,14 @@ public class TemplateUtil {
      * @return
      */
     public static  String buildStringFromTemplate(Map<TemplateField ,String> valuesMap,String templateString){
-        String retString=templateString;
+    	if(StringUtils.isEmpty(templateString)){
+    		return "";
+    	}
         valuesMap=checkDate(valuesMap);
         for(TemplateField key :TemplateField.values()){
-            retString = retString.replaceAll( "\\"+PREFIX+ key.name +"\\"+SUFFIX , null!=valuesMap.get(key) ?valuesMap.get(key):"" );
+        	templateString = templateString.replaceAll( "\\"+PREFIX+ key.name +"\\"+SUFFIX , null!=valuesMap.get(key) ?valuesMap.get(key):"" );
         }
-        return retString;
+        return templateString;
     }
 
 

@@ -8,91 +8,91 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <!-- Realm实现 -->
-    <bean id="remoteRealm" class="com.mocredit.security.client.ClientRealm">
-        <property name="cachingEnabled" value="false"/>
-        <property name="appKey" value="${client.app.key}"/>
-        <property name="remoteService" ref="remoteService"/>
-    </bean>
+    <!--&lt;!&ndash; Realm实现 &ndash;&gt;-->
+    <!--<bean id="remoteRealm" class="com.mocredit.security.client.ClientRealm">-->
+        <!--<property name="cachingEnabled" value="false"/>-->
+        <!--<property name="appKey" value="${client.app.key}"/>-->
+        <!--<property name="remoteService" ref="remoteService"/>-->
+    <!--</bean>-->
 
-    <!-- 会话ID生成器 -->
-    <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
+    <!--&lt;!&ndash; 会话ID生成器 &ndash;&gt;-->
+    <!--<bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>-->
 
-    <!-- 会话Cookie模板 -->
-    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
-        <!--<constructor-arg value="${client.session.id}"/>-->
-        <constructor-arg name="name" value="SHAREJSESSIONID"/>
-        <property name="httpOnly" value="true"/>
-        <property name="maxAge" value="-1"/>
-        <property name="domain" value="${client.cookie.domain}"/>
-        <property name="path" value="${client.cookie.path}"/>
-    </bean>
+    <!--&lt;!&ndash; 会话Cookie模板 &ndash;&gt;-->
+    <!--<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">-->
+        <!--&lt;!&ndash;<constructor-arg value="${client.session.id}"/>&ndash;&gt;-->
+        <!--<constructor-arg name="name" value="SHAREJSESSIONID"/>-->
+        <!--<property name="httpOnly" value="true"/>-->
+        <!--<property name="maxAge" value="-1"/>-->
+        <!--<property name="domain" value="${client.cookie.domain}"/>-->
+        <!--<property name="path" value="${client.cookie.path}"/>-->
+    <!--</bean>-->
 
-    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
-        <constructor-arg value="${client.rememberMe.id}"/>
-        <property name="httpOnly" value="true"/>
-        <property name="maxAge" value="2592000"/>
-        <!-- 30天 -->
-        <property name="domain" value="${client.cookie.domain}"/>
-        <property name="path" value="${client.cookie.path}"/>
-    </bean>
+    <!--<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">-->
+        <!--<constructor-arg value="${client.rememberMe.id}"/>-->
+        <!--<property name="httpOnly" value="true"/>-->
+        <!--<property name="maxAge" value="2592000"/>-->
+        <!--&lt;!&ndash; 30天 &ndash;&gt;-->
+        <!--<property name="domain" value="${client.cookie.domain}"/>-->
+        <!--<property name="path" value="${client.cookie.path}"/>-->
+    <!--</bean>-->
 
-    <!-- rememberMe管理器 -->
-    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
-        <!-- rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度（128 256 512 位）-->
-        <property name="cipherKey"
-                  value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
-        <property name="cookie" ref="rememberMeCookie"/>
-    </bean>
+    <!--&lt;!&ndash; rememberMe管理器 &ndash;&gt;-->
+    <!--<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">-->
+        <!--&lt;!&ndash; rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度（128 256 512 位）&ndash;&gt;-->
+        <!--<property name="cipherKey"-->
+                  <!--value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>-->
+        <!--<property name="cookie" ref="rememberMeCookie"/>-->
+    <!--</bean>-->
 
-    <!-- 会话DAO -->
-    <bean id="sessionDAO" class="com.mocredit.security.client.ClientSessionDAO">
-        <property name="sessionIdGenerator" ref="sessionIdGenerator"/>
-        <property name="appKey" value="${client.app.key}"/>
-        <property name="remoteService" ref="remoteService"/>
-    </bean>
-    <!-- 会话管理器 -->
-    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
-        <property name="deleteInvalidSessions" value="false"/>
-        <property name="sessionValidationSchedulerEnabled" value="false"/>
-        <property name="sessionDAO" ref="sessionDAO"/>
-        <property name="sessionIdCookieEnabled" value="true"/>
-        <property name="sessionIdCookie" ref="sessionIdCookie"/>
-    </bean>
+    <!--&lt;!&ndash; 会话DAO &ndash;&gt;-->
+    <!--<bean id="sessionDAO" class="com.mocredit.security.client.ClientSessionDAO">-->
+        <!--<property name="sessionIdGenerator" ref="sessionIdGenerator"/>-->
+        <!--<property name="appKey" value="${client.app.key}"/>-->
+        <!--<property name="remoteService" ref="remoteService"/>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash; 会话管理器 &ndash;&gt;-->
+    <!--<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">-->
+        <!--<property name="deleteInvalidSessions" value="false"/>-->
+        <!--<property name="sessionValidationSchedulerEnabled" value="false"/>-->
+        <!--<property name="sessionDAO" ref="sessionDAO"/>-->
+        <!--<property name="sessionIdCookieEnabled" value="true"/>-->
+        <!--<property name="sessionIdCookie" ref="sessionIdCookie"/>-->
+    <!--</bean>-->
 
-    <!-- 安全管理器 -->
-    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-        <property name="realm" ref="remoteRealm"/>
-        <property name="sessionManager" ref="sessionManager"/>
-        <property name="rememberMeManager" ref="rememberMeManager"/>
-    </bean>
+    <!--&lt;!&ndash; 安全管理器 &ndash;&gt;-->
+    <!--<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">-->
+        <!--<property name="realm" ref="remoteRealm"/>-->
+        <!--<property name="sessionManager" ref="sessionManager"/>-->
+        <!--<property name="rememberMeManager" ref="rememberMeManager"/>-->
+    <!--</bean>-->
 
-    <!-- 相当于调用SecurityUtils.setSecurityManager(securityManager) -->
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>
-        <property name="arguments" ref="securityManager"/>
-    </bean>
+    <!--&lt;!&ndash; 相当于调用SecurityUtils.setSecurityManager(securityManager) &ndash;&gt;-->
+    <!--<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">-->
+        <!--<property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>-->
+        <!--<property name="arguments" ref="securityManager"/>-->
+    <!--</bean>-->
 
-    <bean id="clientAuthenticationFilter" class="com.mocredit.security.client.ClientAuthenticationFilter">
-        <property name="appKey" value="${client.app.key}"/>
-    </bean>
+    <!--<bean id="clientAuthenticationFilter" class="com.mocredit.security.client.ClientAuthenticationFilter">-->
+        <!--<property name="appKey" value="${client.app.key}"/>-->
+    <!--</bean>-->
 
-    <!-- Shiro的Web过滤器 -->
-    <bean id="shiroFilter" class="com.mocredit.security.client.ClientShiroFilterFactoryBean">
-        <property name="securityManager" ref="securityManager"/>
-        <property name="loginUrl" value="${client.login.url}"/>
-        <property name="successUrl" value="${client.success.url}"/>
-        <property name="unauthorizedUrl" value="${client.unauthorized.url}"/>
-        <property name="filters">
-            <util:map>
-                <entry key="authc" value-ref="clientAuthenticationFilter"/>
-            </util:map>
-        </property>
-        <property name="filtersStr" value="${client.filters}"/>
-        <property name="filterChainDefinitionsStr" value="${client.filter.chain.definitions}"/>
-    </bean>
+    <!--&lt;!&ndash; Shiro的Web过滤器 &ndash;&gt;-->
+    <!--<bean id="shiroFilter" class="com.mocredit.security.client.ClientShiroFilterFactoryBean">-->
+        <!--<property name="securityManager" ref="securityManager"/>-->
+        <!--<property name="loginUrl" value="${client.login.url}"/>-->
+        <!--<property name="successUrl" value="${client.success.url}"/>-->
+        <!--<property name="unauthorizedUrl" value="${client.unauthorized.url}"/>-->
+        <!--<property name="filters">-->
+            <!--<util:map>-->
+                <!--<entry key="authc" value-ref="clientAuthenticationFilter"/>-->
+            <!--</util:map>-->
+        <!--</property>-->
+        <!--<property name="filtersStr" value="${client.filters}"/>-->
+        <!--<property name="filterChainDefinitionsStr" value="${client.filter.chain.definitions}"/>-->
+    <!--</bean>-->
 
-    <!-- Shiro生命周期处理器-->
-    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <!--&lt;!&ndash; Shiro生命周期处理器&ndash;&gt;-->
+    <!--<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>-->
 
 </beans>

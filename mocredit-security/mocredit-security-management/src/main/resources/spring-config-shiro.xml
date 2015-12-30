@@ -117,6 +117,7 @@
             <value>
                 /static/** = anon
                 /remoteService = anon
+                /loginInterface=anon
                 /login = authc
                 /logout = logout
                 /authenticated = authc
