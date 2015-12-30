@@ -26,10 +26,10 @@
 		insert into
 		`ti_activity`(activity_id,activity_name,pub_enterprise_id,pub_enterprise_name,product_type,
 		start_time,end_time,select_date,integral,max_type,
-		max_number,status,exchange_type,bins,channel)
+		max_number,status,exchange_type,bins,channel,rule)
 		values(#{t.activityId},#{t.activityName},#{t.pubEnterpriseId},#{t.pubEnterpriseName},#{t.productType},
 		#{t.startTime},#{t.endTime},#{t.selectDate},#{t.integral},#{t.maxType},
-		#{t.maxNumber},#{t.status},#{t.exchangeType},#{t.bins},#{t.channel})
+		#{t.maxNumber},#{t.status},#{t.exchangeType},#{t.bins},#{t.channel},#{t.rule})
 	</insert>
     <select id="getByActivityId" resultMap="BaseResultMap">
 		select * from

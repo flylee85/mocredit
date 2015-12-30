@@ -75,7 +75,7 @@ public class BankStatus {
         BANK_MS_MAP.put("96", "系统异常、失效");
         BANK_MS_MAP.put("97", "POS终端号找不到");
         BANK_MS_MAP.put("98", "银联收不到发卡行应答");
-        BANK_MS_MAP.put("99", "PIN格式错");
+//        BANK_MS_MAP.put("99", "PIN格式错");
         BANK_MS_MAP.put("A0", "MAC校验错");
         BANK_MS_MAP.put("RP", "不满足活动条件");
         BANK_MS_MAP.put("NT", "非活动日");
@@ -123,7 +123,7 @@ public class BankStatus {
         BANK_ZX_MAP.put("54", "没有找到订单");
         BANK_ZX_MAP.put("55", "参数错误，请重新再试");
         BANK_ZX_MAP.put("56", "机具已锁定，请联系管理员");
-        BANK_ZX_MAP.put("99", "消费自定义错误信息，请取返回的错误信息");
+//        BANK_ZX_MAP.put("99", "消费自定义错误信息，请取返回的错误信息");
     }
 
     static {
@@ -194,7 +194,7 @@ public class BankStatus {
         BANK_JT_MAP.put("96", "系统异常、失效");
         BANK_JT_MAP.put("97", "ATM/POS终端号找不到");
         BANK_JT_MAP.put("98", "交换中心收不到发卡方应答");
-        BANK_JT_MAP.put("99", "PIN 格式错");
+//        BANK_JT_MAP.put("99", "PIN 格式错");
         BANK_JT_MAP.put("A0", "MAC鉴别失败");
     }
 

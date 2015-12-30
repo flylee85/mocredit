@@ -6,6 +6,7 @@ package com.mocredit.integral.adapter;
 public interface IntegralBankAdapter {
     /**
      * 获取积分消费地址
+     *
      * @param channel
      * @return
      */
@@ -13,13 +14,15 @@ public interface IntegralBankAdapter {
 
     /**
      * 获取积分撤销地址
+     *
      * @param channel
      * @return
      */
     String getPaymentRevoke(String channel);
 
     /**
-     *获取积分冲正地址
+     * 获取积分冲正地址
+     *
      * @param channel
      * @return
      */
@@ -27,6 +30,7 @@ public interface IntegralBankAdapter {
 
     /**
      * 获取积分撤销冲正地址
+     *
      * @param channel
      * @return
      */
@@ -34,6 +38,7 @@ public interface IntegralBankAdapter {
 
     /**
      * 获取积分查询地址
+     *
      * @param channel
      * @return
      */
