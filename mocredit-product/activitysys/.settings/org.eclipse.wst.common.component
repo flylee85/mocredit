@@ -10,9 +10,6 @@
         <dependent-module archiveName="activity-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/activity/activity">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="wememms-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/wememms/wememms">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="java-output-path" value="/activitysys/bin"/>
         <property name="context-root" value="activitysys"/>
     </wb-module>

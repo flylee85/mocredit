@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    </style>
+
+    <style name="CustomProgressDialog" parent="@style/CustomDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!-- toolbar（actionbar）颜色 -->
+        <item name="colorPrimary">@color/theme_color1</item>
+        <!-- 状态栏颜色 -->
+        <item name="colorPrimaryDark">#3A5FCD</item>
+        <!-- 窗口的背景颜色 -->
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="App" parent="AppBaseTheme"></style>
+
+    <style name="App.Theme">
+        <item name="android:actionBarSize">80dp</item>
+    </style>
+
+    <style name="App.Layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="App.Layout.Title">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">@dimen/p20</item>
+    </style>
+    <style name="App.Layout.Title.White">
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="App.Layout.Title.Black">
+        <item name="android:textColor">#000000</item>
+    </style>
+    <style name="App.Layout.Item">
+        <item name="android:layout_height">@dimen/p70</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@drawable/code_scan_button_bg</item>
+        <item name="android:textColor">#aaaaaa</item>
+        <item name="android:gravity">center</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/p20</item>
+    </style>
+    <style name="App.Layout.SubTitle"></style>
+
+    <style name="App.Layout.TextView">
+        <item name="android:gravity">center</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="App.Layout.TextView.Normal">
+        <item name="android:textSize">@dimen/p20</item>
+        <item name="android:textColor">#333333</item>
+    </style>
+</resources>

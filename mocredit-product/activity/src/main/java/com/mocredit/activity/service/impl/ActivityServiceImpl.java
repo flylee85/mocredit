@@ -82,7 +82,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private MmsframeMapper mmsframeMapper;
 	@Autowired
 	private SendMMSPackage sendMMSPackage;
-	private boolean importFlag = false;
+	private boolean importFlag = true;
 
 	/**
 	 * 获取一条活动，根据主键
@@ -433,7 +433,9 @@ public class ActivityServiceImpl implements ActivityService {
 			if (!importFlag) {
 				return affectCount;
 			}
-			String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, JSON.toJSONString(httpPostMap));
+			String jsonString = JSON.toJSONString(httpPostMap);
+			String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, jsonString);
+			logger.info("[ACTIVITY  INTEGRAL ADD]::"+jsonString);
 			Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
 			boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
 			if (!isSuccess) {

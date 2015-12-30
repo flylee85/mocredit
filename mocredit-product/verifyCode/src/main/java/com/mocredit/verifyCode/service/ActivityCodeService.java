@@ -1,5 +1,6 @@
 package com.mocredit.verifyCode.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
@@ -58,6 +59,7 @@ public interface ActivityCodeService {
 
 	/**
 	 * 老机具验码
+	 * 
 	 * @param batchNo
 	 * @param searchNo
 	 * @param device
@@ -68,11 +70,14 @@ public interface ActivityCodeService {
 
 	/**
 	 * 充值验码
-	 * @param orderId 订单号
-	 * @param code 码
+	 * 
+	 * @param orderId
+	 *            订单号
+	 * @param code
+	 *            码
 	 * @return
 	 */
-	AjaxResponseData verifyCodeForRecharge(String orderId, String code,String phone);
+	AjaxResponseData verifyCodeForRecharge(String orderId, String code, String phone);
 
 	/**
 	 *
@@ -90,19 +95,27 @@ public interface ActivityCodeService {
 
 	/**
 	 * 老机具撤销
+	 * 
 	 * @param batchNo
 	 * @param searchNo
 	 * @param device
 	 * @return
 	 */
-	String revokeForOldPos(String batchNo,String searchNo, String device);
+	String revokeForOldPos(String batchNo, String searchNo, String device);
+
 	/**
 	 * 管理员人工撤销
+	 * 
 	 * @param request_serial_number
 	 * @param device
 	 * @return
 	 */
 	AjaxResponseData revokeForSys(String request_serial_number, String device);
+
+	/**
+	 * 码延期
+	 */
+	AjaxResponseData delayForSys(Date endTime, String codeId);
 
 	/**
 	 * 解析导入数据，放入码表中。

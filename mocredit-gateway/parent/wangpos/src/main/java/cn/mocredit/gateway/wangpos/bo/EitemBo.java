@@ -42,6 +42,7 @@ public class EitemBo implements java.io.Serializable {
 	public String advcontent;
 	public String advnumcode;
 	public String advcharcode;
+	public String xiaoTiao;
 	public String getPrintNo() {
 		return PrintNo;
 	}
@@ -284,4 +285,11 @@ public class EitemBo implements java.io.Serializable {
 	public void setResultInfo(String resultInfo) {
 		this.resultInfo = resultInfo;
 	}
+	public String getXiaoTiao() {
+		return xiaoTiao;
+	}
+	public void setXiaoTiao(String xiaoTiao) {
+		this.xiaoTiao = xiaoTiao;
+	}
+	
 }
