@@ -391,10 +391,10 @@ public class ConsumeModel extends Model{
         switch (state){
             case STATE_CONSUME:
                 state = STATE_REVOKE;
-                return "消费";
+                return "撤销";
             default:
                 state = STATE_CONSUME;
-                return "撤销";
+                return "消费";
         }
     }
 
@@ -429,9 +429,9 @@ public class ConsumeModel extends Model{
     public static String getState(){
         switch (state){
             case STATE_CONSUME:
-                return "撤销";
-            default:
                 return "消费";
+            default:
+                return "撤销";
         }
     }
 

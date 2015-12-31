@@ -15,7 +15,7 @@ public class URLs {
 	public static final String PREFIX_HTTP = "http://";
 
 //	private static String PORT = ":80";
-	 private static String PORT = ":9125";
+	 private static String PORT = ":9125/wangpos";
 //	private static String PORT = ":12345";
 
 	private static String HOST;

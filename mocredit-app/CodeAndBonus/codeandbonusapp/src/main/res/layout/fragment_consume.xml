@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/theme_color1"
@@ -9,13 +12,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="1"
         android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/p70"
-            android:layout_margin="@dimen/p30"
+            android:layout_margin="@dimen/p40"
             android:orientation="horizontal" >
 
             <Button
@@ -25,7 +28,7 @@
                 android:background="@drawable/bg_checkcode_keyboard"
                 android:gravity="center"
                 android:textColor="#ffffff"
-                android:text="退单" />
+                android:text="消费" />
 
             <View
                 android:layout_width="0dp"
@@ -46,8 +49,8 @@
         <com.yimeihuijin.commonlibrary.widgets.CodeScreen
             android:id="@+id/code_scan_screen"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/p600"
-            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:layout_weight="3"
             android:layout_margin="10dp"
             android:gravity="right|bottom"
             android:text="验码请输入券号\n积分消费请刷卡"
@@ -58,7 +61,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="1"
         android:background="#ffffff"
         android:paddingLeft="@dimen/p40"
         android:paddingRight="@dimen/p40"
@@ -79,32 +82,35 @@
                 android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="1"
-                android:textColor="#999999"
-                android:textSize="@dimen/p30" />
+                android:layout_margin="@dimen/p10"
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
 
 
             <Button
                 android:id="@+id/code_scan_num2"
                 android:layout_width="0dp"
+                android:layout_margin="@dimen/p10"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="2"
-                android:textColor="#999999"
-                android:textSize="@dimen/p30" />
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
 
 
             <Button
                 android:id="@+id/code_scan_num3"
                 android:layout_width="0dp"
+                android:layout_margin="@dimen/p10"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="3"
-                android:textColor="#999999"
-                android:textSize="@dimen/p30" />
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
         </LinearLayout>
 
 
@@ -117,13 +123,14 @@
             <Button
                 android:id="@+id/code_scan_num4"
                 android:layout_width="0dp"
+                android:layout_margin="@dimen/p10"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="4"
-                android:textColor="#999999"
-                android:textSize="@dimen/p30" />
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
 
 
             <Button
@@ -131,11 +138,12 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_margin="@dimen/p10"
                 android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="5"
-                android:textColor="#999999"
-                android:textSize="@dimen/p30" />
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
 
 
             <Button
@@ -143,11 +151,12 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_margin="@dimen/p10"
                 android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="6"
-                android:textColor="#999999"
-                android:textSize="@dimen/p30" />
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
         </LinearLayout>
 
         <LinearLayout
@@ -161,11 +170,12 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_margin="@dimen/p10"
                 android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="7"
-                android:textColor="#999999"
-                android:textSize="@dimen/p30" />
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
 
 
             <Button
@@ -176,20 +186,22 @@
                 android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="8"
-                android:textColor="#999999"
-                android:textSize="@dimen/p30" />
+                android:layout_margin="@dimen/p10"
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
 
 
             <Button
                 android:id="@+id/code_scan_num9"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_margin="@dimen/p10"
                 android:layout_weight="1"
                 android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="9"
-                android:textColor="#999999"
-                android:textSize="@dimen/p30" />
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
         </LinearLayout>
 
 
@@ -204,11 +216,13 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/code_scan_confirm_button"
+                android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="确定"
-                android:textColor="#ffffff"
-                android:textSize="30sp" />
+                android:textStyle="bold"
+                android:layout_margin="@dimen/p10"
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
 
 
             <Button
@@ -219,16 +233,20 @@
                 android:background="@drawable/code_scan_button_bg"
                 android:gravity="center"
                 android:text="0"
-                android:textColor="#999999"
-                android:textSize="@dimen/p30" />
+                android:layout_margin="@dimen/p10"
+                android:textColor="@drawable/code_scan_button_textcolor"
+                android:textSize="@dimen/p40" />
 
 
-            <Button
+            <ImageButton
                 android:id="@+id/code_scan_delete"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/code_scan_delete_button"
+                android:src="@drawable/code_scan_button_delete"
+                android:background="@null"
+                android:layout_margin="@dimen/p10"
+                android:scaleType="centerInside"
                 android:gravity="center"
                 android:text="删除"
                 android:textColor="#ffffff"
@@ -236,4 +254,4 @@
         </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</LinearLayout></RelativeLayout>
