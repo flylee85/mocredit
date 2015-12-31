@@ -128,7 +128,7 @@
 <!-- nav -->
 <nav id="nav" class="nav-primary visible-lg nav-vertical">
     <ul class="nav" data-spy="affix" data-offset-top="50">
-      <li class="dropdown-submenu">
+      <%--  <li class="dropdown-submenu">
               <a href="activity.html" class="changePage"><i class="icon-list icon-xlarge"></i>活动管理</a>
           </li>
           <li class="dropdown-submenu">
@@ -149,7 +149,7 @@
                   <li><a href="signup.html" class="changePage">注册页面</a></li>
                   <li><a href="404.html" class="changePage">404页面</a></li>
               </ul>
-          </li>
+          </li>--%>
         <c:forEach items="${menus}" var="m">
             <li class="dropdown-submenu">
                 <a href="${m.url}" class="changePage"><i class="icon-list icon-xlarge"></i>${m.name}</a>
