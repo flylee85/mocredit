@@ -220,9 +220,9 @@ public class DeviceModel {
                     card.expdate = cardinfoArray[1];
                 }
                 this.card = card;
-                this.card.cardno = "6226011030776167";
-                this.card.expdate = "0819";
-                this.card.cardbin = "622601";
+//                this.card.cardno = "6226011030776167";
+//                this.card.expdate = "0819";
+//                this.card.cardbin = "622601";
                 return card;
             }
         }
