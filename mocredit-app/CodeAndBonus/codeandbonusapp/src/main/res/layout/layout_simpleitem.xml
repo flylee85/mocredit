@@ -2,5 +2,6 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/text1"
     style="@style/App.Layout.Item"
+    android:textStyle="bold"
     android:textColor="@color/theme_color1"
     />
