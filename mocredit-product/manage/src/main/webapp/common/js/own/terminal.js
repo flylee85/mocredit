@@ -20,6 +20,7 @@ oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 		{ "data": "snCode","className":"snCode" },
 		{ "data": "storeName" },
 		{ "data": "storeCode" },
+		{ "data": "info" },
 		{ "data": "createTime" },
 		{ "data": null }
 	],
@@ -30,7 +31,7 @@ oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 				+ '<a href="#" onclick="javascript:doDelete(this)" data-id="'+full['id']+'">删除</a>'
 				},
 			"sortable": false,
-			"targets": 4
+			"targets": 5
 		}
 	]
 
@@ -76,6 +77,7 @@ var form = $("#addTerminal").find("form").parsley();
 $("#addTerminal").on('hidden.bs.modal', function (e) {
 	form.reset();
 	$("#addTerminal form :input[name=snCode]").attr("data-id","").val("");
+	$("#addTerminal form :input[name=info]").val("");
 });
 
 //查看/编辑
