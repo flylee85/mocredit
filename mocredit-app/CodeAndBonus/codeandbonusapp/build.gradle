@@ -1,14 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'candaochina'
-            keyPassword 'candaochina123'
-            storeFile file('F:/candaojks.jks')
-            storePassword 'candaochina123'
-        }
-    }
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
     defaultConfig {

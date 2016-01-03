@@ -1,15 +1,26 @@
 package cn.mocredit.gateway.service.impl;
 
-import cn.mocredit.gateway.data.entities.*;
-import cn.mocredit.gateway.data.repository.*;
-import cn.mocredit.gateway.message.HxData;
-import cn.mocredit.gateway.message.HxForJson;
-import cn.mocredit.gateway.service.ControllerService;
-import cn.mocredit.gateway.util.HttpUtil;
-import cn.mocredit.gateway.util.JacksonJsonMapper;
-import cn.mocredit.gateway.util.XmlUtil;
-import cn.mocredit.gateway.wangpos.bo.*;
-import com.alibaba.fastjson.JSONObject;
+import static cn.mocredit.gateway.util.AESCoder.decrypt;
+import static cn.mocredit.gateway.util.AESCoder.encrypt;
+import static cn.mocredit.gateway.util.JacksonJsonMapper.jsonToObject;
+import static cn.mocredit.gateway.util.JacksonJsonMapper.objectToJson;
+import static cn.mocredit.gateway.util.RSACoder.decryptByPrivateKey;
+import static cn.mocredit.gateway.util.Util.fmtDate2Str;
+import static cn.mocredit.gateway.util.Util.qianZhui;
+import static cn.mocredit.gateway.util.Util.uuid;
+import static java.lang.Integer.parseInt;
+import static java.util.UUID.randomUUID;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
+import static org.slf4j.LoggerFactory.getLogger;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,29 +29,47 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import com.alibaba.fastjson.JSONObject;
 
-import static cn.mocredit.gateway.util.AESCoder.decrypt;
-import static cn.mocredit.gateway.util.AESCoder.encrypt;
-import static cn.mocredit.gateway.util.JacksonJsonMapper.jsonToObject;
-import static cn.mocredit.gateway.util.JacksonJsonMapper.objectToJson;
-import static cn.mocredit.gateway.util.RSACoder.decryptByPrivateKey;
-import static cn.mocredit.gateway.util.Util.*;
-import static cn.mocredit.gateway.wangpos.bo.ErrorMessage.getErrorCode;
-import static java.lang.Integer.parseInt;
-import static java.util.UUID.randomUUID;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
-import static org.apache.commons.lang3.ArrayUtils.addAll;
-import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
-import static org.slf4j.LoggerFactory.getLogger;
+import cn.mocredit.gateway.data.entities.Activity;
+import cn.mocredit.gateway.data.entities.CheckCodeRecord;
+import cn.mocredit.gateway.data.entities.Device;
+import cn.mocredit.gateway.data.entities.JieSuan;
+import cn.mocredit.gateway.data.entities.LiuShui;
+import cn.mocredit.gateway.data.repository.ActivityRepository;
+import cn.mocredit.gateway.data.repository.CheckCodeRecordRepository;
+import cn.mocredit.gateway.data.repository.ChongZhengRepository;
+import cn.mocredit.gateway.data.repository.DeviceRepository;
+import cn.mocredit.gateway.data.repository.JieSuanRepository;
+import cn.mocredit.gateway.data.repository.LiuShuiRepository;
+import cn.mocredit.gateway.message.HxData;
+import cn.mocredit.gateway.message.HxForJson;
+import cn.mocredit.gateway.service.ControllerService;
+import cn.mocredit.gateway.util.HttpUtil;
+import cn.mocredit.gateway.util.JacksonJsonMapper;
+import cn.mocredit.gateway.util.XmlUtil;
+import cn.mocredit.gateway.wangpos.bo.ActivityBo;
+import cn.mocredit.gateway.wangpos.bo.Args;
+import cn.mocredit.gateway.wangpos.bo.BankBo;
+import cn.mocredit.gateway.wangpos.bo.CheXiaoQingQiuData;
+import cn.mocredit.gateway.wangpos.bo.CodeRevokeBo;
+import cn.mocredit.gateway.wangpos.bo.EitemBo;
+import cn.mocredit.gateway.wangpos.bo.EitemListBo;
+import cn.mocredit.gateway.wangpos.bo.EitemRevertBo;
+import cn.mocredit.gateway.wangpos.bo.Huodongliebiao;
+import cn.mocredit.gateway.wangpos.bo.JiaMiCeShiData;
+import cn.mocredit.gateway.wangpos.bo.JieSuanXiangYingData;
+import cn.mocredit.gateway.wangpos.bo.JsonData;
+import cn.mocredit.gateway.wangpos.bo.ObjectAgrs;
+import cn.mocredit.gateway.wangpos.bo.QianDaoData;
+import cn.mocredit.gateway.wangpos.bo.QianDaoHuiZhiData;
+import cn.mocredit.gateway.wangpos.bo.XiaoFeiQingQiuData;
+import cn.mocredit.gateway.wangpos.bo.XiaoFeiXiangYingData;
+import cn.mocredit.gateway.wangpos.bo.XinTiaoData;
+import cn.mocredit.gateway.wangpos.bo.YanMaQingQiuData;
+import cn.mocredit.gateway.wangpos.bo.YanMaXiangYingData;
 
 @Service
 @Transactional
@@ -55,6 +84,9 @@ public class ControllerServiceImpl implements ControllerService {
     JieSuanRepository jieSuanRepository;
     @Autowired
     ChongZhengRepository chongZhengRepository;
+    @Autowired
+    CheckCodeRecordRepository checkCodeRecordRepository;
+    
     /**
      * 活动id的前缀，当活动是中信权益活动时使用此前缀
      */
@@ -194,12 +226,19 @@ public class ControllerServiceImpl implements ControllerService {
             ret.setPosno(eitem.getPosno());
             ret.setMmsid(eitem.getMmsId());
             ret.setBatchno(eitem.getBacthNo());
-            ret.setErweima(batchno);
-            ret.setPrintInfo("恭喜验证成功\n\n订单号：" + ret.getOrderId());
+            ret.setErweima(req.getCode());
+            ret.setPrintInfo(eitem.getXiaoTiao());
             jsonData.setjData(objectToJson(ret));
             jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
             String content = objectToJson(jsonData);
             logger.info(content);
+            CheckCodeRecord ccr = new CheckCodeRecord();
+            ccr.setId(uuid());
+            ccr.setImei(device.getDevcode());
+            ccr.setCode(req.getCode());
+            ccr.setBatchno(batchno);
+            ccr.setSearchno(searchno);
+            checkCodeRecordRepository.save(ccr);
             return encrypt(content, tx.getMd5Hex());
         } else {
             //去杨宏利的验码模块验码
@@ -279,15 +318,19 @@ public class ControllerServiceImpl implements ControllerService {
         }else{
             CodeRevokeBo crb = jsonToObject(jsonData.getjData(),CodeRevokeBo.class);
             if(crb != null){
-                EitemBo eitem = codeRevokeOld(crb.mmsid,crb.batchno,crb.searchno,crb.posno);
+            	CheckCodeRecord ccr = checkCodeRecordRepository.getCheckCodeRecordByBatchno(crb.batchno);
+            	EitemRevertBo eitem = codeRevokeOld(ccr.getImei(),ccr.getBatchno(),ccr.getSearchno(),crb.posno);
                 String isSuccess = eitem.getIsSuccess();
 
                 ret.setRtnFlag("true".equals(isSuccess) ? "0" : "1");
                 ret.setErrorMes(eitem.getResultInfo());
+                ret.setDes(eitem.getDescription());
+                ret.setPrintInfo(eitem.getXiaoTiao());
                 jsonData.setjData(objectToJson(ret));
                 jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
                 String content = objectToJson(jsonData);
                 logger.info(content);
+                checkCodeRecordRepository.delete(ccr);
                 return encrypt(content, tx.getMd5Hex());
             }else{
                 ret.setRtnFlag("1");
@@ -312,23 +355,24 @@ public class ControllerServiceImpl implements ControllerService {
         a.setSearchno(searchno);
         String retxml = callBarcodeservice(a, String.class);
         logger.info("xml from barcodeservice http yanma" + retxml);
-        List<EitemBo> eitemlist = (List<EitemBo>) XmlUtil.getBO(
-                new EitemBo().getClass(), retxml);
+        List<EitemBo> eitemlist = (List<EitemBo>) XmlUtil.getBO(new EitemBo().getClass(), retxml);
         return eitemlist.get(0);
     }
 
-    private EitemBo codeRevokeOld(String id,String batchno,String searchno,String posno){
+    private EitemRevertBo codeRevokeOld(String imei,String batchno,String searchno,String posno){
         Args a = new Args();
         a.setMethodName("redVBarcode");
-        a.setEitmid("0");
+//        a.setImei("test1234");
+//        a.setEitmid("test1234");
+//        a.setBatchno("test1234189109158");
+//        a.setSearchno("90E473A7886C4647A373A00B6928E221");
+        a.setImei(imei);
+        a.setEitmid(imei);
         a.setBatchno(batchno);
         a.setSearchno(searchno);
-        a.setPosno(posno);
-        a.setTime(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
         String retxml = callBarcodeservice(a, String.class);
         logger.info("xml from barcodeservice http yanma" + retxml);
-        List<EitemBo> eitemlist = (List<EitemBo>) XmlUtil.getBO(
-                new EitemBo().getClass(), retxml);
+        List<EitemRevertBo> eitemlist = (List<EitemRevertBo>) XmlUtil.getBO(new EitemRevertBo().getClass(), retxml);
         return eitemlist.get(0);
     }
 
