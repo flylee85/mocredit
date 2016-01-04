@@ -79,7 +79,9 @@
 		formObject.maxNumber="";
 		$(".maxNumber input").each(function(){
 			var $this=$(this);
-			formObject.maxNumber+=this.id+":"+$this.val()+";";
+			if($this.val()){
+				formObject.maxNumber+=this.id+":"+$this.val()+";";
+			}
 		})
 		//提交
 		$.ajax({
