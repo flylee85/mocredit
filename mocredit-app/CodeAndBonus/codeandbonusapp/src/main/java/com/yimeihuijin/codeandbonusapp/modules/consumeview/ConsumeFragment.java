@@ -10,6 +10,8 @@ import com.yimeihuijin.codeandbonusapp.presenter.ConsumePresenter;
 import com.yimeihuijin.codeandbonusapp.presenter.SigninPresenter;
 import com.yimeihuijin.commonlibrary.base.BaseFragment;
 import com.yimeihuijin.commonlibrary.widgets.CodeScreen;
+import com.yimeihuijin.commonlibrary.widgets.FlashButton;
+import com.yimeihuijin.commonlibrary.widgets.FlashLayout;
 
 /**
  * 主界面
@@ -17,10 +19,11 @@ import com.yimeihuijin.commonlibrary.widgets.CodeScreen;
  */
 public class ConsumeFragment extends BaseFragment implements View.OnClickListener,ConsumePresenter.IConsumeView{
 
-    private Button button1,button2,button3,button4,button5,button6,button7,button8,button9,button0,buttonConfirm;
+    private FlashButton button1,button2,button3,button4,button5,button6,button7,button8,button9,button0,buttonConfirm;
     private ImageButton buttonDel;
     private Button keyboard,stateSwitch;
     private CodeScreen screen;
+    private FlashLayout parent;
 
     private SigninPresenter.ISigninView view;
     private ConsumePresenter presenter;
@@ -37,19 +40,33 @@ public class ConsumeFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void findViews(View v){
-        (button0 = (Button) v.findViewById(R.id.code_scan_num0)).setOnClickListener(this);
-        (button1 = (Button) v.findViewById(R.id.code_scan_num1)).setOnClickListener(this);
-        (button2 = (Button) v.findViewById(R.id.code_scan_num2)).setOnClickListener(this);
-        (button3 = (Button) v.findViewById(R.id.code_scan_num3)).setOnClickListener(this);
-        (button4 = (Button) v.findViewById(R.id.code_scan_num4)).setOnClickListener(this);
-        (button5 = (Button) v.findViewById(R.id.code_scan_num5)).setOnClickListener(this);
-        (button6 = (Button) v.findViewById(R.id.code_scan_num6)).setOnClickListener(this);
-        (button7 = (Button) v.findViewById(R.id.code_scan_num7)).setOnClickListener(this);
-        (button8 = (Button) v.findViewById(R.id.code_scan_num8)).setOnClickListener(this);
-        (button9 = (Button) v.findViewById(R.id.code_scan_num9)).setOnClickListener(this);
+        (button0 = (FlashButton) v.findViewById(R.id.code_scan_num0)).setOnClickListener(this);
+        (button1 = (FlashButton) v.findViewById(R.id.code_scan_num1)).setOnClickListener(this);
+        (button2 = (FlashButton) v.findViewById(R.id.code_scan_num2)).setOnClickListener(this);
+        (button3 = (FlashButton) v.findViewById(R.id.code_scan_num3)).setOnClickListener(this);
+        (button4 = (FlashButton) v.findViewById(R.id.code_scan_num4)).setOnClickListener(this);
+        (button5 = (FlashButton) v.findViewById(R.id.code_scan_num5)).setOnClickListener(this);
+        (button6 = (FlashButton) v.findViewById(R.id.code_scan_num6)).setOnClickListener(this);
+        (button7 = (FlashButton) v.findViewById(R.id.code_scan_num7)).setOnClickListener(this);
+        (button8 = (FlashButton) v.findViewById(R.id.code_scan_num8)).setOnClickListener(this);
+        (button9 = (FlashButton) v.findViewById(R.id.code_scan_num9)).setOnClickListener(this);
+        parent = (FlashLayout) v.findViewById(R.id.code_scan_parent);
 
-        (buttonConfirm = (Button) v.findViewById(R.id.code_scan_confirm)).setOnClickListener(this);
+        button0.setParentView(parent);
+        button1.setParentView(parent);
+        button2.setParentView(parent);
+        button3.setParentView(parent);
+        button4.setParentView(parent);
+        button5.setParentView(parent);
+        button6.setParentView(parent);
+        button7.setParentView(parent);
+        button8.setParentView(parent);
+        button9.setParentView(parent);
+
+        (buttonConfirm = (FlashButton) v.findViewById(R.id.code_scan_confirm)).setOnClickListener(this);
         (buttonDel = (ImageButton) v.findViewById(R.id.code_scan_delete)).setOnClickListener(this);
+
+        buttonConfirm.setParentView(parent);
 
         (keyboard = (Button) v.findViewById(R.id.code_scan_keyboard)).setOnClickListener(this);
         (stateSwitch = (Button) v.findViewById(R.id.code_scan_cancel)).setOnClickListener(this);

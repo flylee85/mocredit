@@ -58,7 +58,7 @@
             android:textSize="40sp" />
     </LinearLayout>
 
-    <LinearLayout
+    <com.yimeihuijin.commonlibrary.widgets.FlashLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -66,47 +66,46 @@
         android:paddingLeft="@dimen/p40"
         android:paddingRight="@dimen/p40"
         android:paddingBottom="@dimen/p40"
+        android:id="@+id/code_scan_parent"
         android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:layout_marginTop="@dimen/p10"
             android:orientation="horizontal" >
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_num1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="1"
-                android:layout_margin="@dimen/p10"
                 android:textColor="@drawable/code_scan_button_textcolor"
                 android:textSize="@dimen/p40" />
 
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_num2"
                 android:layout_width="0dp"
-                android:layout_margin="@dimen/p10"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="2"
                 android:textColor="@drawable/code_scan_button_textcolor"
                 android:textSize="@dimen/p40" />
 
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_num3"
                 android:layout_width="0dp"
-                android:layout_margin="@dimen/p10"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="3"
                 android:textColor="@drawable/code_scan_button_textcolor"
@@ -120,39 +119,36 @@
             android:layout_weight="1"
             android:orientation="horizontal" >
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_num4"
                 android:layout_width="0dp"
-                android:layout_margin="@dimen/p10"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="4"
                 android:textColor="@drawable/code_scan_button_textcolor"
                 android:textSize="@dimen/p40" />
 
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_num5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/p10"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="5"
                 android:textColor="@drawable/code_scan_button_textcolor"
                 android:textSize="@dimen/p40" />
 
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_num6"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/p10"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="6"
                 android:textColor="@drawable/code_scan_button_textcolor"
@@ -165,39 +161,36 @@
             android:layout_weight="1"
             android:orientation="horizontal" >
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_num7"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/p10"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="7"
                 android:textColor="@drawable/code_scan_button_textcolor"
                 android:textSize="@dimen/p40" />
 
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_num8"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="8"
-                android:layout_margin="@dimen/p10"
                 android:textColor="@drawable/code_scan_button_textcolor"
                 android:textSize="@dimen/p40" />
 
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_num9"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/p10"
                 android:layout_weight="1"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="9"
                 android:textColor="@drawable/code_scan_button_textcolor"
@@ -211,29 +204,27 @@
             android:layout_weight="1"
             android:orientation="horizontal" >
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_confirm"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="确定"
                 android:textStyle="bold"
-                android:layout_margin="@dimen/p10"
                 android:textColor="@drawable/code_scan_button_textcolor"
                 android:textSize="@dimen/p30" />
 
 
-            <Button
+            <com.yimeihuijin.commonlibrary.widgets.FlashButton
                 android:id="@+id/code_scan_num0"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/code_scan_button_bg"
+                android:background="@null"
                 android:gravity="center"
                 android:text="0"
-                android:layout_margin="@dimen/p10"
                 android:textColor="@drawable/code_scan_button_textcolor"
                 android:textSize="@dimen/p40" />
 
@@ -245,13 +236,12 @@
                 android:layout_weight="1"
                 android:src="@drawable/code_scan_button_delete"
                 android:background="@null"
-                android:layout_margin="@dimen/p10"
                 android:scaleType="centerInside"
                 android:gravity="center"
                 android:text="删除"
                 android:textColor="#ffffff"
                 android:textSize="30sp" />
         </LinearLayout>
-    </LinearLayout>
+    </com.yimeihuijin.commonlibrary.widgets.FlashLayout>
 
 </LinearLayout></RelativeLayout>
