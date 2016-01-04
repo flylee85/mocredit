@@ -1,14 +1,14 @@
 package com.mocredit.gateway.constant;
 
 public enum ErrorCodeType {
-    ACTIVITY_NOT_EXIST("01", "活动不存在"),
-    CARD_NOT_RULE("02", "活动卡规则不存在"),
-    CARD_DAY_MAX_OUT("03", "本日卡使用超过次数"),
-    CARD_WEEK_MAX_OUT("04", "本周卡使用超过次数"),
-    CARD_MONTH_MAX_OUT("05", "本月卡使用超过次数"),
-    CARD_YEAR_MAX_OUT("06", "本年卡使用超过次数"),
-    CARD_TOTAL_MAX_OUT("07", "本卡使用超过次数"),
-    SYSTEM_ERROR("08", "系统异常"),
+    ACTIVITY_NOT_EXIST("001", "活动不存在"),
+    CARD_NOT_RULE("002", "活动卡规则不存在"),
+    CARD_DAY_MAX_OUT("003", "本日卡使用超过次数"),
+    CARD_WEEK_MAX_OUT("004", "本周卡使用超过次数"),
+    CARD_MONTH_MAX_OUT("005", "本月卡使用超过次数"),
+    CARD_YEAR_MAX_OUT("006", "本年卡使用超过次数"),
+    CARD_TOTAL_MAX_OUT("007", "本卡使用超过次数"),
+    SYSTEM_ERROR("008", "系统异常"),
     EXIST_ACTIVITY_ERROR("503", "已存在该活动"),
     EXIST_STORE_ERROR("504", "已存在该门店"),
     PARAM_ERROR("505", "参数错误"),

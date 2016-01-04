@@ -243,10 +243,10 @@ public class HttpRequestUtil {
         // "{\"activityId\":\"1\",\"startTime\":\"2015-08-12 11:11:11\",\"storeList\":\"[{\"shopId\":\"1\",\"storeId\":\"3\"}]\"}")
         // );
 
-        /*System.out
+        System.out
                 .println(doPostJson(
-                        "http://117.121.20.137:10000/bank/payment",
-                        "{\"cardExpDate\":\"1249\",\"cardNum\":\"6013823100097711014\",\"code\":\"MS0001\",\"orderId\":\"795060113343\",\"tranAmt\":\"23500\"}"));*/
+                        "http://117.121.20.146:9092/integral/payment",
+                        "{\"activityId\":\"1820\",\"cardExpDate\":\"2003\",\"cardNum\":\"4392qq260028467460\",\"enCode\":\"82332123\",\"orderId\":\"313539orb216365723513\",\"transAmt\":\"2300\"}"));
        /* System.out
                 .println(doPostJson(
                         "http://192.168.23.123:10001/bank/payment",
@@ -260,36 +260,36 @@ public class HttpRequestUtil {
                         "http://192.168.100.155:10001/bank/payment",
                         "{\"cardExpDate\":\"1249\",\"cardNum\":\"6013823100097711014\",\"code\":\"MS0001\",\"orderId\":\"7950604113343\",\"tranAmt\":\"23500\"}"));*/
 
-        System.out
-                .println(doPostJson(
-
-                        "http://117.121.20.146:9092/integral/paymentRevoke",
-                        "{\"orderId\":\"r628112839238 \",\"oldOrderId\":\"628112839238\"}"));
-        System.out
-                .println(doPostJson(
-
-                        "http://117.121.20.146:9092/integral/paymentRevoke",
-                        "{\"orderId\":\"r156112841477\",\"oldOrderId\":\"15611284·1477\"}"));
-        System.out
-                .println(doPostJson(
-
-                        "http://117.121.20.146:9092/integral/paymentRevoke",
-                        "{\"orderId\":\"r158112932363\",\"oldOrderId\":\"158112932363\"}"));
-        System.out
-                .println(doPostJson(
-
-                        "http://117.121.20.146:9092/integral/paymentRevoke",
-                        "{\"orderId\":\"r490111933863\",\"oldOrderId\":\"490111933863\"}"));
-        System.out
-                .println(doPostJson(
-
-                        "http://117.121.20.146:9092/integral/paymentRevoke",
-                        "{\"orderId\":\"r644111936881\",\"oldOrderId\":\"644111936881\"}"));
-        System.out
-                .println(doPostJson(
-
-                        "http://117.121.20.146:9092/integral/paymentRevoke",
-                        "{\"orderId\":\"r490111933863\",\"oldOrderId\":\"490111933863\"}"));
+//        System.out
+//                .println(doPostJson(
+//
+//                        "http://117.121.20.146:9092/integral/paymentRevoke",
+//                        "{\"orderId\":\"r628112839238 \",\"oldOrderId\":\"628112839238\"}"));
+//        System.out
+//                .println(doPostJson(
+//
+//                        "http://117.121.20.146:9092/integral/paymentRevoke",
+//                        "{\"orderId\":\"r156112841477\",\"oldOrderId\":\"15611284·1477\"}"));
+//        System.out
+//                .println(doPostJson(
+//
+//                        "http://117.121.20.146:9092/integral/paymentRevoke",
+//                        "{\"orderId\":\"r158112932363\",\"oldOrderId\":\"158112932363\"}"));
+//        System.out
+//                .println(doPostJson(
+//
+//                        "http://117.121.20.146:9092/integral/paymentRevoke",
+//                        "{\"orderId\":\"r490111933863\",\"oldOrderId\":\"490111933863\"}"));
+//        System.out
+//                .println(doPostJson(
+//
+//                        "http://117.121.20.146:9092/integral/paymentRevoke",
+//                        "{\"orderId\":\"r644111936881\",\"oldOrderId\":\"644111936881\"}"));
+//        System.out
+//                .println(doPostJson(
+//
+//                        "http://117.121.20.146:9092/integral/paymentRevoke",
+//                        "{\"orderId\":\"r490111933863\",\"oldOrderId\":\"490111933863\"}"));
 
        /* System.out
                 .println(doPostJson(

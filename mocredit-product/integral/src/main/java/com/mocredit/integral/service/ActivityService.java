@@ -100,6 +100,22 @@ public interface ActivityService extends BaseService<Activity> {
      */
     String getActIdsByEnCode(String enCode);
 
+
+    /**
+     * 根据机具号查询活动列表和离线
+     *
+     * @param enCode
+     * @return
+     */
+    List<Activity> getActivityByEnCodeAndOff(String enCode);
+
+    /**
+     * 离线活动列表
+     *
+     * @return
+     */
+    List<Activity> getActivityOffByEncode(String enCode);
+
     /**
      * 保存机具信息
      *

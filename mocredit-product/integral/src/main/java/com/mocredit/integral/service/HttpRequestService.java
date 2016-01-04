@@ -311,6 +311,7 @@ public class HttpRequestService extends LogService {
                                 if (ruleName.equals(tranRecord.getTransType())) {
                                     compareRuleAndMax(ruleName, Integer.valueOf(ruleValue), tranRecord.getTransCount(), resp);
                                     if (!resp.getSuccess()) {
+                                        resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
                                         return false;
                                     }
                                 }

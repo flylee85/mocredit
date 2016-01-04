@@ -29,10 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 对网关接口
@@ -215,7 +212,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
 
     /**
      * 老机具积分消费撤销
-     * <p>
+     * <p/>
      * 撤销接口参数：
      * imei                     机具号
      * account               银行账户
@@ -728,6 +725,13 @@ public class IntegralInterfaceController extends IntegralBaseController {
                     mapBank.put(bankId, bankName);
                 }
             }
+            //离线权益
+            if (!activityService.getActivityOffByEncode(enCode).isEmpty()) {
+                sb.append("<Table>");
+                sb.append("<bankid>").append("-1").append("</bankid>");
+                sb.append("<bankname>").append("离线权益").append("</bankname>");
+                sb.append("</Table>");
+            }
             sb.append("</NewDataSet>");
             saveReponseLog(getRequestId(), sb.toString());
             return sb.toString();
@@ -777,6 +781,25 @@ public class IntegralInterfaceController extends IntegralBaseController {
                     if (bankId.equals(activity.getChannel())) {
                         sb.append("<Table>");
                         sb.append("<bankid>").append(bankId).append("</bankid>");
+                        sb.append("<outerid>").append(activity.getActivityId()).append("</outerid>");
+                        sb.append("<eitemname>").append(activity.getActivityName()).append("</eitemname>");
+                        sb.append("<expointtype>").append(activity.getExchangeType()).append("</expointtype >");
+                        sb.append("</Table>");
+                    }
+                }
+            }
+            for (Activity activity : activityService.getActivityOffByEncode(enCode)) {
+                if (bankId == null || "null".equals(bankId) || "".equals(bankId)) {
+                    sb.append("<Table>");
+                    sb.append("<bankid>").append("-1").append("</bankid>");
+                    sb.append("<outerid>").append(activity.getActivityId()).append("</outerid>");
+                    sb.append("<eitemname>").append(activity.getActivityName()).append("</eitemname>");
+                    sb.append("<expointtype>").append(activity.getExchangeType()).append("</expointtype >");
+                    sb.append("</Table>");
+                } else {
+                    if (bankId.equals(activity.getChannel())) {
+                        sb.append("<Table>");
+                        sb.append("<bankid>").append("-1").append("</bankid>");
                         sb.append("<outerid>").append(activity.getActivityId()).append("</outerid>");
                         sb.append("<eitemname>").append(activity.getActivityName()).append("</eitemname>");
                         sb.append("<expointtype>").append(activity.getExchangeType()).append("</expointtype >");

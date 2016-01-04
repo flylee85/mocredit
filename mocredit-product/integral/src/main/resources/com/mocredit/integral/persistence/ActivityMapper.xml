@@ -23,18 +23,18 @@
     </resultMap>
 
     <insert id="save" parameterType="com.mocredit.integral.entity.Activity">
-		insert into
-		`ti_activity`(activity_id,activity_name,pub_enterprise_id,pub_enterprise_name,product_type,
-		start_time,end_time,select_date,integral,max_type,
-		max_number,status,exchange_type,bins,channel,rule)
-		values(#{t.activityId},#{t.activityName},#{t.pubEnterpriseId},#{t.pubEnterpriseName},#{t.productType},
-		#{t.startTime},#{t.endTime},#{t.selectDate},#{t.integral},#{t.maxType},
-		#{t.maxNumber},#{t.status},#{t.exchangeType},#{t.bins},#{t.channel},#{t.rule})
-	</insert>
+        insert into
+        `ti_activity`(activity_id,activity_name,pub_enterprise_id,pub_enterprise_name,product_type,
+        start_time,end_time,select_date,integral,max_type,
+        max_number,status,exchange_type,bins,channel,rule)
+        values(#{t.activityId},#{t.activityName},#{t.pubEnterpriseId},#{t.pubEnterpriseName},#{t.productType},
+        #{t.startTime},#{t.endTime},#{t.selectDate},#{t.integral},#{t.maxType},
+        #{t.maxNumber},#{t.status},#{t.exchangeType},#{t.bins},#{t.channel},#{t.rule})
+    </insert>
     <select id="getByActivityId" resultMap="BaseResultMap">
-		select * from
-		`ti_activity` where activity_id=#{activityId}
-	</select>
+        select * from
+        `ti_activity` where activity_id=#{activityId}
+    </select>
     <select id="getByShopIdStoreIdAcId" resultType="com.mocredit.integral.entity.Store">
         select uuid as uuid,shop_id as shopId,shop_name as shopName,store_id as storeId,store_name as storeName,
         activity_id
@@ -51,16 +51,16 @@
 		values(#{shopId},#{shopName},#{storeId},#{storeName},#{activityId})
 	</insert>
     <insert id="saveTerminal" parameterType="com.mocredit.integral.entity.Terminal">
-		insert into
-		`ti_terminal`(en_code,store_id,activity_id)
-		values(#{enCode},#{storeId},#{activityId})
-	</insert>
+        insert into
+        `ti_terminal`(en_code,store_id,activity_id)
+        values(#{enCode},#{storeId},#{activityId})
+    </insert>
     <delete id="deleteTerminalByEnCode">
 		delete from `ti_terminal` where en_code=#{enCode}
 	</delete>
     <delete id="updateTerminalByEnCode">
-		update `ti_terminal` set en_code=#{enCode} where en_code=#{oldEnCode}
-	</delete>
+        update `ti_terminal` set en_code=#{enCode} where en_code=#{oldEnCode}
+    </delete>
     <update id="updateActStatusById">
 		update `ti_activity`
 		set
@@ -68,33 +68,33 @@
 		activity_id=#{activityId}
 	</update>
     <delete id="deleteActAndStoreById">
-		DELETE a.*,b.*,c.* FROM `ti_activity` a LEFT JOIN
-		`ti_store` b ON
-		a.activity_id=b.activity_id LEFT JOIN `ti_terminal` c ON
-		b.store_id=c.store_id and b.activity_id=c.activity_id WHERE
-		a.activity_id=#{activityId}
-	</delete>
+        DELETE a.*,b.*,c.* FROM `ti_activity` a LEFT JOIN
+        `ti_store` b ON
+        a.activity_id=b.activity_id LEFT JOIN `ti_terminal` c ON
+        b.store_id=c.store_id and b.activity_id=c.activity_id WHERE
+        a.activity_id=#{activityId}
+    </delete>
     <delete id="deleteStoreByStoreId">
-		DELETE FROM `ti_store` WHERE store_id = #{storeId}
-	</delete>
+        DELETE FROM `ti_store` WHERE store_id = #{storeId}
+    </delete>
     <insert id="saveActTransRecord" parameterType="com.mocredit.integral.entity.ActivityTransRecord">
-		insert into
-		`ti_activity_trans_record`(activity_id,trans_type,trans_count,expire_date,ctime,utime)
-		values(#{t.activityId},#{t.transType},#{t.transCount},#{t.expireDate},now(),now()) ON
-		DUPLICATE KEY UPDATE tran_count=tran_count+1,utime=now();
-	</insert>
+        insert into
+        `ti_activity_trans_record`(activity_id,trans_type,trans_count,expire_date,ctime,utime)
+        values(#{t.activityId},#{t.transType},#{t.transCount},#{t.expireDate},now(),now()) ON
+        DUPLICATE KEY UPDATE trans_count=trans_count+1,utime=now();
+    </insert>
     <select id="getTranRecordByActId" resultType="com.mocredit.integral.entity.ActivityTransRecord">
-		select uuid as uuid,activity_id as activityId,
-		trans_type as transType,trans_count as transCout,
-		expire_date as expireDate,ctime as cTime,utime as uTime
-		from `ti_activity_trans_record` where activity_id #{activityId}
+        select uuid as uuid,activity_id as activityId,
+        trans_type as transType,trans_count as transCount,
+        expire_date as expireDate,ctime as cTime,utime as uTime
+        from `ti_activity_trans_record` where activity_id =#{activityId}
     </select>
     <update id="updateByExpireDate">
-		update `ti_activity_trans_record` set trans_count=0 where expire_date=#{expireDate}
-	</update>
+        update `ti_activity_trans_record` set trans_count=0 where expire_date=#{expireDate}
+    </update>
     <update id="minusCountByActId">
-		update `ti_activity_trans_record` set trans_count=trans_count-1 where trans_count >0 and activity_id=#{actId}
-	</update>
+        update `ti_activity_trans_record` set trans_count=trans_count-1 where trans_count >0 and activity_id=#{actId}
+    </update>
     <select id="statCountByTime" resultType="com.mocredit.integral.entity.ActivityTransRecord">
 		SELECT
 		`uuid`,activity_id
@@ -108,8 +108,15 @@
 		select b.* from ti_order a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where order_id=#{orderId}
     </select>
     <select id="getActivityByEnCode" resultMap="BaseResultMap">
-		select b.* from ti_terminal a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where a.en_code=#{enCode} and b.status='01'
-	</select>
+        select b.* from ti_terminal a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where a.en_code=#{enCode}
+        and b.status='01'and b.exchange_type !='3'
+    </select>
+    <select id="getActivityByEnCodeAndOff" resultMap="BaseResultMap">
+		select b.* from ti_terminal a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where a.en_code=#{enCode} and b.status='01' order  by b.exchange_type asc
+    </select>
+    <select id="getActivityOffByEncode" resultMap="BaseResultMap">
+		select b.* from ti_terminal a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where a.en_code=#{enCode} and b.status='01' and b.exchange_type='3'
+    </select>
     <select id="getActivityByStoreId" resultMap="BaseResultMap">
 		select b.* from ti_store a LEFT JOIN ti_activity b on a.activity_id=b.activity_id where a.store_id=#{storeId} and b.status='01'
 	</select>

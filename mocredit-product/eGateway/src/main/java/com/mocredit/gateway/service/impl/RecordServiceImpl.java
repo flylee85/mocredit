@@ -72,6 +72,7 @@ public class RecordServiceImpl implements RecordService {
                         }
                     }
                 }
+                saveRecordAndTranRecord(record);
             }
             return true;
         } catch (Exception e) {
