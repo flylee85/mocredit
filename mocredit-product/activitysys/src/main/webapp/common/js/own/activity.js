@@ -19,10 +19,9 @@ $(function () {
                 "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
                 "aaSorting": [[4, "desc"]],//默认排序
                 "columns": [
-                    {"data": "code", "name": "code", "width": "100px"},
+                    {"data": "name", "name": "name", "className": "name", "width": "180px"},
                     {"data": "storeCount", "name": "storeCount", "width": "90px", "sortable": false},
                     {"data": "orderCount", "name": "orderCount", "width": "90px", "sortable": false},
-                    {"data": "name", "name": "name", "className": "name", "width": "180px"},
                     {"data": "createtime", "name": "createtime", "width": "130px"},
                     {"data": null, "name": "endTime", "width": "150px"},
                     {"data": null, "width": "100px"},
@@ -30,7 +29,7 @@ $(function () {
                 ],
                 "columnDefs": [
                     {
-                        "targets": 5,
+                        "targets": 4,
                         "data": null,
                         "render": function (data, type, full) {
                             var entTime = data['endTime'];
@@ -38,7 +37,7 @@ $(function () {
                         }
                     },
                     {
-                        "targets": 6,
+                        "targets": 5,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -54,7 +53,7 @@ $(function () {
                         }
                     },
                     {
-                        "targets": 7,
+                        "targets": 6,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -84,10 +83,9 @@ $(function () {
                 "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
                 "aaSorting": [[4, "desc"]],//默认排序
                 "columns": [
-                    {"data": "code", "name": "code", "width": "70px"},
+                    {"data": "name", "name": "name", "className": "name", "width": "200px"},
                     {"data": "storeCount", "name": "storeCount", "width": "90px", "sortable": false},
                     {"data": "orderCount", "name": "storeCount", "width": "90px", "sortable": false},
-                    {"data": "name", "name": "name", "className": "name", "width": "200px"},
                     {"data": "createtime", "name": "createtime", "width": "180px"},
                     {"data": null, "name": "endTime", "width": "130px"},
                     {"data": null, "width": "70px"},
@@ -97,7 +95,7 @@ $(function () {
                 "columnDefs": [
                     {"searchable": false, "targets": [1, 2]},
                     {
-                        "targets": 5,
+                        "targets": 4,
                         "data": null,
                         "render": function (data, type, full) {
                             var entTime = data['endTime'];
@@ -105,7 +103,7 @@ $(function () {
                         }
                     },
                     {
-                        "targets": 6,
+                        "targets": 5,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -120,14 +118,14 @@ $(function () {
                             return html;
                         }
                     }, {
-                        "targets": 7,
+                        "targets": 6,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
                             return '<a href="javascript:openUpdateFamaActivity(\'' + full['id'] + '\',1)" >编辑</a>';
                         }
                     }, {
-                        "targets": 8,
+                        "targets": 7,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {

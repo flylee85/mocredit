@@ -1,14 +1,23 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'candaochina'
+            keyPassword 'candaochina123'
+            storeFile file('F:/candaojks.jks')
+            storePassword 'candaochina123'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
     defaultConfig {
         applicationId "com.yimeihuijin.codeandbonusapp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 1
-        versionName 'V100R001C01'
+        versionCode 2
+        versionName 'V100R001C02'
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {

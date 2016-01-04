@@ -3,6 +3,7 @@ package com.yimeihuijin.codeandbonusapp.modules.consumeview;
 import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.yimeihuijin.codeandbonusapp.R;
 import com.yimeihuijin.codeandbonusapp.presenter.ConsumePresenter;
@@ -16,7 +17,8 @@ import com.yimeihuijin.commonlibrary.widgets.CodeScreen;
  */
 public class ConsumeFragment extends BaseFragment implements View.OnClickListener,ConsumePresenter.IConsumeView{
 
-    private Button button1,button2,button3,button4,button5,button6,button7,button8,button9,button0,buttonConfirm,buttonDel;
+    private Button button1,button2,button3,button4,button5,button6,button7,button8,button9,button0,buttonConfirm;
+    private ImageButton buttonDel;
     private Button keyboard,stateSwitch;
     private CodeScreen screen;
 
@@ -47,7 +49,7 @@ public class ConsumeFragment extends BaseFragment implements View.OnClickListene
         (button9 = (Button) v.findViewById(R.id.code_scan_num9)).setOnClickListener(this);
 
         (buttonConfirm = (Button) v.findViewById(R.id.code_scan_confirm)).setOnClickListener(this);
-        (buttonDel = (Button) v.findViewById(R.id.code_scan_delete)).setOnClickListener(this);
+        (buttonDel = (ImageButton) v.findViewById(R.id.code_scan_delete)).setOnClickListener(this);
 
         (keyboard = (Button) v.findViewById(R.id.code_scan_keyboard)).setOnClickListener(this);
         (stateSwitch = (Button) v.findViewById(R.id.code_scan_cancel)).setOnClickListener(this);

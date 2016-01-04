@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/p120"
-        android:background="#ffffff"
+        android:background="@color/theme_color1"
         android:gravity="center_vertical"
         android:orientation="vertical" >
 
@@ -18,7 +18,7 @@
             android:gravity="center"
             android:text="银行名称"
             android:textStyle="bold"
-            android:textColor="#aa000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/p40" />
 
         <TextView
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="00000000000000"
-            android:textColor="#aa000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/p30" />
     </LinearLayout>
 

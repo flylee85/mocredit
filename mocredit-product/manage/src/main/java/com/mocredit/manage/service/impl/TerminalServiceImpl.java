@@ -17,14 +17,17 @@ import com.alibaba.fastjson.JSON;
 import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
+import com.mocredit.base.util.DateUtil;
 import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.manage.constant.Gateway;
 import com.mocredit.manage.constant.OperType;
 import com.mocredit.manage.model.Enterprise;
+import com.mocredit.manage.model.OptLog;
 import com.mocredit.manage.model.Terminal;
 import com.mocredit.manage.persitence.TerminalMapper;
+import com.mocredit.manage.service.OperLogService;
 import com.mocredit.manage.service.TerminalService;
 
 @Service
@@ -33,6 +36,8 @@ public class TerminalServiceImpl implements TerminalService {
 	private static Logger logger = Logger.getLogger(TerminalServiceImpl.class);
 	@Autowired
 	private TerminalMapper terminalMapper;
+	@Autowired
+	private OperLogService logService;
 
 	@Override
 	public PageInfo<Terminal> getPage(String key, String storeId, int pageNum, int pageSize) {
@@ -49,6 +54,18 @@ public class TerminalServiceImpl implements TerminalService {
 		map.put("key", key);
 		map.put("storeId", storeId);
 		List<Terminal> list = terminalMapper.selectAllForPage(map);
+		if (null != list) {
+			for (Terminal terminal : list) {
+				List<OptLog> logs = logService.getLogByRefId(terminal.getId());
+				StringBuilder info = new StringBuilder();
+				for (OptLog log : logs) {
+					info.append(DateUtil.dateToStr(log.getCtime(), "yyyy/MM/dd HH:mm:ss")).append("&nbsp;&nbsp;")
+							.append(log.getOperate()).append("&nbsp;&nbsp;原因：").append(log.getInfo())
+							.append("&nbsp;&nbsp;操作人：").append(log.getUser()).append("<br/>");
+				}
+				terminal.setInfo(info.toString());
+			}
+		}
 		return new PageInfo<Terminal>(list);
 	}
 

@@ -71,11 +71,11 @@
 
 <div class="logo">
 <%  if(url.contains("nyyhcz.huilife365.com")){ //农行%>
-<img src="images/logo1.png">
+<img src="images/logo_nonghang.png">
 <%}else if(url.contains("jsyhcz.huilife365.com")){//建行 %>
-<img src="images/logo2.png">
+<img src="images/logo_jianshe.png">
 <%}else { //光大%>
-<img src="images/logo.png">
+<img src="images/logo_guangda.png">
 <%} %>
 </div>
 

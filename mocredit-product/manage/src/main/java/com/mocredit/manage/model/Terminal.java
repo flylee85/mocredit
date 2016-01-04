@@ -122,9 +122,18 @@ public class Terminal {
 	private String supplierName;// 供应商名
 	private String typeName;// 机具类型名
 	private String gateway;// 网关
+	private String info;// 操作日志
 
 	public String getGateway() {
 		return gateway;
+	}
+
+	public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
 	}
 
 	public void setGateway(String gateway) {

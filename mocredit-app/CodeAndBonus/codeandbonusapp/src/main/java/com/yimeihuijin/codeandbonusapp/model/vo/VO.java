@@ -98,9 +98,7 @@ public class VO {
     public static class ARO {
 
         public List<AO> data;
-        public List<AO> activityList;
         public String errorMsg;
-        public String state;
         public boolean success;
     }
 

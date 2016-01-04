@@ -3,7 +3,10 @@ package com.mocredit.manage.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,7 @@ import com.mocredit.base.datastructure.ResponseData;
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
 import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.manage.model.Terminal;
+import com.mocredit.manage.service.OperLogService;
 import com.mocredit.manage.service.SupplierService;
 import com.mocredit.manage.service.TerminalService;
 import com.mocredit.manage.service.TerminalTypeService;
@@ -36,6 +40,8 @@ public class TerminalController {
 	private TerminalTypeService typeService;
 	@Autowired
 	private SupplierService supplierService;
+	@Autowired
+	private OperLogService logService;
 
 	@RequestMapping("/list")
 	public String list(@RequestParam(value = "search[value]", required = false) String key, Integer start,
@@ -81,16 +87,26 @@ public class TerminalController {
 	}
 
 	@RequestMapping("/save")
-	public String save(@RequestBody String body) {
+	public String save(HttpSession session, @RequestBody String body) {
 		TerminalVO terminal = JSON.parseObject(body, TerminalVO.class);
 		ResponseData response = new AjaxResponseData();
+		if (StringUtils.isEmpty(terminal.getInfo())) {
+			response.setSuccess(false);
+			response.setErrorMsg("描述不能为空");
+			return JSON.toJSONString(response);
+		}
 		try {
+			Object username = session.getAttribute("username");
 			// 新增
 			if (null == terminal.getId()) {
 				terminalService.add(terminal);
+				logService.add(null == username ? "" : username.toString(), OperLogService.ADD,
+						JSON.toJSONString(terminal), terminal.getInfo(), terminal.getId());
 			} else {
 				// 修改
 				terminalService.update(terminal);
+				logService.add(null == username ? "" : username.toString(), OperLogService.UPDATE,
+						JSON.toJSONString(terminal), terminal.getInfo(), terminal.getId());
 			}
 		} catch (Exception e) {
 			response.setSuccess(false);
@@ -100,10 +116,12 @@ public class TerminalController {
 	}
 
 	@RequestMapping("/del/{id}")
-	public String delete(@PathVariable String id) {
+	public String delete(HttpSession session, @PathVariable String id) {
 		ResponseData response = new AjaxResponseData();
 		try {
 			terminalService.delete(id);
+			Object username = session.getAttribute("username");
+			logService.add(null == username ? "" : username.toString(), OperLogService.DELETE, id, "", id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.setSuccess(false);
