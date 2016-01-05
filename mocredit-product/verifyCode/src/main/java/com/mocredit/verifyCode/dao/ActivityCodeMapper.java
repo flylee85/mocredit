@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by YHL on 2015/7/7.
@@ -105,4 +106,16 @@ public interface ActivityCodeMapper {
                                  @Param("status")  String status,
                                  @Param("exchangeChannel")  String exchangeChannel
                                 );
+    /**
+     * 根据条件查询分页码数据
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>>findPageList(Map<String, Object>param);
+    /**
+     * 根据条件查询分页码数据条数
+     * @param param
+     * @return
+     */
+    int findPageCount(Map<String, Object>param);
 }

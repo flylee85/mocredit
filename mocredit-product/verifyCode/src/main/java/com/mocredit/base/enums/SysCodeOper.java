@@ -7,7 +7,7 @@ package com.mocredit.base.enums;
  *
  */
 public enum SysCodeOper {
-	REVOKE("码撤销", 1), DELAY("码延期", 2), DEFAULT("默认操作 撤销", 999);
+	REVOKE("码撤销", 1), DELAY("码延期", 2), DISABLE("码禁用", 3), DEFAULT("默认操作 撤销", 999);
 
 	/** 值 **/
 	private int value;

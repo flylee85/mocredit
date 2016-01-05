@@ -122,6 +122,7 @@ function openUpdate(id, type){
 			form.find("input[name=address]").val(result.data.store.address);
 			form.find("input[name=longitude]").val(result.data.store.longitude);
 			form.find("input[name=latitude]").val(result.data.store.latitude);
+			form.find("select[name=businessStatus]").val(result.data.store.businessStatus);
 			//处理商户
 			var _select=$("#addStore form .merchant select");
 			_select.empty().append('<option value="" selected>请选择所属商家</option>')
