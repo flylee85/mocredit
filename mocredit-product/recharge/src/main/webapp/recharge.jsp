@@ -46,10 +46,6 @@
 			alert("请输入礼券号!");
 			return false;
 		}
-		if (charcode.value.length != 12 ) {
-			alert("输入的礼券号有误!");
-			return false;
-		}
 		if (rand==null||rand.value.length == 0) {
 			alert("请输入验证码!");
 			return false;
