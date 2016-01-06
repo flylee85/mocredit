@@ -15,4 +15,5 @@ public interface ControllerService {
     String syncdevcode(String json);
     String resetDevpassword(String json);
     String yanmachexiao(String h,String t);
+    String shoudantongbu(String h,String t);
 }

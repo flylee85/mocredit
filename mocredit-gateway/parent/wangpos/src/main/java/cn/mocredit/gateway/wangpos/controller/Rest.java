@@ -145,5 +145,9 @@ public class Rest {
         return objectToJson(ret);
     }
 
+    @RequestMapping(value = "/shoudantongbu")
+    public String shoudantongbu(String h, String t) {
+        return controllerService.shoudantongbu(h, t);
+    }
 
 }

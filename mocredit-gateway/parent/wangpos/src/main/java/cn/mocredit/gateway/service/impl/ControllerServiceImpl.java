@@ -227,7 +227,7 @@ public class ControllerServiceImpl implements ControllerService {
             ret.setMmsid(eitem.getMmsId());
             ret.setBatchno(eitem.getBacthNo());
             ret.setErweima(req.getCode());
-            ret.setPrintInfo(eitem.getXiaoTiao());
+            ret.setPrintInfo(eitem.getXiaoTiao().replace("\\n", "\n"));
             jsonData.setjData(objectToJson(ret));
             jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
             String content = objectToJson(jsonData);
@@ -325,7 +325,7 @@ public class ControllerServiceImpl implements ControllerService {
                 ret.setRtnFlag("true".equals(isSuccess) ? "0" : "1");
                 ret.setErrorMes(eitem.getResultInfo());
                 ret.setDes(eitem.getDescription());
-                ret.setPrintInfo(eitem.getXiaoTiao());
+                ret.setPrintInfo(eitem.getXiaoTiao().replace("\\n", "\n"));
                 jsonData.setjData(objectToJson(ret));
                 jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
                 String content = objectToJson(jsonData);
@@ -897,6 +897,11 @@ public class ControllerServiceImpl implements ControllerService {
         }
         return "0";
     }
+    
+    @Override
+	public String shoudantongbu(String h, String t) {
+		return null;
+	}
 
     /**
      * 此方法会向别处发送HTTP请求，用来代替直接调用barcodeservice的方法
@@ -1021,4 +1026,5 @@ public class ControllerServiceImpl implements ControllerService {
             return this;
         }
     }
+    
 }
