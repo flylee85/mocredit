@@ -44,6 +44,7 @@
     select 
     <include refid="Base_Column_List" />
     ,(select count(1) from t_contract c where c.enterprise_id=e.id) as contractCount
+    ,(select count(1) from act_activity where enterprise_id=e.id) as activityCount
     from t_enterprise e
     <where>
     	<if test="startTime !=null">

@@ -41,20 +41,19 @@ public class StoreServiceImpl implements StoreService {
 	private TerminalService terminalService;
 
 	@Override
-	public PageInfo<Store> getPage(String key, String merchantId, int pageNum, int pageSize) {
+	public PageInfo<Store> getPage(Map<String, Object> paramMap, int pageNum, int pageSize) {
 		PageHelper.startPage(pageNum, pageSize);
+		Object key = paramMap.get("key");
 		if (null != key) {
-			key = key.trim();
-			if (!key.isEmpty()) {
+			key = key.toString().trim();
+			if (!key.toString().isEmpty()) {
 				key = "%" + key + "%";
 			} else {
 				key = null;
 			}
 		}
-		Map<String, Object> map = new HashMap<>();
-		map.put("key", key);
-		map.put("merchantId", merchantId);
-		List<Store> list = storeMapper.selectAllForPage(map);
+		paramMap.put("key", key);
+		List<Store> list = storeMapper.selectAllForPage(paramMap);
 		return new PageInfo<Store>(list);
 	}
 
