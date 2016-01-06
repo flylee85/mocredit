@@ -181,7 +181,11 @@ public class IntegralInterfaceController extends IntegralBaseController {
             String orderId = orderVo.getOrderId();
             saveInRequestLog(request, orderId, param);
             if (!setOrderInfo(orderVo)) {
-                return renderJSONString(true, "", "", "");
+                resp.setSuccess(false);
+                resp.setErrorCode(ErrorCodeType.NOT_EXIST_ORDER_ERROR.getValue());
+                resp.setErrorMsg(ErrorCodeType.NOT_EXIST_ORDER_ERROR.getText());
+                return renderJSONString(false, resp.getErrorMsg(),
+                        resp.getErrorCode(), resp.getData());
             }
             if (!setOrderStoreId(orderVo)) {
                 LOGGER.info("### paymentRevoke error param={} ###", param);
@@ -730,6 +734,12 @@ public class IntegralInterfaceController extends IntegralBaseController {
                 sb.append("<Table>");
                 sb.append("<bankid>").append("-1").append("</bankid>");
                 sb.append("<bankname>").append("离线权益").append("</bankname>");
+                sb.append("</Table>");
+            }
+            String resp = sb.toString();
+            if (!resp.contains("Table")) {
+                sb.append("<Table>");
+                sb.append("<isSuccess>true</isSuccess>");
                 sb.append("</Table>");
             }
             sb.append("</NewDataSet>");

@@ -242,11 +242,15 @@ public class HttpRequestUtil {
         // System.out.println(doPostJson("http://localhost:8080/integral/interface/activityImport",
         // "{\"activityId\":\"1\",\"startTime\":\"2015-08-12 11:11:11\",\"storeList\":\"[{\"shopId\":\"1\",\"storeId\":\"3\"}]\"}")
         // );
-
         System.out
                 .println(doPostJson(
-                        "http://117.121.20.146:9092/integral/payment",
-                        "{\"activityId\":\"1820\",\"cardExpDate\":\"2003\",\"cardNum\":\"4392qq260028467460\",\"enCode\":\"82332123\",\"orderId\":\"313539orb216365723513\",\"transAmt\":\"2300\"}"));
+
+                        "http://127.0.0.1:8080/paymentRevoke",
+                        "{\"orderId\":\"1903110527e5791\",\"oldOrderId\":\"222\"}"));
+//        System.out
+//                .println(doPostJson(
+//                        "http://117.121.20.146:9092/integral/payment",
+//                        "{\"activityId\":\"1820\",\"cardExpDate\":\"2003\",\"cardNum\":\"4392qq260028467460\",\"enCode\":\"82332123\",\"orderId\":\"313539orb216365723513\",\"transAmt\":\"2300\"}"));
        /* System.out
                 .println(doPostJson(
                         "http://192.168.23.123:10001/bank/payment",

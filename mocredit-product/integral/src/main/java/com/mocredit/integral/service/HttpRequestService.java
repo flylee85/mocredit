@@ -469,7 +469,9 @@ public class HttpRequestService extends LogService {
                 return false;
             }
             if (orderService.isExistOldOrder(orderVo.getOldOrderId())) {
-                return true;
+                resp.setErrorCode("609");
+                resp.setErrorMsg("该订单已撤销");
+                return false;
             }
             Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentRevoke(activity.getChannel());
