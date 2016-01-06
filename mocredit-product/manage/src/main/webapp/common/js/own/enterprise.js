@@ -2,7 +2,17 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
 		"processing": true,
 		"ajax": {
 			"url": "enterprise/list",
-			 type: "post"
+			 type: "post",
+			 data:function(data){
+				 var query = $("#queryEnterprise").serializeArray();
+				 console.log(query);
+				 for(var i in query){
+					 if(query[i].value){
+						 data[query[i].name]=query[i].value;
+					 }
+				 }
+				 return data;
+			 }
 		},
 		 "processing": true,
          "serverSide": true,
@@ -33,7 +43,19 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
 		]
 
 });
-
+$("#searchBtn").click(function(){
+	oTable.ajax.reload();
+})
+$(".datetimepicker").each(function () {
+	var $this=$(this);
+	$this.datetimepicker({
+		format: "yyyy-mm-dd hh:ii:ss",
+		autoclose: true,
+		language: 'zh-CN',
+		todayHighlight: true,
+		todayBtn:"linked"
+	});
+});
 // 验证
 var form = $("#addEnterprise").find("form").parsley();
 $("#addEnterprise").on('hidden.bs.modal', function (e) {

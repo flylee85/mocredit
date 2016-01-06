@@ -43,6 +43,14 @@ public interface VerifiedCodeMapper {
 	public List<TVerifiedCode> findVerifiedCodesByActiveCodeId(String codeSerialNumber);
 
 	/**
+	 * 根据码序列号（券码ID）获取最新验码记录
+	 * 
+	 * @param codeSerialNumber
+	 * @return
+	 */
+	public TVerifiedCode findLastVerifiedCode(String codeSerialNumber);
+
+	/**
 	 * 插入一条验码使用的记录
 	 * 
 	 * @param verifiedCode
@@ -58,6 +66,7 @@ public interface VerifiedCodeMapper {
 	 */
 	public TVerifiedCode findVerifiedCodesByDeviceAndRequestSerialNumber(@Param("device") String device,
 			@Param("request_serial_number") String requestSeriaNumber, @Param("date") Date date);
+
 	/**
 	 * 根据码序列号（券码ID）获取券码的一条记录
 	 * 

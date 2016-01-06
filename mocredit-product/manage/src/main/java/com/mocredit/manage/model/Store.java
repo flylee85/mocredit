@@ -119,6 +119,7 @@ public class Store {
 	@JSONField(format = "yyyy-MM-dd")
 	private Date createTime;
 	private String linkman;
+	private int businessStatus;// 业务状态
 
 	public String getLinkman() {
 		return linkman;
@@ -126,6 +127,14 @@ public class Store {
 
 	public void setLinkman(String linkman) {
 		this.linkman = linkman;
+	}
+
+	public int getBusinessStatus() {
+		return businessStatus;
+	}
+
+	public void setBusinessStatus(int businessStatus) {
+		this.businessStatus = businessStatus;
 	}
 
 	public Date getCreateTime() {

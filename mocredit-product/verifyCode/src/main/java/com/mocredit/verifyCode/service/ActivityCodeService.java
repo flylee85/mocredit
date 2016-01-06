@@ -2,10 +2,12 @@ package com.mocredit.verifyCode.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
 import com.mocredit.verifyCode.model.TActivityCode;
 import com.mocredit.verifyCode.vo.ActActivityCodeVO;
+import com.mocredit.verifyCode.vo.VerifyCodeVO;
 
 /**
  *
@@ -118,6 +120,14 @@ public interface ActivityCodeService {
 	AjaxResponseData delayForSys(Date endTime, String codeId);
 
 	/**
+	 * 码禁用
+	 * 
+	 * @param codeId
+	 * @return
+	 */
+	AjaxResponseData disableForSys(String codeId);
+
+	/**
 	 * 解析导入数据，放入码表中。
 	 * 
 	 * @param actActivityCodeVO
@@ -156,5 +166,15 @@ public interface ActivityCodeService {
 	 * @return
 	 */
 	public AjaxResponseData startUsingActivityWithTran(String activity_id);
+
+	/**
+	 * 查询码列表
+	 * 
+	 * @param verifyCode
+	 * @param pageSize
+	 * @param pageNum
+	 * @return
+	 */
+	Map<String, Object> getCodeList(VerifyCodeVO verifyCode, int pageSize, int pageNum);
 
 }

@@ -5,6 +5,7 @@ import com.mocredit.manage.model.Enterprise;
 
 /**
  * 企业业务类
+ * 
  * @author liaoy
  * @date 2015年11月3日
  */
@@ -18,7 +19,7 @@ public interface EnterpriseService {
 	 * @param pageSize
 	 * @return
 	 */
-	PageInfo<Enterprise> getPage(String key, int pageNum, int pageSize);
+	PageInfo<Enterprise> getPage(String key, String startTime, String endTime, int pageNum, int pageSize);
 
 	/**
 	 * 新增
@@ -43,6 +44,6 @@ public interface EnterpriseService {
 	 * @return
 	 */
 	int delete(String id);
-	
+
 	Enterprise getEnterpriseById(String id);
 }

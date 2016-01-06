@@ -41,12 +41,12 @@
 
     <select id="findVerifiedCodesByDeviceAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="map">
         <![CDATA[
-          SELECT * FROM  t_verified_code where device=#{device} and request_serial_number=#{request_serial_number} and DATE_FORMAT( verify_time,'%Y%m%d')= DATE_FORMAT( #{date},'%Y%m%d') limit 1
+          SELECT * FROM  t_verified_code where request_serial_number=#{request_serial_number} and device=#{device} and DATE_FORMAT( verify_time,'%Y%m%d')= DATE_FORMAT( #{date},'%Y%m%d') and status=1 limit 1
         ]]>
     </select>
     <select id="findByDeviceAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="map">
         <![CDATA[
-          SELECT * FROM  t_verified_code where device=#{device} and request_serial_number=#{request_serial_number} limit 1
+          SELECT * FROM  t_verified_code where request_serial_number=#{request_serial_number} and device=#{device} and status=1 limit 1
         ]]>
     </select>
     <!-- 根据券码序列号（券码ID）查询券码验证记录 -->
@@ -58,7 +58,7 @@
 <!-- 根据券码序列号（券码ID）查询券码验证记录 -->
     <select id="findVerifiedCodesByCodeAndType" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="java.util.Map" >
         <![CDATA[
-          SELECT * FROM  t_verified_code where code=#{code} and verify_type=#{verifyType}
+          SELECT * FROM  t_verified_code where code=#{code} and status=1 and verify_type=#{verifyType} limit 1
         ]]>
     </select>
     <!-- 插入记录 -->
@@ -158,4 +158,10 @@
 			</if>
 		</where>
 	</select>
+	 <!-- 根据券码序列号（券码ID）查询券码验证记录 -->
+    <select id="findLastVerifiedCode" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="java.lang.String" >
+        <![CDATA[
+          SELECT verify_time,store_name,shop_name FROM  t_verified_code where code_serial_number=#{codeSerialNumber,jdbcType=VARCHAR} and status=1  ORDER BY verify_time DESC limit 1
+        ]]>
+    </select>
 </mapper>
