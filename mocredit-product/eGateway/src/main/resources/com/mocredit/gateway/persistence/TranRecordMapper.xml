@@ -4,6 +4,7 @@
 <mapper namespace="com.mocredit.gateway.persistence.TranRecordMapper">
     <resultMap id="BaseResultMap" type="com.mocredit.gateway.entity.TranRecord">
         <result column="id" property="id"/>
+        <result column="activity_id" property="activityId"/>
         <result column="card_num" property="cardNum"/>
         <result column="tran_type" property="tranType"/>
         <result column="tran_count" property="tranCount"/>
@@ -13,8 +14,8 @@
     </resultMap>
     <insert id="save" parameterType="com.mocredit.gateway.entity.TranRecord">
 		insert into
-		`tran_record`(card_num,tran_type,tran_count,expire_date,ctime,utime)
-		values(#{t.cardNum},#{t.tranType},#{t.tranCount},#{t.expireDate},now(),now()) ON
+		`tran_record`(activity_id,card_num,tran_type,tran_count,expire_date,ctime,utime)
+		values(#{t.activityId},#{t.cardNum},#{t.tranType},#{t.tranCount},#{t.expireDate},now(),now()) ON
 		DUPLICATE KEY UPDATE tran_count=tran_count+1,utime=now();
 	</insert>
     <update id="updateByExpireDate">
@@ -22,9 +23,9 @@
     </update>
     <select id="getTranRecordByCardNum" resultMap="BaseResultMap">
         select * from
-        `tran_record` where card_num=#{cardNum}
+        `tran_record` where card_num=#{cardNum} and activity_id=#{activityId}
     </select>
     <update id="minusCountByCardNum">
-        update `tran_record` set tran_count=tran_count-1 where tran_count >0 and card_num=#{cardNum}
+        update `tran_record` set tran_count=tran_count-1 where tran_count >0 and card_num=#{cardNum} and activity_id=#{activityId}
     </update>
 </mapper>

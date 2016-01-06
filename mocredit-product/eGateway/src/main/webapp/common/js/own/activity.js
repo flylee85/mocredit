@@ -20,15 +20,15 @@ $(function () {
                 "columns": [
                     {"data": "name", "name": "name", "width": "200px"},
                     {"data": "code", "name": "code", "width": "90px", "sortable": false},
-                    {"data": "enterpriseName", "name": "enterpriseName", "width": "90px", "sortable": false},
+                    {"data": "enterpriseName", "name": "enterpriseName", "width": "120px", "sortable": false},
                     {"data": "merchantId", "name": "merchantId", "className": "name", "width": "100px"},
-                    {"data": "merchantName", "name": "merchantName", "className": "name", "width": "100px"},
-                    {"data": "rule", "name": "rule", "width": "180px"},
-                    {"data": null, "width": "100px"},
+                    {"data": "merchantName", "name": "merchantName", "className": "name", "width": "120px"},
+                    //{"data": "rule", "name": "rule", "width": "180px"},
+                    //{"data": null, "width": "100px"},
                     {"data": null, "width": "150px"}
                 ],
                 "columnDefs": [
-                    {
+                  /*  {
                         "targets": 6,
                         "data": null,
                         "sortable": false,
@@ -43,9 +43,9 @@ $(function () {
                             html += '</div>';
                             return html;
                         }
-                    },
+                    },*/
                     {
-                        "targets": 7,
+                        "targets": 5,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {

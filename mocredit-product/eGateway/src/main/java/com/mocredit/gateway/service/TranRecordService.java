@@ -23,7 +23,7 @@ public interface TranRecordService extends BaseService<TranRecord> {
      * @param cardNum
      * @return
      */
-    List<TranRecord> getTranRecordByCardNum(String cardNum);
+    List<TranRecord> getTranRecordByCardNum(String cardNum, Integer activityId);
 
     /**
      * 根据卡号计数器减一
@@ -31,5 +31,5 @@ public interface TranRecordService extends BaseService<TranRecord> {
      * @param cardNum
      * @return
      */
-    boolean minusCountByCardNum(String cardNum);
+    boolean minusCountByCardNum(String cardNum, Integer activityId);
 }

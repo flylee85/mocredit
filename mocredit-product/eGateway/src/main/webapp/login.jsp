@@ -1,5 +1,10 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+%>
+<base href="<%=basePath%>"/>
 <html>
 <head>
     <meta charset="utf-8">
@@ -57,7 +62,7 @@
         <input type="hidden" name="password"/>
         <label id="p"> </label>
         <input type="text" class="form-control" id="checkCode" name="checkCode" placeholder="验证码">
-        <img src="/eGateway/checkCode" id="changeCheckCode" onclick="reCaptcha()" height="35" size="10"/>
+        <img src="checkCode" id="changeCheckCode" onclick="reCaptcha()" height="35" size="10"/>
         <a href="#" onclick="reCaptcha()">看不清楚,点我</a>
         <label class="error">${error}</label>
         <button class="btn btn-lg btn-primary btn-block">登录</button>
@@ -90,7 +95,7 @@
     }
     function reCaptcha() {
         var rdm = Math.random();
-        $("#changeCheckCode").attr("src", "/eGateway/checkCode.json?rdm=" + rdm);
+        $("#changeCheckCode").attr("src", "checkCode.json?rdm=" + rdm);
     }
 </script>
 </body>
