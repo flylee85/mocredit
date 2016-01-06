@@ -40,7 +40,7 @@
         <init-param>
             <param-name>urls</param-name>
             <param-value>
-                /|/login|/quit|/css.*|/securityError|/images.*|/include.*|/img.*|/js.*|/lib.*|/common.*|/upload.*|/fonts.*|/static.*|/loginAction|/activitysys/getActivityInfo.*|/loginout
+                /|/login|/quit|/css.*|/checkCode.*|/checkCodeVerify.*|/images.*|/include.*|/img.*|/js.*|/lib.*|/common.*|/upload.*|/fonts.*|/static.*|/loginAction|/activitysys/getActivityInfo.*|/loginout
             </param-value>
         </init-param>
     </filter>

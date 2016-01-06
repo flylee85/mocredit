@@ -1,5 +1,10 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+%>
+<base href="<%=basePath%>"/>
 <html>
 <head>
     <meta charset="utf-8">
@@ -51,11 +56,14 @@
             亿美汇金订单平台
         </h2>
         <br/>
-        <input type="text" id="username" name="username" value="" class="form-control" placeholder="用户名">
+        <input type="text" id="username" name="username" value="${username}" class="form-control" placeholder="用户名">
         <label id="u"> </label>
         <input type="password" id="password" class="form-control" placeholder="密码">
         <input type="hidden" name="password"/>
         <label id="p"> </label>
+        <input type="text" class="form-control" id="checkCode" name="checkCode" placeholder="验证码">
+        <img src="checkCode" id="changeCheckCode" onclick="reCaptcha()" height="35" size="10"/>
+        <a href="#" onclick="reCaptcha()">看不清楚,点我</a>
         <label class="error">${error}</label>
         <button class="btn btn-lg btn-primary btn-block">登录</button>
     </form>
@@ -64,13 +72,30 @@
 <script>
     $(function () {
         $("form").submit(function () {
+            if (!$("#username").val()) {
+                alert("请输入用户名")
+                return false;
+            }
+            if (!$("#password").val()) {
+                alert("请输入密码")
+                return false;
+            }
+            if (!$("#checkCode").val()) {
+                alert("请输入验证码")
+                return false;
+            }
             var password = $("#password").val();
             $("input[name='password']").val(hex_md5(password));
             return true;
         })
     })
+
     if (window.top.location.href != window.location.href) {
         window.top.location.replace(window.location.href);
+    }
+    function reCaptcha() {
+        var rdm = Math.random();
+        $("#changeCheckCode").attr("src", "checkCode.json?rdm=" + rdm);
     }
 </script>
 </body>

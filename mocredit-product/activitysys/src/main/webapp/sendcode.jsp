@@ -506,7 +506,7 @@
             "actId": "${actId}",
             "batchId": id,
             "type": "03",
-            "sendType": "01"
+            "sendType": "02"
         }, function (result) {
             if (result.success) {
                 sendMsg(true, "发送彩信成功");
