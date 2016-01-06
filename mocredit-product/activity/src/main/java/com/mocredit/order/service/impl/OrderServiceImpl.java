@@ -55,6 +55,12 @@ public class OrderServiceImpl implements OrderService {
         return JSON.parseObject(resp, ResponseData.class);
     }
 
+    @Override
+    public ResponseData findCodeOrderList(OrderDto orderDto) {
+        String param = JSON.toJSONString(orderDto);
+        String resp = HttpUtil.doRestfulByHttpConnection(PropertiesUtil.getValue("verifyCode.codeOrderSearch"), param);
+        return JSON.parseObject(resp, ResponseData.class);
+    }
 
     @Override
     public boolean revokeOrderByOrderId(String orderId, String enCode, ResponseData responseData) {
@@ -78,6 +84,33 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.findOrderByOId(id);
         Map mapCheck = orderCheck(order.getActivityId(), order.getCode());
         return orderMapper.updateOrderByActIdAndCode(order.getActivityId(), order.getCode(), mapCheck.get("orderId") + "", OrderStatusType.EXCHANGE.getValue());
+    }
+
+    @Override
+    public void abolishCodeById(ResponseData responseData, String id) {
+        String url = PropertiesUtil.getValue("verifyCode.codeOrderOp");
+        // 调用Http工具，执行送码操作，并解析返回值
+        Map<String, Object> param = new HashMap<>();
+        param.put("oper", 3);
+        param.put("id", id);
+        String respJson = HttpUtil.doRestfulByHttpConnection(url, JSON.toJSONString(param));// 送码
+        ResponseData resp = JSON.parseObject(respJson, ResponseData.class);
+        responseData.setSuccess(resp.getSuccess());
+        responseData.setErrorMsg(resp.getErrorMsg());
+    }
+
+    @Override
+    public void delayOrderById(ResponseData responseData, String id, String delayTime) {
+        String url = PropertiesUtil.getValue("verifyCode.codeOrderOp");
+        // 调用Http工具，执行送码操作，并解析返回值
+        Map<String, Object> param = new HashMap<>();
+        param.put("oper", 2);
+        param.put("id", id);
+        param.put("endTime", delayTime);
+        String respJson = HttpUtil.doRestfulByHttpConnection(url, JSON.toJSONString(param));// 送码
+        ResponseData resp = JSON.parseObject(respJson, ResponseData.class);
+        responseData.setSuccess(resp.getSuccess());
+        responseData.setErrorMsg(resp.getErrorMsg());
     }
 
     public Map<String, Object> orderCheck(String activityId, String code) {

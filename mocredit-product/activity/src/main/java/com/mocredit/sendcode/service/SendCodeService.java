@@ -114,4 +114,12 @@ public interface SendCodeService extends BaseService {
      * @return
      */
     boolean isExistName(String actId, String name);
+
+    /**
+     * 根据码的id查询该码发送短彩信的类型
+     *
+     * @param id
+     * @return
+     */
+    Map<String, Object>  getSendSmsTypeByCodeId(String id);
 }

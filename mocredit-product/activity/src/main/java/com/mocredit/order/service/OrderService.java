@@ -24,7 +24,9 @@ public interface OrderService extends BaseService<Order> {
 
     ResponseData findOrderList(OrderDto orderDto);
 
-    boolean revokeOrderByOrderId(String orderId, String enCode,ResponseData responseData);
+    ResponseData findCodeOrderList(OrderDto orderDto);
+
+    boolean revokeOrderByOrderId(String orderId, String enCode, ResponseData responseData);
 
     int updateOrderByCode(Order order);
 
@@ -42,4 +44,20 @@ public interface OrderService extends BaseService<Order> {
      * @return
      */
     int checkOrderById(String id);
+
+    /**
+     * 根据id废除码
+     *
+     * @param id
+     */
+    void abolishCodeById(ResponseData responseData, String id);
+
+    /**
+     * 根据id延期码过期时间
+     *
+     * @param responseData
+     * @param id
+     * @param delayTime
+     */
+    void delayOrderById(ResponseData responseData, String id, String delayTime);
 }

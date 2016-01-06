@@ -4,6 +4,7 @@ package com.mocredit.order.entity;
  * Created by ytq on 2015/12/7.
  */
 public class OrderData {
+    private String id;//码id
     private String orderId;//订单编码
     private String enterpriseName;//企业名称
     private String shopName;//商户名称
@@ -16,7 +17,42 @@ public class OrderData {
     private Integer amt;//积分
     private String orderTime;//订单生成时间(yyyy-MM-dd HH:mm:ss)
     private String enCode;//设备编号
+    private String amount;//价格
+    private String endTime;//过期时间
+    private String verifyTime;//交易时间
     private String msg;//验证结果
+
+    public String getVerifyTime() {
+        return verifyTime;
+    }
+
+    public void setVerifyTime(String verifyTime) {
+        this.verifyTime = verifyTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getMsg() {
         return msg;
