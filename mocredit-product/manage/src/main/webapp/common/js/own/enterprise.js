@@ -1,5 +1,4 @@
 var oTable = $('table[data-ride="datatables"]').DataTable( {
-		"processing": true,
 		"ajax": {
 			"url": "enterprise/list",
 			 type: "post",
@@ -18,7 +17,7 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
          "serverSide": true,
          "pageLength": 10,
          "pagingType": "full_numbers",
-         "searchDelay": 500,
+         "searching":false,
 		"dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
 		"paginationType": "full_numbers",
 		"autoWidth":true,
@@ -26,8 +25,8 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
 		"columns": [
 			{ "data": "name", "className":"qiyeName" },
 			{ "data": "createTime" },
-			{ "data": "activityCount" },
 			{ "data": "contractCount" },
+			{ "data": null},
 			{ "data": null }
 		],
 		"columnDefs": [
@@ -39,6 +38,13 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
 				},
 				"sortable": false,
 				"targets": 4
+			},
+			{
+				"render": function(oObj, type, full ) {
+					return 0==full['activityCount']?"0":'<a href="activity.html#'+full[ 'id' ]+'" target="_blank">'+full['activityCount']+'</a>';
+				},
+				"sortable": false,
+				"targets": 3
 			}
 		]
 

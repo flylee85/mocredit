@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mocredit.base.datastructure.ResponseData;
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
 import com.mocredit.base.pagehelper.PageInfo;
+import com.mocredit.base.util.DateUtil;
 import com.mocredit.manage.model.Store;
 import com.mocredit.manage.service.AreaService;
 import com.mocredit.manage.service.MerchantService;
@@ -38,8 +40,7 @@ public class StoreController {
 	private AreaService areaService;
 
 	@RequestMapping("/list")
-	public String list(@RequestParam(value = "search[value]", required = false) String key, String merchantId,
-			Integer start, Integer length) {
+	public String list(@RequestParam Map<String, Object> paramMap, Integer start, Integer length) {
 		ResponseData response = new AjaxResponseData();
 		try {
 			if (null == start) {
@@ -48,7 +49,13 @@ public class StoreController {
 			if (null == length) {
 				length = 10;
 			}
-			PageInfo<Store> page = storeService.getPage(key, merchantId, start / length + 1, length);
+			if (!StringUtils.isEmpty(paramMap.get("time1"))) {
+				paramMap.put("time1", DateUtil.strToDate(paramMap.get("time1").toString(), "yyyy-MM-dd"));
+			}
+			if (!StringUtils.isEmpty(paramMap.get("time2"))) {
+				paramMap.put("time2", DateUtil.strToDate(paramMap.get("time2").toString(), "yyyy-MM-dd"));
+			}
+			PageInfo<Store> page = storeService.getPage(paramMap, start / length + 1, length);
 			Map<String, Object> newMap = new HashMap<String, Object>();
 			newMap.put("recordsTotal", page.getTotal());// 总数量
 			newMap.put("recordsFiltered", page.getTotal());// 过滤后的总数量，暂未用到

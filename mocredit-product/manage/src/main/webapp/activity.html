@@ -2,21 +2,18 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>活动管理</title>
-    <link rel="stylesheet" href="common/js/file-input/fileinput.css">
-    <link rel="stylesheet" href="common/css/switchery/style.css">
+    <title>企业活动列表</title>
+     <link rel="stylesheet" href="common/css/bootstrap.css">
+    <link rel="stylesheet" href="common/css/font-awesome.min.css">
+    <link rel="stylesheet" href="common/css/style.css">
+    <link rel="stylesheet" href="common/css/plugin.css">
+    
 </head>
 <body>
 
 <section class="main padder">
     <div class="clearfix">
-        <h4><i class="icon-list"></i> 活动列表</h4>
-    </div>
-    <div class="clearfix">
-        <ul class="breadcrumb">
-            <li><a href="#"><i class="icon-home"></i>首页</a></li>
-            <li class="active"><i class="icon-list-ul"></i>活动管理</li>
-        </ul>
+        <h4><i class="icon-list"></i> 企业活动列表</h4>
     </div>
     <section class="panel">
         <header class="panel-heading text-right">
@@ -39,10 +36,9 @@
                                 <table class="table table-striped m-b-none" data-ride="datatables">
                                     <thead>
                                     <tr>
-                                        <th width="10%">产品编号</th>
+                                        <th width="15%">活动名称</th>
                                         <th width="8%">门店数</th>
                                         <th width="8%">订单数</th>
-                                        <th width="15%">活动名称</th>
                                         <th width="12%">创建时间</th>
                                         <th width="12%">过期时间</th>
                                         <th width="10%">状态</th>
@@ -70,10 +66,9 @@
                                 <table class="table table-striped m-b-none" data-ride="datatables">
                                     <thead>
                                     <tr>
-                                        <th>产品编号</th>
+                                        <th>活动名称</th>
                                         <th>门店数</th>
                                         <th>订单数</th>
-                                        <th>活动名称</th>
                                         <th>创建时间</th>
                                         <th>过期时间</th>
                                         <th>状态</th>
@@ -92,70 +87,12 @@
         </div>
     </section>
 </section>
-
-
-<!-- .modal 提码-->
-<div id="timaModal" class="modal fade" data-backdrop="static" data-keyboard="false">
-    <form class="form-horizontal">
-        <div class="modal-dialog pos-abt modal-lger" style="margin-left:-350px;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
-                            class="icon-remove"></i></button>
-                    <h4 class="modal-title">发码</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="col-lg-2 control-label">描述</label>
-
-                            <div class="col-lg-5">
-                                <input type="text" id="remark" class="form-control input-small parsley-validated"
-                                       placeholder="描述" name="username">
-                            </div>
-                            <label class="col-lg-2 control-label">导入联系人</label>
-
-                            <div class="col-lg-3">
-                                <input type="hidden" name="activityId"/>
-                                <input type="hidden" name="sendSmsType"/>
-                                <input id="importExcel" name="selectExcel" type="file" class="file-loading">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="progressWrap">
-                                <div id="kv-upload-progress">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" style="margin-top:20px">
-                        <div class="col-lg-12" id="famaState">
-
-                        </div>
-                    </div>
-                </div>
-               <!-- <div class="modal-footer">
-                    <div class="row">
-                        <div class="col-lg-10">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
-                        </div>
-                        <div class="col-lg-2">
-                            <button type="button" class="btn btn-primary">确 认</button>
-                        </div>
-                    </div>
-                </div>-->
-            </div>
-            <!-- /.modal-content -->
-        </div>
-    </form>
-</div>
-<!-- / .modal 提码-->
-
-
-<script src="common/js/file-input/fileinput.js" type="text/javascript"></script>
-
+<!-- /.modal 发送提示 -->
+<script src="common/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="common/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="common/js/index.js" type="text/javascript"></script>
+<!-- datatables -->
+<script src="common/js/datatables/jquery.dataTables10.min.js" type="text/javascript"></script>
 
 <script src="common/js/own/activity.js" type="text/javascript"></script>
 </body>

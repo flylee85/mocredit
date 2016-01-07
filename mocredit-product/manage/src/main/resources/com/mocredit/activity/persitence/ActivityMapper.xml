@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	活动-Mybatis Mapper文件
+	作者：lishoukun
+	日期：2015/07/08
+-->
+<mapper namespace="com.mocredit.activity.persitence.ActivityMapper">
+	<!-- ===================活动,开始======================== -->
+	
+	<!--  公用列,包含活动表所有字段     -->
+	<sql id="base_activity_column_list" >
+		a.id as id,
+		a.name as name,
+		a.type as type,
+		a.code as code,
+		a.out_code as outCode,
+		a.receipt_title as receiptTitle,
+		a.receipt_print as receiptPrint,
+		a.pos_success_msg as posSuccessMsg,
+		a.success_sms_msg as successSmsMsg,
+		a.send_sms_type as sendSmsType,
+		a.notice_sms_msg as noticeSmsMsg,
+		a.start_time as startTime,
+		a.end_time as endTime,
+		a.select_date as selectDate,
+		a.amount as amount,
+		a.max_type as maxType,
+		a.max_number as maxNumber,
+		a.integral_activity as integralActivity,
+		a.integral as integral,
+		a.enterprise_id as enterpriseId,
+		a.enterprise_name as enterpriseName,
+		a.contract_id as contractId,
+		a.contract_name as contractName,
+		a.status as status,
+		a.createtime as createtime,
+		a.modifytime as modifytime,
+		a.creator as creator,
+		a.modifier as modifier,
+		a.bins as bins,
+		a.exchange_type as exchangeType,
+		a.channel as channel,
+		a.exchange_channel as exchangeChannel
+	</sql>
+	
+	<!--  公用查询条件，包含活动所有字段的查询条件     -->
+	<sql id="base_activity_condition" >
+			<if test="id != null" >
+				and a.id = #{id}
+			</if>
+			<if test="name != null" >
+				and a.name = #{name}
+			</if>
+			<if test="type != null" >
+				and a.type = #{type}
+			</if>
+			<if test="code != null" >
+				and a.code = #{code}
+			</if>
+			<if test="outCode != null" >
+				and a.out_code = #{outCode}
+			</if>
+			<if test="receiptTitle != null" >
+				and a.receipt_title = #{receiptTitle}
+			</if>
+			<if test="receiptPrint != null" >
+				and a.receipt_print = #{receiptPrint}
+			</if>
+			<if test="posSuccessMsg != null" >
+				and a.pos_success_msg = #{posSuccessMsg}
+			</if>
+			<if test="successSmsMsg != null" >
+				and a.success_sms_msg = #{successSmsMsg}
+			</if>
+			<if test="sendSmsType != null" >
+				and a.send_sms_type = #{sendSmsType}
+			</if>
+			<if test="noticeSmsMsg != null" >
+				and a.notice_sms_msg = #{noticeSmsMsg}
+			</if>
+			<if test="startTime != null" >
+				and a.start_time = #{startTime}
+			</if>
+			<if test="endTime != null" >
+				and a.end_time = #{endTime}
+			</if>
+			<if test="selectDate != null" >
+				and a.select_date = #{selectDate}
+			</if>
+			<if test="amount != null" >
+				and a.amount = #{amount}
+			</if>
+			<if test="maxType != null" >
+				and a.max_type = #{maxType}
+			</if>
+			<if test="maxNumber != null" >
+				and a.max_number = #{maxNumber}
+			</if>
+			<if test="integralActivity != null" >
+				and a.integral_activity = #{integralActivity}
+			</if>
+			<if test="integral != null" >
+				and a.integral = #{integral}
+			</if>
+			<if test="enterpriseId != null" >
+				and a.enterprise_id = #{enterpriseId}
+			</if>
+			<if test="contractId != null" >
+				and a.contract_id = #{contractId}
+			</if>
+			<if test="status != null" >
+				and a.status = #{status}
+			</if>
+			<if test="createtime != null" >
+				and a.createtime = #{createtime}
+			</if>
+			<if test="modifytime != null" >
+				and a.modifytime = #{modifytime}
+			</if>
+			<if test="creator != null" >
+				and a.creator = #{creator}
+			</if>
+			<if test="modifier != null" >
+				and a.modifier = #{modifier}
+			</if>
+			<if test="modifier != null" >
+				and a.modifier = #{modifier}
+			</if>
+			<!--
+			<trim prefix=" and ( " suffix=" ) "  prefixOverrides=" or ">  
+				<if test="orInfo_code != null or orInfo_code != null" >
+					a.code = #{orInfo_code}
+				</if>
+				<if test="orInfo_name != null or orInfo_name != null" >
+					a.code = #{orInfo_name}
+				</if>
+			</trim> 
+			-->
+	</sql>
+	
+	<!--  获取一条活动，根据主键    -->
+	<select id="getActivityById" resultType="com.mocredit.activity.model.Activity" parameterType="java.lang.String" >
+	select 
+	<include refid="base_activity_column_list" />
+	,(select count(1) from act_activity_store where activity_id=a.id) as storeCount
+	from act_activity a
+	where a.id = #{id} limit 1
+	</select>
+	
+	<!--  获取一条活动，随机获取    -->
+	<select id="getActivityByRand" resultType="com.mocredit.activity.model.Activity" >
+	select 
+	<include refid="base_activity_column_list" />
+	from act_activity a
+	order by rand() limit 1
+	</select>
+	
+	<!--  查询活动列表，根据条件    -->
+	<select id="queryActivityList" resultType="com.mocredit.activity.model.Activity" parameterType="java.util.Map" >
+	select 
+	<include refid="base_activity_column_list" />
+	,(SELECT
+				count(1)
+			FROM
+				act_activity_store where activity_id=a.id)  as storeCount
+	, (select count(id) from act_batch where activity_id=a.id) as orderCount
+	from act_activity a
+	<where>
+		<include refid="base_activity_condition" />
+		<if test="searchInfoContent != null" >
+			and  ( a.name like '%${searchInfoContent}%' or a.code like '%${searchInfoContent}%' )
+		</if>
+	</where>
+	<if test="orderInfoContent != null and orderInfoDir!=null " >
+		<if test="orderInfoContent == 'code'" >
+			order by a.code ${orderInfoDir}
+		</if>
+		<if test="orderInfoContent == 'name'" >
+			order by a.name ${orderInfoDir}
+		</if>
+		<if test="orderInfoContent == 'startTime'" >
+			order by a.start_time ${orderInfoDir}
+		</if>
+		<if test="orderInfoContent == 'endTime'" >
+			order by a.end_time ${orderInfoDir}
+		</if>
+		<if test="orderInfoContent == 'createtime'" >
+			order by a.createtime ${orderInfoDir}
+		</if>
+	</if>
+	<if test="orderInfoContent == null or orderInfoDir==null " >
+		order by a.createtime desc
+	</if>
+	<if test="pageInfoStart != null and pageInfoLimit != null" >
+    	limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
+    </if>
+	</select>
+	
+	<!--  获取活动总数量，根据条件    -->
+	<select id="getActivityTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
+	select 
+	count(a.id)
+	from act_activity a
+	<where>
+		<include refid="base_activity_condition" />
+		<if test="searchInfoContent != null" >
+			and  ( a.name like '%${searchInfoContent}%' or a.code like '%${searchInfoContent}%' )
+		</if>
+	</where>
+	</select>
+	<select id="selectForDevice" resultType="java.util.HashMap" parameterType="java.util.List" >
+		SELECT
+			aa.id AS activityId,
+			aa.`code` AS activityCode,
+			aa.out_code AS activityOutCode,
+			aa.exchange_type AS activityType,
+			aa.integral AS amt,
+			aa.`name` AS activityName,
+			aa.start_time AS sTime,
+			aa.end_time AS eTime,
+			aa.select_date AS selectDate,
+			aa.bins as cardBin,
+			aa.receipt_title as receiptTitle,
+			aa.receipt_print as receiptPrint,
+			aa.pos_success_msg as posSuccessMsg,
+			e.name as enterpriseName,
+			e.code as enterpriseCode
+		FROM
+			act_activity aa
+		left join t_enterprise e on aa.enterprise_id=e.id
+		WHERE aa.id in
+		<foreach item="item" index="index" collection="activityId" open="(" separator="," close=")">  
+		  '${item}'  
+		 </foreach> 
+	</select>
+	<select id="selectStoreInfoForDevice" resultType="java.util.HashMap" parameterType="java.lang.String" >
+		SELECT
+			ss.`code` AS storeCode,
+			ss.`name` AS storeName,
+			m.`code` AS shopCode,
+			m.`name` AS shopName
+		from t_terminal t
+		left join t_store ss on t.store_id=ss.id
+		left join t_merchant m on m.id=ss.merchant_id
+		where t.sn_code=#{snCode} limit 1
+	</select>
+	<!--  添加一条活动记录  -->
+	<insert id="addActivity" parameterType="com.mocredit.activity.model.Activity"     
+        useGeneratedKeys="true" keyProperty="id" >
+	insert into act_activity
+	<trim prefix="(" suffix=")" suffixOverrides="," >
+			name,
+			type,
+			code,
+			out_code,
+			receipt_title,
+			receipt_print,
+			pos_success_msg,
+			success_sms_msg,
+			send_sms_type,
+			notice_sms_msg,
+			start_time,
+			end_time,
+			select_date,
+			amount,
+			max_type,
+			max_number,
+			integral_activity,
+			integral,
+			enterprise_id,
+			enterprise_name,
+			contract_id,
+			contract_name,
+			status,
+			createtime,
+			modifytime,
+			creator,
+			modifier,
+			bins,
+			exchange_type,
+			channel,
+			exchange_channel
+	</trim>
+	<trim prefix="values (" suffix=")" suffixOverrides="," >
+			#{name},
+			#{type},
+			#{code},
+			#{outCode},
+			#{receiptTitle},
+			#{receiptPrint},
+			#{posSuccessMsg},
+			#{successSmsMsg},
+			#{sendSmsType},
+			#{noticeSmsMsg},
+			#{startTime},
+			#{endTime},
+			#{selectDate},
+			#{amount},
+			#{maxType},
+			#{maxNumber},
+			#{integralActivity},
+			#{integral},
+			#{enterpriseId},
+			#{enterpriseName},
+			#{contractId},
+			#{contractName},
+			#{status},
+			#{createtime},
+			#{modifytime},
+			#{creator},
+			#{modifier},
+			#{bins},
+			#{exchangeType},
+			#{channel},
+			#{exchangeChannel}
+	</trim>
+	</insert>
+	
+	<!--  修改一条活动记录  -->
+	<update id="updateActivity" parameterType="com.mocredit.activity.model.Activity" >
+	update act_activity
+	<set >
+		<if test="id != null" >
+		id = #{id},
+	</if>
+		<if test="name != null" >
+		name = #{name},
+	</if>
+		<if test="type != null" >
+		type = #{type},
+	</if>
+		<if test="code != null" >
+		code = #{code},
+	</if>
+		<if test="outCode != null" >
+		out_code = #{outCode},
+	</if>
+		<if test="receiptTitle != null" >
+		receipt_title = #{receiptTitle},
+	</if>
+		<if test="receiptPrint != null" >
+		receipt_print = #{receiptPrint},
+	</if>
+		<if test="posSuccessMsg != null" >
+		pos_success_msg = #{posSuccessMsg},
+	</if>
+		<if test="successSmsMsg != null" >
+		success_sms_msg = #{successSmsMsg},
+	</if>
+		<if test="sendSmsType != null" >
+		send_sms_type = #{sendSmsType},
+	</if>
+		<if test="noticeSmsMsg != null" >
+		notice_sms_msg = #{noticeSmsMsg},
+	</if>
+		<if test="startTime != null" >
+		start_time = #{startTime},
+	</if>
+		<if test="endTime != null" >
+		end_time = #{endTime},
+	</if>
+		<if test="selectDate != null" >
+		select_date = #{selectDate},
+	</if>
+		<if test="amount != null" >
+		amount = #{amount},
+	</if>
+		<if test="maxType != null" >
+		max_type = #{maxType},
+	</if>
+		<if test="maxNumber != null" >
+		max_number = #{maxNumber},
+	</if>
+		<if test="integralActivity != null" >
+		integral_activity = #{integralActivity},
+	</if>
+		<if test="integral != null" >
+		integral = #{integral},
+	</if>
+	<if test="enterpriseId != null" >
+		enterprise_id = #{enterpriseId},
+	</if>
+	<if test="enterpriseName != null" >
+		enterprise_name = #{enterpriseName},
+	</if>
+		<if test="contractId != null" >
+		contract_id = #{contractId},
+	</if>
+	<if test="contractName != null" >
+		contract_name = #{contractName},
+	</if>
+		<if test="status != null" >
+		status = #{status},
+	</if>
+		<if test="createtime != null" >
+		createtime = #{createtime},
+	</if>
+		<if test="modifytime != null" >
+		modifytime = #{modifytime},
+	</if>
+		<if test="creator != null" >
+		creator = #{creator},
+	</if>
+		<if test="modifier != null" >
+		modifier = #{modifier},
+	</if>
+	<if test="bins != null" >
+		bins = #{bins},
+	</if>
+	<if test="exchangeType != null" >
+		exchange_type = #{exchangeType},
+	</if>
+	<if test="channel != null" >
+		channel = #{channel},
+	</if>
+	<if test="exchangeChannel != null" >
+		exchange_channel = #{exchangeChannel},
+	</if>
+	</set>
+	where id = #{id}
+	</update>
+	
+	<!--  删除一条活动记录 ，根据主键    -->
+	<delete id="deleteActivityById" parameterType="java.lang.String" >
+	delete from act_activity
+	where id = #{id}
+	</delete>
+
+	<!--  删除活动记录 ，根据条件    -->
+	<delete id="deleteActivity" parameterType="java.util.Map" >
+	delete from act_activity
+	<where>
+		<if test="id != null" >
+			and id = #{id}
+		</if>
+		<if test="name != null" >
+			and name = #{name}
+		</if>
+		<if test="type != null" >
+			and type = #{type}
+		</if>
+		<if test="code != null" >
+			and code = #{code}
+		</if>
+		<if test="outCode != null" >
+			and out_code = #{outCode}
+		</if>
+		<if test="receiptTitle != null" >
+			and receipt_title = #{receiptTitle}
+		</if>
+		<if test="receiptPrint != null" >
+			and receipt_print = #{receiptPrint}
+		</if>
+		<if test="posSuccessMsg != null" >
+			and pos_success_msg = #{posSuccessMsg}
+		</if>
+		<if test="successSmsMsg != null" >
+			and success_sms_msg = #{successSmsMsg}
+		</if>
+		<if test="sendSmsType != null" >
+			and send_sms_type = #{sendSmsType}
+		</if>
+		<if test="noticeSmsMsg != null" >
+			and notice_sms_msg = #{noticeSmsMsg}
+		</if>
+		<if test="startTime != null" >
+			and start_time = #{startTime}
+		</if>
+		<if test="endTime != null" >
+			and end_time = #{endTime}
+		</if>
+		<if test="selectDate != null" >
+			and select_date = #{selectDate}
+		</if>
+		<if test="amount != null" >
+			and amount = #{amount}
+		</if>
+		<if test="maxType != null" >
+			and max_type = #{maxType}
+		</if>
+		<if test="maxNumber != null" >
+			and max_number = #{maxNumber}
+		</if>
+		<if test="integralActivity != null" >
+			and integral_activity = #{integralActivity}
+		</if>
+		<if test="integral != null" >
+			and integral = #{integral}
+		</if>
+		<if test="enterpriseId != null" >
+			and enterprise_id = #{enterpriseId}
+		</if>
+		<if test="contractId != null" >
+			and contract_id = #{contractId}
+		</if>
+		<if test="status != null" >
+			and status = #{status}
+		</if>
+		<if test="createtime != null" >
+			and createtime = #{createtime}
+		</if>
+		<if test="modifytime != null" >
+			and modifytime = #{modifytime}
+		</if>
+		<if test="creator != null" >
+			and creator = #{creator}
+		</if>
+		<if test="modifier != null" >
+			and modifier = #{modifier}
+		</if>
+	</where>
+</delete>
+
+<!-- ===================活动,结束======================== -->
+</mapper>

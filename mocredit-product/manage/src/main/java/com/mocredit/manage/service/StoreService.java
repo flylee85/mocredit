@@ -1,5 +1,7 @@
 package com.mocredit.manage.service;
 
+import java.util.Map;
+
 import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.manage.constant.OperType;
 import com.mocredit.manage.model.Store;
@@ -20,7 +22,7 @@ public interface StoreService {
 	 * @param pageSize
 	 * @return
 	 */
-	PageInfo<Store> getPage(String key, String merchantId, int pageNum, int pageSize);
+	PageInfo<Store> getPage(Map<String, Object> paramMap, int pageNum, int pageSize);
 
 	/**
 	 * 新增
@@ -47,5 +49,6 @@ public interface StoreService {
 	int delete(String id);
 
 	Store getStoreById(String id);
-	void synIntegral(String storeId, OperType oper) ;
+
+	void synIntegral(String storeId, OperType oper);
 }

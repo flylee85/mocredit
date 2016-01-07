@@ -66,6 +66,27 @@
     <if test="merchantId !=null and merchantId!=''">
     	and s.merchant_id=#{merchantId}
     </if>
+    <if test="time1 != null and  time1!='' ">
+    	and create_time &gt;=#{time1,jdbcType=TIMESTAMP}
+    </if>
+    <if test="time2 != null and  time2!=''  ">
+    	and create_time &lt;=#{time2,jdbcType=TIMESTAMP}
+    </if>
+    <if test="snCode != null and  snCode !=''  ">
+    	and s.id in (
+    		select store_id from t_terminal 
+    		where sn_code = #{snCode,jdbcType=VARCHAR}
+    	)
+    </if>
+    <if test="province != null and province !=0 ">
+    	and province = #{province,jdbcType=INTEGER}
+    </if>
+    <if test="city != null and city !=0 ">
+    	and city = #{city,jdbcType=INTEGER}
+    </if>
+    <if test="area != null and area !=0 ">
+    	and area = #{area,jdbcType=INTEGER}
+    </if>
     <if test="key !=null and key !=''">
     	and(s.name like #{key}
     		or s.code like #{key}
@@ -75,6 +96,14 @@
     	)
     </if>
     </where>
+    <choose>
+    	<when test="sortorder==1">
+    		order by s.create_time desc
+    	</when>
+    	<when test="sortorder==2">
+    		order by s.create_time asc
+    	</when>
+    </choose>
   </select>
    <select id="checkStoreCode" resultMap="BaseResultMap" parameterType="java.util.Map" >
 		select code
