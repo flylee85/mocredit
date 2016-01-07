@@ -120,9 +120,18 @@ public class Store {
 	private Date createTime;
 	private String linkman;
 	private int businessStatus;// 业务状态
+	private String mailAddress;// 邮寄地址
 
 	public String getLinkman() {
 		return linkman;
+	}
+
+	public String getMailAddress() {
+		return mailAddress;
+	}
+
+	public void setMailAddress(String mailAddress) {
+		this.mailAddress = mailAddress;
 	}
 
 	public void setLinkman(String linkman) {

@@ -26,7 +26,8 @@
     <result column="cityName" property="cityName" jdbcType="VARCHAR" />
     <result column="areaName" property="areaName" jdbcType="VARCHAR" />
     <result column="merchantName" property="merchantName" jdbcType="VARCHAR" />
-    <result column="business_status" property="businessStatus" jdbcType="VARCHAR" />
+    <result column="business_status" property="businessStatus" jdbcType="INTEGER" />
+    <result column="mail_address" property="mailAddress" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     <!--
@@ -35,7 +36,7 @@
       This element was generated on Mon Nov 02 15:47:55 CST 2015.
     -->
     id, name, code, merchant_id, province, city, area, address, longitude, latitude, 
-    status, mobile, phone,create_time,linkman,business_status
+    status, mobile, phone,create_time,linkman,business_status,mail_address
   </sql>
   <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.String" >
     <!--
@@ -140,12 +141,12 @@
       merchant_id, province, city, 
       area, address, longitude, 
       latitude, status, mobile, 
-      phone,create_time,linkman,business_status)
+      phone,create_time,linkman,business_status,mail_address)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
       #{merchantId,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, #{longitude,jdbcType=DOUBLE}, 
       #{latitude,jdbcType=DOUBLE}, #{status,jdbcType=TINYINT}, #{mobile,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR},#{createTime},#{linkman},#{businessStatus})
+      #{phone,jdbcType=VARCHAR},#{createTime},#{linkman},#{businessStatus},#{mailAddress})
   </insert>
   <update id="update" parameterType="com.mocredit.manage.model.Store" >
     <!--
@@ -199,6 +200,9 @@
       </if>
       <if test="businessStatus != null" >
         business_status = #{businessStatus,jdbcType=INTEGER},
+      </if>
+      <if test="mailAddress != null" >
+        mail_address = #{mailAddress,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR} and status!=2
