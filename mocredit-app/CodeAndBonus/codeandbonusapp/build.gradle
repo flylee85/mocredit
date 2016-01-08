@@ -16,7 +16,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 23
         versionCode 3
-        versionName 'V100R001C03'
+        versionName 'V100R001C01B001'
         signingConfig signingConfigs.config
     }
     buildTypes {
