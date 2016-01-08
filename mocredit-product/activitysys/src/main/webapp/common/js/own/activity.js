@@ -17,7 +17,6 @@ $(function () {
                 "displayStart": parseInt(page) * 10 - 10,
                 "autoWidth": true,
                 "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
-                "aaSorting": [[4, "desc"]],//默认排序
                 "columns": [
                     {"data": "name", "name": "name", "className": "name", "width": "180px"},
                     {"data": "storeCount", "name": "storeCount", "width": "90px", "sortable": false},
@@ -81,7 +80,6 @@ $(function () {
                 "pagingType": "full_numbers",
                 "pageLength": 10,
                 "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
-                "aaSorting": [[4, "desc"]],//默认排序
                 "columns": [
                     {"data": "name", "name": "name", "className": "name", "width": "200px"},
                     {"data": "storeCount", "name": "storeCount", "width": "90px", "sortable": false},

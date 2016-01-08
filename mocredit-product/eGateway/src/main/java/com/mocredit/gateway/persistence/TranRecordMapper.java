@@ -31,7 +31,7 @@ public interface TranRecordMapper {
      * @param cardNum
      * @return
      */
-    List<TranRecord> getTranRecordByCardNum(@Param(value = "cardNum") String cardNum);
+    List<TranRecord> getTranRecordByCardNum(@Param(value = "cardNum") String cardNum, @Param(value = "activityId") Integer activityId);
 
     /**
      * 根据卡号计数器减一
@@ -39,5 +39,5 @@ public interface TranRecordMapper {
      * @param cardNum
      * @return
      */
-    int minusCountByCardNum(@Param(value = "cardNum") String cardNum);
+    int minusCountByCardNum(@Param(value = "cardNum") String cardNum, @Param(value = "activityId") Integer activityId);
 }

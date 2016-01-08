@@ -47,20 +47,20 @@
     <!-- 根据编码查询码记录 -->
     <select id="findActivityCodeByCode" resultType="com.mocredit.verifyCode.model.TActivityCode" resultMap="baseResultMap" parameterType="java.lang.String" >
         <![CDATA[
-          SELECT * FROM  t_activity_code where code=#{code}
+          SELECT * FROM  t_activity_code where code=#{code} limit 1
         ]]>
     </select>
     
 <!-- 根据编码查询码记录 -->
     <select id="findByCodeAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TActivityCode" resultMap="baseResultMap" parameterType="map" >
         <![CDATA[
-          SELECT * FROM  t_activity_code where code=#{code} and activity_id=#{activityId}
+          SELECT * FROM  t_activity_code where code=#{code} and activity_id=#{activityId} limit 1
         ]]>
     </select>
 
     <select id="findActivityCodeById" resultType="com.mocredit.verifyCode.model.TActivityCode" resultMap="baseResultMap" parameterType="java.lang.String" >
         <![CDATA[
-          SELECT * FROM  t_activity_code where id=#{id}
+          SELECT * FROM  t_activity_code where id=#{id} limit 1
         ]]>
     </select>
 
@@ -144,5 +144,73 @@
         </set>
         where activity_id=#{activityId} and status=#{status}
     </update>
-
+<!-- 根据条件查询流水分页数据 -->
+	<select id="findPageList"  resultType="Map" parameterType="Map">
+		SELECT
+			c.id,
+			c.activity_name as activityName,
+			c.custom_mobile as mobile,
+			c.`code`,
+			c.amount,
+			c.status,
+			c.code_serial_number as codeId,
+			c.end_time as endTime,
+			c.issue_enterprise_name as enterpriseName
+		FROM
+		t_activity_code c
+		<where>
+			<if test="code !=null">
+				c.code =#{code,jdbcType=VARCHAR}
+			</if>
+			<if test="startTime !=null">
+				and c.createTime &gt;=#{startTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="endTime !=null">
+				and c.createTime &lt;=#{endTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="status != null">
+				and c.status in (${status})
+			</if>
+			<if test="mobile !=null">
+				and c.custom_mobile =#{mobile,jdbcType=VARCHAR}
+			</if>
+			<if test="activityName !=null">
+				and c.activity_name  like  '${activityName}'
+			</if>
+			<if test="enterpriseName !=null">
+				and c.issue_enterprise_name  like  '${enterpriseName}'
+			</if>
+		</where>
+		limit #{pageStart},#{pageSize} 
+	</select>
+	<!-- 根据条件查询流水分页数据条数 -->
+	<select id="findPageCount"  resultType="java.lang.Integer" parameterType="Map">
+	SELECT
+			count(1)
+		FROM
+		t_activity_code c
+		<where>
+			<if test="code !=null">
+				c.code =#{code,jdbcType=VARCHAR}
+			</if>
+			<if test="startTime !=null">
+				and c.createTime &gt;=#{startTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="endTime !=null">
+				and c.createTime &lt;=#{endTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="status != null">
+				and c.status in (${status})
+			</if>
+			<if test="mobile !=null">
+				and c.custom_mobile =#{mobile,jdbcType=VARCHAR}
+			</if>
+			<if test="activityName !=null">
+				and c.activity_name  like  '${activityName}'
+			</if>
+			<if test="enterpriseName !=null">
+				and c.issue_enterprise_name  like  '${enterpriseName}'
+			</if>
+		</where>
+	</select>
 </mapper>

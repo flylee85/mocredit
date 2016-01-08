@@ -33,6 +33,7 @@ import com.mocredit.verifyCode.model.TVerifiedCode;
 import com.mocredit.verifyCode.model.TVerifyLog;
 import com.mocredit.verifyCode.service.ActivityCodeService;
 import com.mocredit.verifyCode.vo.ActActivityCodeVO;
+import com.mocredit.verifyCode.vo.VerifyCodeVO;
 
 /**
  * Created by YHL on 2015/7/7 13:58 .
@@ -202,7 +203,7 @@ public class ActivityCodeController {
 	/**
 	 * 充值验码
 	 * 
-	 * 请求参数格式 { code,orderId}
+	 * 请求参数格式 { code,orderId,phone}
 	 * 
 	 * @param request
 	 * @param response
@@ -324,7 +325,7 @@ public class ActivityCodeController {
 	/**
 	 * 用于系统管理员操作码 <br />
 	 * { <br />
-	 * oper :1撤销 2延期,默认为撤销 <br />
+	 * oper :1撤销 2延期 3码禁用 默认为撤销<br />
 	 * requestSerialNumber 订单号 <br />
 	 * device 机具号 <br />
 	 * endTime 结束时间 <br />
@@ -338,7 +339,7 @@ public class ActivityCodeController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/revokeActivityCodeForSys", produces = { "application/json;charset=UTF-8" })
+	@RequestMapping(value = "/sysOperate", produces = { "application/json;charset=UTF-8" })
 	public String revokeActivityCodeForSys(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody String param) {
 		AjaxResponseData ard = new AjaxResponseData();
@@ -384,6 +385,23 @@ public class ActivityCodeController {
 			}
 			try {
 				ard = this.activityCodeService.delayForSys(verifiedCode.getEndTime(), verifiedCode.getId());
+			} catch (Exception e) {
+				ard.setSuccess(false);
+				ard.setErrorMsg("请求过程发生事务异常!");
+				ard.setErrorCode(ErrorCode.CODE_30.getCode());
+				e.printStackTrace();
+			}
+			break;
+		case DISABLE:
+			// 判断是参数
+			if (StringUtils.isEmpty(verifiedCode.getId())) {
+				ard.setSuccess(false);
+				ard.setErrorMsg("劵码为空");
+				ard.setErrorCode(ErrorCode.CODE_30.getCode());
+				return JSON.toJSONString(ard);
+			}
+			try {
+				ard = this.activityCodeService.disableForSys(verifiedCode.getId());
 			} catch (Exception e) {
 				ard.setSuccess(false);
 				ard.setErrorMsg("请求过程发生事务异常!");
@@ -725,6 +743,32 @@ public class ActivityCodeController {
 		VerifyCodeLogTask.actActivitySynLogList.add(this.buildActActivitySynLog(ard, actActivityCodeVO));
 
 		return JSON.toJSONStringWithDateFormat(ard, DateUtil.FORMAT_YYYYMMDD_HHMMSS);
+	}
+
+	/**
+	 * 查询码订单
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "getCodePage", produces = { "application/json;charset=UTF-8" })
+	public String getPage(@RequestBody String body) {
+		AjaxResponseData ard = new AjaxResponseData();
+		try {
+			VerifyCodeVO verifyCode = JSON.parseObject(body, VerifyCodeVO.class);
+			if (null == verifyCode.getPageNum() || 0 == verifyCode.getPageNum()) {
+				verifyCode.setPageNum(1);
+			}
+			if (null == verifyCode.getPageSize() || 0 == verifyCode.getPageSize()) {
+				verifyCode.setPageSize(15);
+			}
+			ard.setData(activityCodeService.getCodeList(verifyCode, verifyCode.getPageSize(), verifyCode.getPageNum()));
+		} catch (Exception e) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("请求时发生异常！");
+			logger.error("getCodePage发生异常：" + e.getMessage());
+			e.printStackTrace();
+		}
+		return JSON.toJSONString(ard);
 	}
 
 	/**

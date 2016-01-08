@@ -210,9 +210,9 @@
         </where>
     </delete>
     <update id="updateBatchCodeByBatchId" parameterType="java.util.Map">
-		update act_batch_code SET  `status`='02',customer_mobile=#{customerMobile},customer_name=#{customerName}
-		where  batch_id=#{batchId} AND `status`='01' limit 1
-	</update>
+        update act_batch_code SET `status`='02',customer_mobile=#{customerMobile},customer_name=#{customerName}
+        where batch_id=#{batchId} AND `status`='01' limit 1
+    </update>
     <update id="updateBatchCodeById" parameterType="java.util.Map">
         update act_batch_code SET `status`=#{status}
         <if test="startTime != null">
@@ -220,5 +220,9 @@
         </if>
         where id=#{id}
     </update>
+    <select id="getSendSmsTypeByCodeId" resultType="java.util.HashMap">
+        select c.* from act_batch_code a LEFT JOIN act_batch b on a.batch_id=b.id LEFT JOIN act_activity c on b.activity_id=c.id
+          where a.id=#{id}
+    </select>
     <!-- ===================发码批次码,结束======================== -->
 </mapper>

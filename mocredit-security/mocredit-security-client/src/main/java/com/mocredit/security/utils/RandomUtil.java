@@ -1,7 +1,5 @@
-package com.mocredit.gateway.util;
+package com.mocredit.security.utils;
 
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
 import java.util.Date;
 import java.util.Random;
 

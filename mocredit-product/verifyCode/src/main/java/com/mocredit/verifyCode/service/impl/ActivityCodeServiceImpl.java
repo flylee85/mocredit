@@ -42,6 +42,7 @@ import com.mocredit.verifyCode.model.TVerifiedCode;
 import com.mocredit.verifyCode.service.ActivityCodeService;
 import com.mocredit.verifyCode.vo.ActActivityCodeVO;
 import com.mocredit.verifyCode.vo.SmsVO;
+import com.mocredit.verifyCode.vo.VerifyCodeVO;
 
 /**
  * Created by YHL on 2015/7/7 13:54 .
@@ -374,6 +375,15 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		// activityCode.setMaxNum(5);
 		// acm.updateActivityCode(activityCode);
 
+		/* 判断码是否被禁用 */
+		if (ActivityCodeStatus.DISABLED.getValue().equals(activityCode.getStatus())) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("该码被禁用");
+			ard.setErrorCode(ErrorCode.CODE_14.getCode());
+			addLog(device, request_serial_number, activityCode, new ActActivityStore(), VerifyCodeStatus.VERIFYCODE,
+					VerifyLogCode.VERIFY_HAS_DISBALED);
+			return null;
+		}
 		/** 判断码是否已经使用过 **/
 		if (!"123456789012345".equals(code) && ActivityCodeStatus.USED.getValue().equals(activityCode.getStatus())) {
 			Map<String, Object> param = new HashMap<String, Object>();
@@ -405,6 +415,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			ard.setSuccess(false);
 			ard.setErrorMsg("不能用于该手机号");
 			ard.setErrorCode(ErrorCode.CODE_14.getCode());
+			addLog(device, request_serial_number, activityCode, new ActActivityStore(), VerifyCodeStatus.VERIFYCODE,
+					VerifyLogCode.VERIFY_INVALID_PHONE);
 			return null;
 		}
 		// 判断券码是否适用当前的门店 ，活动和门店的映射
@@ -713,5 +725,68 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			ard.setErrorMsg("码不存在，延期失败");
 		}
 		return ard;
+	}
+
+	public AjaxResponseData disableForSys(String codeId) {
+		AjaxResponseData ard = new AjaxResponseData();
+		TActivityCode activityCode = new TActivityCode();
+		activityCode.setStatus(ActivityCodeStatus.DISABLED.getValue());
+		activityCode.setId(codeId);
+		int count = acm.updateActivityCode(activityCode);
+		if (count == 0) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("码不存在，禁用失败");
+		}
+		return ard;
+	}
+
+	public Map<String, Object> getCodeList(VerifyCodeVO verifyCode, int pageSize, int pageNum) {
+		// 封装查询条件
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("startTime", verifyCode.getStartTime());
+		param.put("endTime", verifyCode.getEndTime());
+		if (!StringUtils.isEmpty(verifyCode.getActivityName())) {
+			param.put("activityName", "%" + verifyCode.getActivityName() + "%");
+		}
+		param.put("mobile", verifyCode.getMobile());
+		if (!StringUtils.isEmpty(verifyCode.getEnterpriseName())) {
+			param.put("enterpriseName", "%" + verifyCode.getEnterpriseName() + "%");
+		}
+		param.put("code", verifyCode.getCode());
+		// 处理类型
+		if (null != verifyCode.getStatusList()) {
+			StringBuilder type = new StringBuilder();
+			for (String status : verifyCode.getStatusList()) {
+				type.append("'").append(status).append("',");
+			}
+			type.deleteCharAt(type.length() - 1);
+			param.put("status", type.toString());
+		}
+		param.put("pageStart", pageSize * (pageNum - 1));
+		param.put("pageSize", pageSize);
+
+		// 获得总记录数
+		int pageCount = acm.findPageCount(param);
+		// 获得数据
+		List<Map<String, Object>> page = acm.findPageList(param);
+		for (Map<String, Object> log : page) {
+			Object status = log.get("status");
+			String endTime = log.get("endTime").toString();
+			log.put("endTime", endTime.substring(0, endTime.length() - 2));
+			// 已使用的码获取验码记录
+			if (ActivityCodeStatus.USED.getValue().equals(status.toString())) {
+				TVerifiedCode verifiedCode = vcm.findLastVerifiedCode(log.get("id").toString());
+				log.put("verifyTime", DateUtil.dateToStr(verifiedCode.getVerifyTime(), "yyy-MM-dd HH:mm:ss"));
+				log.put("storeName", verifiedCode.getStoreName());
+				log.put("shopName", verifiedCode.getShopName());
+			}
+		}
+
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		returnMap.put("pageSize", pageSize);
+		returnMap.put("pageNum", pageNum);
+		returnMap.put("pageCount", pageCount);
+		returnMap.put("data", page);
+		return returnMap;
 	}
 }

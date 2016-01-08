@@ -91,20 +91,20 @@
     <build>
         <finalName>integral</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <!-- 解决用maven执行test时 日志乱码的问题，详见：http://www.cnblogs.com/discuss/archive/2010/10/27/1862225.html -->
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>runAll.xml</suiteXmlFile>
-                    </suiteXmlFiles>
-                    <!--定义maven运行测试生成的报表路径 -->
-                    <reportsDirectory>./result/test-report</reportsDirectory>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-surefire-plugin</artifactId>-->
+            <!--<version>2.4</version>-->
+            <!--<configuration>-->
+            <!--&lt;!&ndash; 解决用maven执行test时 日志乱码的问题，详见：http://www.cnblogs.com/discuss/archive/2010/10/27/1862225.html &ndash;&gt;-->
+            <!--<argLine>-Dfile.encoding=UTF-8</argLine>-->
+            <!--<suiteXmlFiles>-->
+            <!--<suiteXmlFile>runAll.xml</suiteXmlFile>-->
+            <!--</suiteXmlFiles>-->
+            <!--&lt;!&ndash;定义maven运行测试生成的报表路径 &ndash;&gt;-->
+            <!--<reportsDirectory>./result/test-report</reportsDirectory>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>

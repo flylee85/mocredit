@@ -84,7 +84,7 @@ public class IndexController {
             responseData.setData(menus);
         } else {
             responseData.setSuccess(false);
-            responseData.setErrorMsg("认证异常");
+            responseData.setErrorMsg("用户名密码错误");
         }
         return JSON.toJSONString(responseData);
     }

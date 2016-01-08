@@ -88,8 +88,12 @@ public class SendCodeServiceImpl implements SendCodeService {
         Activity activity = null;
         if (DownloadType.ACTIVITY.getValue().equals(type)) {
             activity = activityService.getActivityById(id);
-            String batchId = activityService.extractedCode(id, name, codeCount);
-            batchMap.put("batchId", batchId);
+            try {
+                String batchId = activityService.extractedCode(id, name, codeCount);
+                batchMap.put("batchId", batchId);
+            } catch (Exception e) {
+                throw new BusinessException("提码失败,error:" + e.getMessage());
+            }
         }
         if (DownloadType.BATCH.getValue().equals(type)) {
             String actId = batchMapper.getBatchById(id).getActivityId();
@@ -159,6 +163,11 @@ public class SendCodeServiceImpl implements SendCodeService {
         batchMap.put("activityId", actId);
         batchMap.put("batch", name);
         return batchMapper.getBatchTotal(batchMap) > 0;
+    }
+
+    @Override
+    public Map<String, Object> getSendSmsTypeByCodeId(String id) {
+        return batchCodeMapper.getSendSmsTypeByCodeId(id);
     }
 
     @Override
@@ -570,7 +579,10 @@ public class SendCodeServiceImpl implements SendCodeService {
                 "验码接口送码-----" + optInfo.toString());
         Map<String, Object> resultMap = new HashMap<String, Object>();
         // 将返回对象的success设置为true,并返回数据对象
-        resultMap.put("success", true);
+        resultMap.put("success", isSuccess);
+        if (!isSuccess) {
+            throw new BusinessException("送码失败");
+        }
         return resultMap;
     }
 

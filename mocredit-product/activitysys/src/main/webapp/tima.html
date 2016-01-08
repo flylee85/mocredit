@@ -51,11 +51,11 @@
                         <div class="col-lg-2 text-left">
                             <input type="text" tabindex="2" class="form-control input-small parsley-validated"
                                    data-parsley-required="true" data-parsley-type="number" data-parsley-min="1"
-                                   placeholder="导出数量" data-parsley-max="100000"
+                                   placeholder="导出数量" data-parsley-max="10000"
                                    data-parsley-maxlength="30"
                                    name="count" data-parsley-type="alphanum">
                         </div>
-                        <label class="col-lg-2 text-left">一次不能超过100000行</label>
+                        <label class="col-lg-2 text-left">一次不能超过10000行</label>
 
                         <div class="col-lg-2">
                             <a href="#" id="uploadAndSend" class="btn btn-primary">
@@ -222,8 +222,7 @@
                             }
                         }), 2000);
 
-            }
-            else {
+            } else {
                 sendMsg(false, result.errorMsg);
             }
         }, 'json');

@@ -63,6 +63,7 @@
     </bean>
     <!-- scan for mappers and let them be autowired -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    	<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
         <property name="basePackage"
                   value="com.mocredit.activity.persitence,com.mocredit.sys.persitence,com.mocredit.manage.persitence,com.mocredit.order.persitence"/>
     </bean>

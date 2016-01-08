@@ -7,9 +7,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
+import com.mocredit.base.util.DateUtil;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.manage.constant.Constant;
 import com.mocredit.manage.model.Enterprise;
@@ -25,7 +27,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 	private ContractMapper contractMapper;
 
 	@Override
-	public PageInfo<Enterprise> getPage(String key, int pageNum, int pageSize) {
+	public PageInfo<Enterprise> getPage(String key, String startTime, String endTime, int pageNum, int pageSize) {
 		PageHelper.startPage(pageNum, pageSize);
 		if (null != key) {
 			key = key.trim();
@@ -35,7 +37,15 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 				key = null;
 			}
 		}
-		List<Enterprise> list = enterpriseMapper.selectAllForPage(key);
+		Date startDate = null;
+		Date endDate = null;
+		if (!StringUtils.isEmpty(startTime)) {
+			startDate = DateUtil.strToDate(startTime);
+		}
+		if (!StringUtils.isEmpty(endTime)) {
+			endDate = DateUtil.strToDate(endTime);
+		}
+		List<Enterprise> list = enterpriseMapper.selectAllForPage(key, startDate, endDate);
 		return new PageInfo<Enterprise>(list);
 	}
 

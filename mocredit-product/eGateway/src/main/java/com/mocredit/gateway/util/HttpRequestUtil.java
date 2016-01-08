@@ -249,7 +249,7 @@ public class HttpRequestUtil {
                         "{\"cardExpDate\":\"1249\",\"cardNum\":\"6013823100097711014\",\"code\":\"MS0001\",\"orderId\":\"795060113343\",\"tranAmt\":\"23500\"}"));*/
         System.out
                 .println(doPostJson(
-                        "http://127.0.0.1:8080/payment",
-                        "{\"cardExpDate\":\"0720\",\"cardNum\":\"6226880053372785\",\"code\":\"TPYKF\",\"orderId\":\"79501604113343\",\"tranAmt\":\"23500\"}"));
+                        "http://117.121.20.146:8085/eGateway/payment",
+                        "{\"cardExpDate\":\"2003\",\"cardNum\":\"4392qq260028467460\",\"code\":\"HXYH01\",\"orderId\":\"31391rb21w36s5723513\",\"tranAmt\":\"2300\"}"));
     }
 }

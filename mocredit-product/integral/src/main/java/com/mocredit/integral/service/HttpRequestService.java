@@ -208,6 +208,9 @@ public class HttpRequestService extends LogService {
                 return false;
             }
             url = integralBankAdapter.getPayment(activity.getChannel());
+            if (ExchangeType.OFFLINE_QUANYI.equals(activity.getExchangeType())) {
+                url = PropertiesUtil.getValue("offline_payment");
+            }
             String response = doPostJson(requestId, url, getPaymentDto(activity, order));
             boolean anaFlag = analyJsonReponse(requestId, activity.getChannel(), url, param, response,
                     resp);
@@ -308,6 +311,7 @@ public class HttpRequestService extends LogService {
                                 if (ruleName.equals(tranRecord.getTransType())) {
                                     compareRuleAndMax(ruleName, Integer.valueOf(ruleValue), tranRecord.getTransCount(), resp);
                                     if (!resp.getSuccess()) {
+                                        resp.setData(getPaymentOldForXml(false, activity, order, store, resp.getErrorCode(), resp.getErrorMsg()));
                                         return false;
                                     }
                                 }
@@ -324,6 +328,9 @@ public class HttpRequestService extends LogService {
                 return false;
             }
             url = integralBankAdapter.getPayment(activity.getChannel());
+            if (ExchangeType.OFFLINE_QUANYI.equals(activity.getExchangeType())) {
+                url = PropertiesUtil.getValue("offline_payment");
+            }
             String response = doPostJson(requestId, url, getPaymentDto(activity, order));
             boolean anaFlag = analyJsonReponse(requestId, activity.getChannel(), url, param, response,
                     resp);
@@ -462,10 +469,15 @@ public class HttpRequestService extends LogService {
                 return false;
             }
             if (orderService.isExistOldOrder(orderVo.getOldOrderId())) {
-                return true;
+                resp.setErrorCode("609");
+                resp.setErrorMsg("该订单已撤销");
+                return false;
             }
             Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentRevoke(activity.getChannel());
+            if (ExchangeType.OFFLINE_QUANYI.equals(activity.getExchangeType())) {
+                url = PropertiesUtil.getValue("offline_paymentRevoke");
+            }
             String response = doPostJson(requestId, url, getOrderIdAndOldOrderIdParam(orderVo));
             boolean anaFlag = analyJsonReponse(requestId, activity.getChannel(), url, param, response,
                     resp);
@@ -507,6 +519,9 @@ public class HttpRequestService extends LogService {
             }
             Activity activity = activityService.getActivityByOrderId(orderVo.getOldOrderId());
             url = integralBankAdapter.getPaymentReserval(activity.getChannel());
+            if (ExchangeType.OFFLINE_QUANYI.equals(activity.getExchangeType())) {
+                url = PropertiesUtil.getValue("offline_paymentReserval");
+            }
             String response = doPostJson(requestId, url, getOrderIdAndOldOrderIdParam(orderVo));
             boolean anaFlag = analyJsonReponse(requestId, activity.getChannel(), url, param, response, resp);
             orderVo.setRequestId(requestId);

@@ -1,6 +1,7 @@
 package com.mocredit.gateway.service.impl;
 
 import com.mocredit.base.util.DateUtil;
+import com.mocredit.gateway.constant.ActivityStatus;
 import com.mocredit.gateway.constant.CardRule;
 import com.mocredit.gateway.constant.ErrorCodeType;
 import com.mocredit.gateway.constant.TranRecordType;
@@ -50,27 +51,36 @@ public class RecordServiceImpl implements RecordService {
                 resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST.getText());
                 return false;
             }
-            if (null == activity.getRule()) {
-                resp.setSuccess(false);
-                resp.setErrorCode(ErrorCodeType.CARD_NOT_RULE.getValue());
-                resp.setErrorMsg(ErrorCodeType.CARD_NOT_RULE.getText());
-                return false;
-            }
-            List<TranRecord> tranRecords = tranRecordService.getTranRecordByCardNum(record.getCardNum());
-            if (tranRecords.isEmpty()) {
-                saveRecordAndTranRecord(record);
-            } else {
-                for (String rule : activity.getRule().split(";")) {
-                    String ruleName = rule.split(":")[0];
-                    String ruleValue = rule.split(":")[1];
-                    for (TranRecord tranRecord : tranRecords) {
-                        if (ruleName.equals(tranRecord.getTranType())) {
-                            compareRuleAndMax(ruleName, Integer.valueOf(ruleValue), tranRecord.getTranCount(), resp);
-                            if (!resp.getSuccess()) {
-                                return false;
+//            if (ActivityStatus.STOPPING.equals(activity.getStatus())) {
+//                resp.setSuccess(false);
+//                resp.setErrorCode(ErrorCodeType.ACTIVITY_ALREADY_STOPPING.getValue());
+//                resp.setErrorMsg(ErrorCodeType.ACTIVITY_ALREADY_STOPPING.getText());
+//                return false;
+//            }
+//            if (null == activity.getRule()) {
+//                resp.setSuccess(false);
+//                resp.setErrorCode(ErrorCodeType.CARD_NOT_RULE.getValue());
+//                resp.setErrorMsg(ErrorCodeType.CARD_NOT_RULE.getText());
+//                return false;
+//            }
+            if (null != activity.getRule()) {
+                List<TranRecord> tranRecords = tranRecordService.getTranRecordByCardNum(record.getCardNum(), activity.getId());
+                if (tranRecords.isEmpty()) {
+                    saveRecordAndTranRecord(activity, record);
+                } else {
+                    for (String rule : activity.getRule().split(";")) {
+                        String ruleName = rule.split(":")[0];
+                        String ruleValue = rule.split(":")[1];
+                        for (TranRecord tranRecord : tranRecords) {
+                            if (ruleName.equals(tranRecord.getTranType())) {
+                                compareRuleAndMax(ruleName, Integer.valueOf(ruleValue), tranRecord.getTranCount(), resp);
+                                if (!resp.getSuccess()) {
+                                    return false;
+                                }
                             }
                         }
                     }
+                    saveRecordAndTranRecord(activity, record);
                 }
             }
             return true;
@@ -85,22 +95,35 @@ public class RecordServiceImpl implements RecordService {
     @Override
     @Transactional
     public boolean savePaymentRevoke(Record record, Response resp) {
+        if (null == recordMapper.selectByOrderId(record.getOldOrderId())) {
+            resp.setSuccess(false);
+            resp.setErrorCode(ErrorCodeType.NOT_EXIST_ORDER_ERROR.getValue());
+            resp.setErrorMsg(ErrorCodeType.NOT_EXIST_ORDER_ERROR.getText());
+            return false;
+        }
         if (recordMapper.selectByOldOrderIdCount(record.getOldOrderId()) == 0) {
             Record oldRecord = recordMapper.selectByOrderId(record.getOldOrderId());
+            Activity activity = activityService.getByActivityCode(oldRecord.getCode());
             record.setCode(oldRecord.getCode());
             record.setCardNum(oldRecord.getCardNum());
             record.setCardExpDate(oldRecord.getCardExpDate());
             record.setTranAmt(oldRecord.getTranAmt());
             recordMapper.save(record);
-            tranRecordService.minusCountByCardNum(oldRecord.getCardNum());
+            tranRecordService.minusCountByCardNum(oldRecord.getCardNum(), activity.getId());
+            return true;
+        } else {
+            resp.setSuccess(false);
+            resp.setErrorCode(ErrorCodeType.ORDER_ALREADY_REVOKE.getValue());
+            resp.setErrorMsg(ErrorCodeType.ORDER_ALREADY_REVOKE.getText());
+            return false;
         }
-        return true;
     }
 
-    public void saveRecordAndTranRecord(Record record) {
+    public void saveRecordAndTranRecord(Activity activity, Record record) {
         recordMapper.save(record);
         for (String tranType : TranRecordType.tranTypes) {
             TranRecord tranRecord = new TranRecord();
+            tranRecord.setActivityId(activity.getId());
             tranRecord.setCardNum(record.getCardNum());
             tranRecord.setTranType(tranType);
             tranRecord.setTranCount(1);

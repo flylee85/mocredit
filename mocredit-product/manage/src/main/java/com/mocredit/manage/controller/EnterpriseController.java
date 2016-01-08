@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
@@ -31,8 +30,7 @@ public class EnterpriseController {
 	private EnterpriseService enterpriseService;
 
 	@RequestMapping("/list")
-	public String list(@RequestParam(value = "search[value]", required = false) String key, Integer start,
-			Integer length) {
+	public String list(String key, String startTime, String endTime, Integer start, Integer length) {
 		ResponseData response = new AjaxResponseData();
 		try {
 			if (null == start) {
@@ -41,7 +39,7 @@ public class EnterpriseController {
 			if (null == length) {
 				length = 10;
 			}
-			PageInfo<Enterprise> page = enterpriseService.getPage(key, start / length + 1, length);
+			PageInfo<Enterprise> page = enterpriseService.getPage(key, startTime, endTime, start / length + 1, length);
 			Map<String, Object> newMap = new HashMap<String, Object>();
 			newMap.put("recordsTotal", page.getTotal());// 总数量
 			newMap.put("recordsFiltered", page.getTotal());// 过滤后的总数量，暂未用到

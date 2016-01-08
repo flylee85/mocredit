@@ -110,6 +110,21 @@ public interface ActivityMapper {
     List<Activity> getActivityByEnCode(@Param(value = "enCode") String enCode);
 
     /**
+     * 根据机具号查询活动列表和离线活动
+     *
+     * @param enCode
+     * @return
+     */
+    List<Activity> getActivityByEnCodeAndOff(@Param(value = "enCode") String enCode);
+
+    /**
+     * 获取离线活动
+     *
+     * @return
+     */
+    List<Activity> getActivityOffByEncode(@Param(value = "enCode") String enCode);
+
+    /**
      * 根据机具号和门店查询活动列表
      *
      * @return

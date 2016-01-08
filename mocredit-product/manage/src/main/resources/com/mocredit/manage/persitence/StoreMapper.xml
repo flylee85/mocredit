@@ -26,6 +26,8 @@
     <result column="cityName" property="cityName" jdbcType="VARCHAR" />
     <result column="areaName" property="areaName" jdbcType="VARCHAR" />
     <result column="merchantName" property="merchantName" jdbcType="VARCHAR" />
+    <result column="business_status" property="businessStatus" jdbcType="INTEGER" />
+    <result column="mail_address" property="mailAddress" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     <!--
@@ -34,7 +36,7 @@
       This element was generated on Mon Nov 02 15:47:55 CST 2015.
     -->
     id, name, code, merchant_id, province, city, area, address, longitude, latitude, 
-    status, mobile, phone,create_time,linkman
+    status, mobile, phone,create_time,linkman,business_status,mail_address
   </sql>
   <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.String" >
     <!--
@@ -65,6 +67,27 @@
     <if test="merchantId !=null and merchantId!=''">
     	and s.merchant_id=#{merchantId}
     </if>
+    <if test="time1 != null and  time1!='' ">
+    	and create_time &gt;=#{time1,jdbcType=TIMESTAMP}
+    </if>
+    <if test="time2 != null and  time2!=''  ">
+    	and create_time &lt;=#{time2,jdbcType=TIMESTAMP}
+    </if>
+    <if test="snCode != null and  snCode !=''  ">
+    	and s.id in (
+    		select store_id from t_terminal 
+    		where sn_code = #{snCode,jdbcType=VARCHAR}
+    	)
+    </if>
+    <if test="province != null and province !=0 ">
+    	and province = #{province,jdbcType=INTEGER}
+    </if>
+    <if test="city != null and city !=0 ">
+    	and city = #{city,jdbcType=INTEGER}
+    </if>
+    <if test="area != null and area !=0 ">
+    	and area = #{area,jdbcType=INTEGER}
+    </if>
     <if test="key !=null and key !=''">
     	and(s.name like #{key}
     		or s.code like #{key}
@@ -74,6 +97,14 @@
     	)
     </if>
     </where>
+    <choose>
+    	<when test="sortorder==1">
+    		order by s.create_time desc
+    	</when>
+    	<when test="sortorder==2">
+    		order by s.create_time asc
+    	</when>
+    </choose>
   </select>
    <select id="checkStoreCode" resultMap="BaseResultMap" parameterType="java.util.Map" >
 		select code
@@ -110,12 +141,12 @@
       merchant_id, province, city, 
       area, address, longitude, 
       latitude, status, mobile, 
-      phone,create_time,linkman)
+      phone,create_time,linkman,business_status,mail_address)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
       #{merchantId,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, #{longitude,jdbcType=DOUBLE}, 
       #{latitude,jdbcType=DOUBLE}, #{status,jdbcType=TINYINT}, #{mobile,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR},#{createTime},#{linkman})
+      #{phone,jdbcType=VARCHAR},#{createTime},#{linkman},#{businessStatus},#{mailAddress})
   </insert>
   <update id="update" parameterType="com.mocredit.manage.model.Store" >
     <!--
@@ -166,6 +197,12 @@
       </if>
       <if test="linkman != null" >
         linkman = #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="businessStatus != null" >
+        business_status = #{businessStatus,jdbcType=INTEGER},
+      </if>
+      <if test="mailAddress != null" >
+        mail_address = #{mailAddress,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR} and status!=2

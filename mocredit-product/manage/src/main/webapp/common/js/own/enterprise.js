@@ -1,14 +1,23 @@
 var oTable = $('table[data-ride="datatables"]').DataTable( {
-		"processing": true,
 		"ajax": {
 			"url": "enterprise/list",
-			 type: "post"
+			 type: "post",
+			 data:function(data){
+				 var query = $("#queryEnterprise").serializeArray();
+				 console.log(query);
+				 for(var i in query){
+					 if(query[i].value){
+						 data[query[i].name]=query[i].value;
+					 }
+				 }
+				 return data;
+			 }
 		},
 		 "processing": true,
          "serverSide": true,
          "pageLength": 10,
          "pagingType": "full_numbers",
-         "searchDelay": 500,
+         "searching":false,
 		"dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
 		"paginationType": "full_numbers",
 		"autoWidth":true,
@@ -16,8 +25,8 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
 		"columns": [
 			{ "data": "name", "className":"qiyeName" },
 			{ "data": "createTime" },
-			{ "data": "activityCount" },
 			{ "data": "contractCount" },
+			{ "data": null},
 			{ "data": null }
 		],
 		"columnDefs": [
@@ -29,11 +38,30 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
 				},
 				"sortable": false,
 				"targets": 4
+			},
+			{
+				"render": function(oObj, type, full ) {
+					return 0==full['activityCount']?"0":'<a href="activity.html#'+full[ 'id' ]+'" target="_blank">'+full['activityCount']+'</a>';
+				},
+				"sortable": false,
+				"targets": 3
 			}
 		]
 
 });
-
+$("#searchBtn").click(function(){
+	oTable.ajax.reload();
+})
+$(".datetimepicker").each(function () {
+	var $this=$(this);
+	$this.datetimepicker({
+		format: "yyyy-mm-dd hh:ii:ss",
+		autoclose: true,
+		language: 'zh-CN',
+		todayHighlight: true,
+		todayBtn:"linked"
+	});
+});
 // 验证
 var form = $("#addEnterprise").find("form").parsley();
 $("#addEnterprise").on('hidden.bs.modal', function (e) {

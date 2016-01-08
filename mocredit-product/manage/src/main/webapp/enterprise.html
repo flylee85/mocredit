@@ -3,6 +3,7 @@
 	<head>
 	  <meta charset="utf-8">
 	  <title>企业管理</title>
+    	<link rel="stylesheet" href="common/js/datepicker/bootstrap-datetimepicker.css">
 	</head>
 	<body>   
 	   <section class="main padder">
@@ -20,6 +21,40 @@
 	       		<a href="#addEnterprise" data-toggle="modal" class="btn btn-primary addActivity btn-info">
 	       			<i class="icon-plus"></i> 添加企业
 				</a>
+	       	</div>
+	       	<div class="row">
+	       		<form id="queryEnterprise" class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <div class="col-lg-2 control-label">开始日期</div>
+                            <div class="col-lg-4">
+                                <input  tabindex="11" data-parsley-trigger="change"
+                                       class="input-small form-control datetimepicker"
+                                       placeholder="开始时间" type="text"
+                                       value="" size="16" name="startTime">
+                            </div>
+                            <div class="col-lg-2 control-label">结束日期</div>
+                            <div class="col-lg-4">
+                                <input tabindex="12" data-parsley-trigger="change"
+                                       class="input-small form-control datetimepicker"
+                                       placeholder="结束时间" type="text"
+                                       value="" size="16" name="endTime">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                         <div class="col-lg-4 control-label">通用查询</div>
+                         <div class="col-lg-8">
+                                <input tabindex="11" data-parsley-trigger="change" 
+                                       class="input-small form-control"  type="text" name="key">
+                            </div>
+                        </div>
+                         <div class="col-lg-2">
+	                         <a href="javascript:;" id="searchBtn" class="btn btn-primary">
+	                                    查询
+	                         </a>
+                         </div>
+                    </div>
+                 </form>
 	       	</div>
 	       	<div class="row">
 		        <div class="col-lg-12">
@@ -97,6 +132,8 @@
 	  </div>
 	  <!-- / .modal -->
 	  
+<script src="common/js/datepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="common/js/datepicker/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
 	  <script src="common/js/own/enterprise.js"></script>
 	</body>
 </html>

@@ -110,9 +110,8 @@ public class SendCodeController {
     }
 
 
-    @RequestMapping("/download")
+    @RequestMapping(value = "/download", produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-
     public String download(String type, String id, String name, Integer count, HttpServletResponse response) {
         //定义返回页面的对象
         ResponseData responseData = new AjaxResponseData();
@@ -121,15 +120,6 @@ public class SendCodeController {
             List<String> titleList = new ArrayList<String>();
             setTitleAndKey(titleList, keyList);
             List<Map> codeMap = new ArrayList<Map>();
-            String fileName = name + ".xls";
-            response.reset();
-            response.setContentType("application/x-download");
-            try {
-                response.setHeader("Content-Disposition", "attachment;filename="
-                        + new String(fileName.getBytes("UTF-8"), "iso-8859-1"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             List<BatchCode> codeList = sendCodeService.downloadList(type, name, id, count);
             for (BatchCode batchCode : codeList) {
                 Map dataMap = new HashMap();
@@ -138,6 +128,11 @@ public class SendCodeController {
                 codeMap.add(dataMap);
             }
             try {
+                String fileName = name + ".xls";
+                response.reset();
+                response.setContentType("application/x-download");
+                response.setHeader("Content-Disposition", "attachment;filename="
+                        + new String(fileName.getBytes("UTF-8"), "iso-8859-1"));
                 ExcelTool.download(fileName,
                         titleList.toArray(new String[titleList.size()]),
                         keyList.toArray(new String[keyList.size()]),
@@ -145,6 +140,8 @@ public class SendCodeController {
 
             } catch (Exception e) {
                 e.printStackTrace();
+                responseData.setSuccess(false);
+                responseData.setErrorMsg(e.getMessage(), e);
             }
             responseData.setData(0);
         } catch (Exception e) {

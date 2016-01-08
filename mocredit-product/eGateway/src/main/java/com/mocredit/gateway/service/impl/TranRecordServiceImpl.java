@@ -28,12 +28,12 @@ public class TranRecordServiceImpl implements TranRecordService {
     }
 
     @Override
-    public List<TranRecord> getTranRecordByCardNum(String cardNum) {
-        return tranRecordMapper.getTranRecordByCardNum(cardNum);
+    public List<TranRecord> getTranRecordByCardNum(String cardNum, Integer activityId) {
+        return tranRecordMapper.getTranRecordByCardNum(cardNum, activityId);
     }
 
     @Override
-    public boolean minusCountByCardNum(String cardNum) {
-        return tranRecordMapper.minusCountByCardNum(cardNum) > 0;
+    public boolean minusCountByCardNum(String cardNum, Integer activityId) {
+        return tranRecordMapper.minusCountByCardNum(cardNum, activityId) > 0;
     }
 }

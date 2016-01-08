@@ -113,7 +113,6 @@
 	    left join t_area a1 on s.city=a1.id
 	    left join t_area a2 on s.area=a2.id
 	    <where>
-	    s.status!=2 and m.id is not null
 	     <if test="activityId != null">
 	     and s.id in (select store_id from act_activity_store where activity_id=#{activityId})
 	    </if>
@@ -131,7 +130,8 @@
 	    </if>
 	    <if test="shopName !=null and shopName!='' ">
 	    and m.name like '%${shopName}%'
-	    </if>
+	    </if>	    
+	    and s.status!=2 and s.business_status=1 and m.id is not null
 	    </where>
   </select>
   

@@ -26,6 +26,7 @@
     <mvc:annotation-driven/>
 
     <context:component-scan base-package="com.mocredit.*"/>
+    <bean class="com.mocredit.security.captcha.impl.CaptchaServiceImpl" id="captchaService"/>
     <!-- 静态资源访问处理方式 -->
     <mvc:default-servlet-handler/>
 

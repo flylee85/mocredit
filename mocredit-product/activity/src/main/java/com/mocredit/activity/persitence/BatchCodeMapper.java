@@ -50,4 +50,12 @@ public interface BatchCodeMapper {
 
     //按照批次表id更新码的状态
     int updateBatchCodeById(Map<String, Object> batchCodeMap);
+
+    /**
+     * 根据码的id查询该码发送短彩信的类型
+     *
+     * @param id
+     * @return
+     */
+    Map<String, Object> getSendSmsTypeByCodeId(String id);
 }

@@ -1,16 +1,21 @@
-oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
+var oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 	"ajax": {
 		"url": "store/list",
 		type:"post",
 		data:function(d){
 			 d.merchantId=$("#currentId").val();
+			 var formArray = $("#searchArea").find("form").serializeArray();
+			$.each(formArray,function(index){
+					d[this['name']] = this['value'];
+			});
+			return d;
 		 }
 	},
 	 "processing": true,
      "serverSide": true,
      "pageLength": 10,
      "pagingType": "full_numbers",
-     "searchDelay": 500,
+     "searching": false,
 	"dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
 	"paginationType": "full_numbers",
 	"autoWidth":true,
@@ -54,6 +59,40 @@ oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 	]
 
 } );
+//datepicker
+$(".datetimepicker").each(function () {
+	$(this).datetimepicker({
+		format: "yyyy-mm-dd hh:ii:ss",
+		autoclose: true,
+		language: 'zh-CN',
+		todayHighlight: true,
+		todayBtn:"linked"
+	});
+});
+//搜索条件
+$.get("area/getChildren/0",null,function(result){
+	setArea($("#searchArea form .area select:first"),0,result.data);
+},"json");
+$("#searchArea form .area select").change(function(){
+	var $select=$("#searchArea form .area select");
+	console.log($select);
+	var index=$select.index(this);
+	$select.filter(":gt("+index+")").find("option:gt(0)").remove();
+	var next=$select.eq(index+1);
+	if(next.length>0){
+		$.get("area/getChildren/"+this.value,null,function(result){
+				setArea(next,0,result.data);
+		},'json');
+	}
+})
+$('.radio-custom > input[type=radio]').each(function () {
+		var $this = $(this);
+		if ($this.data('radio')) return;
+		$this.radio($this.data());
+	});
+$("#searchBtn").click(function(){
+	oTable.ajax.reload();
+})
 //var map = new BMap.Map("mapcontainer");    // 创建Map实例
 //map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
 //map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
@@ -80,6 +119,7 @@ $("#addStore").on('hidden.bs.modal', function (e) {
 	 .val('')
 	 .removeAttr('checked')
 	 .removeAttr('selected');
+	$("#addStore form .phone input:not(:first)").remove();
 //	removeMarker();
 });
 $("#toAdd").click(function(){
@@ -95,6 +135,10 @@ $("#toAdd").click(function(){
 	$.get("area/getChildren/0",null,function(result){
 		setArea($("#addStore form .area select:first"),0,result.data);
 	},"json");
+})
+$("#addPhone").click(function(){
+	var $div=$(this).parent().siblings("div");
+	$div.append('<input type="text" class="form-control input-small parsley-validated" placeholder="联系电话" />');
 })
 $("#addStore form .area select").change(function(){
 	var $select=$("#addStore form .area select");
@@ -118,10 +162,21 @@ function openUpdate(id, type){
 			form.find("input[name=name]").attr("data-id",result.data.store.id).val(result.data.store.name);
 			form.find("input[name=code]").val(result.data.store.code);
 			form.find("input[name=linkman]").val(result.data.store.linkman);
-			form.find("input[name=phone]").val(result.data.store.phone);
+			if(result.data.store.phone){
+				var phoneJson=JSON.parse(result.data.store.phone);
+				if(phoneJson.length>0){
+					var $div=$(".phone div:first",form);
+					$("input:first",$div).val(phoneJson[0]);
+					for(var i=1;i<phoneJson.length;i++){
+						$div.append('<input type="text" class="form-control input-small parsley-validated" placeholder="联系电话" value="'+phoneJson[i]+'" />');
+					}
+				}
+			}
 			form.find("input[name=address]").val(result.data.store.address);
 			form.find("input[name=longitude]").val(result.data.store.longitude);
 			form.find("input[name=latitude]").val(result.data.store.latitude);
+			form.find("select[name=businessStatus]").val(result.data.store.businessStatus);
+			form.find("input[name=mailAddress]").val(result.data.store.mailAddress);
 			//处理商户
 			var _select=$("#addStore form .merchant select");
 			_select.empty().append('<option value="" selected>请选择所属商家</option>')
@@ -188,6 +243,14 @@ $("#addItem").click(function(){
 			formObject[this['name']] = this['value'];
 		}
 	});
+	var phoneArray=[];
+	$("#addStore form .phone input").each(function(){
+		if(this.value){
+			phoneArray.push(this.value);
+		}
+	})
+	formObject.phone= JSON.stringify(phoneArray);
+	
 	var id=$("#addStore form input[name=name]").attr("data-id");
 	if(id){
 		formObject.id=id;

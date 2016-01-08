@@ -39,6 +39,10 @@
 		if(!form2.validate()){
 			return false;
 		}
+		if($(".choosedPop .selectStore span").length==0){
+			sendMsg(false, "请选择门店");
+			return false;
+		}
 		//获取表单基本元素对象
 		var formArray = $("#addActivityJifenForm").serializeArray();
 		var formObject = new Object();
@@ -79,7 +83,9 @@
 		formObject.maxNumber="";
 		$(".maxNumber input").each(function(){
 			var $this=$(this);
-			formObject.maxNumber+=this.id+":"+$this.val()+";";
+			if($this.val()){
+				formObject.maxNumber+=this.id+":"+$this.val()+";";
+			}
 		})
 		//提交
 		$.ajax({

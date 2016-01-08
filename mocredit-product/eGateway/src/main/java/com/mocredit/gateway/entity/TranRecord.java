@@ -9,12 +9,21 @@ import java.util.Date;
 
 public class TranRecord {
     private Integer id;
+    private Integer activityId;
     private String cardNum;
     private String tranType;
     private Integer tranCount;
     private Date expireDate;
     private Date cTime;
     private Date uTime;
+
+    public Integer getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(Integer activityId) {
+        this.activityId = activityId;
+    }
 
     public Integer getId() {
         return id;

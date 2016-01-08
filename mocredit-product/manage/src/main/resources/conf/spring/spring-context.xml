@@ -16,14 +16,14 @@
     <!--配置文件集成-->
     <bean id="propertyConfigurer" class="com.mocredit.base.util.FilePropertyPlaceholderConfigurer">
         <property name="locations">
-            <!--<list>-->
-            <!--<value>classpath:config.properties</value>-->
-            <!--<value>classpath:shiro-client.properties</value>-->
-            <!--</list>-->
+            <!-- <list>
+	            <value>classpath:config.properties</value>
+	            <value>classpath:shiro-client.properties</value>
+            </list>-->
             <list>
                 <value>file:./../../../config.properties</value>
                 <value>file:./../../../shiro-client.properties</value>
-            </list>
+            </list> 
         </property>
     </bean>
     <!--数据源配置-->
@@ -53,7 +53,7 @@
     </bean>
     <!-- scan for mappers and let them be autowired -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.mocredit.manage.persitence"/>
+        <property name="basePackage" value="com.mocredit.manage.persitence,com.mocredit.activity.persitence"/>
     </bean>
     <!--事物处理方式 使用@Transactional 标注在 方法上 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>

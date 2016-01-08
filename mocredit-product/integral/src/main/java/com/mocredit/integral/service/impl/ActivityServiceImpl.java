@@ -165,10 +165,20 @@ public class ActivityServiceImpl extends LogService implements ActivityService {
     @Override
     public String getActIdsByEnCode(String enCode) {
         List<String> actIds = new ArrayList<>();
-        for (Activity activity : activityMapper.getActivityByEnCode(enCode)) {
+        for (Activity activity : activityMapper.getActivityByEnCodeAndOff(enCode)) {
             actIds.add(activity.getActivityId());
         }
         return String.join(",", actIds);
+    }
+
+    @Override
+    public List<Activity> getActivityByEnCodeAndOff(String enCode) {
+        return activityMapper.getActivityByEnCodeAndOff(enCode);
+    }
+
+    @Override
+    public List<Activity> getActivityOffByEncode(String enCode) {
+        return activityMapper.getActivityOffByEncode(enCode);
     }
 
     @Override
