@@ -28,7 +28,7 @@
     <include refid="Base_Column_List" />
     from m_opt_log
     <where>
-    	rel_id=#{relId}  and ctime&lt;NOW()
+    	rel_id=#{relId}
     </where>
     order by ctime desc
   </select>

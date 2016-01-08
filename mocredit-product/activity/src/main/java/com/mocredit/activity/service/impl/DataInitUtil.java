@@ -34,36 +34,43 @@ import com.mocredit.manage.persitence.TerminalMapper;
  * @date 2015年11月25日
  */
 public class DataInitUtil {
-//	private static final String IN_URL = "jdbc:mysql://192.168.4.137:3306/mcntong?useUnicode=true&characterEncoding=utf-8";
-//	private static final String IN_UNAME = "root";
-//	private static final String IN_PWD = "mocredit";
-//	private static final String OUT_URL = "jdbc:mysql://192.168.100.156:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
-//	private static final String OUT_UNAME = "root";
-//	private static final String OUT_PWD = "tbuqgXb6tb9)Suwbijrjiscl";
-//	private static final String DEVICE_URL="jdbc:mysql://192.168.100.156:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
-//	private static final String DEVICE_UNAME = "root";
-//	private static final String DEVICE_PWD = "tbuqgXb6tb9)Suwbijrjiscl";
-	
+	// private static final String IN_URL =
+	// "jdbc:mysql://192.168.4.137:3306/mcntong?useUnicode=true&characterEncoding=utf-8";
+	// private static final String IN_UNAME = "root";
+	// private static final String IN_PWD = "mocredit";
+	// private static final String OUT_URL =
+	// "jdbc:mysql://192.168.100.156:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
+	// private static final String OUT_UNAME = "root";
+	// private static final String OUT_PWD = "tbuqgXb6tb9)Suwbijrjiscl";
+	// private static final String
+	// DEVICE_URL="jdbc:mysql://192.168.100.156:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+	// private static final String DEVICE_UNAME = "root";
+	// private static final String DEVICE_PWD = "tbuqgXb6tb9)Suwbijrjiscl";
+
 	private static final String IN_URL = "jdbc:mysql://192.168.4.137:3306/mcntong?useUnicode=true&characterEncoding=utf-8";
 	private static final String IN_UNAME = "root";
 	private static final String IN_PWD = "mocredit";
 	private static final String OUT_URL = "jdbc:mysql://192.168.24.124:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
 	private static final String OUT_UNAME = "root";
 	private static final String OUT_PWD = "eAhrpeDoq/ve39md";
-	private static final String DEVICE_URL="jdbc:mysql://192.168.24.124:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+	private static final String DEVICE_URL = "jdbc:mysql://192.168.24.124:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
 	private static final String DEVICE_UNAME = "root";
 	private static final String DEVICE_PWD = "eAhrpeDoq/ve39md";
-	
-//	private static final String IN_URL = "jdbc:mysql://127.0.0.1:3306/mcntong_init?useUnicode=true&characterEncoding=utf-8";
-//	private static final String IN_UNAME = "root";
-//	private static final String IN_PWD = "root";
-//	private static final String OUT_URL = "jdbc:mysql://127.0.0.1:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
-//	private static final String OUT_UNAME = "root";
-//	private static final String OUT_PWD = "root";
-//	private static final String DEVICE_URL="jdbc:mysql://127.0.0.1:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
-//	private static final String DEVICE_UNAME = "root";
-//	private static final String DEVICE_PWD = "root";
-//	private static String IMPORT_URL = "http://192.168.100.156:9092/integral/activityImport";
+
+	// private static final String IN_URL =
+	// "jdbc:mysql://127.0.0.1:3306/mcntong_init?useUnicode=true&characterEncoding=utf-8";
+	// private static final String IN_UNAME = "root";
+	// private static final String IN_PWD = "root";
+	// private static final String OUT_URL =
+	// "jdbc:mysql://127.0.0.1:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
+	// private static final String OUT_UNAME = "root";
+	// private static final String OUT_PWD = "root";
+	// private static final String
+	// DEVICE_URL="jdbc:mysql://127.0.0.1:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+	// private static final String DEVICE_UNAME = "root";
+	// private static final String DEVICE_PWD = "root";
+	// private static String IMPORT_URL =
+	// "http://192.168.100.156:9092/integral/activityImport";
 	/*** 正式环境 ***/
 	// private static final String IN_URL =
 	// "jdbc:mysql://192.168.4.137:3306/mcntong?useUnicode=true&characterEncoding=utf-8";
@@ -132,6 +139,10 @@ public class DataInitUtil {
 			System.out.println("==========start 导入民生活动=========");
 			util.importMinShengActivity();
 			System.out.println("==========end 导入民生活动=========");
+			// 导入离线活动
+			System.out.println("==========start导入离线活动=========");
+			util.importLiXianActivity();
+			System.out.println("==========end 导入离线活动=========");
 			// System.out.println("==========提交事务=========");
 			// util.conOut.commit();
 
@@ -243,12 +254,16 @@ public class DataInitUtil {
 			sb.append(getColumn(rs.getString("address")));
 			sb.append(getColumn(StringUtils.isEmpty(rs.getString("longitude")) ? 0 : rs.getString("longitude")));
 			sb.append(getColumn(StringUtils.isEmpty(rs.getString("latitude")) ? 0 : rs.getString("latitude")));
-			sb.append(getColumn(0 == rs.getInt("status") ? 1 : 2));// status
+			int status = rs.getInt("status");
+			sb.append(getColumn(status));// status
 			sb.append(getColumn(rs.getString("mobile")));
-			sb.append(getColumn(rs.getString("phone")));
+			String phone = rs.getString("phone");
+			sb.append(getColumn(StringUtils.isEmpty(phone) ? "" : "[\"" + phone + "\"]"));
 			sb.append(StringUtils.isEmpty(rs.getString("createtime")) ? "now(),"
 					: "STR_TO_DATE('" + rs.getString("createtime") + "','%Y-%m-%d %H:%i:%s'),");
 			sb.append(getColumn(""));// linkman
+			sb.append(getColumn(status == 0 ? "3" : "1"));// business_type
+			sb.append(getColumn(""));// mail_address
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append("),");
 		}
@@ -281,7 +296,7 @@ public class DataInitUtil {
 	private void importDevice() throws SQLException {
 		// 读取活动表
 		ResultSet rs = query("select * from device where status=0", true);
-		String oldGateway="insert into device(storeid,devcode,shopid,agentid)values(";
+		String oldGateway = "insert into device(storeid,devcode,shopid,agentid)values(";
 		StringBuilder sb = new StringBuilder(
 				"INSERT INTO `t_terminal`(id,store_id,create_time,status,deskey,mackey,sn_code,supplier_id,type,gateway) VALUES");
 		Connection conn = DriverManager.getConnection(DEVICE_URL, DEVICE_UNAME, DEVICE_PWD);
@@ -301,15 +316,15 @@ public class DataInitUtil {
 			sb.append(getColumn("02"));
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append("),");
-			
-			statement.execute(oldGateway+getColumn(1)+getColumn(rs.getString("devcode"))+getColumn(1)+17+")");
+
+			statement.execute(oldGateway + getColumn(1) + getColumn(rs.getString("devcode")) + getColumn(1) + 17 + ")");
 		}
 		conn.close();
 		rs.close();
 		sb.deleteCharAt(sb.length() - 1);
 		System.out.println(sb.toString());
 		execute(sb.toString(), false);
-		
+
 	}
 
 	/**
@@ -319,21 +334,23 @@ public class DataInitUtil {
 	 */
 	private void importActivity() throws SQLException {
 		// 读取活动表
-//		String importSql = "select id,`name`,productcode,outerid,entid,(select e.entname from enterprise e where id =i.entid) as enterprise_name,expointType,price,num,endtime,printTitle,printstr,weeklimit,smscontent,checkinfo,expenseSms,status from eitem i where status=1 and expointType!=0";
-		String importSql="select id,`name`,productcode,outerid,entid,(select e.entname from enterprise e where id =i.entid) as enterprise_name,expointType,price,num,endtime,printTitle,printstr,weeklimit,smscontent,checkinfo,expenseSms,status from eitem i where productcode in ('COSTAHB','TPYKF')";
-		ResultSet rs = query(
-				importSql,
-				true);
+		// String importSql = "select
+		// id,`name`,productcode,outerid,entid,(select e.entname from enterprise
+		// e where id =i.entid) as
+		// enterprise_name,expointType,price,num,endtime,printTitle,printstr,weeklimit,smscontent,checkinfo,expenseSms,status
+		// from eitem i where status=1 and expointType!=0";
+		String importSql = "select id,`name`,productcode,outerid,entid,(select e.entname from enterprise e where id =i.entid) as enterprise_name,expointType,price,num,endtime,printTitle,printstr,weeklimit,smscontent,checkinfo,expenseSms,status from eitem i where productcode in ('COSTAHB','TPYKF')";
+		ResultSet rs = query(importSql, true);
 		while (rs.next()) {
 			StringBuilder sb = new StringBuilder(
-					"INSERT INTO act_activity(id,enterprise_id,enterprise_name,name,type,CODE,out_code,receipt_title,receipt_print,pos_success_msg,success_sms_msg,start_time,end_time,select_date,amount,integral,createtime,exchange_type,status,max_type,max_number,contract_id,send_sms_type,channel ) values ");
+					"INSERT INTO act_activity(id,enterprise_id,enterprise_name,name,type,CODE,out_code,receipt_title,receipt_print,pos_success_msg,success_sms_msg,start_time,end_time,select_date,amount,integral,createtime,exchange_type,status,max_type,max_number,contract_id,send_sms_type,channel,exchange_channel ) values ");
 			sb.append("(");
 			String id = rs.getString("id");
 			sb.append(getColumn(id));
 			sb.append(getColumn(rs.getString("entid")));
 			sb.append(getColumn(rs.getString("enterprise_name")));
 			sb.append(getColumn(rs.getString("name")));
-			sb.append(getColumn("01"));//type 积分
+			sb.append(getColumn("01"));// type 积分
 			sb.append(getColumn(
 					StringUtils.isEmpty(rs.getString("productcode")) ? IDUtil.getID() : rs.getString("productcode")));
 			sb.append(getColumn(
@@ -352,7 +369,7 @@ public class DataInitUtil {
 			sb.append(getColumn("0"));// 积分
 			sb.append("now(),");
 			// 兑换类型转换
-			String exchangeType ="3";//权益
+			String exchangeType = "3";// 权益
 			sb.append(getColumn(exchangeType));// exchange_type
 			sb.append(getColumn("01"));// status
 			sb.append(getColumn(""));// max_type
@@ -360,6 +377,7 @@ public class DataInitUtil {
 			sb.append(getColumn("0"));// contract_id
 			sb.append(getColumn("0".equals(rs.getString("expointType")) ? "02" : ""));// sms_send_type
 			sb.append(getColumn("1"));// channel
+			sb.append(getColumn("1"));// exchange_channel
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append(")");
 			System.out.println(sb.toString());
@@ -377,7 +395,8 @@ public class DataInitUtil {
 	 */
 	private void importMinShengActivity() throws SQLException {
 		// 读取活动表
-//		String importSql = "SELECT * FROM SD_POINTS_INFO WHERE BANK_ID = 3 AND `STATUS` = 0";
+		// String importSql = "SELECT * FROM SD_POINTS_INFO WHERE BANK_ID = 3
+		// AND `STATUS` = 0";
 		String importSql = "SELECT * FROM SD_POINTS_INFO WHERE ACTIVTY_ID in('MS0000','MS0003','MS0004','MS0002','MS0111','MS0005')";
 		ResultSet rs = query(importSql, true);
 		ResultSet msrs = query("SELECT id FROM enterprise where entname='民生银行'", true);
@@ -385,7 +404,7 @@ public class DataInitUtil {
 		String minshengId = msrs.getString("id");
 		while (rs.next()) {
 			StringBuilder sb = new StringBuilder(
-					"INSERT INTO act_activity(enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel ) values ");
+					"INSERT INTO act_activity(enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel,exchange_channel ) values ");
 			sb.append("(");
 			sb.append(getColumn(minshengId));// enterpriseId
 			sb.append(getColumn("民生银行"));// enterpriseName
@@ -433,7 +452,22 @@ public class DataInitUtil {
 			}
 
 			sb.append(getColumn(""));// max_type
-			sb.append(getColumn("1"));// max_number
+			// max_number
+			if (null == ruleMap) {
+				sb.append(getColumn(""));
+			} else {
+				StringBuilder maxNumber = new StringBuilder();
+				if (!StringUtils.isEmpty(ruleMap.get("AllCardOneDayMax"))) {
+					maxNumber.append("DayMax:" + ruleMap.get("AllCardOneDayMax") + ";");
+				}
+				if (!StringUtils.isEmpty(ruleMap.get("WeekMax"))) {
+					maxNumber.append("WeekMax:" + ruleMap.get("WeekMax") + ";");
+				}
+				if (!StringUtils.isEmpty(ruleMap.get("Total"))) {
+					maxNumber.append("TotalMax:" + ruleMap.get("Total") + ";");
+				}
+				sb.append(getColumn(maxNumber.toString()));
+			}
 			sb.append(getColumn(0));// amount
 			sb.append(getColumn(StringUtils.isEmpty(rs.getString("POINTS")) ? 0 : rs.getString("POINTS")));
 			sb.append("now(),");
@@ -449,6 +483,127 @@ public class DataInitUtil {
 			sb.append(getColumn("01"));// status
 			sb.append(getColumn("0"));// contract_id
 			sb.append(getColumn("2"));// channel
+			sb.append(getColumn("1"));// exchange_channel
+			sb.deleteCharAt(sb.length() - 1);
+			sb.append(")");
+			System.out.println(sb.toString());
+			execute(sb.toString(), false);
+			ResultSet actId = query("SELECT LAST_INSERT_ID()", false);
+			int activityId = 0;
+			if (actId.next()) {
+				activityId = actId.getInt(1);
+			}
+			// 导入活动门店关系
+			String shopSql = "SELECT shopid FROM SD_POS_TERM WHERE MERCH_ID = '" + rs.getString("MERCH_ID")
+					+ "' AND TERM_ID = '" + rs.getString("TREM_ID") + "'";
+			ResultSet shop = query(shopSql, true);
+			if (shop.next()) {
+				String shopId = shop.getString(1);
+				String sql = "SELECT distinct id FROM store WHERE shopid = '" + shopId + "'";
+				ResultSet storeIds = query(sql, true);
+				while (storeIds.next()) {
+					execute("INSERT INTO `act_activity_store`(activity_id,store_id,shop_id) VALUES(" + activityId + ",'"
+							+ storeIds.getString(1) + "','" + shopId + "')", false);
+				}
+			}
+
+			Activity activity = activityMapper.getActivityById(String.valueOf(activityId));
+			this.sysnActivity(activity);
+		}
+		rs.close();
+	}
+
+	/**
+	 * 离线活动
+	 * 
+	 * @throws SQLException
+	 */
+	private void importLiXianActivity() throws SQLException {
+		// 读取活动表
+		// String importSql = "SELECT * FROM SD_POINTS_INFO WHERE BANK_ID = 3
+		// AND `STATUS` = 0";
+		String importSql = "SELECT * FROM SD_POINTS_INFO WHERE ACTIVTY_ID in('HXYH01')";
+		ResultSet rs = query(importSql, true);
+		ResultSet msrs = query("SELECT id FROM enterprise where entname='民生银行'", true);
+		msrs.next();
+		String minshengId = msrs.getString("id");
+		while (rs.next()) {
+			StringBuilder sb = new StringBuilder(
+					"INSERT INTO act_activity(enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel,exchange_channel ) values ");
+			sb.append("(");
+			sb.append(getColumn(minshengId));// enterpriseId
+			sb.append(getColumn("民生银行"));// enterpriseName
+			sb.append(getColumn(rs.getString("PRODUCT_NAME")));
+			sb.append(getColumn("01"));// type
+			sb.append(getColumn(rs.getString("ACTIVTY_ID")));
+			sb.append(getColumn(rs.getString("ACTIVTY_ID")));
+
+			String rule = rs.getString("RULES");
+			Map<String, String> ruleMap = handleRules(rule);
+			// start_time
+			if (null == ruleMap || StringUtils.isEmpty(ruleMap.get("StartDate"))) {
+				sb.append("now(),");
+			} else {
+				sb.append(getColumn(ruleMap.get("StartDate")));
+			}
+			// end_time
+			if (null == ruleMap || StringUtils.isEmpty(ruleMap.get("ExpiryDate"))) {
+				sb.append("STR_TO_DATE('2199-12-31','%Y-%m-%d'),");
+			} else {
+				sb.append("STR_TO_DATE('" + ruleMap.get("ExpiryDate") + "','%Y-%m-%d'),");
+			}
+			// select_date
+			if (null == ruleMap || StringUtils.isEmpty(ruleMap.get("OnlyTheseWeekDays"))) {
+				sb.append(getColumn("1,2,3,4,5,6,7"));
+			} else {
+				sb.append(getColumn(ruleMap.get("OnlyTheseWeekDays")));
+			}
+			// bins
+			if (null == ruleMap || StringUtils.isEmpty(ruleMap.get("InCardBin"))) {
+				sb.append(getColumn(""));
+			} else {
+				if ("yes".equals(ruleMap.get("InCardBin"))) {
+					ResultSet cardBins = query("SELECT * FROM sd_card_type WHERE BANK_ID = 3 AND VALIAD_FLAG = 0",
+							true);
+					StringBuilder binsSb = new StringBuilder();
+					while (cardBins.next()) {
+						binsSb.append(cardBins.getString("CARD_BIN")).append(",");
+					}
+					binsSb.deleteCharAt(binsSb.length() - 1);
+					sb.append(getColumn(binsSb.toString()));
+				} else {
+					sb.append(getColumn(""));
+				}
+			}
+
+			sb.append(getColumn(""));// max_type
+			// max_number
+			if (null == ruleMap) {
+				sb.append(getColumn(""));
+			} else {
+				StringBuilder maxNumber = new StringBuilder();
+				if (!StringUtils.isEmpty(ruleMap.get("AllCardOneDayMax"))) {
+					maxNumber.append("DayMax:" + ruleMap.get("AllCardOneDayMax") + ";");
+				}
+				if (!StringUtils.isEmpty(ruleMap.get("WeekMax"))) {
+					maxNumber.append("WeekMax:" + ruleMap.get("WeekMax") + ";");
+				}
+				if (!StringUtils.isEmpty(ruleMap.get("Total"))) {
+					maxNumber.append("TotalMax:" + ruleMap.get("Total") + ";");
+				}
+				sb.append(getColumn(maxNumber.toString()));
+			}
+			sb.append(getColumn(0));// amount
+			sb.append(getColumn(StringUtils.isEmpty(rs.getString("POINTS")) ? 0 : rs.getString("POINTS")));
+			sb.append("now(),");
+
+			// 兑换类型转换
+			String exchangeType = "3";
+			sb.append(getColumn(exchangeType));// exchange_type
+			sb.append(getColumn("01"));// status
+			sb.append(getColumn("0"));// contract_id
+			sb.append(getColumn("2"));// channel
+			sb.append(getColumn("1"));// exchange_channel
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append(")");
 			System.out.println(sb.toString());
@@ -553,12 +708,8 @@ public class DataInitUtil {
 		httpPostMap.put("integral", activity.getIntegral());
 		changeDescribe.append("积分：" + activity.getIntegral() + ";");
 
-		// 活动最大类型修改
-		httpPostMap.put("maxType", activity.getMaxType().toString());
-		changeDescribe.append("最大类型：" + activity.getMaxType() + ";");
-
 		// 活动使用次数
-		httpPostMap.put("maxNumber", activity.getMaxNumber().toString());
+		httpPostMap.put("rule", activity.getMaxNumber().toString());
 		changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
 
 		// 活动使用次数
