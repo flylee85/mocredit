@@ -87,9 +87,7 @@ public class VO {
     public static class CodeRevoke {
         public CodeRevoke(String orderId){
             device = DeviceModel.getInstance().getDevice().en;
-            posno = "";
             requestSerialNumber = orderId;
-            batchno = orderId;
         }
         public String requestSerialNumber;
         public String device;

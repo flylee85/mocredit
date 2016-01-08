@@ -19,7 +19,7 @@ public class PayFragment extends BaseFragment implements View.OnClickListener,Pa
 
     private PayPresenter presenter;
     private ListView listView;
-    private TextView backName,cardNo;
+    private TextView backName,cardNo,emptyView;
     private Button confirm,back;
     private SigninPresenter.ISigninView view;
 
@@ -40,6 +40,8 @@ public class PayFragment extends BaseFragment implements View.OnClickListener,Pa
         (confirm = (Button) v.findViewById(R.id.pay_confirm)).setOnClickListener(this);
         backName = (TextView) v.findViewById(R.id.pay_bankname);
         cardNo = (TextView) v.findViewById(R.id.pay_cardid);
+        emptyView = (TextView) v.findViewById(R.id.empty_view);
+        listView.setEmptyView(emptyView);
     }
 
     @Override
@@ -70,6 +72,11 @@ public class PayFragment extends BaseFragment implements View.OnClickListener,Pa
     @Override
     public Activity getMain() {
         return getActivity();
+    }
+
+    @Override
+    public void noActivities() {
+        confirm.setEnabled(false);
     }
 
     @Override

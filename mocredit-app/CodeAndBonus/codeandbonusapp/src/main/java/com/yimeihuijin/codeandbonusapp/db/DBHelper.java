@@ -210,8 +210,6 @@ public class DBHelper extends SQLiteOpenHelper {
 		ret.device = DeviceModel.getInstance().getDevice().en;
 		if (cursor.moveToFirst()) {
 			ret.posno = cursor.getString(cursor.getColumnIndex(NAME_POSNO));
-			ret.batchno = cursor.getString(cursor.getColumnIndex(NAME_BATCHNO));
-			ret.searchno = cursor.getString(cursor.getColumnIndex(NAME_SERACHNO));
 		}
 		cursor.close();
 		return ret;
