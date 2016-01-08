@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	活动-Mybatis Mapper文件
+	作者：william
+	日期：2015/12/09
+-->
+<mapper namespace="com.mocredit.payment.persitence.PaymentRecordMapper">
+
+	<insert id="savePaymentRecord" parameterType="com.mocredit.payment.model.PaymentRecord" useGeneratedKeys="true" keyProperty="id">
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+        	SELECT LAST_INSERT_ID()
+     	</selectKey>
+		INSERT INTO 
+			payment_record(card_bank,mach_order_id,refer_id,transaction_time,amount,signature_string,card_validate_data,authorization_no,status,card_id,
+				pinpad_id,merchant_id,goods_detail,goods_name,goods_type,owner_name,income_bank_id,trans_seq,merchant_number,create_on)
+		VALUES
+			(#{cardBank},#{machOrderId},#{referId},#{transactionTime},#{amount},#{signatureString},#{cardValidateData},#{authorizationNo},
+			#{status},#{cardId},#{pinpadId},#{merchantID},#{goodsDetail},#{goodsName},#{goodsType},#{ownerName},#{incomeBankId},
+			#{transSeq},#{merchantNumber},NOW())
+	</insert>
+
+</mapper>

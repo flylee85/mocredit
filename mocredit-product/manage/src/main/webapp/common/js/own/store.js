@@ -119,6 +119,7 @@ $("#addStore").on('hidden.bs.modal', function (e) {
 	 .val('')
 	 .removeAttr('checked')
 	 .removeAttr('selected');
+	$("#addStore form .phone input:not(:first)").remove();
 //	removeMarker();
 });
 $("#toAdd").click(function(){
@@ -134,6 +135,10 @@ $("#toAdd").click(function(){
 	$.get("area/getChildren/0",null,function(result){
 		setArea($("#addStore form .area select:first"),0,result.data);
 	},"json");
+})
+$("#addPhone").click(function(){
+	var $div=$(this).parent().siblings("div");
+	$div.append('<input type="text" class="form-control input-small parsley-validated" placeholder="联系电话" />');
 })
 $("#addStore form .area select").change(function(){
 	var $select=$("#addStore form .area select");
@@ -157,11 +162,21 @@ function openUpdate(id, type){
 			form.find("input[name=name]").attr("data-id",result.data.store.id).val(result.data.store.name);
 			form.find("input[name=code]").val(result.data.store.code);
 			form.find("input[name=linkman]").val(result.data.store.linkman);
-			form.find("input[name=phone]").val(result.data.store.phone);
+			if(result.data.store.phone){
+				var phoneJson=JSON.parse(result.data.store.phone);
+				if(phoneJson.length>0){
+					var $div=$(".phone div:first",form);
+					$("input:first",$div).val(phoneJson[0]);
+					for(var i=1;i<phoneJson.length;i++){
+						$div.append('<input type="text" class="form-control input-small parsley-validated" placeholder="联系电话" value="'+phoneJson[i]+'" />');
+					}
+				}
+			}
 			form.find("input[name=address]").val(result.data.store.address);
 			form.find("input[name=longitude]").val(result.data.store.longitude);
 			form.find("input[name=latitude]").val(result.data.store.latitude);
 			form.find("select[name=businessStatus]").val(result.data.store.businessStatus);
+			form.find("input[name=mailAddress]").val(result.data.store.mailAddress);
 			//处理商户
 			var _select=$("#addStore form .merchant select");
 			_select.empty().append('<option value="" selected>请选择所属商家</option>')
@@ -228,6 +243,14 @@ $("#addItem").click(function(){
 			formObject[this['name']] = this['value'];
 		}
 	});
+	var phoneArray=[];
+	$("#addStore form .phone input").each(function(){
+		if(this.value){
+			phoneArray.push(this.value);
+		}
+	})
+	formObject.phone= JSON.stringify(phoneArray);
+	
 	var id=$("#addStore form input[name=name]").attr("data-id");
 	if(id){
 		formObject.id=id;
