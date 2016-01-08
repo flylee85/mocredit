@@ -60,9 +60,9 @@ var oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 
 } );
 //datepicker
-$(".datepicker").each(function () {
-	$(this).datepicker({
-		format: "yyyy-mm-dd",
+$(".datetimepicker").each(function () {
+	$(this).datetimepicker({
+		format: "yyyy-mm-dd hh:ii:ss",
 		autoclose: true,
 		language: 'zh-CN',
 		todayHighlight: true,

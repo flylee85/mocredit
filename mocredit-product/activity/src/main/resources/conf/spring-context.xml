@@ -50,35 +50,22 @@
     <!-- transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-          
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-	<!-- define the SqlSessionFactory -->
+    <!-- define the SqlSessionFactory -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="mapperLocations">
-        	<array>
-                <value>classpath*:com/mocredit/activity/*.xml</value>
-                <value>classpath*:com/mocredit/sys/*.xml</value>
-                <value>classpath*:com/mocredit/manage/*.xml</value>
-                <value>classpath*:com/mocredit/order/*.xml</value>
-            </array>
-        </property>
+        <property name="typeAliasesPackage" value="com.incito.interclass.entity"/>
         <property name="plugins">
             <ref bean="paginationInterceptor"/>
         </property>
     </bean>
-    
-    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-        <constructor-arg index="0" ref="sqlSessionFactory"/>
-        <constructor-arg index="1" value="SIMPLE"/>
-    </bean>
-    
     <!-- scan for mappers and let them be autowired -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-    	<property name="sqlSessionTemplateBeanName" value="sqlSessionTemplate"/>
-        <property name="basePackage" value="com.mocredit.activity.persitence,com.mocredit.sys.persitence,com.mocredit.manage.persitence,com.mocredit.order.persitence"/>
+    	<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+        <property name="basePackage"
+                  value="com.mocredit.activity.persitence,com.mocredit.sys.persitence,com.mocredit.manage.persitence,com.mocredit.order.persitence"/>
     </bean>
 
     <!--事物处理方式 使用@Transactional 标注在 方法上 -->
