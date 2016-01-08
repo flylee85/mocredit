@@ -205,13 +205,11 @@ public class DBHelper extends SQLiteOpenHelper {
 	public VO.CodeRevoke getCodeRevoke(String orderid){
 		Cursor cursor = getReadableDatabase().rawQuery(
 				"select * from " + TABLE_CODE_INFO+" where "+NAME_ID+"=?", new String[]{orderid});
-		VO.CodeRevoke ret = new VO.CodeRevoke();
+		VO.CodeRevoke ret = new VO.CodeRevoke(orderid);
 		ret.requestSerialNumber = orderid;
 		ret.device = DeviceModel.getInstance().getDevice().en;
 		if (cursor.moveToFirst()) {
 			ret.posno = cursor.getString(cursor.getColumnIndex(NAME_POSNO));
-			ret.batchno = cursor.getString(cursor.getColumnIndex(NAME_BATCHNO));
-			ret.searchno = cursor.getString(cursor.getColumnIndex(NAME_SERACHNO));
 		}
 		cursor.close();
 		return ret;

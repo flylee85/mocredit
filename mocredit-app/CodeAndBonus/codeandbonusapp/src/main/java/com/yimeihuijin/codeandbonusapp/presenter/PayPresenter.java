@@ -31,7 +31,11 @@ public class PayPresenter extends BasePresenter implements ConsumeModel.IConsume
     @Override
     public void onCreate() {
         BusProvider.get().registerSticky(this);
-        view.getList().setAdapter( consumeModel.getAdapter());
+        ConsumeModel.ActivitiesAdapter adapter = consumeModel.getAdapter();
+        if(adapter.getCount() < 1){
+            view.noActivities();
+        }
+        view.getList().setAdapter(adapter);
         view.getList().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -40,7 +44,7 @@ public class PayPresenter extends BasePresenter implements ConsumeModel.IConsume
             }
         });
         DeviceModel.Card card = BusProvider.get().getStickyEvent(DeviceModel.Card.class);
-        if(card != null) {
+        if (card != null) {
             onEvent(card);
         }
     }
@@ -90,6 +94,7 @@ public class PayPresenter extends BasePresenter implements ConsumeModel.IConsume
         public void setBankName(String name);
         public void goBack();
         public Activity getMain();
+        public void noActivities();
         public void setCardNo(String no);
     }
 }
