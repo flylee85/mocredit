@@ -93,6 +93,10 @@
 		if(!form2.validate()){
 			return false;
 		}
+		if($(".choosedPop .selectStore span").length==0){
+			sendMsg(false, "请选择门店");
+			return false;
+		}
 		//获取表单基本元素对象
 		var formArray = $("#addActivityFamaForm").serializeArray();
 		var formObject = new Object();
