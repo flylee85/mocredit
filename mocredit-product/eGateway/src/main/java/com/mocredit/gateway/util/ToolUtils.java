@@ -1,8 +1,7 @@
 package com.mocredit.gateway.util;
 
-import com.mocredit.gateway.constant.CardRule;
+import com.mocredit.base.util.RandomUtil;
 
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -138,8 +138,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
                 resp.setSuccess(false);
                 resp.setErrorCode(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getValue());
                 resp.setErrorMsg(ErrorCodeType.ACTIVITY_NOT_EXIST_STORE.getText());
-                return renderJSONString(false, resp.getErrorMsg(),
-                        resp.getErrorCode(), resp.getData());
+                return getPaymentRevokeOldForXml(false, null, null, resp.getErrorCode(), resp.getErrorMsg());
             }
             if (doPostJsonAndSaveOrderForOld(param, order, resp)) {
                 LOGGER.info("### paymentOld success param={} ###", param);
@@ -816,6 +815,12 @@ public class IntegralInterfaceController extends IntegralBaseController {
                         sb.append("</Table>");
                     }
                 }
+            }
+            String resp = sb.toString();
+            if (!resp.contains("Table")) {
+                sb.append("<Table>");
+                sb.append("<isSuccess>true</isSuccess>");
+                sb.append("</Table>");
             }
             sb.append("</NewDataSet>");
             saveReponseLog(getRequestId(), sb.toString());

@@ -339,7 +339,7 @@ public class OrderController extends BaseController {
                             order.getStoreName());
                     dataMap.put(BaseExportTitle.ACTIVITY.getText(),
                             order.getActivityName());
-                    if (order.getVerifyTime().length() == 13) {
+                    if (order.getOrderTime() != null && order.getVerifyTime().length() == 13) {
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         dataMap.put(BaseExportTitle.ORDER_TIME.getText(),
                                 format.format(Long.valueOf(order.getVerifyTime())));

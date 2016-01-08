@@ -80,13 +80,15 @@ $(function () {
                             "data": null,
                             "sortable": false,
                             "render": function (data, type, full) {
+                                var op = '<a href="#"></a>';
                                 if (full['status'] == "01") {
-                                    return '<a href="javascript:doUpdate(this,\'' + full['id'] + '\',\'' + full['code'] + '\')"data-id="' + full['id'] + '">废码</a>' +
-                                        '<a href="javascript:delayCode(this,\'' + full['id'] + '\',\'' + full['endTime'] + '\')"data-id="' + full['id'] + '">延期</a>' +
-                                        '<a href="javascript:reissue(this,\'' + full['codeId'] + '\',\'' + full['code'] + '\')"data-id="' + full['codeId'] + '">补发</a>';
-                                } else {
-                                    return '<a href="#"></a>';
+                                    op += '<a href="javascript:doUpdate(this,\'' + full['id'] + '\',\'' + full['code'] + '\')"data-id="' + full['id'] + '">废码</a>' +
+                                        '<a href="javascript:delayCode(this,\'' + full['id'] + '\',\'' + full['endTime'] + '\')"data-id="' + full['id'] + '">延期</a>';
                                 }
+                                if (full['status'] != "03" && full['mobile']) {
+                                    op += '<a href="javascript:reissue(this,\'' + full['codeId'] + '\',\'' + full['code'] + '\')"data-id="' + full['codeId'] + '">补发</a>';
+                                }
+                                return op;
                             }
                         }
                     ]
