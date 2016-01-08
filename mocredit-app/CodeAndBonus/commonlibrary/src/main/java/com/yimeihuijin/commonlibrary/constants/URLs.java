@@ -7,7 +7,7 @@ public class URLs {
 	/**
 	 * IP address
 	 */
-	 private static String IP = "117.121.20.146";
+	 private static String IP = "192.168.3.4";
 //	private static String IP = "192.168.3.5";
 
 //	private static String IP = "192.168.100.156";
@@ -15,7 +15,7 @@ public class URLs {
 	public static final String PREFIX_HTTP = "http://";
 
 //	private static String PORT = ":80";
-	 private static String PORT = ":9125/wangpos";
+	 private static String PORT = ":9125";
 //	private static String PORT = ":12345";
 
 	private static String HOST;

@@ -1,6 +1,7 @@
 package com.yimeihuijin.codeandbonusapp.model.vo;
 
 
+import com.yimeihuijin.codeandbonusapp.model.DeviceModel;
 import com.yimeihuijin.codeandbonusapp.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -84,6 +85,12 @@ public class VO {
      * 验码撤销请求VO
      */
     public static class CodeRevoke {
+        public CodeRevoke(String orderId){
+            device = DeviceModel.getInstance().getDevice().en;
+            posno = "";
+            requestSerialNumber = orderId;
+            batchno = orderId;
+        }
         public String requestSerialNumber;
         public String device;
         public String posno;

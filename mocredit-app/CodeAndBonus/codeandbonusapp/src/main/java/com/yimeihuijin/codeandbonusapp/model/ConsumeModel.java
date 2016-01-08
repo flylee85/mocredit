@@ -87,7 +87,7 @@ public class ConsumeModel extends Model{
                 VO.CodeConsumeResponseObject cro = GsonUtil.get(response, VO.CodeConsumeResponseObject.class);
                 if(cro != null && "0".equals(cro.rtnFlag)){
                     presenter.conusmeComplete(getResult(cro.erweima==null?cco.orderId:cro.erweima,cro.printInfo, MSG_CODE_CONSUME_SUCCESS));
-                    ThreadMananger.get().execute(new ConsumeRunnables.StoreCodeResponseRunnable(cro));//验码成功后，存储验码订单，用于撤销
+//                    ThreadMananger.get().execute(new ConsumeRunnables.StoreCodeResponseRunnable(cro));//验码成功后，存储验码订单，用于撤销
                     ThreadMananger.get().execute(new ConsumeRunnables.StoreTradeRecordRunnable(cro.amount, mode, state));//存储验码订单的金额，用于打印结算小票
                 }else if(cro == null){//解析服务器信息失败
                     presenter.conusmeComplete(getResult(MSG_CODE_CONSUME_FAILURE + "服务器返回数据异常"));
@@ -170,7 +170,7 @@ public class ConsumeModel extends Model{
      *  @param orderid 订单号
      * */
     private void codeRevoke(String orderid){
-        final VO.CodeRevoke cr = App.getInstance().getDBHelper().getCodeRevoke(orderid);
+        final VO.CodeRevoke cr = new VO.CodeRevoke(orderid);
 
         new PostUtil(new PostUtil.PostResponseListener() {
             @Override
