@@ -227,6 +227,7 @@ public class ControllerServiceImpl implements ControllerService {
             ret.setMmsid(eitem.getMmsId());
             ret.setBatchno(eitem.getBacthNo());
             ret.setErweima(req.getCode());
+            ret.setPosno(batchno);
             ret.setPrintInfo(eitem.getXiaoTiao().replace("\\n", "\n"));
             jsonData.setjData(objectToJson(ret));
             jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
@@ -318,7 +319,7 @@ public class ControllerServiceImpl implements ControllerService {
         }else{
             CodeRevokeBo crb = jsonToObject(jsonData.getjData(),CodeRevokeBo.class);
             if(crb != null){
-            	CheckCodeRecord ccr = checkCodeRecordRepository.getCheckCodeRecordByBatchno(crb.batchno);
+            	CheckCodeRecord ccr = checkCodeRecordRepository.getCheckCodeRecordByBatchno(crb.requestSerialNumber);
             	EitemRevertBo eitem = codeRevokeOld(ccr.getImei(),ccr.getBatchno(),ccr.getSearchno(),crb.posno);
                 String isSuccess = eitem.getIsSuccess();
 

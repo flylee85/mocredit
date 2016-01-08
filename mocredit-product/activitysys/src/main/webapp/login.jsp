@@ -63,7 +63,7 @@
         <label id="p"> </label>
         <input type="text" class="form-control" id="checkCode" name="checkCode" placeholder="验证码">
         <img src="checkCode" id="changeCheckCode" onclick="reCaptcha()" height="35" size="10"/>
-        <a href="#" onclick="reCaptcha()">看不清楚,点我</a>
+        <a href="javascript:;" onclick="reCaptcha()">看不清楚,点我</a>
         <label class="error">${error}</label>
         <button class="btn btn-lg btn-primary btn-block">登录</button>
     </form>
