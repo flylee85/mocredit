@@ -40,10 +40,10 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 		Date startDate = null;
 		Date endDate = null;
 		if (!StringUtils.isEmpty(startTime)) {
-			startDate = DateUtil.strToDate(startTime);
+			startDate = DateUtil.strToDate(startTime,"yyyy-MM-dd");
 		}
 		if (!StringUtils.isEmpty(endTime)) {
-			endDate = DateUtil.strToDate(endTime);
+			endDate = DateUtil.strToDate(endTime,"yyyy-MM-dd HH:mm:ss");
 		}
 		List<Enterprise> list = enterpriseMapper.selectAllForPage(key, startDate, endDate);
 		return new PageInfo<Enterprise>(list);

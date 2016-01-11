@@ -22,31 +22,30 @@ var oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 	//"pageLength": 5,
 	//"serverSide":true,
 	"columns": [
-		{ "data": "name","className":"sName" },
 		{ "data": "code" },
-		{ "data": "merchantName" },
-		{ "data": "createTime" },
+		{ "data": "name","className":"sName" },
+		{ "data": "address" },
 		{ "data": null },
+		{ "data": "businessStatusName" },
+		{ "data": "terminalCount" },
 		{ "data": null }
 	],
 	"columnDefs": [
-	    {
-	    	"render":function(oObj, type, full, meta ){
-	    		var str="";
-	    		if( full["provinceName"]){
-	    			str+=full["provinceName"]+"&nbsp;&nbsp;&nbsp;&nbsp;";
-	    		}
-	    		if( full["cityName"]){
-	    			str+=full["cityName"]+"&nbsp;&nbsp;&nbsp;&nbsp;";
-	    		}
-	    		if( full["areaName"]){
-	    			str+=full["areaName"]+"&nbsp;&nbsp;&nbsp;&nbsp;";
-	    		}
-	    		return str;
-	    	},
-	    	"sortable": false,
-			"targets": 4
-	    },
+		{
+			"render":function(oObj, type, full, meta ){
+				var phonesJson=(new Function("return " + full["phone"]))(); 
+				var phoneStr="";
+				for(var i in phonesJson){
+					phoneStr+=phonesJson[i]+",";
+				}
+				if(phoneStr.length>0){
+					phoneStr=phoneStr.substr(0,phoneStr.length-1);
+				}
+				return phoneStr;
+			},
+			"sortable": false,
+			"targets": 3
+		},
 		{
 			"render": function(oObj, type, full, meta ) {
 				return '<a href="javascript:openUpdate(\''+full[ 'id' ]+'\',1)">编辑</a>'
@@ -54,7 +53,7 @@ var oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 				+ '<a href="terminal.html" class="changePage toTerminal" current-id="'+full[ 'id' ]+'">管理机具</a>'
 				},
 			"sortable": false,
-			"targets": 5
+			"targets": 6
 		}
 	]
 

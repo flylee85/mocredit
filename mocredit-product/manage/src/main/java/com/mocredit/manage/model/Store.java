@@ -120,7 +120,25 @@ public class Store {
 	private Date createTime;
 	private String linkman;
 	private int businessStatus;// 业务状态
+	private String businessStatusName;
 	private String mailAddress;// 邮寄地址
+	private int terminalCount;// 机具数
+
+	public String getBusinessStatusName() {
+		return businessStatusName;
+	}
+
+	public void setBusinessStatusName(String businessStatusName) {
+		this.businessStatusName = businessStatusName;
+	}
+
+	public int getTerminalCount() {
+		return terminalCount;
+	}
+
+	public void setTerminalCount(int terminalCount) {
+		this.terminalCount = terminalCount;
+	}
 
 	public String getLinkman() {
 		return linkman;

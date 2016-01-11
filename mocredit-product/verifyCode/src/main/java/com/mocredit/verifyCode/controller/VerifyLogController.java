@@ -29,6 +29,20 @@ public class VerifyLogController {
 	 * 查询验码日志流水
 	 * 
 	 * @return
+	 * {
+	 * orderId,
+	 * enterpriseName,
+	 * shopName,
+	 * storeName,
+	 * activityName,
+	 * status, 验码/撤销
+	 * code,
+	 * mobile,
+	 * orderTime,
+	 * enCode,
+	 * verifyStatus,
+	 * msg
+	 * }
 	 */
 	@RequestMapping(value = "getPage", produces = { "application/json;charset=UTF-8" })
 	public String getPage(@RequestBody String body) {

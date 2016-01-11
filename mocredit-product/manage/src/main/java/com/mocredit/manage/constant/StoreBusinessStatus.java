@@ -39,4 +39,12 @@ public enum StoreBusinessStatus {
 		this.value = value;
 	}
 
+	public static String getName(int status) {
+		for (StoreBusinessStatus st : values()) {
+			if (status == st.getValue()) {
+				return st.getName();
+			}
+		}
+		return "";
+	}
 }

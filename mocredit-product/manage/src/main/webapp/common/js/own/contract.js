@@ -59,13 +59,20 @@ $("#contractAdd").click(function(){
 		}
 	},'json');
 })
+//获取门店信息
+$.get("enterprise/view/"+$("#currentId").val(),null,function(result){
+	var form=$("#addContract form"); 
+	if(result.success){
+		form.find("input[name=enterpriseName]").val(result.data.name);
+	}
+},'json')
 //验证
 var form = $("#addContract").find("form").parsley();
 $("#addContract").on('hidden.bs.modal', function (e) {
 	form.reset();
 	$("#addContract form :input[name=name]").attr("data-id","");
 	$("#addContract form :input")
-	 .not(':button, :submit, :reset')
+	 .not(':button, :submit, :reset,input[name=enterpriseName]')
 	 .val('')
 	 .removeAttr('checked')
 	 .removeAttr('selected');
@@ -102,7 +109,6 @@ function openUpdate(id){
 			var form=$("#addContract form");
 			form.find("input[name=name]").attr("data-id",result.data.contract.id).val(result.data.contract.name);
 			form.find("input[name=code]").val(result.data.contract.code);
-			form.find("input[name=enterpriseName]").val(result.data.contract.enterpriseName);
 			form.find("input[name=startTime]").val(result.data.contract.startTime);
 			form.find("input[name=endTime]").val(result.data.contract.endTime);
 			form.find("input[name=signature]").val(result.data.contract.signature);

@@ -21,6 +21,7 @@ import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.base.util.PropertiesUtil;
 import com.mocredit.manage.constant.OperType;
+import com.mocredit.manage.constant.StoreBusinessStatus;
 import com.mocredit.manage.model.Enterprise;
 import com.mocredit.manage.model.Store;
 import com.mocredit.manage.model.Terminal;
@@ -54,6 +55,11 @@ public class StoreServiceImpl implements StoreService {
 		}
 		paramMap.put("key", key);
 		List<Store> list = storeMapper.selectAllForPage(paramMap);
+		if (null != list) {
+			for (Store store : list) {
+				store.setBusinessStatusName(StoreBusinessStatus.getName(store.getStatus()));
+			}
+		}
 		return new PageInfo<Store>(list);
 	}
 
