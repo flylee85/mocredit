@@ -116,7 +116,7 @@ public class Store {
 	private String provinceName;
 	private String cityName;
 	private String areaName;
-	@JSONField(format = "yyyy-MM-dd")
+	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 	private String linkman;
 	private int businessStatus;// 业务状态
