@@ -49,9 +49,9 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 		param.put("pageCount", param);
 		// 获得数据
 		List<Map<String, Object>> page = verifyCodeMapper.getPage(param);
-		for(Map<String, Object> log:page){
-			Object status = log.get("msg");
-			log.put("msg", VerifyLogCode.getName(null==status?0:Integer.parseInt(status.toString())));
+		for (Map<String, Object> log : page) {
+			Object status = log.get("verifyStatus");
+			log.put("msg", VerifyLogCode.getName(null == status ? 0 : Integer.parseInt(status.toString())));
 		}
 
 		Map<String, Object> returnMap = new HashMap<String, Object>();

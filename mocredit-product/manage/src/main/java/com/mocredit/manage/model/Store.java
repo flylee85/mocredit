@@ -116,11 +116,29 @@ public class Store {
 	private String provinceName;
 	private String cityName;
 	private String areaName;
-	@JSONField(format = "yyyy-MM-dd")
+	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 	private String linkman;
 	private int businessStatus;// 业务状态
+	private String businessStatusName;
 	private String mailAddress;// 邮寄地址
+	private int terminalCount;// 机具数
+
+	public String getBusinessStatusName() {
+		return businessStatusName;
+	}
+
+	public void setBusinessStatusName(String businessStatusName) {
+		this.businessStatusName = businessStatusName;
+	}
+
+	public int getTerminalCount() {
+		return terminalCount;
+	}
+
+	public void setTerminalCount(int terminalCount) {
+		this.terminalCount = terminalCount;
+	}
 
 	public String getLinkman() {
 		return linkman;

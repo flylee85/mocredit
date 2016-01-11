@@ -1,8 +1,11 @@
-oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
+var isLinked=$("#currentId").val();
+var oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 	"ajax": {
 		"url": "terminal/list",
 		data:function(d){
-			d.storeId=$("#currentId").val();
+			if(isLinked){
+				d.storeId=$("#currentId").val();
+			}
 			return d;
 		}
 	},
@@ -27,8 +30,17 @@ oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 	"columnDefs": [
 		{
 			"render": function(oObj, type, full, meta ) {
-				return '<a href="javascript:openUpdate(\''+full[ 'id' ]+'\',1)">编辑</a>'
-				+ '<a href="#" onclick="javascript:doDelete(this)" data-id="'+full['id']+'">删除</a>'
+				var ret ="";
+				if(isLinked){
+					ret+='<a href="javascript:openUpdate(\''+full[ 'id' ]+'\',1)">编辑</a>';
+				}else{
+					ret+='<a href="terminal.html" class="changePage" current-id="'+full['storeId']+'">跳转到门店</a>';
+				}
+				ret+= '<a href="javascript:;" onclick="javascript:doDelete(this)" data-id="'+full['id']+'">删除</a>';
+				if(full['gateway']=='01'){
+					ret+='<a href="javascript:;" onclick="javascript:resetPwd(this)" data-id="'+full['id']+'">重置秘钥</a>';
+				}
+				return ret
 				},
 			"sortable": false,
 			"targets": 5
@@ -36,50 +48,54 @@ oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 	]
 
 } );
-//加载企业信息
-$("#addTerminal").on("show.bs.modal", function () {
-	if (!$("#addTerminal").hasClass("hasDic")) {
-		loadDictionary();
-	}
-});
-/**
- * 加载字典数据
- */
-function loadDictionary() {
-	$.get("terminal/getComb", function (data) {
-		if (data.success) {
-			$.each(data.data, function (i, n) {
-				var thisSelect = $("select[code='" + i + "']");
-				$.each(n, function (j, o) {
-					var optionNode = $("<option>").attr("value", o.id).text(o.name);
-					thisSelect.append(optionNode);
-				});
-				if($.type(thisSelect.attr('data-val')) != "undefined"){
-					thisSelect.val(thisSelect.attr('data-val'));
-				}
-			});
 
-			$("#addTerminal").addClass("hasDic");
+if(isLinked){
+	//加载企业信息
+	$("#addTerminal").on("show.bs.modal", function () {
+		if (!$("#addTerminal").hasClass("hasDic")) {
+			loadDictionary();
 		}
-	}, "json");
-}
-//获取门店信息
-$.get("terminal/getStoreInfo/"+$("#currentId").val(),null,function(result){
-	var form=$("#addTerminal form"); 
-	if(result.success){
-		form.find("input:first").val(result.data.merchantName);
-		form.find("input:eq(1)").val(result.data.storeName);
-		form.find("input:eq(2)").val(result.data.storeCode);
+	});
+	/**
+	 * 加载字典数据
+	 */
+	function loadDictionary() {
+		$.get("terminal/getComb", function (data) {
+			if (data.success) {
+				$.each(data.data, function (i, n) {
+					var thisSelect = $("select[code='" + i + "']");
+					$.each(n, function (j, o) {
+						var optionNode = $("<option>").attr("value", o.id).text(o.name);
+						thisSelect.append(optionNode);
+					});
+					if($.type(thisSelect.attr('data-val')) != "undefined"){
+						thisSelect.val(thisSelect.attr('data-val'));
+					}
+				});
+	
+				$("#addTerminal").addClass("hasDic");
+			}
+		}, "json");
 	}
-},'json')
-//验证
-var form = $("#addTerminal").find("form").parsley();
-$("#addTerminal").on('hidden.bs.modal', function (e) {
-	form.reset();
-	$("#addTerminal form :input[name=snCode]").attr("data-id","").val("");
-	$("#addTerminal form :input[name=info]").val("");
-});
-
+	//获取门店信息
+	$.get("terminal/getStoreInfo/"+$("#currentId").val(),null,function(result){
+		var form=$("#addTerminal form"); 
+		if(result.success){
+			form.find("input:first").val(result.data.merchantName);
+			form.find("input:eq(1)").val(result.data.storeName);
+			form.find("input:eq(2)").val(result.data.storeCode);
+		}
+	},'json')
+	//验证
+	var form = $("#addTerminal").find("form").parsley();
+	$("#addTerminal").on('hidden.bs.modal', function (e) {
+		form.reset();
+		$("#addTerminal form :input[name=snCode]").attr("data-id","").val("");
+		$("#addTerminal form :input[name=info]").val("");
+	});
+}else{
+	$("#toAdd").remove();
+}
 //查看/编辑
 function openUpdate(id, type){
 	var modalNode = $("#addTerminal");
@@ -97,13 +113,32 @@ function openUpdate(id, type){
 		}
 	},"json");
 }
+function resetPwd(obj){
+	var contentTitle = $(obj).parent().prevAll(".snCode").text();
+	var id = $(obj).attr("data-id");
+	$.confirmDailog({
+		confirm : function(){
+			$.get("terminal/resetPwd/"+id, null, function (msg) {
+				if(msg.success){
+					sendMsg(true, "重置成功");
+					oTable.ajax.reload();
+				}else{
+					sendMsg(false, "重置失败:"+msg.errorMsg);
+				}
+			},'json');
+		},
+		title:"重置确认",
+		target:contentTitle,
+		content:"你确定要重置<b>{target}</b>秘钥吗？"
+	});
+}
 /**
  * 删除数据
  * @param obj
  */
 function doDelete(obj){
 	var id = $(obj).attr("data-id");
-	var contentTitle = $(obj).parent().prevAll(".sName").text();
+	var contentTitle = $(obj).parent().prevAll(".snCode").text();
 	$.confirmDailog({
 		confirm : function(){
 			$.get("terminal/del/"+id, null, function (msg) {

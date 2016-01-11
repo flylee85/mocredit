@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,9 @@ public class EnterpriseController {
 			}
 			if (null == length) {
 				length = 10;
+			}
+			if (!StringUtils.isEmpty(endTime)) {
+				endTime += " 23:59:59";
 			}
 			PageInfo<Enterprise> page = enterpriseService.getPage(key, startTime, endTime, start / length + 1, length);
 			Map<String, Object> newMap = new HashMap<String, Object>();

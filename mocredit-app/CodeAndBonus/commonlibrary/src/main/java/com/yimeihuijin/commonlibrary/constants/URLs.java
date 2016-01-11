@@ -8,7 +8,7 @@ public class URLs {
 	 * IP address
 	 */
 	 private static String IP = "117.121.20.146";
-//	private static String IP = "192.168.3.5";
+//	private static String IP = "192.168.3.4";
 
 //	private static String IP = "192.168.100.156";
 

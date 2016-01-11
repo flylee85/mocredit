@@ -38,7 +38,7 @@ public class Terminal {
 	 *
 	 * @mbggenerated Mon Nov 02 15:47:55 CST 2015
 	 */
-	@JSONField(format = "yyyy-MM-dd")
+	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 
 	/**

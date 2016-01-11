@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mocredit.base.datastructure.ResponseData;
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
 import com.mocredit.base.pagehelper.PageInfo;
+import com.mocredit.base.util.HttpUtil;
 import com.mocredit.manage.model.Terminal;
 import com.mocredit.manage.service.OperLogService;
 import com.mocredit.manage.service.SupplierService;
@@ -42,6 +44,8 @@ public class TerminalController {
 	private SupplierService supplierService;
 	@Autowired
 	private OperLogService logService;
+	@Value("${newgateway.resetPwd}")
+	private String resetUrl;// 重置秘钥URL
 
 	@RequestMapping("/list")
 	public String list(@RequestParam(value = "search[value]", required = false) String key, Integer start,
@@ -170,6 +174,30 @@ public class TerminalController {
 		try {
 			String storeId = terminalService.getStoreIdByCode(code);
 			response.setData(storeId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setSuccess(false);
+			response.setErrorMsg(e.getMessage());
+		}
+		return JSON.toJSONString(response);
+	}
+
+	/**
+	 * 重置秘钥
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/resetPwd/{id}")
+	public String resetPwd(@PathVariable String id) {
+		ResponseData response = new AjaxResponseData();
+		try {
+			Terminal terminal = terminalService.getTerminalById(id);
+			Map<String, Object> param = new HashMap<>();
+			param.put("enCode", terminal.getSnCode());
+			String rest = HttpUtil.doRestfulByHttpConnection(resetUrl, JSON.toJSONString(param));
+			response.setSuccess("0".equals(rest));
+			response.setErrorMsg(rest);
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.setSuccess(false);

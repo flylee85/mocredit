@@ -67,7 +67,7 @@
    		and t.store_id=#{storeId}
    	</if>
    	<if test="key !=null">
-   		and(
+   		and (
    			t.sn_code like #{key}
    		)
    	</if>

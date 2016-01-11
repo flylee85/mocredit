@@ -52,7 +52,7 @@
         android:layout_weight="1"
         android:visibility="gone"
         android:gravity="center"
-        android:background="#ccffffff"
+        android:background="#ffffff"
         android:textSize="@dimen/p40"
         android:text="暂无任何可用活动"
         android:textColor="#88000000"/>

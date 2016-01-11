@@ -4,7 +4,6 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
 			 type: "post",
 			 data:function(data){
 				 var query = $("#queryEnterprise").serializeArray();
-				 console.log(query);
 				 for(var i in query){
 					 if(query[i].value){
 						 data[query[i].name]=query[i].value;
@@ -52,10 +51,10 @@ var oTable = $('table[data-ride="datatables"]').DataTable( {
 $("#searchBtn").click(function(){
 	oTable.ajax.reload();
 })
-$(".datetimepicker").each(function () {
+$(".datepicker").each(function () {
 	var $this=$(this);
-	$this.datetimepicker({
-		format: "yyyy-mm-dd hh:ii:ss",
+	$this.datepicker({
+		format: "yyyy-mm-dd",
 		autoclose: true,
 		language: 'zh-CN',
 		todayHighlight: true,

@@ -57,10 +57,7 @@
     -->
     select 
     <include refid="Base_Column_List" />
-    ,(select name from t_merchant where id=s.merchant_id) as merchantName
-    ,(select title from t_area where id=s.province) as provinceName
-    ,(select title from t_area where id=s.city) as cityName
-    ,(select title from t_area where id=s.area) as areaName
+    ,(select count(1) from t_terminal where store_id=s.id) as terminalCount
     from t_store s
     <where>
     status!=2
