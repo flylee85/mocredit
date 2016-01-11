@@ -212,6 +212,7 @@ public class SendCodeServiceImpl implements SendCodeService {
             optLogService.addOptLog("活动Id:" + actId + ",码Id:" + id, "", "发送短信并保存发码记录-----" + optInfo1.toString());
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -379,7 +380,10 @@ public class SendCodeServiceImpl implements SendCodeService {
         MMSBO duanxin = new MMSBO();
         Activity activity = activityService.getActivityById(actId);
         //送码
-        carryVerifyCode(activity, batchId, batchCodeList);
+        Batch batch = batchMapper.getBatchById(batchId);
+        if (!BatchStatus.ALREADY_SEND.getValue().equals(batch.getStatus())) {
+            carryVerifyCode(activity, batchId, batchCodeList);
+        }
         String noticeSmsMsg = activity.getNoticeSmsMsg();
         ;//短信模版内容
         //获取是否推送短信开关
@@ -452,8 +456,10 @@ public class SendCodeServiceImpl implements SendCodeService {
         MMSBO mmsbo = new MMSBO();
         Activity activity = activityService.getActivityById(actId);
         //送码
-        carryVerifyCode(activity, batchId, batchCodeList);
-
+        Batch batch = batchMapper.getBatchById(batchId);
+        if (!BatchStatus.ALREADY_SEND.getValue().equals(batch.getStatus())) {
+            carryVerifyCode(activity, batchId, batchCodeList);
+        }
         Mms mms = mmsframeService.getMmsByActivityId(Long.parseLong(actId));
         for (BatchCode batchCode : batchCodeList) {
 //			mmsbo.setBatchid(batchId);

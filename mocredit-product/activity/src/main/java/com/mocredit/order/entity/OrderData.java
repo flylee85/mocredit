@@ -21,7 +21,16 @@ public class OrderData {
     private String amount;//价格
     private String endTime;//过期时间
     private String verifyTime;//交易时间
+    private String verifyStatus;//验码状态
     private String msg;//验证结果
+
+    public String getVerifyStatus() {
+        return verifyStatus;
+    }
+
+    public void setVerifyStatus(String verifyStatus) {
+        this.verifyStatus = verifyStatus;
+    }
 
     public String getCodeId() {
         return codeId;
