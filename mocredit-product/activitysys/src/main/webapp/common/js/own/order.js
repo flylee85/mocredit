@@ -104,7 +104,7 @@ $(function () {
     });
     $("#export").click(function () {
         var formArray = $("#queryOrderPage").serialize();
-        window.location.href = "order/exportCodeOrder?type=02&" + formArray;
+        window.location.href = "order/exportCodeOrder?type=02&exportType=CSV&" + formArray;
     });
 
     if ($('#activityCurrentType').val() == "2") {

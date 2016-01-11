@@ -186,7 +186,7 @@ $(function () {
                                 if (full['status'] == "2") {
                                     return '<a href="#"></a>';
                                 }
-                                if (full['status'] == "0") {
+                                if (full['status'] == "0" && full['verifyStatus'] == "1") {
                                     return '<a href="javascript:doUpdate(this,\'' + full['orderId'] + '\',\'' + full['enCode'] + '\')"data-id="' + full['orderId'] + '">撤消</a>';
                                 }
                             }
@@ -240,7 +240,7 @@ $(function () {
         //});
         //formObject.statuses = statuses;
         //formObject.type = "02";
-        window.location.href = "order/export?type=01&" + formArray;
+        window.location.href = "order/export?type=01&exportType=CSV&" + formArray;
         //if (statuses != null) {
         //    window.location.href = "order/export?type=01&statusList=" + statuses + "&startTime=" +
         //        formObject["startTime"] + "&endTime=" + formObject["endTime"] + "&activityName=" +
@@ -256,7 +256,7 @@ $(function () {
     $("#export").click(function () {
         //var formArray = $("#queryOrderPage").serializeArray();
         var formArray = $("#queryOrderPage").serialize();
-        window.location.href = "order/export?type=02&" + formArray;
+        window.location.href = "order/export?type=02&exportType=CSV&" + formArray;
         //var formObject = new Object();
         //$.each(formArray, function (index) {
         //    if (formObject[this['name']]) {

@@ -213,6 +213,7 @@ public class OrderController extends BaseController {
             if (mapResult != null && mapResult.containsKey("id")) {
                 String actId = mapResult.get("id") + "";
                 String sendSmsType = mapResult.get("send_sms_type") + "";
+                System.out.println("###################actId：" + actId + " id：" + id);
                 if (sendSmsType.contains(ActivityStatus.MMS) && sendSmsType.contains(ActivityStatus.SMS)) {
                     sendCodeService.sendCodeById(actId, id, ActivityStatus.SMS);
                     sendCodeService.sendCodeById(actId, id, ActivityStatus.MMS);
@@ -224,6 +225,8 @@ public class OrderController extends BaseController {
                         sendCodeService.sendCodeById(actId, id, ActivityStatus.MMS);
                     }
                 }
+            } else {
+                System.out.println("##################error=" + mapResult);
             }
         } catch (Exception e) {
             //如果抛出异常，则将返回页面的对象设置为false
