@@ -45,8 +45,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 		param.put("pageSize", pageSize);
 
 		// 获得总记录数
-		long pageCount = verifyCodeMapper.getPageCount(param);
-		param.put("pageCount", param);
+		long pageCount = verifyCode.isDowload() ? 0 : verifyCodeMapper.getPageCount(param);
 		// 获得数据
 		List<Map<String, Object>> page = verifyCodeMapper.getPage(param);
 		for (Map<String, Object> log : page) {

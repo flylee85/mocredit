@@ -766,7 +766,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		param.put("pageSize", pageSize);
 
 		// 获得总记录数
-		int pageCount = acm.findPageCount(param);
+		int pageCount = verifyCode.isDowload() ? 0 : acm.findPageCount(param);
 		// 获得数据
 		List<Map<String, Object>> page = acm.findPageList(param);
 		for (Map<String, Object> log : page) {
