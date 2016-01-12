@@ -18,6 +18,15 @@ public class VerifyCodeVO {
 	private List<String> statusList;
 	private Integer pageSize;
 	private Integer pageNum;
+	private boolean dowload = false;
+
+	public boolean isDowload() {
+		return dowload;
+	}
+
+	public void setDowload(boolean dowload) {
+		this.dowload = dowload;
+	}
 
 	public Integer getPageSize() {
 		return pageSize;

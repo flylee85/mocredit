@@ -8,7 +8,7 @@
       This element was generated on Mon Nov 02 15:47:55 CST 2015.
     -->
     insert into 
-    record (ctime,ip,data,method)
+    request (ctime,ip,data,method)
     values (#{ctime,jdbcType=TIMESTAMP},#{ip,jdbcType=VARCHAR}, #{data,jdbcType=VARCHAR},#{method,jdbcType=VARCHAR})
   </insert>
 </mapper>

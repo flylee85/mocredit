@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSON;
 import com.mocredit.recharge.service.RechargeService;
+import com.mocredit.recharge.service.RequestLogService;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
 @Controller
@@ -24,6 +26,8 @@ public class RechargeController {
 	private ImageCaptchaService imageCaptchaService;
 	@Autowired
 	private RechargeService rechargeService;
+	@Autowired
+	private RequestLogService logService;
 
 	/**
 	 * 充值
@@ -38,6 +42,9 @@ public class RechargeController {
 	@RequestMapping("/recharge")
 	public ModelAndView recharge(HttpServletRequest request, String phone, String phone2, String charcode,
 			String rand) {
+		logService.addLog(getRemortIP(request), "recharge", "{phone:\"" + phone + "\",phone2:\"" + phone2
+				+ "\",charcode:\"" + charcode + "\",rand:\"" + rand + "\"}");
+
 		ModelAndView modelAndView = new ModelAndView("recharge");
 		if ((phone == null || "".equals(phone)) && (phone2 == null || "".equals(phone2))
 				&& (charcode == null || "".equals(charcode)) && (rand == null || "".equals(rand))) {
@@ -87,6 +94,8 @@ public class RechargeController {
 	@RequestMapping("/notice")
 	@ResponseBody
 	public String notice(HttpServletRequest request, String channel, @RequestParam Map<String, Object> param) {
+		logService.addLog(getRemortIP(request), "notice", JSON.toJSONString(param));
+
 		if (StringUtils.isEmpty(channel) || null == param || param.isEmpty()) {
 			return "error";
 		}
@@ -98,5 +107,13 @@ public class RechargeController {
 		Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0-9]))\\d{8}$");
 		Matcher m = p.matcher(mobiles);
 		return m.matches();
+	}
+
+	private String getRemortIP(HttpServletRequest request) {
+		String header = request.getHeader("x-forwarded-for");
+		if (header == null) {
+			return request.getRemoteAddr();
+		}
+		return header;
 	}
 }
