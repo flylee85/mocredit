@@ -3,6 +3,7 @@ package com.mocredit.payment.controller;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import com.mocredit.payment.model.MixPaymentRecord;
 import com.mocredit.payment.model.PaymentRecord;
 import com.mocredit.payment.service.MixPaymentRecordService;
 import com.mocredit.payment.service.PaymentRecordService;
+import com.mocredit.payment.vo.ShoudanBo;
 
 @RestController
 @RequestMapping("/payment/")
@@ -24,10 +26,15 @@ public class PaymentController {
 
 	@RequestMapping("/paymentSync")
 	@ResponseBody
-	public String paymentSync(String orderId, String json) {
-		System.out.println(orderId);
+	public String paymentSync(@RequestBody String param) {
+		System.out.println(param);
+		ShoudanBo bo = JSON.parseObject(param, ShoudanBo.class);
+		if (bo == null || param == null) {
+			return "1";
+		}
+		String orderId = bo.orderId;
 		try {
-			PaymentRecord record = JSON.parseObject(json, PaymentRecord.class);
+			PaymentRecord record = bo.orderInfo.toPaymentRecord();
 			paymentRecordService.savePaymentRecord(record);
 			if (orderId != null && !"".equals(orderId)) {// 混合支付
 				MixPaymentRecord mixRecord = new MixPaymentRecord();
