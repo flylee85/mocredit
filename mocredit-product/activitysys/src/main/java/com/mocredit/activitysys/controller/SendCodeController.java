@@ -272,7 +272,7 @@ public class SendCodeController {
          * 处理文件,处理excel数据
 		 */
         try {
-            if (!"".equals(name) && selectExcel.getSize() > 0) {
+            if (selectExcel.getOriginalFilename().endsWith(".xls") && !"".equals(name) && selectExcel.getSize() > 0) {
                 if (!sendCodeService.isExistName(actId, name)) {
                     //如果文件大小大于0，说明文件上传成功
                     //调用导入联系人方法

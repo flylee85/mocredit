@@ -218,66 +218,39 @@ $(function () {
         jifenTable.ajax.reload();
     });
     $("#exportJifen").click(function () {
-        //var formArray = $("#queryJifenOrderPage").serializeArray();
         var formArray = $("#queryJifenOrderPage").serialize();
-        //var formObject = new Object();
-        //$.each(formArray, function (index) {
-        //    if (formObject[this['name']]) {
-        //        formObject[this['name']] = formObject[this['name']] + "," + this['value'];
-        //    } else {
-        //        formObject[this['name']] = this['value'];
-        //    }
-        //});
-        ////获取表单状态
-        //var statuses = "";
-        //var checkboxArray = $("#queryOrderPage input:checked");
-        //checkboxArray.each(function (i) {
-        //    if (statuses == null || statuses == '') {
-        //        statuses = $(this).val();
-        //    } else {
-        //        statuses += ',' + $(this).val();
-        //    }
-        //});
-        //formObject.statuses = statuses;
-        //formObject.type = "02";
-        window.location.href = "order/export?type=01&exportType=CSV&" + formArray;
-        //if (statuses != null) {
-        //    window.location.href = "order/export?type=01&statusList=" + statuses + "&startTime=" +
-        //        formObject["startTime"] + "&endTime=" + formObject["endTime"] + "&activityName=" +
-        //        formObject["activityName"] + "&enCode=" + formObject["enCode"] + "&mobile=" + formObject["mobile"] +
-        //        "&code=" + formObject["code"] + "&enterpriseName=" + formObject["enterpriseName"] + "&cardNo=" + formObject["cardNo"];
-        //} else {
-        //    window.location.href = "order/export?type=01&startTime=" +
-        //        formObject["startTime"] + "&endTime=" + formObject["endTime"] + "&activityName=" +
-        //        formObject["activityName"] + "&enCode=" + formObject["enCode"] + "&mobile=" + formObject["mobile"] +
-        //        "&code=" + formObject["code"] + "&enterpriseName=" + formObject["enterpriseName"] + "&cardNo=" + formObject["cardNo"];
-        //}
+        //提交
+        $.ajax({
+            type: "POST",
+            url: "order/exportCount",
+            data: "type=01&exportType=CSV&" + formArray,
+            success: function (result, textStuts) {
+                if (result.success) {
+                    window.location.href = "order/export?type=01&exportType=CSV&" + formArray;
+                    sendMsg(true, msg);
+                } else {
+                    sendMsg(false, result.errorMsg);
+                }
+            }
+        });
     });
     $("#export").click(function () {
-        //var formArray = $("#queryOrderPage").serializeArray();
         var formArray = $("#queryOrderPage").serialize();
-        window.location.href = "order/export?type=02&exportType=CSV&" + formArray;
-        //var formObject = new Object();
-        //$.each(formArray, function (index) {
-        //    if (formObject[this['name']]) {
-        //        formObject[this['name']] = formObject[this['name']] + "," + this['value'];
-        //    } else {
-        //        formObject[this['name']] = this['value'];
-        //    }
-        //});
-        ////获取表单状态
-        //var statuses = "";
-        //var checkboxArray = $("#queryOrderPage input:checked");
-        //checkboxArray.each(function (i) {
-        //    if (statuses == null || statuses == '') {
-        //        statuses = $(this).val();
-        //    } else {
-        //        statuses += ',' + $(this).val();
-        //    }
-        //});
-        //formObject.statuses = statuses;
-        //formObject.type = "02";
-        //window.location.href = "order/export?type=02&statuses=" + statuses + "&startTime=" + formObject["startTime"] + "&endTime=" + formObject["endTime"] + "&keywords=" + formObject["keywords"]
+        //提交
+        $.ajax({
+            type: "POST",
+            url: "order/exportCount",
+            data: "type=02&exportType=CSV&" + formArray,
+            success: function (result, textStuts) {
+                if (result.success) {
+                    window.location.href = "order/export?type=02&exportType=CSV&" + formArray;
+                    sendMsg(true, msg);
+                } else {
+                    sendMsg(false, result.errorMsg);
+                }
+            }
+        });
+
     });
 
     if ($('#activityCurrentType').val() == "2") {
