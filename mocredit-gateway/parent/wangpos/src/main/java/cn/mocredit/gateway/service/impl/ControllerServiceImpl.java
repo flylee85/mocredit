@@ -65,6 +65,8 @@ import cn.mocredit.gateway.wangpos.bo.JsonData;
 import cn.mocredit.gateway.wangpos.bo.ObjectAgrs;
 import cn.mocredit.gateway.wangpos.bo.QianDaoData;
 import cn.mocredit.gateway.wangpos.bo.QianDaoHuiZhiData;
+import cn.mocredit.gateway.wangpos.bo.ShoudanBo;
+import cn.mocredit.gateway.wangpos.bo.ShoudanResponse;
 import cn.mocredit.gateway.wangpos.bo.XiaoFeiQingQiuData;
 import cn.mocredit.gateway.wangpos.bo.XiaoFeiXiangYingData;
 import cn.mocredit.gateway.wangpos.bo.XinTiaoData;
@@ -111,6 +113,8 @@ public class ControllerServiceImpl implements ControllerService {
     private String consumeCancelCorrectUrl;
     @Value("${checkcodeCancelNewUrl}")
     private String checkcodeCancelNewUrl;
+	@Value("${shoudantongbuUrl}")
+	private String shoudantongbuUrl;
     @Value("${fakeDemo}")
     private boolean fakeDemo;
 
@@ -901,7 +905,30 @@ public class ControllerServiceImpl implements ControllerService {
     
     @Override
 	public String shoudantongbu(String h, String t) {
-		return null;
+    	TongXin tx = new TongXin(h, t).invoke();
+		JsonData jsonData = tx.getJsonData();
+		if (jsonData == null)
+			return "-1";
+		ShoudanBo shoudan = jsonToObject(jsonData.getjData(), ShoudanBo.class);
+		ShoudanResponse response = new ShoudanResponse();
+		if (shoudan == null) {
+			response.success = "false";
+			response.errorMsg = "收单信息格式错误";
+		} else {
+			String ret = callShoudanService(objectToJson(shoudan));
+			if ("0".equals(ret)) {
+				response.success = "true";
+				response.errorMsg = "收单同步成功";
+			}else{
+				response.success = "false";
+				response.errorMsg = "收单同步失败";
+			}
+		}
+		jsonData.setjData(objectToJson(response));
+		jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
+		String content = objectToJson(jsonData);
+		logger.info(content);
+		return encrypt(content, tx.getMd5Hex());
 	}
 
     /**
@@ -976,6 +1003,16 @@ public class ControllerServiceImpl implements ControllerService {
             return null;
         }
     }
+    
+	private String callShoudanService(String json) {
+		try {
+			return new RestTemplate().postForObject(shoudantongbuUrl, json, String.class);
+		} catch (Exception e) {
+			logger.error(getStackTrace(e));
+			return null;
+		}
+	}
+    
     private class TongXin {
         private String h;
         private String t;
