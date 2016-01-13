@@ -48,22 +48,34 @@
                 return {"frame_no" : curOne, "identifier" : $("#identifier").val()};
             }
         }).on("filebatchselected", function(event, files) {
+
+            var bool = true;
             for(var i=0;i<files.length;i++){
                 var file = files[i];
                 var fileName = file.name;
+                console.log(fileName);
                 var index1 = fileName.lastIndexOf(".");
                 var index2= fileName.length;
                 var suffix=fileName.substring(index1,index2);
                 if(suffix!='.jpg'&& suffix!='.jpeg' && suffix!='.gif'){
                     sendMsg(false, "只能上传.gif,.jpg,.jpeg格式的图片");
-                    return false;
+                    console.log("只能上传.gif,.jpg,.jpeg格式的图片");
+                    bool = bool && false;
                 }
-                if(file.size > 20000){
-                    sendMsg(false, '单个图片不能大于20K');
-                    return false;
+                if(bool){
+                    if(file.size > 20000){
+                        sendMsg(false, '单个图片不能大于20K');
+                        console.log('单个图片不能大于20K');
+                        bool = bool && false;
+                    }
                 }
             }
-            opts.file_upload.fileinput("upload");
+            if(bool){
+                opts.file_upload.fileinput("upload");
+            }else{
+                opts.file_upload.fileinput('reset');
+            }
+
 
         }).on("filebatchuploadsuccess", function(event, data, previewId, index) {
             console.log('File batch upload success');
