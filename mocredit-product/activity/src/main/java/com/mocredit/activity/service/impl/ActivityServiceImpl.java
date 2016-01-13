@@ -497,8 +497,8 @@ public class ActivityServiceImpl implements ActivityService {
 		List<ActivityStore> storeList = activity.getStoreList();
 		for (ActivityStore as : storeList) {
 			as.setActivityId(activity.getId());
-			activityStoreMapper.addActivityStore(as);
 		}
+		activityStoreMapper.batchAddActivityStore(storeList);
 		/*
 		 * // * 同步接口 //
 		 */

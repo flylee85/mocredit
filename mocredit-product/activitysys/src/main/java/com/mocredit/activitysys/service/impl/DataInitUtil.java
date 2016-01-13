@@ -1,4 +1,4 @@
-package com.mocredit.activity.service.impl;
+package com.mocredit.activitysys.service.impl;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,6 +34,7 @@ import com.mocredit.manage.persitence.TerminalMapper;
  * @date 2015年11月25日
  */
 public class DataInitUtil {
+	/*正式*/
 	private static final String IN_URL = "jdbc:mysql://127.0.0.1:3310/mcntong?useUnicode=true&characterEncoding=utf-8";
 	private static final String IN_UNAME = "root";
 	private static final String IN_PWD = "mocredit";
@@ -43,8 +44,18 @@ public class DataInitUtil {
 	private static final String DEVICE_URL = "jdbc:mysql://127.0.0.1:3309/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
 	private static final String DEVICE_UNAME = "root";
 	private static final String DEVICE_PWD = "eAhrpeDoq/ve39md";
-	// private static final String OUT_UNAME = "root";
-	// private static final String OUT_PWD = "eAhrpeDoq/ve39md";
+	
+	/*测试*/
+//	private static final String IN_URL = "jdbc:mysql://127.0.0.1:3310/mcntong?useUnicode=true&characterEncoding=utf-8";
+//	private static final String IN_UNAME = "root";
+//	private static final String IN_PWD = "mocredit";
+//	private static final String OUT_URL = "jdbc:mysql://127.0.0.1:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
+//	private static final String OUT_UNAME = "root";
+//	private static final String OUT_PWD = "root";
+//	private static final String DEVICE_URL = "jdbc:mysql://127.0.0.1:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+//	private static final String DEVICE_UNAME = "root";
+//	private static final String DEVICE_PWD = "root";
+	
 	private static String IMPORT_URL = "http://127.0.0.1:8080/integral/activityImport";
 
 	private Connection conIn;
@@ -221,7 +232,7 @@ public class DataInitUtil {
 			sb.append(getColumn(StringUtils.isEmpty(rs.getString("longitude")) ? 0 : rs.getString("longitude")));
 			sb.append(getColumn(StringUtils.isEmpty(rs.getString("latitude")) ? 0 : rs.getString("latitude")));
 			int status = rs.getInt("status");
-			sb.append(getColumn(status));// status
+			sb.append(getColumn(status == 0 ? "1" : "0"));// status
 			sb.append(getColumn(rs.getString("mobile")));
 			String phone = rs.getString("phone");
 			sb.append(getColumn(phone));
@@ -572,7 +583,7 @@ public class DataInitUtil {
 			sb.append(getColumn(exchangeType));// exchange_type
 			sb.append(getColumn("01"));// status
 			sb.append(getColumn("0"));// contract_id
-			sb.append(getColumn("2"));// channel
+			sb.append(getColumn("4"));// channel
 			sb.append(getColumn("1"));// exchange_channel
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append(")");

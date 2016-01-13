@@ -31,6 +31,9 @@ public interface ActivityStoreMapper {
 	// 添加一条活动商户关联记录
 	int addActivityStore(ActivityStore activityStore);
 
+	// 批量添加活动商户关联记录
+	int batchAddActivityStore(List<ActivityStore> activityStore);
+
 	// 修改一条活动商户关联记录
 	int updateActivityStore(ActivityStore activityStore);
 
