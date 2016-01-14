@@ -32,4 +32,5 @@ public interface MerchantMapper {
 
 	List<Merchant> selectAll();
 
+	Merchant selectOneByName(Map<String, Object> param);
 }

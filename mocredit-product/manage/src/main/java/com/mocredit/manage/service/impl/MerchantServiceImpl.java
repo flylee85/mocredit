@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.pagehelper.PageHelper;
 import com.mocredit.base.pagehelper.PageInfo;
 import com.mocredit.base.util.IDUtil;
@@ -50,14 +51,20 @@ public class MerchantServiceImpl implements MerchantService {
 
 	@Override
 	public int add(Merchant merchant) {
-		merchant.setId(IDUtil.getID());
 		merchant.setCreateTime(new Date());
 		merchant.setStatus(Merchant.STATUS_ACTIVED);
+		if (!check(merchant)) {
+			throw new BusinessException("商户名已存在");
+		}
+		merchant.setId(IDUtil.getID());
 		return merchantMapper.insert(merchant);
 	}
 
 	@Override
 	public int update(Merchant merchant) {
+		if (!check(merchant)) {
+			throw new BusinessException("商户名已存在");
+		}
 		return merchantMapper.update(merchant);
 	}
 
@@ -94,5 +101,21 @@ public class MerchantServiceImpl implements MerchantService {
 	public List<Merchant> getAll() {
 		// TODO Auto-generated method stub
 		return merchantMapper.selectAll();
+	}
+
+	/**
+	 * 编辑校验
+	 * 
+	 * @param merchant
+	 * @return
+	 */
+	private boolean check(Merchant merchant) {
+		Map<String, Object> param = new HashMap<>();
+
+		param.put("name", merchant.getName());
+		if (null != merchant.getId()) {
+			param.put("id", merchant.getId());
+		}
+		return null == merchantMapper.selectOneByName(param);
 	}
 }

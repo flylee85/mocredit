@@ -2,6 +2,7 @@ package com.mocredit.manage.persitence;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -30,4 +31,5 @@ public interface EnterpriseMapper {
 
 	int update(Enterprise enterprise);
 
+	Enterprise selectOneByName(Map<String, Object> param);
 }

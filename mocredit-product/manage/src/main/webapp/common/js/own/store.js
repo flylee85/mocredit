@@ -248,7 +248,7 @@ $("#addItem").click(function(){
 		dataType: "json",
 		success: function (result) {
 			if(result.success){
-				sendMsg(true, "添加成功");
+				sendMsg(true, formObject.id?"编辑成功":"添加成功");
 				$("#addStore").modal("hide");
 				//刷新
 				oTable.ajax.reload();
