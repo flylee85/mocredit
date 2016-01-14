@@ -41,6 +41,8 @@ public class UserServiceImpl implements UserService {
         if (!oUser.getPassword().equals(user.getPassword())) {
             user.setMd5Pwd(MD5Util.MD5(user.getPassword()));
             passwordHelper.encryptPassword(user);
+        } else {
+            user.setMd5Pwd(oUser.getMd5Pwd());
         }
         return userDao.updateUser(user);
     }

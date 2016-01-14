@@ -1,9 +1,13 @@
 package com.mocredit.security.realm;
 
 import com.mocredit.security.Constants;
+import com.mocredit.security.authc.UsernamePasswordCaptchaToken;
 import com.mocredit.security.entity.User;
 import com.mocredit.security.service.AuthorizationService;
 import com.mocredit.security.service.UserService;
+import com.mocredit.security.web.controller.LoginController;
+import com.mocredit.security.web.exception.CaptchaException;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -27,7 +31,7 @@ public class UserRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        String username = (String)principals.getPrimaryPrincipal();
+        String username = (String) principals.getPrimaryPrincipal();
 
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         authorizationInfo.setRoles(authorizationService.findRoles(Constants.SERVER_APP_KEY, username));
@@ -37,15 +41,21 @@ public class UserRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-
-        String username = (String)token.getPrincipal();
+        UsernamePasswordCaptchaToken authcToken = (UsernamePasswordCaptchaToken) token;
+        String username = (String) token.getPrincipal();
         User user = userService.findByUsername(username);
-
-        if(user == null) {
+        // 增加判断验证码逻辑
+        String captcha = authcToken.getCaptcha();
+        String exitCode = (String) SecurityUtils.getSubject().getSession()
+                .getAttribute(LoginController.KEY_CAPTCHA);
+        if (null != captcha && !captcha.equalsIgnoreCase(exitCode)) {
+            throw new CaptchaException("验证码错误");
+        }
+        if (user == null) {
             throw new UnknownAccountException();//没找到帐号
         }
 
-        if(Boolean.TRUE.equals(user.getLocked())) {
+        if (Boolean.TRUE.equals(user.getLocked())) {
             throw new LockedAccountException(); //帐号锁定
         }
 

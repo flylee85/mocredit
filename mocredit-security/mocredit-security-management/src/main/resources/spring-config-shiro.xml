@@ -120,6 +120,8 @@
                 /loginInterface=anon
                 /login = authc
                 /logout = logout
+                /checkCode = anon
+                /checkCode.json = anon
                 /authenticated = authc
                 /** = user,sysUser
             </value>
