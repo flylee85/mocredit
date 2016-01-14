@@ -262,9 +262,9 @@ public class SendCodeController {
     public ModelAndView importCustomer(@RequestParam MultipartFile selectExcel, HttpServletRequest request, HttpServletResponse response) throws IOException {
         //获取前端传递过来的活动id，和导入联系人备注
         String actId = request.getParameter("actId");
-        String downloadChannel = request.getParameter("downloadChannel");
+        String smsType = request.getParameter("downloadChannel");
         String name = request.getParameter("name");
-        String type = request.getParameter("type");
+        String sType = request.getParameter("type");
         String types = request.getParameter("types");
         //定义返回页面的对象
         ResponseData responseData = new AjaxResponseData();
@@ -276,7 +276,7 @@ public class SendCodeController {
                 if (!sendCodeService.isExistName(actId, name)) {
                     //如果文件大小大于0，说明文件上传成功
                     //调用导入联系人方法
-                    Map<String, Object> operMap = sendCodeService.importCustomor(actId, name, downloadChannel, type, selectExcel.getInputStream());
+                    Map<String, Object> operMap = sendCodeService.importCustomor(actId, name, smsType, sType, selectExcel.getInputStream());
                     //获取导入联系人方法执行结果
                     if (Boolean.parseBoolean(String.valueOf(operMap.get("success")))) {
                         //如果导入结果为true，则只需要将导入消息设置为data就可以，因为返回页面的对象中，默认为true。

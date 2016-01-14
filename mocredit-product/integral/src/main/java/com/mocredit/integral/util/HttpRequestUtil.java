@@ -245,8 +245,8 @@ public class HttpRequestUtil {
         System.out
                 .println(doPostJson(
 
-                        "http://127.0.0.1:8080/paymentRevoke",
-                        "{\"orderId\":\"1903110527e5791\",\"oldOrderId\":\"222\"}"));
+                        "http://127.0.0.1:10086/mocredit-security-management/loginInterface",
+                        "{\"username\":\"1903110527e5791\",\"password\":\"222\"}"));
 //        System.out
 //                .println(doPostJson(
 //                        "http://117.121.20.146:9092/integral/payment",
