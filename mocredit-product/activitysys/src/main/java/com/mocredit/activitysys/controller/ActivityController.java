@@ -1,10 +1,14 @@
 package com.mocredit.activitysys.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +54,7 @@ import sun.misc.BASE64Encoder;
 @RestController
 @RequestMapping("/activitysys/")
 public class ActivityController {
+	private static final String BASE_UPLOAD_PATH = "/app/data/";
 	// 引入活动Service类
 	@Autowired
 	private ActivityService activityService;
@@ -354,15 +359,16 @@ public class ActivityController {
 	@ResponseBody
 	public String uploadpic(HttpSession session, HttpServletRequest request, Integer frame_no, String identifier,
 			MultipartFile file) {
-		ResponseData responseData = new AjaxResponseData();
-		String upload = session.getServletContext().getRealPath("");
 		String path = request.getContextPath();
 		String basePath = request.getScheme() + 
 				"://" + request.getServerName() + 
 				":" + request.getServerPort() + path
 				+ "/";
+		String previewURL = basePath + "activitysys/preview";
+		ResponseData responseData = new AjaxResponseData();
 		try {
-			String url = savePicture(file, upload);
+			String filePath = savePicture(file);
+			previewURL += "?fileURL=" + filePath;
 			Map<Integer, Mmsframe> frameMap = new HashMap<>();
 			Object map = session.getAttribute(identifier);
 			if (map != null && map instanceof Map<?, ?>) {
@@ -370,11 +376,11 @@ public class ActivityController {
 			}
 			Mmsframe mmsframe = new Mmsframe();
 			mmsframe.setFrame_no(frame_no);
-			mmsframe.setPic(basePath + url);
+			mmsframe.setPic(previewURL);//url地址
 			frameMap.put(frame_no, mmsframe);
 			session.setAttribute(identifier, frameMap);
 			responseData.setSuccess(true);
-			responseData.setData("1|" + basePath + url);
+			responseData.setData("1|" + previewURL);
 			responseData.setCode("1");
 			return JSON.toJSONString(responseData);
 		} catch (Exception e) {
@@ -385,9 +391,9 @@ public class ActivityController {
 		}
 	}
 
-	private String savePicture(MultipartFile file, String upload) {
+	private String savePicture(MultipartFile file) {
 		String filename = file.getOriginalFilename();
-		File dir = new File(upload, "upload" + File.separator + String.valueOf(System.currentTimeMillis()));
+		File dir = new File(BASE_UPLOAD_PATH, "mms" + File.separator + String.valueOf(System.currentTimeMillis()));
 		dir.mkdirs();
 		File newFile = new File(dir, filename);
 		try {
@@ -397,7 +403,27 @@ public class ActivityController {
 		} catch (IOException e) {
 			return null;
 		}
-		return newFile.getAbsolutePath().replace(upload, "").replace("\\", "/");
+		return newFile.getAbsolutePath();
+	}
+	
+	@RequestMapping(value = "/preview", produces = { "application/octet-stream;charset=UTF-8" })
+	public void preview(@RequestParam String fileURL, final HttpServletResponse response) throws IOException{
+		File file = new File(fileURL);
+	    String fileName = URLEncoder.encode(file.getName(), "UTF-8");
+	    response.reset();
+	    response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");  
+	    response.addHeader("Content-Length", "" + file.length());  
+	    response.setContentType("application/octet-stream;charset=UTF-8");
+	    
+	    InputStream bis = new BufferedInputStream(new FileInputStream(file.getAbsolutePath()));
+	    OutputStream bos = new BufferedOutputStream(response.getOutputStream());
+	    byte[] buff = new byte[2048];
+	    int bytesRead;
+		while ((bytesRead = bis.read(buff, 0, buff.length)) != -1) {
+			bos.write(buff, 0, bytesRead);
+		}
+	    bis.close();
+	    bos.close();
 	}
 
 	/**
