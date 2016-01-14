@@ -152,6 +152,25 @@
 	</trim>
 	</insert>
 	
+	<!--  批量添加活动商户关联记录  -->
+	<insert id="batchAddActivityStore" parameterType="java.util.List" >
+	insert into act_activity_store
+	<trim prefix="(" suffix=")" suffixOverrides="," >
+			activity_id,
+			store_id,
+			enterprise_id,
+			shop_id
+	</trim>
+	values
+	<foreach collection="list" item="item" index="index" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{item.activityId},
+				#{item.storeId},
+				#{item.enterpriseId},
+				#{item.shopId}
+            </trim>
+        </foreach>
+	</insert>
 	<!--  修改一条活动商户关联记录  -->
 	<update id="updateActivityStore" parameterType="com.mocredit.activity.model.ActivityStore" >
 	update act_activity_store
