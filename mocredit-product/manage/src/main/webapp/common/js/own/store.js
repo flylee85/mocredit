@@ -25,27 +25,12 @@ var oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 		{ "data": "code" },
 		{ "data": "name","className":"sName" },
 		{ "data": "address" },
-		{ "data": null },
+		{ "data": "phone" },
 		{ "data": "businessStatusName" },
 		{ "data": "terminalCount" },
 		{ "data": null }
 	],
 	"columnDefs": [
-		{
-			"render":function(oObj, type, full, meta ){
-				var phonesJson=(new Function("return " + full["phone"]))(); 
-				var phoneStr="";
-				for(var i in phonesJson){
-					phoneStr+=phonesJson[i]+",";
-				}
-				if(phoneStr.length>0){
-					phoneStr=phoneStr.substr(0,phoneStr.length-1);
-				}
-				return phoneStr;
-			},
-			"sortable": false,
-			"targets": 3
-		},
 		{
 			"render": function(oObj, type, full, meta ) {
 				return '<a href="javascript:openUpdate(\''+full[ 'id' ]+'\',1)">编辑</a>'
@@ -162,7 +147,7 @@ function openUpdate(id, type){
 			form.find("input[name=code]").val(result.data.store.code);
 			form.find("input[name=linkman]").val(result.data.store.linkman);
 			if(result.data.store.phone){
-				var phoneJson=JSON.parse(result.data.store.phone);
+				var phoneJson=result.data.store.phone.split(",");
 				if(phoneJson.length>0){
 					var $div=$(".phone div:first",form);
 					$("input:first",$div).val(phoneJson[0]);
@@ -248,7 +233,7 @@ $("#addItem").click(function(){
 			phoneArray.push(this.value);
 		}
 	})
-	formObject.phone= JSON.stringify(phoneArray);
+	formObject.phone= phoneArray.join(",");
 	
 	var id=$("#addStore form input[name=name]").attr("data-id");
 	if(id){
