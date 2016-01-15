@@ -86,7 +86,7 @@
 
 						   <div class="col-lg-4">
 							   <input type="text" class="form-control input-small parsley-validated"
-									  data-parsley-required="true" data-parsley-type="integer" data-parsley-min="1" placeholder="积分" tabindex="7" name="integral">
+									  data-parsley-required="true" data-parsley-type="integer" data-parsley-min="0" placeholder="积分" tabindex="7" name="integral">
 						   </div>
 						    <label class="col-lg-2 control-label">外部商品编码</label>
 						   <div class="col-lg-4">
@@ -96,7 +96,7 @@
 				   <div class="panel clearfix">
 				   		<label class="col-lg-2 control-label">支持BIN码</label>
 				   		<div class="col-lg-4">
-							   <textarea style="width: 100%;"  name="bins"></textarea>
+							   <textarea style="width: 100%;"  name="bins" class="form-control input-big parsley-validated" data-parsley-pattern="^\d{1,20}([,]\d{1,20})*$"></textarea>
 						   </div>
 						   <label class="col-lg-6 control-label" style="text-align: left">逗号隔开，不填代表不限制</label>
 				   </div>

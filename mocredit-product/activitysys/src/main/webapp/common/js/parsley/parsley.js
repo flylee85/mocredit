@@ -2128,7 +2128,7 @@ window.ParsleyConfig = window.ParsleyConfig || {};
 window.ParsleyConfig.i18n = window.ParsleyConfig.i18n || {};
 // Define then the messages
 window.ParsleyConfig.i18n.en = jQuery.extend(window.ParsleyConfig.i18n.en || {}, {
-  defaultMessage: "This value seems to be invalid.",
+  defaultMessage: "不是合法的值",
   type: {
     email:        "请输入正确的邮箱",
     url:          "This value should be a valid url.",
@@ -2139,7 +2139,7 @@ window.ParsleyConfig.i18n.en = jQuery.extend(window.ParsleyConfig.i18n.en || {},
   },
   notblank:       "This value should not be blank.",
   required:       "必填项",
-  pattern:        "This value seems to be invalid.",
+  pattern:        "不是合法的值",
   min:            "输入的数值不能小于 %s",
   max:            "输入的数值不能大于 %s",
   range:          "输入的数据必须在 %s 和 %s 之间",

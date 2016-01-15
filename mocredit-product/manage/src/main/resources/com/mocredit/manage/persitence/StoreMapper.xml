@@ -73,7 +73,7 @@
     <if test="snCode != null and  snCode !=''  ">
     	and s.id in (
     		select store_id from t_terminal 
-    		where sn_code = #{snCode,jdbcType=VARCHAR}
+    		where sn_code like concat('%',#{snCode,jdbcType=VARCHAR},'%') 
     	)
     </if>
     <if test="province != null and province !=0 ">

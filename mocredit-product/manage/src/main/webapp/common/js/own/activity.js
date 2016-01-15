@@ -7,7 +7,7 @@ $(function () {
 	}
     var jifenTable, famaTable;
 
-    function initJifenTab(page) {
+    function initJifenTab(page,callback) {
         if ($.type(jifenTable) != 'object') {
             jifenTable = $('#jifen').find('table[data-ride="datatables"]').DataTable({
                 "ajax": {
@@ -27,6 +27,9 @@ $(function () {
                 "searchDelay": 500,
                 "displayStart": parseInt(page) * 10 - 10,
                 "autoWidth": true,
+                "initComplete":function(data){
+                	callback(data);
+                },
                 "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
                 "columns": [
                     {"data": "name", "name": "name", "className": "name", "width": "180px"},
@@ -130,6 +133,10 @@ $(function () {
     $('#tabToFama').on('show.bs.tab', function (e) {
         initFamaTab(1);
     });
-     initJifenTab(1);
+     initJifenTab(1,function(data){
+    	 if(data._iRecordsTotal==0){
+    		 $('#tabToFama').click();
+    	 }
+     });
 });
 
