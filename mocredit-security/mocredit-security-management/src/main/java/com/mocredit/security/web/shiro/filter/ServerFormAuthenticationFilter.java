@@ -1,5 +1,6 @@
 package com.mocredit.security.web.shiro.filter;
 
+import com.mocredit.security.authc.UsernamePasswordCaptchaToken;
 import com.mocredit.security.dao.UserDao;
 import com.mocredit.security.entity.App;
 import com.mocredit.security.entity.Resource;
@@ -8,6 +9,7 @@ import com.mocredit.security.service.AppService;
 import com.mocredit.security.service.AuthorizationService;
 import com.mocredit.security.service.ResourceService;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,25 @@ public class ServerFormAuthenticationFilter extends FormAuthenticationFilter {
     private UserDao userDao;
     @Autowired
     private AuthorizationService authorizationService;
+    public static final String DEFAULT_CAPTCHA_PARAM = "captcha";
+    private String captchaParam = DEFAULT_CAPTCHA_PARAM;
+
+    public String getCaptchaParam() {
+        return captchaParam;
+    }
+
+    protected String getCaptcha(ServletRequest request) {
+        return WebUtils.getCleanParam(request, getCaptchaParam());
+    }
+
+    protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
+        String username = getUsername(request);
+        String password = getPassword(request);
+        String captcha = getCaptcha(request);
+        boolean rememberMe = isRememberMe(request);
+        String host = getHost(request);
+        return new UsernamePasswordCaptchaToken(username, password.toCharArray(), rememberMe, host, captcha);
+    }
 
     protected void issueSuccessRedirect(ServletRequest request, ServletResponse response) throws Exception {
         String fallbackUrl = (String) getSubject(request, response)

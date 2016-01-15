@@ -16,14 +16,14 @@
     <!--配置文件集成-->
     <bean id="propertyConfigurer" class="com.mocredit.base.util.FilePropertyPlaceholderConfigurer">
         <property name="locations">
-            <!-- <list>
-	            <value>classpath:config.properties</value>
-	            <value>classpath:shiro-client.properties</value>
-            </list>-->
+            <!--  <list>
+                 <value>classpath:config.properties</value>
+                 <value>classpath:shiro-client.properties</value>
+             </list>-->
             <list>
                 <value>file:./../../../config.properties</value>
                 <value>file:./../../../shiro-client.properties</value>
-            </list> 
+            </list>
         </property>
     </bean>
     <!--数据源配置-->

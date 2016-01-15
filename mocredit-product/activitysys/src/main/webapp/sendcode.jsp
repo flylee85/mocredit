@@ -1,5 +1,4 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
-<%--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>--%>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -98,39 +97,6 @@
                         <div class="input-group col-2">
                             <input type="button" onclick="upload()" class="btn btn-primary" value="导入联系人"/>
                         </div>
-                        <%--<div id="mms" style="display: none">--%>
-                        <%--<div class="input-group col-2">--%>
-                        <%--<input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>--%>
-                        <%--</div>--%>
-                        <%--</div>--%>
-                        <%--<div id="smms" style="display: none">--%>
-                        <%--<div class="input-group col-2">--%>
-                        <%--<input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>--%>
-                        <%--</div>--%>
-                        <%--<div class="input-group col-2">--%>
-                        <%--<input type="button" onclick="mms()" class="btn btn-primary" value="导入彩信用户"/>--%>
-                        <%--</div>--%>
-                        <%--</div>--%>
-                        <%--  <c:choose>
-                              <c:when test="${type=='02'}">
-                                  <div class="input-group col-2">
-                                      <input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>
-                                  </div>
-                              </c:when>
-                              <c:when test="${type=='03'}">
-                                  <div class="input-group col-2">
-                                      <input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>
-                                  </div>
-                              </c:when>
-                              <c:otherwise>
-                                  <div class="input-group col-2">
-                                      <input type="button" onclick="sms()" class="btn btn-primary" value="上传并发送短信"/>
-                                  </div>
-                                  <div class="input-group col-2">
-                                      <input type="button" onclick="mms()" class="btn btn-primary" value="上传并发送彩信"/>
-                                  </div>
-                              </c:otherwise>
-                          </c:choose>--%>
                     </div>
 
                 </form>
