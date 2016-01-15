@@ -122,8 +122,7 @@
 
     <select id="findOrderByListCount" resultType="int" parameterType="com.mocredit.integral.dto.OrderDto">
         select count(1)
-        from ti_order a LEFT JOIN ti_activity b ON a.activity_id=b.activity_id LEFT JOIN ti_store c ON
-        a.store_id=c.store_id and a.activity_id=c.activity_id WHERE 1=1
+        from ti_order a LEFT JOIN ti_activity b ON a.activity_id=b.activity_id WHERE 1=1
         <if test="t.startTime!=null">
             AND a.ctime >=#{t.startTime}
         </if>

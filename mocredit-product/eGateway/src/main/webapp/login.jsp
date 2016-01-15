@@ -76,15 +76,30 @@
             if (!$("#username").val()) {
                 sendMsg(false, "请输入用户名");
                 return false;
+            } else {
+                if ($("#username").val().length >= 10) {
+                    sendMsg(false, "输入用户名过长");
+                    return false;
+                }
             }
             if (!$("#password").val()) {
                 sendMsg(false, "请输入密码");
                 return false;
+            } else {
+                if ($("#password").val().length >= 10) {
+                    sendMsg(false, "输入密码过长");
+                    return false;
+                }
             }
             <c:if test="${addCaptcha==1}">
             if (!$("#checkCode").val()) {
                 sendMsg(false, "请输入验证码");
                 return false;
+            } else {
+                if ($("#checkCode").val().length >= 10) {
+                    sendMsg(false, "输入验证码过长");
+                    return false;
+                }
             }
             </c:if>
             var password = $("#password").val();

@@ -83,10 +83,10 @@ public class IndexController extends ShiroBaseController {
             return mav;
         }
         String checkCodeReq = (String) WebUtils.getSessionAttribute(request, SESSION_CHECK_CODE);
-        if (checkCodeReq != null && checkCodeReq.equalsIgnoreCase(checkCode.toLowerCase())) {
-        } else {
+        if (checkCodeReq != null && checkCode != null && !checkCodeReq.equalsIgnoreCase(checkCode.toLowerCase())) {
             mav = new ModelAndView("login");
             mav.addObject("username", username);
+            mav.addObject("addCaptcha", request.getSession().getAttribute("addCaptcha"));
             mav.addObject("error", "验证码错误");
             return mav;
         }
@@ -102,6 +102,7 @@ public class IndexController extends ShiroBaseController {
         } else {
             mav = new ModelAndView("login");
             mav.addObject("username", username);
+            mav.addObject("addCaptcha", request.getSession().getAttribute("addCaptcha"));
             mav.addObject("error", request.getAttribute("error"));
         }
         return mav;
