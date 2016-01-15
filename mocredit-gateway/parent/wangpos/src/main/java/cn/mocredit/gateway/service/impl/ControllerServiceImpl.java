@@ -884,13 +884,14 @@ public class ControllerServiceImpl implements ControllerService {
                     return "参数错误";
                 }
                 List<Device> devices = deviceRepository.getDeviceById(a.id);
-                if (devices.size() != 1) {
+                if(devices == null || devices.isEmpty()){
                     Device dev = new Device();
                     dev.setId(a.id);
                     dev.setDevcode(a.enCode);
                     dev.setDevcodemd5(md5Hex(a.enCode));
                     dev.setPassword("0000000000000000");
                     deviceRepository.save(dev);
+                    return "0";
                 }
                 devices.get(0).setDevcode(a.enCode);
                 devices.get(0).setId(a.id);
@@ -902,6 +903,7 @@ public class ControllerServiceImpl implements ControllerService {
         }
         return "0";
     }
+
     
     @Override
 	public String shoudantongbu(String h, String t) {
