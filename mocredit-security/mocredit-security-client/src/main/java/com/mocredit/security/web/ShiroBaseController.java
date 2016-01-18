@@ -50,6 +50,11 @@ public class ShiroBaseController {
             } else {
                 request.setAttribute("isSuccess", false);
                 request.setAttribute("error", responseData.getErrorMsg());
+                if ((responseData.getData() + "").equals("addCaptcha")) {
+                    request.getSession().setAttribute("addCaptcha", 1);
+                } else {
+                    request.getSession().setAttribute("addCaptcha", 0);
+                }
             }
         } catch (Exception e) {
             request.setAttribute("isSuccess", false);

@@ -280,18 +280,12 @@ public class ActivityController {
 					mms.setCreatetime(String.valueOf(System.currentTimeMillis()));
 					mms.setActivityId(Integer.parseInt(activity.getId()));
 					mmsframeService.saveMMS(mms);
-					
-					String upload = session.getServletContext().getRealPath("");
-					String path = request.getContextPath();
-					String basePath = request.getScheme() + 
-							"://" + request.getServerName() + 
-							":" + request.getServerPort() + path
-							+ "/";
 					List<Mmsframe> frames = mms.getFrames();
 					for (Mmsframe mmsframe : frames) {
 						String pic = mmsframe.getPic();
 						if (!"".equals(pic)) {
-							File file = new File(pic.replace(basePath, upload));
+							int pos = pic.lastIndexOf("fileURL=");
+							File file = new File(pic.substring(pos + "fileURL=".length()));
 							String pictype = getpicType(file.getName());
 					    	String picBase64str = getImageBase64Str(file);
 					    	mmsframe.setPic(picBase64str);

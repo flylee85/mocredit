@@ -60,7 +60,7 @@
         order by a.ctime desc
     </select>
     <update id="updateActivityById">
-        update `activity`SET utime=now()
+        update `activity`SET utime=now(),rule=#{t.rule}
         <if test="t.status!=null">
             ,status=#{t.status}
         </if>
@@ -79,9 +79,9 @@
         <if test="t.merchantName!=null">
             ,merchant_name=#{t.merchantName}
         </if>
-        <if test="t.rule!=null">
-            ,rule=#{t.rule}
-        </if>
+        <!--    <if test="t.rule!=null">
+                ,rule=#{t.rule}
+            </if>-->
         where id=#{t.id}
     </update>
 </mapper>

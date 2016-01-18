@@ -28,12 +28,13 @@ public class IntegralOrderController extends BaseController {
         Response resp = new Response();
         OrderDto orderDto = JSON.parseObject(param, OrderDto.class);
         orderDto.setOffset((orderDto.getPageNum() - 1) * orderDto.getPageSize());
-        orderService.findOrderByList(orderDto);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("data", orderService.findOrderByList(orderDto));
         map.put("pageNum", orderDto.getPageNum());
         map.put("pageSize", orderDto.getPageSize());
-        map.put("pageCount", orderService.findOrderByListCount(orderDto));
+        if (!orderDto.isDownload()) {
+            map.put("pageCount", orderService.findOrderByListCount(orderDto));
+        }
         resp.setData(map);
         return JSON.toJSONString(resp);
     }

@@ -33,6 +33,7 @@ public class OrderController extends BaseController {
     @Autowired
     private OrderService orderService;
     private final static Integer EXPOET_PAGESIZE = 5000;
+    private final static Integer EXPORT_TOTAL = 50000;//最大导出5万条
     private final static String ORDER_FILE_NAME = "订单数据";
     private final static String RECORD_FILE_NAME = "兑换记录数据";
     @Autowired
@@ -213,6 +214,7 @@ public class OrderController extends BaseController {
             if (mapResult != null && mapResult.containsKey("id")) {
                 String actId = mapResult.get("id") + "";
                 String sendSmsType = mapResult.get("send_sms_type") + "";
+                System.out.println("###################actId：" + actId + " id：" + id);
                 if (sendSmsType.contains(ActivityStatus.MMS) && sendSmsType.contains(ActivityStatus.SMS)) {
                     sendCodeService.sendCodeById(actId, id, ActivityStatus.SMS);
                     sendCodeService.sendCodeById(actId, id, ActivityStatus.MMS);
@@ -224,6 +226,8 @@ public class OrderController extends BaseController {
                         sendCodeService.sendCodeById(actId, id, ActivityStatus.MMS);
                     }
                 }
+            } else {
+                System.out.println("##################error=" + mapResult);
             }
         } catch (Exception e) {
             //如果抛出异常，则将返回页面的对象设置为false
@@ -299,6 +303,22 @@ public class OrderController extends BaseController {
         return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
     }
 
+
+    @RequestMapping(value = "/exportCodeCount", produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public String exportCodeOrderCount(OrderDto orderDto, HttpServletResponse response) {
+        ResponseData responseData = new AjaxResponseData();
+        orderDto.setPageNum(1);
+        orderDto.setPageSize(1);
+        ResponseData repData = orderService.findOrderList(orderDto);
+        OrderRespData orderRespData = JSON.parseObject(repData.getData() + "", OrderRespData.class);
+        if (orderRespData.getPageCount() > EXPORT_TOTAL) {
+            responseData.setSuccess(false);
+            responseData.setErrorMsg("导出数量超过50000条");
+        }
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
+    }
+
     @RequestMapping("/exportCodeOrder")
     public void exportCodeOrder(OrderDto orderDto, HttpServletResponse response) {
         boolean isFinal = false;
@@ -322,6 +342,7 @@ public class OrderController extends BaseController {
             e.printStackTrace();
         }
         while (!isFinal) {
+            orderDto.setDownload(true);
             orderDto.setPageNum(pageNum);
             orderDto.setPageSize(EXPOET_PAGESIZE);
             ResponseData repData = orderService.findCodeOrderList(orderDto);
@@ -391,7 +412,22 @@ public class OrderController extends BaseController {
 
     }
 
-    @RequestMapping("/export")
+    @RequestMapping(value = "/exportCount", produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public String exportOrderCount(OrderDto orderDto, HttpServletResponse response) {
+        ResponseData responseData = new AjaxResponseData();
+        orderDto.setPageNum(1);
+        orderDto.setPageSize(1);
+        ResponseData repData = orderService.findOrderList(orderDto);
+        OrderRespData orderRespData = JSON.parseObject(repData.getData() + "", OrderRespData.class);
+        if (orderRespData.getPageCount() > EXPORT_TOTAL) {
+            responseData.setSuccess(false);
+            responseData.setErrorMsg("导出数量超过50000条");
+        }
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
+    }
+
+    @RequestMapping(value = "/export", produces = {"application/json;charset=UTF-8"})
     public void exportOrder(OrderDto orderDto, HttpServletResponse response) {
         boolean isFinal = false;
         int pageNum = 1;
@@ -414,6 +450,7 @@ public class OrderController extends BaseController {
             e.printStackTrace();
         }
         while (!isFinal) {
+            orderDto.setDownload(true);
             orderDto.setPageNum(pageNum);
             orderDto.setPageSize(EXPOET_PAGESIZE);
             ResponseData repData = orderService.findOrderList(orderDto);

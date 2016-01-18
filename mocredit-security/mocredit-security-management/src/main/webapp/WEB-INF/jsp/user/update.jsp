@@ -38,7 +38,7 @@
 
             <div class="col-sm-9">
                 <input id="username" name="username"
-                       type="text" prompt="填写用户名" min="1" max="64" value="${user.username}"
+                       type="text" prompt="填写用户名" readonly="readonly" min="1" max="64" value="${user.username}"
                        placeholder="填写用户名" class="form-control">
             </div>
         </div>

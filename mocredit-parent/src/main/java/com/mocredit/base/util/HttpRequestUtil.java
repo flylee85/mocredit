@@ -1,15 +1,11 @@
-package com.mocredit.integral.util;
+package com.mocredit.base.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
 
 public class HttpRequestUtil {
     private final static String CHARSET = "utf-8";
@@ -245,8 +241,8 @@ public class HttpRequestUtil {
         System.out
                 .println(doPostJson(
 
-                        "http://127.0.0.1:10086/mocredit-security-management/loginInterface",
-                        "{\"username\":\"1903110527e5791\",\"password\":\"222\"}"));
+                        "http://127.0.0.1:8080/paymentRevoke",
+                        "{\"orderId\":\"1903110527e5791\",\"oldOrderId\":\"222\"}"));
 //        System.out
 //                .println(doPostJson(
 //                        "http://117.121.20.146:9092/integral/payment",

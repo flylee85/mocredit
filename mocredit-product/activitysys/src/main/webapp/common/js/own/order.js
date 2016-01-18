@@ -104,7 +104,20 @@ $(function () {
     });
     $("#export").click(function () {
         var formArray = $("#queryOrderPage").serialize();
-        window.location.href = "order/exportCodeOrder?type=02&" + formArray;
+        //提交
+        $.ajax({
+            type: "POST",
+            url: "order/exportCodeCount",
+            data: "type=02&exportType=CSV&" + formArray,
+            success: function (result, textStuts) {
+                if (result.success) {
+                    window.location.href = "order/exportCodeOrder?type=02&exportType=CSV&" + formArray;
+                    sendMsg(true, msg);
+                } else {
+                    sendMsg(false, result.errorMsg);
+                }
+            }
+        });
     });
 
     if ($('#activityCurrentType').val() == "2") {

@@ -17,8 +17,17 @@ public class OrderDto {
     private String type;   //类型（01，积分，02 码）
     private String exportType;//XLSX("XLSX", "xlsx格式"), CSV("CSV", "csv格式");
     private List<String> statusList; //状态(01,已发码，02,已兑换，03，已撤回)
+    private boolean download;//是否是下载
     private Integer pageNum; //页数
     private Integer pageSize; //页面大小
+
+    public boolean isDownload() {
+        return download;
+    }
+
+    public void setDownload(boolean download) {
+        this.download = download;
+    }
 
     public String getExportType() {
         return exportType;
