@@ -44,9 +44,9 @@ var oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 
 } );
 //datepicker
-$(".datetimepicker").each(function () {
-	$(this).datetimepicker({
-		format: "yyyy-mm-dd hh:ii:ss",
+$(".datepicker").each(function () {
+	$(this).datepicker({
+		format: "yyyy-mm-dd",
 		autoclose: true,
 		language: 'zh-CN',
 		todayHighlight: true,

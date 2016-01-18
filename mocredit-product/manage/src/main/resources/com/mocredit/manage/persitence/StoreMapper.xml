@@ -204,4 +204,10 @@
     </set>
     where id = #{id,jdbcType=VARCHAR} and status!=2
   </update>
+  <select id="selectStoreCountByMerchantId" resultType="Map" parameterType="java.lang.String" >
+  	SELECT SUM(business_status1) AS businessStatus1, SUM(business_status2) AS businessStatus2, SUM(business_status3) AS businessStatus3, SUM(business_status4) AS businessStatus4 FROM ( SELECT CASE WHEN business_status = 1 THEN 1 ELSE 0 END AS business_status1, CASE WHEN business_status = 2 THEN 1 ELSE 0 END AS business_status2, CASE WHEN business_status = 3 THEN 1 ELSE 0 END AS business_status3, CASE WHEN business_status = 4 THEN 1 ELSE 0 END AS business_status4 FROM t_store where merchant_id=#{merchantId} and status!=2 ) a
+  </select>
+   <select id="selectAreaCountByMerchantId" resultType="int" parameterType="java.lang.String" >
+  	SELECT count(1) FROM ( SELECT area FROM t_store where merchant_id=#{merchantId}  and status!=2 GROUP BY area ) a
+  </select>
 </mapper>

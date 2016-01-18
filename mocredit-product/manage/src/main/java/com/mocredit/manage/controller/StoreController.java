@@ -50,10 +50,10 @@ public class StoreController {
 				length = 10;
 			}
 			if (!StringUtils.isEmpty(paramMap.get("time1"))) {
-				paramMap.put("time1", DateUtil.strToDate(paramMap.get("time1").toString(), "yyyy-MM-dd HH:mm:ss"));
+				paramMap.put("time1", DateUtil.strToDate(paramMap.get("time1").toString(), "yyyy-MM-dd"));
 			}
 			if (!StringUtils.isEmpty(paramMap.get("time2"))) {
-				paramMap.put("time2", DateUtil.strToDate(paramMap.get("time2").toString(), "yyyy-MM-dd HH:mm:ss"));
+				paramMap.put("time2", DateUtil.strToDate(paramMap.get("time2").toString()+" 23:59:59", "yyyy-MM-dd HH:mm:ss"));
 			}
 			PageInfo<Store> page = storeService.getPage(paramMap, start / length + 1, length);
 			Map<String, Object> newMap = new HashMap<String, Object>();
