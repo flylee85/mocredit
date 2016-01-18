@@ -46,6 +46,20 @@ public class MerchantServiceImpl implements MerchantService {
 		map.put("key", key);
 		map.put("contractId", contractId);
 		List<Merchant> list = merchantMapper.selectAllForPage(map);
+		if (null != list) {
+			for (Merchant merchant : list) {
+				Map<String, Integer> storeInfo = storeMapper.selectStoreCountByMerchantId(merchant.getId());
+				if (null == storeInfo) {
+					storeInfo = new HashMap<>();
+					storeInfo.put("businessStatus1", 0);
+					storeInfo.put("businessStatus2", 0);
+					storeInfo.put("businessStatus3", 0);
+					storeInfo.put("businessStatus4", 0);
+				}
+				merchant.setStoreInfo(storeInfo);
+				merchant.setAreaCount(storeMapper.selectAreaCountByMerchantId(merchant.getId()));
+			}
+		}
 		return new PageInfo<Merchant>(list);
 	}
 

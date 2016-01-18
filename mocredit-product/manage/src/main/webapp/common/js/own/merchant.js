@@ -22,10 +22,60 @@ oTable= $("#shangjia").find('[data-ride="datatables"]').DataTable( {
 	"columns": [
 		{ "data": "name","className":"mName" },
 		{ "data": "createTime" },
+		{ "data": "linkphone" },
+		{ "data": "areaCount" },
 		{ "data": "storeCount" },
+		{ "data": null},
+		{ "data": null},
+		{ "data": null},
+		{ "data": null},
 		{ "data": null }
 	],
 	"columnDefs": [
+		{
+			"render": function(oObj, type, full, meta ) {
+				var storeInfo=full['storeInfo'];
+				if(storeInfo){
+					return storeInfo['businessStatus1']?storeInfo['businessStatus1']:0;
+				}
+				return 0;
+			},
+			"sortable": false,
+			"targets": 5
+		},
+		{
+			"render": function(oObj, type, full, meta ) {
+				var storeInfo=full['storeInfo'];
+				if(storeInfo){
+					return storeInfo['businessStatus2']?storeInfo['businessStatus2']:0;
+				}
+				return 0;
+				},
+			"sortable": false,
+			"targets": 6
+		},
+		{
+			"render": function(oObj, type, full, meta ) {
+				var storeInfo=full['storeInfo'];
+				if(storeInfo){
+					return storeInfo['businessStatus3']?storeInfo['businessStatus3']:0;
+				}
+				return 0;
+				},
+			"sortable": false,
+			"targets": 7
+		},
+		{
+			"render": function(oObj, type, full, meta ) {
+				var storeInfo=full['storeInfo'];
+				if(storeInfo){
+					return storeInfo['businessStatus4']?storeInfo['businessStatus4']:0;
+				}
+				return 0;
+				},
+			"sortable": false,
+			"targets": 8
+		},
 		{
 			"render": function(oObj, type, full, meta ) {
 				return '<a href="javascript:openUpdate(\''+full[ 'id' ]+'\',1)">编辑</a>'
@@ -33,7 +83,7 @@ oTable= $("#shangjia").find('[data-ride="datatables"]').DataTable( {
 				+ '<a href="store.html" class="changePage toContract" current-id="'+full[ 'id' ]+'">门店</a>'
 				},
 			"sortable": false,
-			"targets": 3
+			"targets": 9
 		}
 	]
 
