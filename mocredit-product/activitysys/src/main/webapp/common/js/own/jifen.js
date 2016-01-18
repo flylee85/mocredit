@@ -133,7 +133,6 @@
 			return false;
 		}
 		var type = $("#activityDetailType").val();
-
 		var addActivityFamaForm = $("#addActivityJifenForm");
 		$.get("activitysys/getActivityById",{id:activityId},function(result){
 			if(result.success){
@@ -176,6 +175,12 @@
 
 				addActivityFamaForm.find("input[name='startTime']").val(dataObject.startTime);
 				addActivityFamaForm.find("input[name='endTime']").val(dataObject.endTime);
+				if(dataObject.startTime){
+					$('#date2').datepicker('setStartDate', new Date(Date.parse(dataObject.startTime.replace(/-/g, "/"))));
+				}
+				if(dataObject.endTime){
+					$('#date1').datepicker('setEndDate', new Date(Date.parse(dataObject.endTime.replace(/-/g, "/"))));
+				}
 				if( dataObject.selectDate){
 					var selectDateArray = dataObject.selectDate.split(",");
 					for(var i=0;i<selectDateArray.length;i++){

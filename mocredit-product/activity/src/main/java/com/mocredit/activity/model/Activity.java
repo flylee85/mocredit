@@ -46,10 +46,10 @@ public class Activity implements Serializable {
 	private String subject;
 	private String mmsJson;
 	// 开始时间,start_time
-	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	@JSONField(format = "yyyy-MM-dd")
 	private Date startTime;
 	// 结束时间,end_time
-	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	@JSONField(format = "yyyy-MM-dd")
 	private Date endTime;
 	// 选择时间,select_date,选择日期，用英文逗号分隔
 	private String selectDate;
