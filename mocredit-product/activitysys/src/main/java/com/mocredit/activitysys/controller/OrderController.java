@@ -310,7 +310,7 @@ public class OrderController extends BaseController {
         ResponseData responseData = new AjaxResponseData();
         orderDto.setPageNum(1);
         orderDto.setPageSize(1);
-        ResponseData repData = orderService.findOrderList(orderDto);
+        ResponseData repData = orderService.findCodeOrderList(orderDto);
         OrderRespData orderRespData = JSON.parseObject(repData.getData() + "", OrderRespData.class);
         if (orderRespData.getPageCount() > EXPORT_TOTAL) {
             responseData.setSuccess(false);
