@@ -37,35 +37,35 @@ import com.mocredit.manage.persitence.TerminalMapper;
  */
 public class DataInitUtil {
 	/* 正式 */
+	private static final String IN_URL = "jdbc:mysql://127.0.0.1:3310/mcntong?useUnicode=true&characterEncoding=utf-8";
+	private static final String IN_UNAME = "root";
+	private static final String IN_PWD = "mocredit";
+	private static final String OUT_URL = "jdbc:mysql://127.0.0.1:3309/activity_new?useUnicode=true&characterEncoding=utf-8";
+	private static final String OUT_UNAME = "root";
+	private static final String OUT_PWD = "eAhrpeDoq/ve39md";
+	private static final String OLD_GATEWAY_URL = "jdbc:mysql://127.0.0.1:3309/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+	private static final String OLD_GATEWAY_USERNAME = "root";
+	private static final String OLD_GATEWAY_PWD = "eAhrpeDoq/ve39md";
+	private static final String NEW_GATEWAY_URL = "jdbc:mysql://127.0.0.1:3309/gateway?useUnicode=true&characterEncoding=utf-8";
+	private static final String NEW_GATEWAY_USERNAME = "root";
+	private static final String NEW_GATEWAY_PWD = "eAhrpeDoq/ve39md";
+	/* 测试 */
 	// private static final String IN_URL =
 	// "jdbc:mysql://127.0.0.1:3310/mcntong?useUnicode=true&characterEncoding=utf-8";
 	// private static final String IN_UNAME = "root";
 	// private static final String IN_PWD = "mocredit";
 	// private static final String OUT_URL =
-	// "jdbc:mysql://127.0.0.1:3309/activity_new?useUnicode=true&characterEncoding=utf-8";
+	// "jdbc:mysql://127.0.0.1:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
 	// private static final String OUT_UNAME = "root";
-	// private static final String OUT_PWD = "eAhrpeDoq/ve39md";
+	// private static final String OUT_PWD = "root";
 	// private static final String OLD_GATEWAY_URL =
-	// "jdbc:mysql://127.0.0.1:3309/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+	// "jdbc:mysql://127.0.0.1:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
 	// private static final String OLD_GATEWAY_USERNAME = "root";
-	// private static final String OLD_GATEWAY_PWD = "eAhrpeDoq/ve39md";
+	// private static final String OLD_GATEWAY_PWD = "root";
 	// private static final String NEW_GATEWAY_URL =
-	// "jdbc:mysql://127.0.0.1:3309/gateway?useUnicode=true&characterEncoding=utf-8";
+	// "jdbc:mysql://127.0.0.1:3306/gateway?useUnicode=true&characterEncoding=utf-8";
 	// private static final String NEW_GATEWAY_USERNAME = "root";
-	// private static final String NEW_GATEWAY_PWD = "eAhrpeDoq/ve39md";
-	/* 测试 */
-	private static final String IN_URL = "jdbc:mysql://127.0.0.1:3310/mcntong?useUnicode=true&characterEncoding=utf-8";
-	private static final String IN_UNAME = "root";
-	private static final String IN_PWD = "mocredit";
-	private static final String OUT_URL = "jdbc:mysql://127.0.0.1:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
-	private static final String OUT_UNAME = "root";
-	private static final String OUT_PWD = "root";
-	private static final String OLD_GATEWAY_URL = "jdbc:mysql://127.0.0.1:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
-	private static final String OLD_GATEWAY_USERNAME = "root";
-	private static final String OLD_GATEWAY_PWD = "root";
-	private static final String NEW_GATEWAY_URL = "jdbc:mysql://127.0.0.1:3306/gateway?useUnicode=true&characterEncoding=utf-8";
-	private static final String NEW_GATEWAY_USERNAME = "root";
-	private static final String NEW_GATEWAY_PWD = "root";
+	// private static final String NEW_GATEWAY_PWD = "root";
 
 	private static String IMPORT_URL = "http://127.0.0.1:8080/integral/activityImport";
 
@@ -126,8 +126,8 @@ public class DataInitUtil {
 			System.out.println("==========start导入离线活动=========");
 			util.importLiXianActivity();
 			System.out.println("==========end 导入离线活动=========");
-			System.out.println("==========提交事务=========");
-			util.conOut.commit();
+//			System.out.println("==========提交事务=========");
+//			util.conOut.commit();
 
 			util.conIn.close();
 			util.conOut.close();
@@ -299,27 +299,32 @@ public class DataInitUtil {
 			sb.append(getColumn(rs.getString("deskey")));
 			sb.append(getColumn(rs.getString("mackey")));
 			String devcode = rs.getString("devcode");
+			boolean isNew = !StringUtils.isEmpty(devcode) && devcode.startsWith("xp") && devcode.length() >= 10;
+			if (isNew) {
+				devcode = devcode.substring(2);
+			}
 			sb.append(getColumn(devcode));
 			sb.append(getColumn(0));// supplier_id
 			sb.append(getColumn("001"));
-			sb.append(getColumn("02"));
-			sb.deleteCharAt(sb.length() - 1);
-			sb.append("),");
-			if (!StringUtils.isEmpty(devcode) && devcode.startsWith("xp") && devcode.length() >= 10) {
-				String realCode = devcode.substring(2);
-				newGateway.append("(" + getColumn(IDUtil.getID()) + getColumn(realCode)
-						+ getColumn(Md5Utils.md5(realCode)) + getColumn("0000000000000000"));
+			if (isNew) {
+				newGateway.append("(" + getColumn(IDUtil.getID()) + getColumn(devcode)
+						+ getColumn(Md5Utils.md5(devcode)) + getColumn("0000000000000000"));
 				newGateway.deleteCharAt(newGateway.length() - 1);
 				newGateway.append("),");
+				sb.append(getColumn("01"));// gateway
 			} else {
 				oldGateway.append("(" + getColumn(1) + getColumn(devcode) + getColumn(1) + 17 + "),");
+				sb.append(getColumn("02"));// gateway
 			}
+			sb.deleteCharAt(sb.length() - 1);
+			sb.append("),");
 		}
 		if (newGateway.length() > 0) {
 			newGateway.deleteCharAt(newGateway.length() - 1);
 			String newString = newGateway.toString();
 			System.out.println("导入新网关:" + newString);
 			newStatement.execute(newString);
+			newConn.close();
 		}
 		oldGateway.deleteCharAt(oldGateway.length() - 1);
 		String string = oldGateway.toString();
