@@ -52,7 +52,7 @@ public class PayPresenter extends BasePresenter implements ConsumeModel.IConsume
     public void onAction(int id){
         switch (id){
             case R.id.pay_confirm:
-                consumeModel.todo(null);
+                consumeModel.todo(null,false);
                 break;
             case R.id.pay_back:
                 view.goBack();

@@ -70,7 +70,7 @@ public class SigninActivity extends BaseActivity implements SigninPresenter.ISig
         drawerLayout = (DrawerLayout) f(R.id.drawer);
         leftMenu = (ListView) f(R.id.left_menu_list);
         version = (TextView) f(R.id.version);
-        leftMenu.setAdapter(new ArrayAdapter<String>(this, R.layout.layout_simpleitem, new String[]{ "打印清单"}));
+        leftMenu.setAdapter(new ArrayAdapter<String>(this, R.layout.layout_simpleitem, new String[]{ "打印清单","重置密钥"}));
         actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close);
         actionBarDrawerToggle.syncState();
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
@@ -110,12 +110,6 @@ public class SigninActivity extends BaseActivity implements SigninPresenter.ISig
         onBackPressed();
     }
 
-    @Override
-    public void setModeTitle(String s) {
-        if(toolbar.getMenu().size() > 0) {
-            toolbar.getMenu().getItem(1).setTitle(s);
-        }
-    }
 
     @Override
     public void gotoService() {

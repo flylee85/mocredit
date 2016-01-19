@@ -187,10 +187,6 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 
 	}
 
-	@Override
-	public void setModeTitle(String s) {
-
-	}
 
 	@Override
 	public void gotoService() {

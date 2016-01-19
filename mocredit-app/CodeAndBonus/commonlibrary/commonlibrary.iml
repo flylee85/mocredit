@@ -80,8 +80,8 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="weiposSDKII" level="project" />
     <orderEntry type="library" exported="" name="codec" level="project" />
+    <orderEntry type="library" exported="" name="weiposSDKII" level="project" />
     <orderEntry type="library" exported="" name="Volley" level="project" />
     <orderEntry type="library" exported="" name="eventbus-2.4.1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.4" level="project" />

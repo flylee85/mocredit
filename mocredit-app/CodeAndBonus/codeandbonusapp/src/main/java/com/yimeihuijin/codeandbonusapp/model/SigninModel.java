@@ -108,6 +108,7 @@ public class SigninModel extends Model{
      * 签到
      */
     public void signIn() {
+
         if (App.akey == null) { //数据库中没有存储akey,则使用初始akey
             App.akey = Constants.INIT_AKEY;
             postSignIn();

@@ -13,24 +13,5 @@
         android:icon="@android:drawable/ic_menu_camera"
         app:showAsAction="always"/>
 
-    <item
-        android:id="@+id/action_mode"
-        android:orderInCategory="110"
-        android:title="验码模式"
-        app:showAsAction="always"/>
-
-    <item
-        android:id="@+id/action_code"
-        android:orderInCategory="120"
-        android:title="验码模式"
-        android:icon="@android:drawable/ic_menu_camera"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_bonus"
-        android:orderInCategory="130"
-        android:title="积分模式"
-        android:icon="@android:drawable/ic_menu_camera"
-        app:showAsAction="never"/>
 
 </menu>

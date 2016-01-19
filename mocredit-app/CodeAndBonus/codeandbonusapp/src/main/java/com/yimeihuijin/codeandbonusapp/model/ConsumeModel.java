@@ -379,20 +379,20 @@ public class ConsumeModel extends Model{
      * 消费/撤销动作
      * @param data 消费/撤销所需参数
      */
-    public void todo(String data){
+    public void todo(String data,boolean isRevoke){
         if(data!= null){
             data = data.toLowerCase();
         }
         switch (mode){
             case MODE_BONUS:
-                if(state == STATE_CONSUME){
+                if(!isRevoke){
                     bonusConsume();
                 }else{
                     bonusRevoke(data);
                 }
                 break;
             case MODE_CODE:
-                if(state == STATE_CONSUME){
+                if(!isRevoke){
                     codeConsume(data);
                 }else{
                     codeRevoke(data);

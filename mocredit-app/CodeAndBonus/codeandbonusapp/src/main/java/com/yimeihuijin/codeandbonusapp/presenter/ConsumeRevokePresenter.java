@@ -37,7 +37,7 @@ public class ConsumeRevokePresenter extends BasePresenter implements ConsumeMode
                 DeviceModel.Card card = DeviceModel.getInstance().getCard();
                 if(card != null){
                     model.setCard(card);
-                    model.todo(orderId);
+                    model.todo(orderId,true);
                 }else{
                     Toast.makeText(App.getInstance(), "未获取到刷卡信息，请重新刷卡", Toast.LENGTH_LONG).show();
                 }

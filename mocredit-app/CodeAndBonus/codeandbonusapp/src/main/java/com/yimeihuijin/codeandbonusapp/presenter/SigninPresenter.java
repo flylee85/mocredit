@@ -82,9 +82,9 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {   //左侧滑动菜单点击事件
                 switch (i) {
-//                    case 0:
-//                        reSignin();
-//                        break;
+                    case 1:
+                        reSignin();
+                        break;
                     case 0:
                         printOrders();
                         break;
@@ -128,7 +128,6 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
 
     @Override
     public void onResume() {
-        view.setModeTitle(ConsumeModel.getMode());
 //        if(BusProvider.get().getStickyEvent(ConsumeResultPresenter.ResultBackAction.class) != null){
 //            view.gotoFragment(fragment);
 //        }
@@ -221,21 +220,6 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
                     }
                 });
                 break;
-            case R.id.action_mode:
-                view.goBackToFragment(fragment);
-                view.setModeTitle(ConsumeModel.switchMode());
-                fragment.refresh();
-                break;
-            case R.id.action_bonus:
-                view.goBackToFragment(fragment);
-                view.setModeTitle(ConsumeModel.setModeTo(ConsumeModel.MODE_BONUS));
-                fragment.refresh();
-                break;
-            case R.id.action_code:
-                view.goBackToFragment(fragment);
-                view.setModeTitle(ConsumeModel.setModeTo(ConsumeModel.MODE_CODE));
-                fragment.refresh();
-                break;
         }
     }
 
@@ -250,7 +234,6 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
         public void gotoFragment(BaseFragment fragment);
         public void goBackToFragment(BaseFragment fragment);
         public void goBack();
-        public void setModeTitle(String s);
         public void gotoService();
         public ListView getLeftMenu();
         public void clearFragment(BaseFragment fragment);
