@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -191,6 +192,11 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 	@Override
 	public void gotoService() {
 
+	}
+
+	@Override
+	public DrawerLayout getDrawer() {
+		return null;
 	}
 
 	@Override

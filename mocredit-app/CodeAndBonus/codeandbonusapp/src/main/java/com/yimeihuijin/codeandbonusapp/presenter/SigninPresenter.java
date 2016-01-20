@@ -4,6 +4,9 @@ import android.content.pm.PackageInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -204,11 +207,11 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
      * @param id
      */
     public void onAction(int id){
-        if(fragment == null){
-            return;
-        }
         switch (id){
             case R.id.action_scan:
+                if(fragment == null){
+                    return;
+                }
                 view.goBackToFragment(fragment);
                 DeviceModel.getInstance().scan(new Scanner.OnResultListener() {
                     @Override
@@ -219,6 +222,13 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
                         }
                     }
                 });
+                break;
+            case android.R.id.home:
+                if(view.getDrawer().isDrawerOpen(GravityCompat.START)){
+                    view.getDrawer().closeDrawers();
+                }else{
+                    view.getDrawer().openDrawer(GravityCompat.START);
+                }
                 break;
         }
     }
@@ -235,6 +245,7 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
         public void goBackToFragment(BaseFragment fragment);
         public void goBack();
         public void gotoService();
+        public DrawerLayout getDrawer();
         public ListView getLeftMenu();
         public void clearFragment(BaseFragment fragment);
         public Looper getLooper();

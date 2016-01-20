@@ -2,13 +2,16 @@ package com.yimeihuijin.codeandbonusapp.modules.signinview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Looper;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -29,12 +32,13 @@ public class SigninActivity extends BaseActivity implements SigninPresenter.ISig
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
+    private DrawerArrowDrawable arrowDrawable;
     private ListView leftMenu;
     private TextView runningMsg;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
     private TextView version;
 
     private SigninPresenter presenter;
+
 
     private ConsumeFragment fragment;
 
@@ -66,14 +70,35 @@ public class SigninActivity extends BaseActivity implements SigninPresenter.ISig
         });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        arrowDrawable = new DrawerArrowDrawable(this);
+        arrowDrawable.setColor(Color.WHITE);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(arrowDrawable);
         drawerLayout = (DrawerLayout) f(R.id.drawer);
         leftMenu = (ListView) f(R.id.left_menu_list);
         version = (TextView) f(R.id.version);
         leftMenu.setAdapter(new ArrayAdapter<String>(this, R.layout.layout_simpleitem, new String[]{ "打印清单","重置密钥"}));
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close);
-        actionBarDrawerToggle.syncState();
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                arrowDrawable.setProgress(slideOffset);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                arrowDrawable.setProgress(1);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                arrowDrawable.setProgress(0);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
     }
@@ -82,6 +107,12 @@ public class SigninActivity extends BaseActivity implements SigninPresenter.ISig
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        presenter.onAction(item.getItemId());
+        return true;
     }
 
     @Override
@@ -115,6 +146,11 @@ public class SigninActivity extends BaseActivity implements SigninPresenter.ISig
     public void gotoService() {
         Intent i = new Intent(this, WangposService.class);
         startService(i);
+    }
+
+    @Override
+    public DrawerLayout getDrawer() {
+        return drawerLayout;
     }
 
     @Override

@@ -12,5 +12,6 @@
     <TextView
         style="@style/App.Layout.Title.Black"
         android:text="@string/app_name"
+        android:textColor="#ffffff"
         android:id="@+id/toolbar_center_title"/>
 </android.support.v7.widget.Toolbar>
