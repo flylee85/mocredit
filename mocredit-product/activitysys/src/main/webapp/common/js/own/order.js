@@ -40,7 +40,7 @@ $(function () {
                     "ordering": false,
                     "lengthChange": false,
                     "displayStart": parseInt(page) * 10 - 10,
-                    "pagingType": "full_numbers",
+                    "pagingType": "simple",
                     "pageLength": 10,
                     "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
                     "aaSorting": [[4, "desc"]],//默认排序

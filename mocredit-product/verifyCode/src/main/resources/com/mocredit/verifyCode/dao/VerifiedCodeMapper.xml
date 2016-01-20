@@ -120,6 +120,7 @@
 				and vc.issue_enterprise_name like '${enterpriseName}'
 			</if>
 		</where>
+		order by verify_time desc
 		limit #{pageStart},#{pageSize}
 	</select>
 	<!-- 根据条件查询流水分页数据 -->
