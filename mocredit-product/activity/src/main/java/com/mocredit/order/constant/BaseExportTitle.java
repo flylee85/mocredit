@@ -5,7 +5,7 @@ package com.mocredit.order.constant;
  */
 public enum BaseExportTitle {
     ORDER_ID("订单编号"), PUB_ENTERPRISE("企业"), SUP_ENTERPRISE("商户"), STORE("门店"), ACTIVITY("活动名称"),
-    ORDER_TIME("时间"), STATUS("状态"), CODE("码"), CARD_NUM("银行卡号"), INTEGRAL("积分"), TEL("电话");
+    ORDER_TIME("时间"), STATUS("状态"), CODE("码"), CARD_NUM("银行卡号"), INTEGRAL("积分"), TEL("电话"), MSG("验证结果");
 
     private String text;
 

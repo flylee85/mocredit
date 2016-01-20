@@ -509,6 +509,7 @@ public class OrderController extends BaseController {
                     dataMap.put(BaseExportTitle.INTEGRAL.getText(),
                             order.getAmt());
                     dataMap.put(BaseExportTitle.TEL.getText(), order.getMobile());
+                    dataMap.put(BaseExportTitle.MSG.getText(), order.getMsg());
                     if (ExportType.CSV.getValue().equals(
                             orderDto.getExportType())) {
                         exportCsvData.add(dataMap);
@@ -636,6 +637,9 @@ public class OrderController extends BaseController {
                 break;
 
         }
-
+        titleList.add(BaseExportTitle.MSG.getText());
+        keyList.add(BaseExportTitle.MSG.getText());
+        mapCsvTitle.put(BaseExportTitle.MSG.getText(),
+                BaseExportTitle.MSG.getText());
     }
 }
