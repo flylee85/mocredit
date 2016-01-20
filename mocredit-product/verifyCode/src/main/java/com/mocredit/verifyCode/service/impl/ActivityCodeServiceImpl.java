@@ -763,12 +763,18 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			param.put("status", type.toString());
 		}
 		param.put("pageStart", pageSize * (pageNum - 1));
-		param.put("pageSize", pageSize);
+		param.put("pageSize", pageSize+1);
 
 		// 获得总记录数
-		int pageCount = verifyCode.isDowload() ? 0 : acm.findPageCount(param);
 		// 获得数据
 		List<Map<String, Object>> page = acm.findPageList(param);
+		int pageCount=0;
+		if(page.size()==pageSize+1){
+			pageCount=pageSize * pageNum +1; 
+			page.remove(pageSize);
+		}else{
+			pageCount=pageSize * (pageNum - 1)+page.size();
+		}
 		for (Map<String, Object> log : page) {
 			Object status = log.get("status");
 			String endTime = log.get("endTime").toString();

@@ -75,18 +75,18 @@
 						   <label class="col-lg-2 control-label">兑换类型</label>
 
 						   <div class="col-lg-4">
-						   <input class="parsley-validated" type="radio" data-parsley-required="true"  name="exchangeType" value="2" />在线积分权益
-						   <input type="radio" name="exchangeType" value="1" />在线定额积分
+						   <!-- <input class="parsley-validated" type="radio"/>在线积分权益 -->
+						   <input type="radio" name="exchangeType" value="1"  data-parsley-required="true"  name="exchangeType"/>在线定额积分
 						   <input type="radio" name="exchangeType" value="3" />离线权益
 						   </div>
 					   </div>
 				   </div>
 				   <div  class="panel clearfix">
-				   	 <label class="col-lg-2 control-label">积分</label>
+				   	 <label class="col-lg-2 control-label">面值</label>
 
 						   <div class="col-lg-4">
 							   <input type="text" class="form-control input-small parsley-validated"
-									  data-parsley-required="true" data-parsley-type="integer" data-parsley-min="0" placeholder="积分" tabindex="7" name="integral">
+									  data-parsley-required="true" data-parsley-type="integer" data-parsley-min="0" placeholder="面值" tabindex="7" name="integral">
 						   </div>
 						    <label class="col-lg-2 control-label">外部商品编码</label>
 						   <div class="col-lg-4">
