@@ -206,7 +206,15 @@ public class SendCodeServiceImpl implements SendCodeService {
             //更新批次发送成功数量
             Batch batch = new Batch();
             batch.setId(batchCode.getBatchId());
-            batch.setSendSuccessNumber(getBatchCodeTotal(batchCode.getBatchId(), BatchCodeStatus.ALREADY_SEND.getValue()));
+            Integer sendSuc = getBatchCodeTotal(batchCode.getBatchId(), BatchCodeStatus.ALREADY_SEND.getValue());
+            Integer importSuc = getBatchCodeTotal(batchCode.getBatchId(), null);
+            if (importSuc > sendSuc) {
+                batch.setStatus(BatchStatus.PART_ALREADY_SEND.getValue());
+            } else {
+                batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
+            }
+            batch.setSendSuccessNumber(sendSuc);
+            batch.setSendNumber(sendSuc);
             batchMapper.updateBatch(batch);
             //记录发送短信和保存发码两个步骤的日志
             StringBuffer optInfo1 = new StringBuffer();
@@ -263,27 +271,34 @@ public class SendCodeServiceImpl implements SendCodeService {
                         break;
                     }
                 }
-                batch.setSendSuccessNumber(getBatchCodeTotal(batchId, BatchCodeStatus.ALREADY_SEND.getValue()));
-                batch.setSendNumber(batchCodeAllList.size());
-                batch.setImportSuccessNumber(getBatchCodeTotal(batchId, null));
+                Integer sendSuc = getBatchCodeTotal(batchId, BatchCodeStatus.ALREADY_SEND.getValue());
+                Integer importSuc = getBatchCodeTotal(batchId, null);
+                batch.setSendSuccessNumber(sendSuc);
+                batch.setSendNumber(sendSuc);
+                batch.setImportSuccessNumber(importSuc);
                 batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
                 optInfo1.append("成功数量：" + batchCodeAllList.size() + ";");
             } catch (Exception e) {
+                e.printStackTrace();
                 int sendSucNum = getBatchCodeTotal(batchId, BatchCodeStatus.ALREADY_SEND.getValue());
+                Integer importSuc = getBatchCodeTotal(batchId, null);
                 if (sendSucNum > 0) {
-                    batch.setStatus(BatchStatus.PART_ALREADY_SEND.getValue());
+                    if (importSuc > sendSucNum) {
+                        batch.setStatus(BatchStatus.PART_ALREADY_SEND.getValue());
+                    }
                 } else {
                     batch.setStatus(BatchStatus.IMPORT_NOT_CARRY.getValue());
                 }
                 batch.setSendSuccessNumber(sendSucNum);
                 batch.setSendNumber(batchCodeAllList.size());
-                batch.setImportSuccessNumber(getBatchCodeTotal(batchId, null));
+                batch.setImportSuccessNumber(importSuc);
                 optInfo1.append("失败数量：" + (batchCodeAllList.size() - sendSucNum) + ";");
                 sendSuccessFlag = false;
             }
             batchMapper.updateBatch(batch);
             optLogService.addOptLog("活动Id:" + actId + ",批次Id:" + batchId, "", "发送短信并保存发码记录-----" + optInfo1.toString());
         } catch (Exception e) {
+            e.printStackTrace();
             sendSuccessFlag = false;
         }
         return sendSuccessFlag;
@@ -438,7 +453,11 @@ public class SendCodeServiceImpl implements SendCodeService {
                     duanxin.setMobile(batchCode.getCustomerMobile());
                     duanxin.setCustomer(batchCode.getCustomerName());
                     if (noticeSmsMsg != null) {
-                        String content = noticeSmsMsg.replace("$name", batchCode.getCustomerName()).replace("$pwd", StringUtils.collectionToDelimitedString(listMap.get(batchCode.getCustomerMobile()), ","));//批量替换
+                        String name = "用户";
+                        if (batchCode.getCustomerName() != null) {
+                            name = batchCode.getCustomerName();
+                        }
+                        String content = noticeSmsMsg.replace("$name", name).replace("$pwd", StringUtils.collectionToDelimitedString(listMap.get(batchCode.getCustomerMobile()), ","));//批量替换
                         duanxin.setContent(content);
                     }
                     final MMSBO sendMsg = duanxin;
