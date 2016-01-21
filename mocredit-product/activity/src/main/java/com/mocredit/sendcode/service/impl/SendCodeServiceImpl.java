@@ -126,7 +126,9 @@ public class SendCodeServiceImpl implements SendCodeService {
         batch.setSendSuccessNumber(batchCodeAllList.size());
         batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
         batchMapper.updateBatch(batch);
-        carryVerifyCode(activity, batchMap.get("batchId") + "", batchCodeAllList);
+        if (!BatchStatus.ALREADY_SEND.getValue().equals(batch.getStatus())) {
+            carryVerifyCode(activity, batchMap.get("batchId") + "", batchCodeAllList);
+        }
         return batchCodeAllList;
     }
 
@@ -672,7 +674,10 @@ public class SendCodeServiceImpl implements SendCodeService {
             actBatchId = activityService.extractedCode(activityId, name, type, excelList.size() - 1);
             for (int i = 1; i < excelList.size(); i++) {
                 String customerMobile = excelList.get(i).get(0) + "";
-                String customerName = excelList.get(i).get(1) + "";
+                String customerName = null;
+                if (excelList.get(i).size() > 1) {
+                    customerName = excelList.get(i).get(1) + "";
+                }
                 //如果不是正确的手机格式，则返回错误信息
                 if (!ValidatorUtil.isMobile(customerMobile)) {
                     msgMap.put("success", false);

@@ -235,11 +235,11 @@
 <script>
     if ("${success}" == "true") {
         sendMsg(true, "上传成功");
-        window.location.href = "sendCode/sendcode?id=${actId}&type=${type}"
+        <%--window.location.href = "sendCode/sendcode?id=${actId}&type=${type}"--%>
     }
     if ("${success}" == "false" && "${msg}" != "") {
         sendMsg(false, "${msg}");
-        window.location.href = "sendCode/sendcode?id=${actId}&type=${type}"
+        <%--window.location.href = "sendCode/sendcode?id=${actId}&type=${type}"--%>
     }
     <%--if ("${type}" == "02") {--%>
     <%--$("#sms").removeAttr("style");--%>
@@ -388,6 +388,14 @@
         $("form").submit();
     }
     function upload() {
+        if (!$("#name").val()) {
+            sendMsg(false, "请输入批次名称");
+            return;
+        }
+        if (!$("#importExcel").val()) {
+            sendMsg(false, "请导入联系人");
+            return;
+        }
         $("form").submit();
     }
     $("#send").on("show.bs.modal", function () {
@@ -483,17 +491,6 @@
             }
         }, 'json');
     }
-    /*   function delBatch(id) {
-     $.get("sendCode/delBatchById", {"batchId": id}, function (result) {
-     if (result.success) {
-     sendMsg(true, "删除批次成功");
-     window.location.href = "sendCode/sendcode?id=${actId}"
-     } else {
-     sendMsg(false, result.errorMsg);
-     window.location.href = "sendCode/sendcode?id=${actId}"
-     }
-     }, 'json');
-     }*/
 </script>
 </body>
 </html>
