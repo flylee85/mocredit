@@ -437,12 +437,12 @@ public class ActivityServiceImpl implements ActivityService {
 			// 将修改信息发送至验码系统
 			httpPostMap.put("operCode", "1");
 			// System.out.println(JSON.toJSONString(httpPostMap));
+			String jsonString = JSON.toJSONString(httpPostMap);
+			logger.info("[ACTIVITY  INTEGRAL ADD]::" + jsonString);
 			if (!importFlag) {
 				return affectCount;
 			}
-			String jsonString = JSON.toJSONString(httpPostMap);
 			String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, jsonString);
-			logger.info("[ACTIVITY  INTEGRAL ADD]::" + jsonString);
 			Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
 			boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
 			if (!isSuccess) {
@@ -634,6 +634,7 @@ public class ActivityServiceImpl implements ActivityService {
 				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 				Map<String, Object> queryMap = new HashMap<String, Object>();
 				queryMap.put("activityId", activity.getId());
+				//storeList:门店ID,门店名称,商户ID，商户名称
 				List<Store> storeList = storeMapper.selectAllofActivity(activity.getId());
 				changeDescribe.append("门店信息：[");
 				for (Store as : storeList) {
@@ -643,6 +644,7 @@ public class ActivityServiceImpl implements ActivityService {
 					// 机具
 					Terminal terminal = new Terminal();
 					terminal.setStoreId(as.getId());
+					//terminals:机具号
 					List<Terminal> terminals = terminalMapper.selectAllEncode(terminal);
 					as.setTerminals(terminals);
 				}
@@ -651,9 +653,11 @@ public class ActivityServiceImpl implements ActivityService {
 
 				// 将修改信息发送至验码系统
 				httpPostMap.put("operCode", "2");
+				String jsonString = JSON.toJSONString(httpPostMap);
+				logger.info("[ACTIVITY  INTEGRAL ADD]::" + jsonString);
 				if (importFlag) {
 					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-							JSON.toJSONString(httpPostMap));
+							jsonString);
 					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
 					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
 					if (!isSuccess) {

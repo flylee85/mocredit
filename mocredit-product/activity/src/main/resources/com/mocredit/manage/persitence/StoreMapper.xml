@@ -37,7 +37,7 @@
   </select>
   <select id="selectAllofActivity" resultMap="BaseResultMap" parameterType="java.lang.String" >
 	    select 
-	    <include refid="Base_Column_List" />
+	    s.id,s.name,s.merchant_id
 	    ,m.name as merchantName
 		from t_store s
 		left join t_merchant m on s.merchant_id=m.id
