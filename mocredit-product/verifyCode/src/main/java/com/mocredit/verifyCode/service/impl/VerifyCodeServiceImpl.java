@@ -49,6 +49,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 		int pageCount = 0;
 		if (page.size() == pageSize + 1) {
 			pageCount = pageSize * pageNum + 1;
+			page.remove(pageSize);
 		} else {
 			pageCount = pageSize * (pageNum - 1) + page.size();
 		}
