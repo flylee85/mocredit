@@ -415,8 +415,10 @@ public class DataInitUtil {
 		String minshengId = msrs.getString("id");
 		while (rs.next()) {
 			StringBuilder sb = new StringBuilder(
-					"INSERT INTO act_activity(enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel,exchange_channel ) values ");
+					"INSERT INTO act_activity(id,enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel,exchange_channel ) values ");
 			sb.append("(");
+			int activityId = rs.getInt("id");
+			sb.append(getColumn(activityId));//id
 			sb.append(getColumn(minshengId));// enterpriseId
 			sb.append(getColumn("民生银行"));// enterpriseName
 			sb.append(getColumn(rs.getString("PRODUCT_NAME")));
@@ -499,11 +501,6 @@ public class DataInitUtil {
 			sb.append(")");
 			System.out.println(sb.toString());
 			execute(sb.toString(), false);
-			ResultSet actId = query("SELECT LAST_INSERT_ID()", false);
-			int activityId = 0;
-			if (actId.next()) {
-				activityId = actId.getInt(1);
-			}
 			// 导入活动门店关系
 			String shopSql = "SELECT shopid FROM SD_POS_TERM WHERE MERCH_ID = '" + rs.getString("MERCH_ID")
 					+ "' AND TERM_ID = '" + rs.getString("TREM_ID") + "'";
@@ -540,8 +537,10 @@ public class DataInitUtil {
 		String huaxianId = msrs.getString("id");
 		while (rs.next()) {
 			StringBuilder sb = new StringBuilder(
-					"INSERT INTO act_activity(enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel,exchange_channel ) values ");
+					"INSERT INTO act_activity(id,enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel,exchange_channel ) values ");
 			sb.append("(");
+			int activityId = rs.getInt("id");
+			sb.append(getColumn(activityId));//id
 			sb.append(getColumn(huaxianId));// enterpriseId
 			sb.append(getColumn("华夏银行"));// enterpriseName
 			sb.append(getColumn(rs.getString("PRODUCT_NAME")));
@@ -619,11 +618,6 @@ public class DataInitUtil {
 			sb.append(")");
 			System.out.println(sb.toString());
 			execute(sb.toString(), false);
-			ResultSet actId = query("SELECT LAST_INSERT_ID()", false);
-			int activityId = 0;
-			if (actId.next()) {
-				activityId = actId.getInt(1);
-			}
 			// 导入活动门店关系
 			String shopSql = "SELECT shopid FROM SD_POS_TERM WHERE MERCH_ID = '" + rs.getString("MERCH_ID")
 					+ "' AND TERM_ID = '" + rs.getString("TREM_ID") + "'";
