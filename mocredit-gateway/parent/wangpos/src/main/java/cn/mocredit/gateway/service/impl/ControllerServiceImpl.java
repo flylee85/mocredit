@@ -211,6 +211,9 @@ public class ControllerServiceImpl implements ControllerService {
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
         YanMaQingQiuData req = jsonToObject(jsonData.getjData(), YanMaQingQiuData.class);
+        if(req == null){
+        	return "-1";
+        }
         YanMaXiangYingData ret = new YanMaXiangYingData();
         ret.setTitle("福码");//TODO 如何获得新老活动的名称？先写死。。。
         String code = req.getCode();
@@ -220,6 +223,11 @@ public class ControllerServiceImpl implements ControllerService {
             String searchno = uuid();
             String batchno = req.getOrderId();
             EitemBo eitem = barcodeserviceYanma(device.getDevcode(), req.getCode(), "0", "1", batchno, searchno);
+            if(eitem == null){
+            	eitem = new EitemBo();
+            	eitem.setIsSuccess("false");
+            	eitem.setError("所验的码是无效码");
+            }
             String isSuccess = eitem.getIsSuccess();
 
             ret.setRtnFlag("true".equals(isSuccess) ? "0" : "1");
@@ -232,7 +240,9 @@ public class ControllerServiceImpl implements ControllerService {
             ret.setBatchno(eitem.getBacthNo());
             ret.setErweima(req.getCode());
             ret.setPosno(batchno);
-            ret.setPrintInfo(eitem.getXiaoTiao().replace("\\n", "\n"));
+            if(eitem.getXiaoTiao() != null){
+                ret.setPrintInfo(eitem.getXiaoTiao().replace("\\n", "\n"));
+            }
             jsonData.setjData(objectToJson(ret));
             jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
             String content = objectToJson(jsonData);
@@ -361,6 +371,12 @@ public class ControllerServiceImpl implements ControllerService {
         String retxml = callBarcodeservice(a, String.class);
         logger.info("xml from barcodeservice http yanma" + retxml);
         List<EitemBo> eitemlist = (List<EitemBo>) XmlUtil.getBO(new EitemBo().getClass(), retxml);
+        if(eitemlist == null || eitemlist.size() < 1){
+        	EitemBo bo = new EitemBo();
+        	bo.setIsSuccess("false");
+        	bo.setError("所验的码是无效码");
+        	return bo;
+        }
         return eitemlist.get(0);
     }
 
@@ -760,7 +776,9 @@ public class ControllerServiceImpl implements ControllerService {
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
         CheXiaoQingQiuData req = jsonToObject(jsonData.getjData(), CheXiaoQingQiuData.class);
-
+        if(req==null){
+        	return "-1";
+        }
         String devcode = tx.getDevice().getDevcode();
         String orderId = req.getOrderId();
 
@@ -801,7 +819,9 @@ public class ControllerServiceImpl implements ControllerService {
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
         CheXiaoQingQiuData req = jsonToObject(jsonData.getjData(), CheXiaoQingQiuData.class);
-
+        if(req==null){
+        	return "-1";
+        }
         String devcode = tx.getDevice().getDevcode();
         String orderId = req.getOrderId();
 
@@ -873,7 +893,7 @@ public class ControllerServiceImpl implements ControllerService {
                 }
                 String[] ids = a.id.split(",");
                 for(String id:ids){
-                    List<Device> devices = deviceRepository.getDeviceById(a.id);
+                    List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
                     if (devices.size() != 1) {
                         return "查不到该en（" + a.enCode + "）对应的机具";
                     }
@@ -883,7 +903,7 @@ public class ControllerServiceImpl implements ControllerService {
                 if(a == null || a.enCode == null || a.oper == null || a.id == null){
                     return "参数错误";
                 }
-                List<Device> devices = deviceRepository.getDeviceById(a.id);
+                List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
                 if(devices == null || devices.isEmpty()){
                     Device dev = new Device();
                     dev.setId(a.id);
