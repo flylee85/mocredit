@@ -186,6 +186,7 @@ public class StringUtils {
 	}
 
 	public static String getT(String json, String rkey) {
+		System.out.println("encode getT==========="+App.akey);
 		String password = MD5(App.akey + rkey);
 		// System.out.println(password);
 		// String ret = "";

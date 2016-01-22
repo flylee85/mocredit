@@ -126,6 +126,7 @@ public class SigninModel extends Model{
     }
 
     public void postSignIn() {
+        System.out.println("encode ==========="+App.akey);
         PO post = new PO(new Object());
         post(URLs.URL_SIGNIN, post, TAG_SIGNIN);
     }

@@ -20,6 +20,8 @@ import com.yimeihuijin.codeandbonusapp.utils.BusProvider;
 import com.yimeihuijin.codeandbonusapp.utils.StringUtils;
 import com.yimeihuijin.commonlibrary.Presenter.BasePresenter;
 import com.yimeihuijin.commonlibrary.widgets.CodeScreen;
+import com.yimeihuijin.commonlibrary.widgets.dialog.AlertDialog;
+import com.yimeihuijin.commonlibrary.widgets.dialog.ProgressDialog;
 
 /**
  * 主界面的表现层
@@ -82,7 +84,15 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
                     Toast.makeText(App.getInstance(),"订单号格式错误，请检查后重新输入！",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                onConsume(true);
+                AlertDialog dialog = new AlertDialog(view.getAvtivity(), new ProgressDialog.IDialogListener() {
+                    @Override
+                    public void onConfirm() {
+                        onConsume(true);
+                    }
+                });
+                dialog.setContent("是否确定撤销订单\n"+view.getScreen().getCode());
+                dialog.setTitle("订单撤销");
+                dialog.show();
                 break;
         }
     }
