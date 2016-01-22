@@ -104,10 +104,12 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 			@Override
 			public void onResponse(String response, String tag) {
 				// TODO Auto-generated method stub
-				Model.PO ret = new Gson().fromJson(response, Model.PO.class);
-				HeartBeatInfo sr = new Gson().fromJson(ret.jData,
+//				System.out.println("heart beat = "+response);
+//				Model.PO ret = new Gson().fromJson(response, Model.PO.class);
+				HeartBeatInfo sr = new Gson().fromJson(response,
 						HeartBeatInfo.class);
 				if (sr != null && "1".equals(sr.action)) {
+
 					updateActivities();
 				} else if (sr != null && "2".equals(sr.action)) {
 					long rate = StringUtils.getHeartBeatRate(sr.para);
@@ -160,7 +162,7 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 			public void onErroResponse(VolleyError error, String tag) {
 
 			}
-		}).post(URLs.URL_ACTIVITIES,post);
+		}).post(URLs.URL_ACTIVITIES, post);
 	}
 
 	@Override
@@ -187,6 +189,7 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 	public void goBack() {
 
 	}
+
 
 
 	@Override
