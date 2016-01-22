@@ -15,8 +15,8 @@ android {
         applicationId "com.yimeihuijin.codeandbonusapp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 4
-        versionName 'V100R001C01B004'
+        versionCode 5
+        versionName 'V100R001C01B005'
         signingConfig signingConfigs.config
     }
     buildTypes {
