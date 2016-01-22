@@ -448,8 +448,8 @@ public class ActivityServiceImpl implements ActivityService {
 			if (!isSuccess) {
 				throw new BusinessException("向积分核销系统同步信息失败");
 			}
-			// 保存送信息到验码系统的日志
-			optLogService.addOptLog("活动Id:" + activity.getId(), "", "积分核销接口修改活动信息-----" + changeDescribe.toString());
+			// 保存送信息到验码系统的日志 changeDescribe可能太大造成异常,不记录
+			optLogService.addOptLog("活动Id:" + activity.getId(), "", "积分核销接口修改活动信息-----");
 		}
 		// 保存日志
 		optLogService.addOptLog(activity.getId(), "", "活动添加-----" + activity.toDescribeString());
@@ -634,7 +634,7 @@ public class ActivityServiceImpl implements ActivityService {
 				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 				Map<String, Object> queryMap = new HashMap<String, Object>();
 				queryMap.put("activityId", activity.getId());
-				//storeList:门店ID,门店名称,商户ID，商户名称
+				// storeList:门店ID,门店名称,商户ID，商户名称
 				List<Store> storeList = storeMapper.selectAllofActivity(activity.getId());
 				changeDescribe.append("门店信息：[");
 				for (Store as : storeList) {
@@ -644,7 +644,7 @@ public class ActivityServiceImpl implements ActivityService {
 					// 机具
 					Terminal terminal = new Terminal();
 					terminal.setStoreId(as.getId());
-					//terminals:机具号
+					// terminals:机具号
 					List<Terminal> terminals = terminalMapper.selectAllEncode(terminal);
 					as.setTerminals(terminals);
 				}
@@ -656,17 +656,15 @@ public class ActivityServiceImpl implements ActivityService {
 				String jsonString = JSON.toJSONString(httpPostMap);
 				logger.info("[ACTIVITY  INTEGRAL ADD]::" + jsonString);
 				if (importFlag) {
-					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-							jsonString);
+					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, jsonString);
 					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
 					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
 					if (!isSuccess) {
 						throw new BusinessException("向积分核销系统同步信息失败");
 					}
 				}
-				// 保存送信息到验码系统的日志
-				optLogService.addOptLog("活动Id:" + activity.getId(), "",
-						"积分核销接口修改活动信息-----" + changeDescribe.toString());
+				// 保存送信息到验码系统的日志 changeDescribe可能太大造成异常，不记录
+				optLogService.addOptLog("活动Id:" + activity.getId(), "", "积分核销接口修改活动信息-----");
 			}
 		}
 		// 验码同步
@@ -827,7 +825,7 @@ public class ActivityServiceImpl implements ActivityService {
 					}
 				}
 				// 保存送信息到验码系统的日志
-				optLogService.addOptLog("活动Id:" + activity.getId(), "", "验码接口修改活动信息-----" + changeDescribe.toString());
+				optLogService.addOptLog("活动Id:" + activity.getId(), "", "验码接口修改活动信息-----");
 			}
 		}
 	}
@@ -1043,7 +1041,7 @@ public class ActivityServiceImpl implements ActivityService {
 		optInfo.append("请求参数system_code：" + httpPostMap2.get("system_code") + ";");
 		optInfo.append("请求参数number：" + number + ";");
 		optInfo.append("请求回应is_success：true;");
-		optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + orderId, "", "码库接口提码-----" + optInfo.toString());
+		optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + orderId, "", "码库接口提码-----"+number);
 		// 返回数据
 		return codesMap;
 	}
