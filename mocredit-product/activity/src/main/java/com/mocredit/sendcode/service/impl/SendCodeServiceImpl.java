@@ -118,6 +118,10 @@ public class SendCodeServiceImpl implements SendCodeService {
             batchCode.setStartTime(new Date());
             batchCodeMapper.updateBatchCode(batchCode);
         }
+        Batch batchOri = batchMapper.getBatchById(batchMap.get("batchId") + "");
+        if (!BatchStatus.ALREADY_SEND.getValue().equals(batchOri.getStatus())) {
+            carryVerifyCode(activity, batchMap.get("batchId") + "", batchCodeAllList);
+        }
         Batch batch = new Batch();
         batch.setId(batchMap.get("batchId") + "");
         batch.setPickNumber(batchCodeAllList.size());
@@ -126,9 +130,6 @@ public class SendCodeServiceImpl implements SendCodeService {
         batch.setSendSuccessNumber(batchCodeAllList.size());
         batch.setStatus(BatchStatus.ALREADY_SEND.getValue());
         batchMapper.updateBatch(batch);
-        if (!BatchStatus.ALREADY_SEND.getValue().equals(batch.getStatus())) {
-            carryVerifyCode(activity, batchMap.get("batchId") + "", batchCodeAllList);
-        }
         return batchCodeAllList;
     }
 

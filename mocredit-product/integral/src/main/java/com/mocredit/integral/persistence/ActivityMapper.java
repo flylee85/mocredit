@@ -49,12 +49,28 @@ public interface ActivityMapper {
     int saveStore(Store t);
 
     /**
+     * 批量保存门店
+     *
+     * @param storeList
+     * @return
+     */
+    int saveStoreList(List<Store> storeList);
+
+    /**
      * 保存机具信息
      *
      * @param t
      * @return
      */
     int saveTerminal(Terminal t);
+
+    /**
+     * 批量保存机具
+     *
+     * @param terminalList
+     * @return
+     */
+    int saveTerminalList(List<Terminal> terminalList);
 
     /**
      * 根据活动id更新活动状态
