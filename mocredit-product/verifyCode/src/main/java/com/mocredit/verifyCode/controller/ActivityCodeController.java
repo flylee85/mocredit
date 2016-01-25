@@ -816,10 +816,12 @@ public class ActivityCodeController {
 				TActivityCode code = (TActivityCode) ard.getData();
 				retMap.put("amt", code.getAmount());
 				retMap.put("avaliable", "0");
+				retMap.put("codeName", code.getActivityName());
 				retMap.put("errMsg", "");
 			}else{
 				retMap.put("amt", "0");
 				retMap.put("avaliable", "1");
+				retMap.put("codeName", "");
 				retMap.put("errMsg", ard.getErrorMsg());
 			}
 			// 日志
