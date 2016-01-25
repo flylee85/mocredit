@@ -51,7 +51,7 @@
 <div class="container">
     <form class="form-signin" action="loginAction" role="form" method="post">
         <h2 class="form-signin-heading" align="center">
-            亿美汇金管理子系统
+            亿美汇金活动子系统
         </h2>
         <br/>
         <input type="text" id="username" name="username" value="${username}" class="form-control" placeholder="用户名">
