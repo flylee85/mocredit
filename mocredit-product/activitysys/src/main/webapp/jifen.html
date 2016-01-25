@@ -75,22 +75,42 @@
 
 						   <div class="col-lg-4">
 						   <!-- <input class="parsley-validated" type="radio"/>在线积分权益 -->
-						   <input type="radio" name="exchangeType" value="1"  data-parsley-required="true"  name="exchangeType"/>在线积分权益
+						   <input type="radio" name="exchangeType" value="1"  data-parsley-required="true"  checked="checked"/>在线积分权益
 						   <input type="radio" name="exchangeType" value="3" />离线权益
+						   </div>
+						   <label class="col-lg-2 control-label">网关关联编码</label>
+						   <div class="col-lg-4">
+							    <input type="text" class="form-control input-small parsley-validated" data-parsley-maxlength="30" placeholder="网关关联编码" name="outCode"  tabindex="3" data-parsley-type="alphanum">
+							</div>
+					   </div>
+				   </div>
+				   <div class="panel clearfix">
+					   <div class="form-group">
+						   <label class="col-lg-2 control-label">活动类型</label>
+						   <div class="col-lg-4">
+						   <input type="radio" name="activityStyle" value="1"  data-parsley-required="true"  checked="checked"/>兑换
+						   <input type="radio" name="activityStyle" value="2" />满减返现
+						   <input type="radio" name="activityStyle" value="3" />满减打折
 						   </div>
 					   </div>
 				   </div>
+				   <div class="panel clearfix">
+					   <label class="col-lg-2 control-label">启用金额</label>
+					   <div class="col-lg-4">
+						   <input type="text" class="form-control input-small parsley-validated" placeholder="活动最低金额" tabindex="7" name="amountLimit" data-parsley-maxlength="200" >
+					   </div>
+					    <label class="col-lg-2 control-label">折扣额度</label>
+					   <div class="col-lg-4">
+						    <input type="text" class="form-control input-small parsley-validated" data-parsley-type="number" data-parsley-min="0.01"  placeholder="金额或者折扣度，两位小数" name="discount"  tabindex="3">
+						</div>
+				   </div>
 				   <div  class="panel clearfix">
-				   	 <label class="col-lg-2 control-label">面值</label>
+				   	 <label class="col-lg-2 control-label">积分</label>
 
 						   <div class="col-lg-4">
 							   <input type="text" class="form-control input-small parsley-validated"
-									  data-parsley-required="true" data-parsley-type="integer" data-parsley-min="0" placeholder="面值" tabindex="7" name="integral">
+									  data-parsley-required="true" data-parsley-type="integer" placeholder="积分" tabindex="7" name="integral">
 						   </div>
-						    <label class="col-lg-2 control-label">外部商品编码</label>
-						   <div class="col-lg-4">
-							    <input type="text" class="form-control input-small parsley-validated" data-parsley-maxlength="30" placeholder="外部编码" name="outCode"  tabindex="3" data-parsley-type="alphanum">
-							</div>
 				   </div>
 				   <div class="panel clearfix">
 				   		<label class="col-lg-2 control-label">支持BIN码</label>

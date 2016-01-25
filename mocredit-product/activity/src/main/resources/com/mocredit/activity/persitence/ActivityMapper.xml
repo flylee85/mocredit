@@ -42,7 +42,10 @@
 		a.bins as bins,
 		a.exchange_type as exchangeType,
 		a.channel as channel,
-		a.exchange_channel as exchangeChannel
+		a.exchange_channel as exchangeChannel,
+		a.activity_style as activityStyle,
+		a.amount_limit as amountLimit,
+		a.discount as discount
 	</sql>
 	
 	<!--  公用查询条件，包含活动所有字段的查询条件     -->
@@ -226,7 +229,10 @@
 			aa.receipt_print as receiptPrint,
 			aa.pos_success_msg as posSuccessMsg,
 			e.name as enterpriseName,
-			e.code as enterpriseCode
+			e.code as enterpriseCode,
+			aa.activity_style as activityStyle,
+			aa.amount_limit as amtLimit,
+			aa.discount as discount
 		FROM
 			act_activity aa
 		left join t_enterprise e on aa.enterprise_id=e.id
@@ -281,7 +287,10 @@
 			bins,
 			exchange_type,
 			channel,
-			exchange_channel
+			exchange_channel,
+			activity_style,
+			amount_limit,
+			discount
 	</trim>
 	<trim prefix="values (" suffix=")" suffixOverrides="," >
 			#{name},
@@ -314,7 +323,10 @@
 			#{bins},
 			#{exchangeType},
 			#{channel},
-			#{exchangeChannel}
+			#{exchangeChannel},
+			#{activityStyle},
+			#{amountLimit},
+			#{discount}
 	</trim>
 	</insert>
 	
@@ -417,6 +429,15 @@
 	</if>
 	<if test="exchangeChannel != null" >
 		exchange_channel = #{exchangeChannel},
+	</if>
+	<if test="activityStyle != null" >
+		activity_style = #{activityStyle},
+	</if>
+	<if test="amountLimit != null" >
+		amount_limit = #{amountLimit},
+	</if>
+	<if test="discount != null" >
+		discount = #{discount},
 	</if>
 	</set>
 	where id = #{id}

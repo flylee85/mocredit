@@ -160,6 +160,9 @@
 				addActivityFamaForm.find("select[name='channel']").val(dataObject.channel);
 				addActivityFamaForm.find("select[name='channel']").attr('data-val',dataObject.channel);
 				addActivityFamaForm.find("input[name='exchangeType'][value="+dataObject.exchangeType+"]").attr("checked","checked");
+				addActivityFamaForm.find("input[name='activityStyle'][value="+dataObject.activityStyle+"]").click();
+				addActivityFamaForm.find("input[name='amountLimit']").val(dataObject.amountLimit);
+				addActivityFamaForm.find("input[name='discount']").val(dataObject.discount);
 				if(dataObject.storeCount != 0){
 					addActivityFamaForm.find(".chooseShop").addClass('popFloat').text("已选择 " + dataObject.storeCount + " 家门店");
 				}else{

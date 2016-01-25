@@ -103,6 +103,34 @@ public class Activity implements Serializable {
 	private String contractName;
 	// 兑换渠道(验码)
 	private String exchangeChannel;
+	private int activityStyle;//活动类型 
+	private String amountLimit;//活动最低额度限制
+	private double discount;//折扣额度（金额或者折扣度，两位小数）
+
+	
+	public int getActivityStyle() {
+		return activityStyle;
+	}
+
+	public void setActivityStyle(int activityStyle) {
+		this.activityStyle = activityStyle;
+	}
+
+	public String getAmountLimit() {
+		return amountLimit;
+	}
+
+	public void setAmountLimit(String amountLimit) {
+		this.amountLimit = amountLimit;
+	}
+
+	public double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(double discount) {
+		this.discount = discount;
+	}
 
 	public String getExchangeChannel() {
 		return exchangeChannel;
