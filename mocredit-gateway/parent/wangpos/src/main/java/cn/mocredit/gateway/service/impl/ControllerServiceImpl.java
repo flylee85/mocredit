@@ -62,6 +62,7 @@ import cn.mocredit.gateway.wangpos.bo.Huodongliebiao;
 import cn.mocredit.gateway.wangpos.bo.JiaMiCeShiData;
 import cn.mocredit.gateway.wangpos.bo.JieSuanXiangYingData;
 import cn.mocredit.gateway.wangpos.bo.JsonData;
+import cn.mocredit.gateway.wangpos.bo.MaquanchaxunBo;
 import cn.mocredit.gateway.wangpos.bo.ObjectAgrs;
 import cn.mocredit.gateway.wangpos.bo.QianDaoData;
 import cn.mocredit.gateway.wangpos.bo.QianDaoHuiZhiData;
@@ -100,6 +101,8 @@ public class ControllerServiceImpl implements ControllerService {
     private String sendToVerifyCodeModelUrl;
     @Value("${restBarcodeServiceAddress}")
     private String restBarcodeServiceAddress;
+    @Value("${codeQueryServiceUrl}")
+    private String codeQueryServiceUrl;
 
     @Value("${getActivitiesServiceUrl}")
     private String getActivitiesServiceUrl;
@@ -306,6 +309,24 @@ public class ControllerServiceImpl implements ControllerService {
             return encrypt(content, tx.getMd5Hex());
         }
     }
+    
+    @Override
+    public String maquanchaxun(String h,String t){
+        TongXin tx = new TongXin(h, t).invoke();
+        JsonData jsonData = tx.getJsonData();
+        if (jsonData == null) return "-1";
+        MaquanchaxunBo maquan = jsonToObject(jsonData.getjData(),MaquanchaxunBo.class);
+        if(maquan == null){
+        	return "-1";
+        }
+        maquan.device = tx.getDevice().getDevcode();
+        String ret = callService(codeQueryServiceUrl, objectToJson(maquan));
+        jsonData.setjData(ret);
+        jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
+        String content = objectToJson(jsonData);
+        logger.info(content);
+        return encrypt(content, tx.getMd5Hex());
+    }
 
     @Override
     public String yanmachexiao(String h,String t){
@@ -426,6 +447,7 @@ public class ControllerServiceImpl implements ControllerService {
         logger.info(content);
         return encrypt(content, tx.getMd5Hex());
     }
+    
     @Override
     public String huodongliebiao(String h, String t) {
         if (fakeDemo) {
@@ -879,9 +901,14 @@ public class ControllerServiceImpl implements ControllerService {
             if(a == null || a.enCode == null || a.oper == null || a.id == null){
             return "参数错误";
             }
+            List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
+            if(devices != null && devices.size() > 0){
+            	return "机具号"+a.enCode+"已存在";
+            }
             Device dev = new Device();
             dev.setId(a.id);
             dev.setDevcode(a.enCode);
+            dev.setXintiaohouxu("1");
             dev.setDevcodemd5(md5Hex(a.enCode));
             dev.setPassword("0000000000000000");
             deviceRepository.save(dev);
@@ -894,7 +921,7 @@ public class ControllerServiceImpl implements ControllerService {
                 String[] ids = a.id.split(",");
                 for(String id:ids){
                     List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
-                    if (devices.size() != 1) {
+                    if (devices == null || devices.size() < 1) {
                         return "查不到该en（" + a.enCode + "）对应的机具";
                     }
                     deviceRepository.delete(devices);
@@ -909,6 +936,7 @@ public class ControllerServiceImpl implements ControllerService {
                     dev.setId(a.id);
                     dev.setDevcode(a.enCode);
                     dev.setDevcodemd5(md5Hex(a.enCode));
+                    dev.setXintiaohouxu("1");
                     dev.setPassword("0000000000000000");
                     deviceRepository.save(dev);
                     return "0";
@@ -916,6 +944,7 @@ public class ControllerServiceImpl implements ControllerService {
                 devices.get(0).setDevcode(a.enCode);
                 devices.get(0).setId(a.id);
                 devices.get(0).setDevcodemd5(md5Hex(a.enCode));
+                devices.get(0).setXintiaohouxu("1");
                 devices.get(0).setPassword("0000000000000000");
             } else {
                 return "无法识别的操作码";
@@ -999,6 +1028,7 @@ public class ControllerServiceImpl implements ControllerService {
             return null;
         }
     }
+    
 
     private String callService(String url,String json){
         try {

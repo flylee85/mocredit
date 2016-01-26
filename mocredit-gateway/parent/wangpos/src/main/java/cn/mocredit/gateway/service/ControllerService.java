@@ -7,6 +7,7 @@ public interface ControllerService {
     String huodongliebiao(String h, String t);
     String xintiao(String h, String t);
     String yanma(String h, String t);
+    String maquanchaxun(String h,String t);
     String xiaofei(String h, String t);
     String xiaofeichongzheng(String h, String t);
     String chexiaochongzheng(String h, String t);
