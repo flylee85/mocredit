@@ -274,16 +274,9 @@ public class DBHelper extends SQLiteOpenHelper {
 		return value == null?"":value;
 	}
 
-	public void updateSigninInfo(String akey, String oldkey) {
-		System.out.println("new akey =" + akey);
-		if (oldkey == null || findAkey(oldkey) == null) {
-			insertNewAkey(akey);
-		} else {
-			getWritableDatabase().execSQL(
-					"update " + TABLE_SIGIN_INFO + " set " + NAME_AKEY + "='"
-							+ akey + "'" + " where " + NAME_AKEY + "='"
-							+ oldkey + "'");
-		}
+	public boolean updateSigninInfo(String akey) {
+		getWritableDatabase().execSQL("delete from "+TABLE_SIGIN_INFO);
+		return insertNewAkey(akey);
 	}
 
 	public List<VO.AO> getActivitys(String bin) {
@@ -311,11 +304,12 @@ public class DBHelper extends SQLiteOpenHelper {
 		return ailist;
 	}
 
-	public void insertNewAkey(String akey) {
-		getWritableDatabase().execSQL(
-				"insert into " + TABLE_SIGIN_INFO + "(" + NAME_AKEY + ","
-						+ NAME_LAST_SIGNIN_TIME + ")" + " values(?,?)",
-				new Object[]{akey, System.currentTimeMillis()});
+	public boolean insertNewAkey(String akey) {
+		ContentValues cv = new ContentValues();
+		cv.put(NAME_AKEY,akey);
+		cv.put(NAME_LAST_SIGNIN_TIME,System.currentTimeMillis());
+		return getWritableDatabase().insert(TABLE_SIGIN_INFO,null,cv) >= 0;
+//		getWritableDatabase().execSQL(
 	}
 
 	public String findAkey(String akey) {

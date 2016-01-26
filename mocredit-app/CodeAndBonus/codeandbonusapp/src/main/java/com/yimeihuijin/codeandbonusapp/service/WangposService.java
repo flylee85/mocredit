@@ -42,7 +42,7 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 
 	private PostUtil postUtil;
 
-	private long heartBeatRate = 3600000l;
+	private long heartBeatRate = 600000l;
 
 	private Timer timerSignin;
 
@@ -128,9 +128,9 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 		presenter = new SigninPresenter(this);
 
 		postUtil = new PostUtil(listener);
-
+		long random = (long)((Math.random()*0.5f+0.5f)*heartBeatRate);
 		timerHeartbet.scheduleAtFixedRate(taskHeartbeat,
-				(long) (Math.random() * heartBeatRate), heartBeatRate);
+				random, heartBeatRate);
 		timerSignin.scheduleAtFixedRate(taskSignin, 24 * 60 * 60 * 1000,
 				24 * 60 * 60 * 1000);
 

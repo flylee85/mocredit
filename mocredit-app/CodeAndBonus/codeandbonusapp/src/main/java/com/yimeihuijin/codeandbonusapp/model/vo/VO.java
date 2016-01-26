@@ -130,6 +130,9 @@ public class VO {
         public String receiptTitle;
         public String receiptPrint;
         public String posSuccessMsg;
+        public String activityStyle;
+        public String amtLimit;
+        public String discount;
 
         public String activitId;
         public String activitName;

@@ -157,6 +157,7 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
      */
     public void reSignin(){
         if(fragment != null) {
+            view.goBackToFragment(fragment);
             view.clearFragment(fragment);
         }
         model.reSignin();
