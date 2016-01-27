@@ -61,7 +61,7 @@ public class App extends Application {
 		akey = getDBHelper().findAkey();
 		request_queue = Volley.newRequestQueue(this);
 		jieruhao = getDBHelper().findSeriesNumber();
-		URLs.initIP();
+		URLs.initIP(this);
 		initActivityListener();
 	}
 

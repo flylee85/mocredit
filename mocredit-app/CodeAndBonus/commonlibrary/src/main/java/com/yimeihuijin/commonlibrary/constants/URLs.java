@@ -1,6 +1,8 @@
 package com.yimeihuijin.commonlibrary.constants;
 
 
+import android.content.Context;
+
 import com.yimeihuijin.commonlibrary.utils.PreferenceUtil;
 
 public class URLs {
@@ -57,8 +59,9 @@ public class URLs {
 		return IP;
 	}
 
-	public static void setIP(String iP) {
+	public static void setIP(String iP,Context context) {
 		IP = iP;
+		PreferenceUtil.put(context,PreferenceUtil.DEFAULT_IP,PreferenceUtil.DEFAULT_IP,iP);
 		generateURLs();
 	}
 
@@ -67,20 +70,21 @@ public class URLs {
 
 	}
 
-	public static void setPORT(String pORT) {
+	public static void setPORT(String pORT,Context context) {
 		PORT = pORT;
+		PreferenceUtil.put(context,PreferenceUtil.DEFAULT_IP,PreferenceUtil.DEFAULT_PORT,pORT);
 		generateURLs();
 	}
 
-	public static void initIP() {
-//		String tmp_ip = PreferenceUtil.getString(PreferenceUtil.DEFAULT_IP,
-//				PreferenceUtil.DEFAULT_IP);
-//		String tmp_port = PreferenceUtil.getString(PreferenceUtil.DEFAULT_IP,
-//				PreferenceUtil.DEFAULT_PORT);
-//		if (tmp_ip != null && tmp_port != null) {
-//			IP = tmp_ip;
-//			PORT = tmp_port;
-//		}
+	public static void initIP(Context context) {
+		String tmp_ip = PreferenceUtil.getString(context,PreferenceUtil.DEFAULT_IP,
+				PreferenceUtil.DEFAULT_IP);
+		String tmp_port = PreferenceUtil.getString(context,PreferenceUtil.DEFAULT_IP,
+				PreferenceUtil.DEFAULT_PORT);
+		if (tmp_ip != null && tmp_port != null) {
+			IP = tmp_ip;
+			PORT = tmp_port;
+		}
 		generateURLs();
 	}
 

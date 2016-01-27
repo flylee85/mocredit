@@ -77,7 +77,7 @@ public class SigninActivity extends BaseActivity implements SigninPresenter.ISig
         drawerLayout = (DrawerLayout) f(R.id.drawer);
         leftMenu = (ListView) f(R.id.left_menu_list);
         version = (TextView) f(R.id.version);
-        leftMenu.setAdapter(new ArrayAdapter<String>(this, R.layout.layout_simpleitem, new String[]{ "打印清单","重置密钥"}));
+        leftMenu.setAdapter(new ArrayAdapter<String>(this, R.layout.layout_simpleitem, new String[]{ "打印清单","重置密钥","更改IP"}));
         drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {

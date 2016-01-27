@@ -1,5 +1,6 @@
 package com.yimeihuijin.codeandbonusapp.presenter;
 
+import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,6 +24,8 @@ import com.yimeihuijin.codeandbonusapp.utils.BusProvider;
 import com.yimeihuijin.codeandbonusapp.utils.StringUtils;
 import com.yimeihuijin.commonlibrary.Presenter.BasePresenter;
 import com.yimeihuijin.commonlibrary.base.BaseFragment;
+import com.yimeihuijin.commonlibrary.constants.URLs;
+import com.yimeihuijin.commonlibrary.widgets.dialog.InputDialog;
 
 import java.util.HashMap;
 
@@ -48,6 +51,8 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
     private SigninModel model;
     private ConsumeFragment fragment;
     private Handler handler;
+
+    private String ipPattern = "[1-2]?\\d?\\d.[1-2]?\\d?\\d.[1-2]?\\d?\\d.[1-2]?\\d?\\d";
     
 
     public SigninPresenter(ISigninView view) {
@@ -91,6 +96,10 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
                     case 0:
                         printOrders();
                         break;
+                    case 2:
+                        changeIP();
+                        break;
+
                 }
             }
         });
@@ -175,6 +184,25 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
                 handler.sendMessage(msg);
             }
         }.start();
+    }
+
+    private void changeIP(){
+        InputDialog dialog = new InputDialog((Activity)view, new InputDialog.IDialogInputListener() {
+            @Override
+            public String onInputConfirm(String text) {
+                if(text.matches(ipPattern)){
+                    URLs.setIP(text,App.getInstance());
+                    reSignin();
+                    return null;
+                }else{
+                    return "IP地址格式错误，请重新输入！";
+                }
+            }
+        });
+        dialog.setTitle("IP修改");
+        dialog.setHint("请输入新的IP");
+        dialog.setContent(URLs.getIP());
+        dialog.show();;
     }
 
     /**
