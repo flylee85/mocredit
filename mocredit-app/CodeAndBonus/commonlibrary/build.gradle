@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'candaochina'
             keyPassword 'candaochina123'
-            storeFile file('F:/candaojks.jks')
+            storeFile file('key/candaojks.jks')
             storePassword 'candaochina123'
         }
     }
@@ -21,6 +21,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

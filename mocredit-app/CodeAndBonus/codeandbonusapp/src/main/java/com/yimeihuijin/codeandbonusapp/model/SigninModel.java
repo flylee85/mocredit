@@ -58,7 +58,7 @@ public class SigninModel extends Model{
                             presenter.signinFailure("签到失败"); //签到失败
                         }
                     } else if (TAG_RECEIPT.equals(tag)) { //签到回执的返回信息
-                        execute(new UpdateSigninInfoRunnable(App.tmpkey,App.akey)); //签到绘制成功，更新数据库中存贮的akey
+                        execute(new UpdateSigninInfoRunnable(App.tmpkey)); //签到绘制成功，更新数据库中存贮的akey
                         App.akey = App.tmpkey;
                         presenter.signinSuccess();
                         updateActivities(); //发起更新活动列表请求
@@ -108,6 +108,7 @@ public class SigninModel extends Model{
      * 签到
      */
     public void signIn() {
+
         if (App.akey == null) { //数据库中没有存储akey,则使用初始akey
             App.akey = Constants.INIT_AKEY;
             postSignIn();
@@ -125,6 +126,7 @@ public class SigninModel extends Model{
     }
 
     public void postSignIn() {
+        System.out.println("encode ==========="+App.akey);
         PO post = new PO(new Object());
         post(URLs.URL_SIGNIN, post, TAG_SIGNIN);
     }
@@ -199,16 +201,17 @@ public class SigninModel extends Model{
      */
     public class UpdateSigninInfoRunnable implements Runnable{
 
-        public String tmpKey,aKey;
+        public String tmpKey;
 
-        public UpdateSigninInfoRunnable(String tmpKey,String aKey){
-            this.aKey = aKey;
+        public UpdateSigninInfoRunnable(String tmpKey){
             this.tmpKey =tmpKey;
         }
 
         @Override
         public void run() {
-            App.getInstance().getDBHelper().updateSigninInfo(tmpKey, aKey);
+            while(!App.getInstance().getDBHelper().updateSigninInfo(tmpKey)) {
+                App.getInstance().getDBHelper().updateSigninInfo(tmpKey);
+            }
         }
     }
 }

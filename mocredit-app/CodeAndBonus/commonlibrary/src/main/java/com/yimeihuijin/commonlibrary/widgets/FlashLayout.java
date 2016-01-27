@@ -41,15 +41,19 @@ public class FlashLayout extends LinearLayout implements FlashButton.ParentDrawN
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+
+        super.dispatchDraw(canvas);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
         if(scroller.computeScrollOffset()) {
             canvas.drawCircle(cx - location[0], cy - location[1], scroller.getCurrX(), paint);
         }else{
             canvas.drawARGB(0,0,0,0);
         }
-        super.dispatchDraw(canvas);
+        super.onDraw(canvas);
     }
-
-
 
     @Override
     public void computeScroll() {

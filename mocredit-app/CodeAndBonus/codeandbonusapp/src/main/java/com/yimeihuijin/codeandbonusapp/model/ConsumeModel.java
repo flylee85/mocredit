@@ -177,7 +177,7 @@ public class ConsumeModel extends Model{
             public void onResponse(String response, String tag) {
                 VO.CodeConsumeResponseObject cro = GsonUtil.get(response, VO.CodeConsumeResponseObject.class);
                 if(cro != null && "0".equals(cro.rtnFlag)){
-                    presenter.conusmeComplete(getResult(cr.requestSerialNumber,getRevokePrint(cro.printInfo,cr.requestSerialNumber), MSG_CODE_REVOKE_SUCCESS));
+                    presenter.conusmeComplete(getResult(null,getRevokePrint(cro.printInfo,cr.requestSerialNumber), MSG_CODE_REVOKE_SUCCESS));
                     ThreadMananger.get().execute(new ConsumeRunnables.StoreCodeResponseRunnable(cro));
                     ThreadMananger.get().execute(new ConsumeRunnables.StoreTradeRecordRunnable("0", mode, state));//存储验码撤销订单的金额，用于打印结算小票
                 }else if(cro == null){
@@ -200,7 +200,7 @@ public class ConsumeModel extends Model{
             s.append("亿美汇金消费单\n门店名称：").append(DeviceModel.getInstance().getDevice().mname)
                     .append("\n门店号：" + DeviceModel.getInstance().getDevice().mcode).append("\n终端号：")
                     .append(DeviceModel.getInstance().getDevice().en)
-                    .append("\n撤销的订单号：" + orderId)
+                    .append("\n订单号：" + orderId)
                     .append("\n日期：2016-01-08")
                     .append(StringUtils.getCurrentDate())
                     .append("\n时间：")
@@ -324,7 +324,7 @@ public class ConsumeModel extends Model{
                 if(bcro == null){
                     presenter.conusmeComplete(getResult(MSG_BONUS_REVOKE_FAILURE + "服务器返回数据异常"));
                 }else if(bcro.success){
-                    presenter.conusmeComplete(getResult(bco.orderId,getRevokePrint(null,bco.orderId), MSG_BONUS_REVOKE_SUCCESS));
+                    presenter.conusmeComplete(getResult(null,getRevokePrint(null,bco.orderId), MSG_BONUS_REVOKE_SUCCESS));
                     ThreadMananger.get().execute(new ConsumeRunnables.StoreTradeRecordRunnable(bco.amt, mode, state));  //存储撤销金额，用于打印消费清单
                 }else{
                     presenter.conusmeComplete(getResult(StringUtils.combineStrings(MSG_BONUS_REVOKE_FAILURE, bcro.errorMsg)));
@@ -379,20 +379,20 @@ public class ConsumeModel extends Model{
      * 消费/撤销动作
      * @param data 消费/撤销所需参数
      */
-    public void todo(String data){
+    public void todo(String data,boolean isRevoke){
         if(data!= null){
             data = data.toLowerCase();
         }
         switch (mode){
             case MODE_BONUS:
-                if(state == STATE_CONSUME){
+                if(!isRevoke){
                     bonusConsume();
                 }else{
                     bonusRevoke(data);
                 }
                 break;
             case MODE_CODE:
-                if(state == STATE_CONSUME){
+                if(!isRevoke){
                     codeConsume(data);
                 }else{
                     codeRevoke(data);

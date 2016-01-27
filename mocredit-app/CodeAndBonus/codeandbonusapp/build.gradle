@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'candaochina'
             keyPassword 'candaochina123'
-            storeFile file('F:/candaojks.jks')
+            storeFile file('key/candaojks.jks')
             storePassword 'candaochina123'
         }
     }
@@ -15,13 +15,14 @@ android {
         applicationId "com.yimeihuijin.codeandbonusapp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 3
-        versionName 'V100R001C01B001'
+        versionCode 7
+        versionName 'V100R001C01B007'
         signingConfig signingConfigs.config
     }
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -36,8 +37,8 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:support-v4:23.0.1'
     testCompile 'junit:junit:4.12'
     compile project(':commonlibrary')
     compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:support-v4:23.0.1'
 }

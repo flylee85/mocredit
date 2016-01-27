@@ -2,17 +2,26 @@ package com.yimeihuijin.codeandbonusapp.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yimeihuijin.codeandbonusapp.App;
 import com.yimeihuijin.codeandbonusapp.R;
 import com.yimeihuijin.codeandbonusapp.model.ConsumeModel;
 import com.yimeihuijin.codeandbonusapp.model.DeviceModel;
+import com.yimeihuijin.codeandbonusapp.modules.consumeview.ConsumeFragment;
 import com.yimeihuijin.codeandbonusapp.modules.consumeview.ConsumeResultActivity;
 import com.yimeihuijin.codeandbonusapp.utils.BusProvider;
+import com.yimeihuijin.codeandbonusapp.utils.StringUtils;
 import com.yimeihuijin.commonlibrary.Presenter.BasePresenter;
 import com.yimeihuijin.commonlibrary.widgets.CodeScreen;
+import com.yimeihuijin.commonlibrary.widgets.dialog.AlertDialog;
+import com.yimeihuijin.commonlibrary.widgets.dialog.ProgressDialog;
 
 /**
  * 主界面的表现层
@@ -64,25 +73,36 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
             case R.id.code_scan_delete:
                 view.getScreen().deleteBackCode();
                 break;
-            case R.id.code_scan_confirm:
-                onConsume();
+            case R.id.code_scan_consume:
+                onConsume(false);
                 break;
             case R.id.code_scan_keyboard:
                 this.view.showKeyBoard();
                 break;
             case R.id.code_scan_cancel:
-                view.setSwitch(ConsumeModel.switchState());
-                view.getScreen().setHints(ConsumeModel.getHint());
+                if(view.getScreen().getCode().length() < 10 || !StringUtils.isNumberOrAlphabet(view.getScreen().getCode())) {
+                    Toast.makeText(App.getInstance(),"订单号格式错误，请检查后重新输入！",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                AlertDialog dialog = new AlertDialog(view.getAvtivity(), new ProgressDialog.IDialogListener() {
+                    @Override
+                    public void onConfirm() {
+                        onConsume(true);
+                    }
+                });
+                dialog.setContent("是否确定撤销订单\n"+view.getScreen().getCode());
+                dialog.setTitle("订单撤销");
+                dialog.show();
                 break;
         }
     }
 
-    public void onConsume(){
+    public void onConsume(boolean isRevoke){
         if(ConsumeModel.isCodeConsuming()){
             view.showDialog("正在验码...");
-            model.todo(view.getScreen().getCode());
+            model.todo(view.getScreen().getCode(),isRevoke);
         }else{
-            if(ConsumeModel.isConsuming()){
+            if(!isRevoke){
                 DeviceModel.Card card = DeviceModel.getInstance().getCard();
                 if(card != null){
                     view.gotoPay();
@@ -99,6 +119,51 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
 
     @Override
     public void onCreate() {
+        view.getPager().addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position){
+                    case ConsumeFragment.POSITION_CODE:
+                        ConsumeModel.setModeTo(ConsumeModel.MODE_CODE);
+                        break;
+                    case ConsumeFragment.POSITION_CONSUME:
+                        ConsumeModel.setModeTo(ConsumeModel.MODE_BONUS);
+                        break;
+                }
+                for (TextView tv : view.getIndicators()) {
+                    tv.setBackgroundResource(R.drawable.indicator_none);
+                    tv.setTextColor(Color.GRAY);
+                }
+                view.getIndicators()[position].setBackgroundResource(R.drawable.indicator_line);
+                view.getIndicators()[position].setTextColor(view.getAvtivity().getResources().getColor(R.color.theme_color1));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        view.getIndicators()[ConsumeFragment.POSITION_CODE].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view.getPager().setCurrentItem(ConsumeFragment.POSITION_CODE);
+            }
+        });
+
+        view.getIndicators()[ConsumeFragment.POSITION_CONSUME].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view.getPager().setCurrentItem(ConsumeFragment.POSITION_CONSUME);
+            }
+        });
+
+        view.getPager().setCurrentItem(ConsumeFragment.POSITION_CODE,true);
     }
 
     @Override
@@ -107,12 +172,6 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
 
     @Override
     public void onResume() {
-        refreshView();
-    }
-
-    public void refreshView(){
-        view.setSwitch(ConsumeModel.getState());
-        view.getScreen().setHints(ConsumeModel.getHint());
     }
 
     @Override
@@ -125,11 +184,13 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
 
     public interface IConsumeView extends SigninPresenter.IDialogView{
         public CodeScreen getScreen();
-        public Button getKeyBord();
+        public ImageButton getKeyBord();
         public void showKeyBoard();
-        public void setSwitch(String text);
         public void gotoPay();
         public void gotoCancel();
+        public int getPosition();
+        public ViewPager getPager();
+        public TextView[] getIndicators();
         public Activity getAvtivity();
     }
 }

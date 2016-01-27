@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,7 +42,7 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 
 	private PostUtil postUtil;
 
-	private long heartBeatRate = 3600000l;
+	private long heartBeatRate = 600000l;
 
 	private Timer timerSignin;
 
@@ -103,10 +104,12 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 			@Override
 			public void onResponse(String response, String tag) {
 				// TODO Auto-generated method stub
-				Model.PO ret = new Gson().fromJson(response, Model.PO.class);
-				HeartBeatInfo sr = new Gson().fromJson(ret.jData,
+//				System.out.println("heart beat = "+response);
+//				Model.PO ret = new Gson().fromJson(response, Model.PO.class);
+				HeartBeatInfo sr = new Gson().fromJson(response,
 						HeartBeatInfo.class);
 				if (sr != null && "1".equals(sr.action)) {
+
 					updateActivities();
 				} else if (sr != null && "2".equals(sr.action)) {
 					long rate = StringUtils.getHeartBeatRate(sr.para);
@@ -125,9 +128,9 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 		presenter = new SigninPresenter(this);
 
 		postUtil = new PostUtil(listener);
-
+		long random = (long)((Math.random()*0.5f+0.5f)*heartBeatRate);
 		timerHeartbet.scheduleAtFixedRate(taskHeartbeat,
-				(long) (Math.random() * heartBeatRate), heartBeatRate);
+				random, heartBeatRate);
 		timerSignin.scheduleAtFixedRate(taskSignin, 24 * 60 * 60 * 1000,
 				24 * 60 * 60 * 1000);
 
@@ -159,7 +162,7 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 			public void onErroResponse(VolleyError error, String tag) {
 
 			}
-		}).post(URLs.URL_ACTIVITIES,post);
+		}).post(URLs.URL_ACTIVITIES, post);
 	}
 
 	@Override
@@ -187,14 +190,16 @@ public class WangposService extends Service implements SigninPresenter.ISigninVi
 
 	}
 
-	@Override
-	public void setModeTitle(String s) {
 
-	}
 
 	@Override
 	public void gotoService() {
 
+	}
+
+	@Override
+	public DrawerLayout getDrawer() {
+		return null;
 	}
 
 	@Override

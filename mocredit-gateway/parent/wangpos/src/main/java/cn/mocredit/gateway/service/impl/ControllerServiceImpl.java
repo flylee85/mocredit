@@ -62,6 +62,7 @@ import cn.mocredit.gateway.wangpos.bo.Huodongliebiao;
 import cn.mocredit.gateway.wangpos.bo.JiaMiCeShiData;
 import cn.mocredit.gateway.wangpos.bo.JieSuanXiangYingData;
 import cn.mocredit.gateway.wangpos.bo.JsonData;
+import cn.mocredit.gateway.wangpos.bo.MaquanchaxunBo;
 import cn.mocredit.gateway.wangpos.bo.ObjectAgrs;
 import cn.mocredit.gateway.wangpos.bo.QianDaoData;
 import cn.mocredit.gateway.wangpos.bo.QianDaoHuiZhiData;
@@ -100,6 +101,8 @@ public class ControllerServiceImpl implements ControllerService {
     private String sendToVerifyCodeModelUrl;
     @Value("${restBarcodeServiceAddress}")
     private String restBarcodeServiceAddress;
+    @Value("${codeQueryServiceUrl}")
+    private String codeQueryServiceUrl;
 
     @Value("${getActivitiesServiceUrl}")
     private String getActivitiesServiceUrl;
@@ -211,6 +214,9 @@ public class ControllerServiceImpl implements ControllerService {
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
         YanMaQingQiuData req = jsonToObject(jsonData.getjData(), YanMaQingQiuData.class);
+        if(req == null){
+        	return "-1";
+        }
         YanMaXiangYingData ret = new YanMaXiangYingData();
         ret.setTitle("福码");//TODO 如何获得新老活动的名称？先写死。。。
         String code = req.getCode();
@@ -220,6 +226,11 @@ public class ControllerServiceImpl implements ControllerService {
             String searchno = uuid();
             String batchno = req.getOrderId();
             EitemBo eitem = barcodeserviceYanma(device.getDevcode(), req.getCode(), "0", "1", batchno, searchno);
+            if(eitem == null){
+            	eitem = new EitemBo();
+            	eitem.setIsSuccess("false");
+            	eitem.setError("所验的码是无效码");
+            }
             String isSuccess = eitem.getIsSuccess();
 
             ret.setRtnFlag("true".equals(isSuccess) ? "0" : "1");
@@ -232,7 +243,9 @@ public class ControllerServiceImpl implements ControllerService {
             ret.setBatchno(eitem.getBacthNo());
             ret.setErweima(req.getCode());
             ret.setPosno(batchno);
-            ret.setPrintInfo(eitem.getXiaoTiao().replace("\\n", "\n"));
+            if(eitem.getXiaoTiao() != null){
+                ret.setPrintInfo(eitem.getXiaoTiao().replace("\\n", "\n"));
+            }
             jsonData.setjData(objectToJson(ret));
             jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
             String content = objectToJson(jsonData);
@@ -295,6 +308,24 @@ public class ControllerServiceImpl implements ControllerService {
             logger.info(content);
             return encrypt(content, tx.getMd5Hex());
         }
+    }
+    
+    @Override
+    public String maquanchaxun(String h,String t){
+        TongXin tx = new TongXin(h, t).invoke();
+        JsonData jsonData = tx.getJsonData();
+        if (jsonData == null) return "-1";
+        MaquanchaxunBo maquan = jsonToObject(jsonData.getjData(),MaquanchaxunBo.class);
+        if(maquan == null){
+        	return "-1";
+        }
+        maquan.device = tx.getDevice().getDevcode();
+        String ret = callService(codeQueryServiceUrl, objectToJson(maquan));
+        jsonData.setjData(ret);
+        jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
+        String content = objectToJson(jsonData);
+        logger.info(content);
+        return encrypt(content, tx.getMd5Hex());
     }
 
     @Override
@@ -361,6 +392,12 @@ public class ControllerServiceImpl implements ControllerService {
         String retxml = callBarcodeservice(a, String.class);
         logger.info("xml from barcodeservice http yanma" + retxml);
         List<EitemBo> eitemlist = (List<EitemBo>) XmlUtil.getBO(new EitemBo().getClass(), retxml);
+        if(eitemlist == null || eitemlist.size() < 1){
+        	EitemBo bo = new EitemBo();
+        	bo.setIsSuccess("false");
+        	bo.setError("所验的码是无效码");
+        	return bo;
+        }
         return eitemlist.get(0);
     }
 
@@ -410,6 +447,7 @@ public class ControllerServiceImpl implements ControllerService {
         logger.info(content);
         return encrypt(content, tx.getMd5Hex());
     }
+    
     @Override
     public String huodongliebiao(String h, String t) {
         if (fakeDemo) {
@@ -760,7 +798,9 @@ public class ControllerServiceImpl implements ControllerService {
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
         CheXiaoQingQiuData req = jsonToObject(jsonData.getjData(), CheXiaoQingQiuData.class);
-
+        if(req==null){
+        	return "-1";
+        }
         String devcode = tx.getDevice().getDevcode();
         String orderId = req.getOrderId();
 
@@ -801,7 +841,9 @@ public class ControllerServiceImpl implements ControllerService {
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
         CheXiaoQingQiuData req = jsonToObject(jsonData.getjData(), CheXiaoQingQiuData.class);
-
+        if(req==null){
+        	return "-1";
+        }
         String devcode = tx.getDevice().getDevcode();
         String orderId = req.getOrderId();
 
@@ -859,36 +901,38 @@ public class ControllerServiceImpl implements ControllerService {
             if(a == null || a.enCode == null || a.oper == null || a.id == null){
             return "参数错误";
             }
+            List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
+            if(devices != null && devices.size() > 0){
+            	return "机具号"+a.enCode+"已存在";
+            }
             Device dev = new Device();
             dev.setId(a.id);
             dev.setDevcode(a.enCode);
+            dev.setXintiaohouxu("1");
             dev.setDevcodemd5(md5Hex(a.enCode));
             dev.setPassword("0000000000000000");
             deviceRepository.save(dev);
         }else {
 
             if (OPER_DEL.equals(a.oper)) {
-                if(a == null || a.oper == null || a.id == null){
+                if(a == null || a.oper == null || a.enCode == null){
                     return "参数错误";
                 }
-                String[] ids = a.id.split(",");
-                for(String id:ids){
-                    List<Device> devices = deviceRepository.getDeviceById(a.id);
-                    if (devices.size() != 1) {
-                        return "查不到该en（" + a.enCode + "）对应的机具";
-                    }
+                List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
+                if(devices != null){
                     deviceRepository.delete(devices);
                 }
             } else if (OPER_MDF.equals(a.oper)) {
                 if(a == null || a.enCode == null || a.oper == null || a.id == null){
                     return "参数错误";
                 }
-                List<Device> devices = deviceRepository.getDeviceById(a.id);
+                List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
                 if(devices == null || devices.isEmpty()){
                     Device dev = new Device();
                     dev.setId(a.id);
                     dev.setDevcode(a.enCode);
                     dev.setDevcodemd5(md5Hex(a.enCode));
+                    dev.setXintiaohouxu("1");
                     dev.setPassword("0000000000000000");
                     deviceRepository.save(dev);
                     return "0";
@@ -896,6 +940,7 @@ public class ControllerServiceImpl implements ControllerService {
                 devices.get(0).setDevcode(a.enCode);
                 devices.get(0).setId(a.id);
                 devices.get(0).setDevcodemd5(md5Hex(a.enCode));
+                devices.get(0).setXintiaohouxu("1");
                 devices.get(0).setPassword("0000000000000000");
             } else {
                 return "无法识别的操作码";
@@ -979,6 +1024,7 @@ public class ControllerServiceImpl implements ControllerService {
             return null;
         }
     }
+    
 
     private String callService(String url,String json){
         try {
