@@ -915,15 +915,11 @@ public class ControllerServiceImpl implements ControllerService {
         }else {
 
             if (OPER_DEL.equals(a.oper)) {
-                if(a == null || a.oper == null || a.id == null){
+                if(a == null || a.oper == null || a.enCode == null){
                     return "参数错误";
                 }
-                String[] ids = a.id.split(",");
-                for(String id:ids){
-                    List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
-                    if (devices == null || devices.size() < 1) {
-                        return "查不到该en（" + a.enCode + "）对应的机具";
-                    }
+                List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
+                if(devices != null){
                     deviceRepository.delete(devices);
                 }
             } else if (OPER_MDF.equals(a.oper)) {
