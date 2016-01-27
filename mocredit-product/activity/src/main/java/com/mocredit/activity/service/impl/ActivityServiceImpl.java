@@ -50,9 +50,8 @@ import com.mocredit.manage.persitence.TerminalMapper;
 import com.mocredit.sys.service.OptLogService;
 
 /**
- * 
  * 活动-Service映射层 活动管理的Service类，所有活动管理相关的后台处理方法，都是在此类中
- * 
+ *
  * @author lishoukun
  * @date 2015/07/08
  */
@@ -86,7 +85,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 获取一条活动，根据主键
-	 * 
+	 *
 	 * @param id
 	 * @return一
 	 */
@@ -108,7 +107,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 获取一条活动，随机获取
-	 * 
+	 *
 	 * @return
 	 */
 	public Activity getActivityByRand() {
@@ -118,7 +117,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 获取一条活动，根据条件
-	 * 
+	 *
 	 * @param activityMap
 	 * @return
 	 */
@@ -132,7 +131,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 查询活动列表，根据条件
-	 * 
+	 *
 	 * @param activityMap
 	 * @return
 	 */
@@ -143,7 +142,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 获取活动总数量，根据条件
-	 * 
+	 *
 	 * @param activityMap
 	 * @return
 	 */
@@ -154,7 +153,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 查询活动分页信息，根据条件
-	 * 
+	 *
 	 * @param activityMap
 	 *            请求参数
 	 * @param currentPage
@@ -220,7 +219,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 查询活动管理相关选择门店分页信息，根据条件
-	 * 
+	 *
 	 * @param activityMap
 	 *            请求参数
 	 * @param currentPage
@@ -302,7 +301,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 添加活动
-	 * 
+	 *
 	 * @param activity
 	 * @return
 	 */
@@ -393,6 +392,14 @@ public class ActivityServiceImpl implements ActivityService {
 			httpPostMap.put("rule", activity.getMaxNumber());
 			changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
 
+			// 企业ID
+			httpPostMap.put("enterpriseId", activity.getEnterpriseId());
+			changeDescribe.append("企业ID：" + activity.getEnterpriseId() + ";");
+
+			// 企业名
+			httpPostMap.put("enterpriseName", activity.getEnterpriseName());
+			changeDescribe.append("企业名：" + activity.getEnterpriseName() + ";");
+
 			// 活动使用次数
 			httpPostMap.put("productCode", activity.getOutCode().toString());
 			changeDescribe.append("外部编码：" + activity.getOutCode() + ";");
@@ -430,19 +437,19 @@ public class ActivityServiceImpl implements ActivityService {
 			// 将修改信息发送至验码系统
 			httpPostMap.put("operCode", "1");
 			// System.out.println(JSON.toJSONString(httpPostMap));
+			String jsonString = JSON.toJSONString(httpPostMap);
+			logger.info("[ACTIVITY  INTEGRAL ADD]::" + jsonString);
 			if (!importFlag) {
 				return affectCount;
 			}
-			String jsonString = JSON.toJSONString(httpPostMap);
 			String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, jsonString);
-			logger.info("[ACTIVITY  INTEGRAL ADD]::"+jsonString);
 			Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
 			boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
 			if (!isSuccess) {
 				throw new BusinessException("向积分核销系统同步信息失败");
 			}
-			// 保存送信息到验码系统的日志
-			optLogService.addOptLog("活动Id:" + activity.getId(), "", "积分核销接口修改活动信息-----" + changeDescribe.toString());
+			// 保存送信息到验码系统的日志 changeDescribe可能太大造成异常,不记录
+			optLogService.addOptLog("活动Id:" + activity.getId(), "", "积分核销接口修改活动信息-----");
 		}
 		// 保存日志
 		optLogService.addOptLog(activity.getId(), "", "活动添加-----" + activity.toDescribeString());
@@ -451,7 +458,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 更新活动
-	 * 
+	 *
 	 * @param activity
 	 *            活动对象
 	 * @return
@@ -512,7 +519,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 活动同步接口
-	 * 
+	 *
 	 * @param activity
 	 * @param oldActivity
 	 * @param storeList
@@ -592,6 +599,14 @@ public class ActivityServiceImpl implements ActivityService {
 				// httpPostMap.put("maxNumber", "1");
 				// changeDescribe.append("最大次数：" + activity.getMaxNumber() +
 				// ";");
+				// 企业ID
+				httpPostMap.put("enterpriseId", activity.getEnterpriseId());
+				changeDescribe.append("企业ID：" + activity.getEnterpriseId() + ";");
+
+				// 企业名
+				httpPostMap.put("enterpriseName", activity.getEnterpriseName());
+				changeDescribe.append("企业名：" + activity.getEnterpriseName() + ";");
+
 				// 活动使用次数
 				httpPostMap.put("rule", activity.getMaxNumber());
 				changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
@@ -619,6 +634,7 @@ public class ActivityServiceImpl implements ActivityService {
 				// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
 				Map<String, Object> queryMap = new HashMap<String, Object>();
 				queryMap.put("activityId", activity.getId());
+				// storeList:门店ID,门店名称,商户ID，商户名称
 				List<Store> storeList = storeMapper.selectAllofActivity(activity.getId());
 				changeDescribe.append("门店信息：[");
 				for (Store as : storeList) {
@@ -628,6 +644,7 @@ public class ActivityServiceImpl implements ActivityService {
 					// 机具
 					Terminal terminal = new Terminal();
 					terminal.setStoreId(as.getId());
+					// terminals:机具号
 					List<Terminal> terminals = terminalMapper.selectAllEncode(terminal);
 					as.setTerminals(terminals);
 				}
@@ -636,18 +653,18 @@ public class ActivityServiceImpl implements ActivityService {
 
 				// 将修改信息发送至验码系统
 				httpPostMap.put("operCode", "2");
+				String jsonString = JSON.toJSONString(httpPostMap);
+				logger.info("[ACTIVITY  INTEGRAL ADD]::" + jsonString);
 				if (importFlag) {
-					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
-							JSON.toJSONString(httpPostMap));
+					String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, jsonString);
 					Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
 					boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
 					if (!isSuccess) {
 						throw new BusinessException("向积分核销系统同步信息失败");
 					}
 				}
-				// 保存送信息到验码系统的日志
-				optLogService.addOptLog("活动Id:" + activity.getId(), "",
-						"积分核销接口修改活动信息-----" + changeDescribe.toString());
+				// 保存送信息到验码系统的日志 changeDescribe可能太大造成异常，不记录
+				optLogService.addOptLog("活动Id:" + activity.getId(), "", "积分核销接口修改活动信息-----");
 			}
 		}
 		// 验码同步
@@ -808,7 +825,7 @@ public class ActivityServiceImpl implements ActivityService {
 					}
 				}
 				// 保存送信息到验码系统的日志
-				optLogService.addOptLog("活动Id:" + activity.getId(), "", "验码接口修改活动信息-----" + changeDescribe.toString());
+				optLogService.addOptLog("活动Id:" + activity.getId(), "", "验码接口修改活动信息-----");
 			}
 		}
 	}
@@ -816,7 +833,7 @@ public class ActivityServiceImpl implements ActivityService {
 	/**
 	 * 导入联系人，通过Excel数据 activityId 活动Id orderId 导入联系人批次Id remark 导入联系人批次备注
 	 * InputStream in 导入的流
-	 * 
+	 *
 	 * @return 影响行数
 	 */
 	@Transactional()
@@ -911,7 +928,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 码库接口-库存查询
-	 * 
+	 *
 	 * @param activityId,活动Id
 	 * @param orderId,发码批次Id
 	 * @return
@@ -947,7 +964,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 码库接口-提码
-	 * 
+	 *
 	 * @param activityId,活动Id
 	 * @param orderId,发码批次Id
 	 * @param number
@@ -1024,14 +1041,14 @@ public class ActivityServiceImpl implements ActivityService {
 		optInfo.append("请求参数system_code：" + httpPostMap2.get("system_code") + ";");
 		optInfo.append("请求参数number：" + number + ";");
 		optInfo.append("请求回应is_success：true;");
-		optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + orderId, "", "码库接口提码-----" + optInfo.toString());
+		optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + orderId, "", "码库接口提码-----"+number);
 		// 返回数据
 		return codesMap;
 	}
 
 	/**
 	 * 验码接口-送码
-	 * 
+	 *
 	 * @param act,活动对象
 	 * @param order,活动发码批次对象
 	 * @param ocList,活动发码批次下所有的码对象列表
@@ -1188,12 +1205,12 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 导出发送短信Excel,包含提码、送码、生成码excel三步
-	 * 
+	 *
 	 * @param orderId,发码批次Id，导入联系人批次Id
 	 * @param session,session对象，用于传递会话中的session对象，将发码过程中的进度值保存到session对象中。
+	 * @return
 	 * @describe 方法体中诸如logger.info("内容")的代码为添加日志，诸如session.setAttribute("xxx",20
 	 *           )的代码是向session会话中添加进度
-	 * @return
 	 */
 	@Transactional()
 	public Map<String, Object> createSendSmsExcel(String orderId, HttpSession session) {
@@ -1370,7 +1387,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 删除活动,根据主键
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -1381,7 +1398,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 批量删除活动,根据主键集合
-	 * 
+	 *
 	 * @param ids
 	 * @return
 	 */
@@ -1396,7 +1413,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	/**
 	 * 删除活动,根据条件
-	 * 
+	 *
 	 * @param activityMap
 	 * @return
 	 */
@@ -1407,7 +1424,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	@Override
 	@Transactional
-	public String extractedCode(String activityId, String batchName, int count) {
+	public String extractedCode(String activityId, String batchName, String smsType, int count) {
 		if (null == activityId || activityId.isEmpty() || null == batchName || batchName.isEmpty()) {
 			throw new BusinessException("参数不正确");
 		}
@@ -1417,6 +1434,7 @@ public class ActivityServiceImpl implements ActivityService {
 		batch.setActivityId(activityId);
 		batch.setBatch(batchName);
 		batch.setStatus("01");// 已提码
+		batch.setSmsType(smsType);
 		batch.setCreatetime(new Date());
 		batchMapper.addBatch(batch);
 

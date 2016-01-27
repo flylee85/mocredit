@@ -177,4 +177,11 @@ public interface ActivityCodeService {
 	 */
 	Map<String, Object> getCodeList(VerifyCodeVO verifyCode, int pageSize, int pageNum);
 
+	/**
+	 * 查询码信息，码消费的预校验
+	 * @param code
+	 * @return
+	 */
+	AjaxResponseData checkCode(String device, String code);
+
 }

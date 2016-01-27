@@ -10,10 +10,19 @@ import com.mocredit.integral.entity.Store;
  * @author ytq 2015年8月24日
  */
 public class ActivityVo extends Activity {
+    private String enterpriseId;
     private String enterpriseName;
     private String productCode;
     private Integer operCode;
     private List<StoreVo> storeList = new ArrayList<StoreVo>();
+
+    public String getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(String enterpriseId) {
+        this.enterpriseId = enterpriseId;
+    }
 
     public String getEnterpriseName() {
         return enterpriseName;

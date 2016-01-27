@@ -14,15 +14,15 @@ public enum StoreBusinessStatus {
 	/**
 	 * 调整中
 	 */
-	ADJUSTING("调整中", 1),
+	ADJUSTING("调整中", 2),
 	/**
 	 * 闭店
 	 */
-	CLOSED("闭店", 1),
+	CLOSED("闭店", 3),
 	/**
 	 * 不参加
 	 */
-	NO_JOIN("不参加", 1);
+	NO_JOIN("不参加", 4);
 	private String name;
 	private int value;
 

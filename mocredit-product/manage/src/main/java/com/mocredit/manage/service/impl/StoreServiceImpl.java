@@ -57,7 +57,7 @@ public class StoreServiceImpl implements StoreService {
 		List<Store> list = storeMapper.selectAllForPage(paramMap);
 		if (null != list) {
 			for (Store store : list) {
-				store.setBusinessStatusName(StoreBusinessStatus.getName(store.getStatus()));
+				store.setBusinessStatusName(StoreBusinessStatus.getName(store.getBusinessStatus()));
 			}
 		}
 		return new PageInfo<Store>(list);

@@ -14,7 +14,7 @@ import com.mocredit.activity.model.SelectStoreVO;
 import com.mocredit.base.pagehelper.PageInfo;
 
 /**
- * 
+ *
  * 活动-Service接口
  * @author lishoukun
  * @date 2015/07/08
@@ -52,14 +52,14 @@ public interface ActivityService {
 	Integer getActivityTotal(Map<String,Object> activityMap);
 	/**
 	 * 查询活动分页信息，根据条件
-	 * 
+	 *
 	 * @param activityMap 请求参数
 	 * @param currentPage 当前页
 	 * @param pageSize 每页条数
 	 * @return
 	 */
 	public PageInfo<Activity> queryActivityPage(Map<String, Object> activityMap,Integer draw,Integer pageNum, Integer pageSize);
-	
+
 	/**
 	 * 查询活动管理相关选择门店分页信息，根据条件
 	 * @param activityMap 请求参数
@@ -76,8 +76,8 @@ public interface ActivityService {
 	 * @return
 	 */
 	public List<ActivityStore> querySelectStores(Map<String,Object> activityMap);
-	
-	public List<ActivityStore> queryStoresForSelect(Map<String,String> activityMap); 
+
+	public List<ActivityStore> queryStoresForSelect(Map<String,String> activityMap);
 	/**
 	 * 添加活动
 	 * @param activity
@@ -114,7 +114,7 @@ public interface ActivityService {
 	 * @return
 	 */
 	public Integer deleteActivitysByIds(String ids);
-	
+
 	/**
 	 * 删除活动,根据条件
 	 * @param activityMap
@@ -127,13 +127,13 @@ public interface ActivityService {
 	 * @param count
 	 * @return 批次ID
 	 */
-	public String extractedCode(String activityId,String batchName,int count);
+	public String extractedCode(String activityId,String batchName,String smsType,int count);
 	/**
 	 * 更新活动状态
 	 * @return
 	 */
 	public Integer updateStatus(Activity activity);
-	
+
 	public Map<String,Object> getComb(String activityId);
 	/**
 	 * 为积分核销（为机具）查询活动信息
@@ -142,6 +142,6 @@ public interface ActivityService {
 	 * @return
 	 */
 	public List<Map<String, Object>> getActivitiesForDevice(List<String> activityId,String snCode);
-	
+
 	public void sendMMSPackage(String activityId);
 }

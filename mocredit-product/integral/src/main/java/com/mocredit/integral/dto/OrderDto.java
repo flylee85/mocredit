@@ -19,6 +19,15 @@ public class OrderDto {
     private Integer offset;
     private Integer pageNum; //页数
     private Integer pageSize; //页面大小
+    private boolean download;
+
+    public boolean isDownload() {
+        return download;
+    }
+
+    public void setDownload(boolean download) {
+        this.download = download;
+    }
 
     public Integer getOffset() {
         return offset;

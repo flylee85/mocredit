@@ -63,7 +63,7 @@ public class RecordServiceImpl implements RecordService {
 //                resp.setErrorMsg(ErrorCodeType.CARD_NOT_RULE.getText());
 //                return false;
 //            }
-            if (null != activity.getRule()) {
+            if (null != activity.getRule() && !"".equals(activity.getRule())) {
                 List<TranRecord> tranRecords = tranRecordService.getTranRecordByCardNum(record.getCardNum(), activity.getId());
                 if (tranRecords.isEmpty()) {
                     saveRecordAndTranRecord(activity, record);
@@ -82,6 +82,8 @@ public class RecordServiceImpl implements RecordService {
                     }
                     saveRecordAndTranRecord(activity, record);
                 }
+            } else {
+                saveRecordAndTranRecord(activity, record);
             }
             return true;
         } catch (Exception e) {

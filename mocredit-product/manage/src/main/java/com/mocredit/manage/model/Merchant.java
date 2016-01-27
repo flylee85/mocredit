@@ -1,6 +1,7 @@
 package com.mocredit.manage.model;
 
 import java.util.Date;
+import java.util.Map;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
@@ -142,7 +143,7 @@ public class Merchant {
 	 *
 	 * @mbggenerated Mon Nov 02 15:47:55 CST 2015
 	 */
-	@JSONField (format="yyyy-MM-dd HH:mm:ss")  
+	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 
 	/**
@@ -217,6 +218,8 @@ public class Merchant {
 	 */
 	private String descr;
 	private int storeCount;
+	private int areaCount;
+	private Map<String, Integer> storeInfo;
 
 	public int getStoreCount() {
 		return storeCount;
@@ -224,6 +227,14 @@ public class Merchant {
 
 	public void setStoreCount(int storeCount) {
 		this.storeCount = storeCount;
+	}
+
+	public int getAreaCount() {
+		return areaCount;
+	}
+
+	public void setAreaCount(int areaCount) {
+		this.areaCount = areaCount;
 	}
 
 	/**
@@ -874,5 +885,13 @@ public class Merchant {
 	 */
 	public void setDescr(String descr) {
 		this.descr = descr;
+	}
+
+	public Map<String, Integer> getStoreInfo() {
+		return storeInfo;
+	}
+
+	public void setStoreInfo(Map<String, Integer> storeInfo) {
+		this.storeInfo = storeInfo;
 	}
 }

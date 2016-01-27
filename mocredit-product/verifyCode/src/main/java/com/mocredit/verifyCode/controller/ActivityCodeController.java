@@ -515,10 +515,10 @@ public class ActivityCodeController {
 				logger.debug("导入全码耗时:" + (endDate.getTime() - beginDate.getTime()));
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			ard.setSuccess(false);
 			ard.setErrorMsg("请求过程发生事务异常!");
 			ard.setErrorCode(ErrorCode.CODE_98.getCode());
-			logger.error(e.getMessage());
 		}
 		VerifyCodeLogTask.actActivitySynLogList.add(this.buildActActivitySynLog(ard, actActivityCodeVO));
 
@@ -769,6 +769,70 @@ public class ActivityCodeController {
 			e.printStackTrace();
 		}
 		return JSON.toJSONString(ard);
+	}
+
+	/**
+	 * 查询码信息
+	 * 
+	 * @param body
+	 * @return
+	 */
+	@RequestMapping(value = "checkCode", produces = { "application/json;charset=UTF-8" })
+	public String checkCode(@RequestBody String param) {
+		AjaxResponseData ard = new AjaxResponseData();
+		//返回结果
+		Map<String, Object> retMap=new HashMap<String, Object>();
+		TVerifiedCode verifiedCode;
+		try {
+			verifiedCode = JSON.parseObject(param, TVerifiedCode.class);
+		} catch (Exception e) {
+			retMap.put("amt", "0");
+			retMap.put("avaliable", "1");
+			retMap.put("errMsg", "非法的请求参数格式！");
+			return JSON.toJSONString(retMap);
+		}
+		// System.out.println(verifiedCode);
+		// System.out.println(JSON.toJSONString(verifiedCode));
+		// 排除金额为 空/NULL的时候，引起空指针异常问题
+		if (null == verifiedCode.getAmount()) {
+			verifiedCode.setAmount(new BigDecimal(0).setScale(2));
+		}
+
+		if (StringUtils.isEmpty(verifiedCode.getCode()) || verifiedCode.getCode().length() > 30
+				|| StringUtils.isEmpty(verifiedCode.getDevice())) {
+			ard.setSuccess(false);
+			ard.setErrorCode(ErrorCode.CODE_30.getCode());
+			ard.setErrorMsg("参数数据不合法!");
+		} else {
+			try {
+				ard = this.activityCodeService.checkCode(verifiedCode.getDevice(), verifiedCode.getCode());
+			} catch (Exception e) {
+				ard.setSuccess(false);
+				ard.setErrorMsg("请求过程发生事务异常!");
+				ard.setErrorCode(ErrorCode.CODE_98.getCode());
+				e.printStackTrace();
+			}
+			if (ard.isSuccess()) {
+				TActivityCode code = (TActivityCode) ard.getData();
+				retMap.put("amt", code.getAmount());
+				retMap.put("avaliable", "0");
+				retMap.put("codeName", code.getActivityName());
+				retMap.put("errMsg", "");
+			}else{
+				retMap.put("amt", "0");
+				retMap.put("avaliable", "1");
+				retMap.put("codeName", "");
+				retMap.put("errMsg", ard.getErrorMsg());
+			}
+			// 日志
+			TVerifyLog log = this.buildVerifyLog(ard, verifiedCode);
+			VerifyCodeLogTask.verifyogList.add(log);
+		}
+
+		// SimplePropertyPreFilter spfilter=new
+		// SimplePropertyPreFilter(TActivityCode.class);
+		// spfilter.getExcludes().add("effective");
+		return JSON.toJSONString(retMap);
 	}
 
 	/**

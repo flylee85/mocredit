@@ -34,4 +34,7 @@ public interface StoreMapper {
 
 	Store checkStoreCode(Map<String, Object> param);
 
+	Map<String, Integer> selectStoreCountByMerchantId(@Param("merchantId") String merchantId);
+
+	int selectAreaCountByMerchantId(@Param("merchantId") String merchantId);
 }

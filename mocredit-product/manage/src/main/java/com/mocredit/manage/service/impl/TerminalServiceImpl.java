@@ -151,6 +151,7 @@ public class TerminalServiceImpl implements TerminalService {
 			break;
 		case DELETE:
 			postMap.put("id", terminal.getId());
+			postMap.put("enCode", terminal.getSnCode());
 			break;
 		}
 

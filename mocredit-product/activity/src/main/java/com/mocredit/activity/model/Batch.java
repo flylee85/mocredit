@@ -54,6 +54,15 @@ public class Batch implements Serializable {
     private Date createtime;
     //创建人,creator
     private String creator;
+    private String smsType;//短信发送类型，01：合并发送，02：不合并发送
+
+    public String getSmsType() {
+        return smsType;
+    }
+
+    public void setSmsType(String smsType) {
+        this.smsType = smsType;
+    }
 
     public String getId() {
         return id;

@@ -46,10 +46,10 @@ public class Activity implements Serializable {
 	private String subject;
 	private String mmsJson;
 	// 开始时间,start_time
-	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	@JSONField(format = "yyyy-MM-dd")
 	private Date startTime;
 	// 结束时间,end_time
-	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	@JSONField(format = "yyyy-MM-dd")
 	private Date endTime;
 	// 选择时间,select_date,选择日期，用英文逗号分隔
 	private String selectDate;
@@ -103,6 +103,34 @@ public class Activity implements Serializable {
 	private String contractName;
 	// 兑换渠道(验码)
 	private String exchangeChannel;
+	private int activityStyle;//活动类型 
+	private String amountLimit;//活动最低额度限制
+	private double discount;//折扣额度（金额或者折扣度，两位小数）
+
+	
+	public int getActivityStyle() {
+		return activityStyle;
+	}
+
+	public void setActivityStyle(int activityStyle) {
+		this.activityStyle = activityStyle;
+	}
+
+	public String getAmountLimit() {
+		return amountLimit;
+	}
+
+	public void setAmountLimit(String amountLimit) {
+		this.amountLimit = amountLimit;
+	}
+
+	public double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(double discount) {
+		this.discount = discount;
+	}
 
 	public String getExchangeChannel() {
 		return exchangeChannel;

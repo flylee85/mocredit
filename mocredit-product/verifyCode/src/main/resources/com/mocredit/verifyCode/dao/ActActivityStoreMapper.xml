@@ -25,9 +25,9 @@
     </insert>
 
     <!-- 根据活动主键获取记录 -->
-    <select id="findByActivityId" parameterType="java.lang.String" resultMap="baseResultMap">
+    <select id="findByActivityIdAndStoreId" parameterType="java.lang.String" resultMap="baseResultMap">
         <![CDATA[
-          select * from act_activity_store where activity_id=#{activity_id}
+          select * from act_activity_store where activity_id=#{activityId} and store_id=#{storeId} limit 1
         ]]>
     </select>
 

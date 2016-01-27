@@ -50,10 +50,26 @@
 		`ti_store`(shop_id,shop_name,store_id,store_name,activity_id)
 		values(#{shopId},#{shopName},#{storeId},#{storeName},#{activityId})
 	</insert>
+    <insert id="saveStoreList" parameterType="java.util.List">
+        insert into
+        `ti_store`(shop_id,shop_name,store_id,store_name,activity_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.shopId},#{item.shopName},#{item.storeId},#{item.storeName},#{item.activityId})
+        </foreach>
+    </insert>
     <insert id="saveTerminal" parameterType="com.mocredit.integral.entity.Terminal">
         insert into
         `ti_terminal`(en_code,store_id,activity_id)
         values(#{enCode},#{storeId},#{activityId})
+    </insert>
+    <insert id="saveTerminalList" parameterType="java.util.List">
+        insert into
+        `ti_terminal`(en_code,store_id,activity_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.enCode},#{item.storeId},#{item.activityId})
+        </foreach>
     </insert>
     <delete id="deleteTerminalByEnCode">
 		delete from `ti_terminal` where en_code=#{enCode}

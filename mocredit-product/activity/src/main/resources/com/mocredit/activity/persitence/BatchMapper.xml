@@ -29,7 +29,8 @@
 		o.remark as remark,
 		o.status as status,
 		o.createtime as createtime,
-		o.creator as creator
+		o.creator as creator,
+		o.sms_type as smsType
 	</sql>
 
     <!--  公用查询条件，包含发码批次所有字段的查询条件     -->
@@ -90,6 +91,9 @@
         </if>
         <if test="creator != null">
             and o.creator = #{creator}
+        </if>
+        <if test="smsType != null">
+            and o.sms_type = #{smsType}
         </if>
     </sql>
 
@@ -161,6 +165,7 @@
             status,
             createtime,
             creator,
+            sms_type,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             #{id},
@@ -182,6 +187,7 @@
             #{status},
             #{createtime},
             #{creator},
+            #{smsType},
         </trim>
     </insert>
 
@@ -242,6 +248,9 @@
             </if>
             <if test="creator != null">
                 creator = #{creator},
+            </if>
+            <if test="smsType != null">
+                sms_type = #{smsType},
             </if>
         </set>
         where id = #{id}
@@ -313,6 +322,9 @@
             </if>
             <if test="creator != null">
                 and creator = #{creator}
+            </if>
+            <if test="smsType != null">
+                and sms_type = #{smsType}
             </if>
         </where>
     </delete>

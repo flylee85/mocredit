@@ -133,7 +133,6 @@
 			return false;
 		}
 		var type = $("#activityDetailType").val();
-
 		var addActivityFamaForm = $("#addActivityJifenForm");
 		$.get("activitysys/getActivityById",{id:activityId},function(result){
 			if(result.success){
@@ -161,6 +160,9 @@
 				addActivityFamaForm.find("select[name='channel']").val(dataObject.channel);
 				addActivityFamaForm.find("select[name='channel']").attr('data-val',dataObject.channel);
 				addActivityFamaForm.find("input[name='exchangeType'][value="+dataObject.exchangeType+"]").attr("checked","checked");
+				addActivityFamaForm.find("input[name='activityStyle'][value="+dataObject.activityStyle+"]").click();
+				addActivityFamaForm.find("input[name='amountLimit']").val(dataObject.amountLimit);
+				addActivityFamaForm.find("input[name='discount']").val(dataObject.discount);
 				if(dataObject.storeCount != 0){
 					addActivityFamaForm.find(".chooseShop").addClass('popFloat').text("已选择 " + dataObject.storeCount + " 家门店");
 				}else{
@@ -176,6 +178,12 @@
 
 				addActivityFamaForm.find("input[name='startTime']").val(dataObject.startTime);
 				addActivityFamaForm.find("input[name='endTime']").val(dataObject.endTime);
+				if(dataObject.startTime){
+					$('#date2').datepicker('setStartDate', new Date(Date.parse(dataObject.startTime.replace(/-/g, "/"))));
+				}
+				if(dataObject.endTime){
+					$('#date1').datepicker('setEndDate', new Date(Date.parse(dataObject.endTime.replace(/-/g, "/"))));
+				}
 				if( dataObject.selectDate){
 					var selectDateArray = dataObject.selectDate.split(",");
 					for(var i=0;i<selectDateArray.length;i++){

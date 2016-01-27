@@ -40,7 +40,7 @@ $(function () {
                     "ordering": false,
                     "lengthChange": false,
                     "displayStart": parseInt(page) * 10 - 10,
-                    "pagingType": "full_numbers",
+                    "pagingType": "simple",
                     "pageLength": 10,
                     "dom": "<'row'<'col col-lg-6'l><'col col-lg-6'f>r>t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
                     "aaSorting": [[4, "desc"]],//默认排序
@@ -104,7 +104,20 @@ $(function () {
     });
     $("#export").click(function () {
         var formArray = $("#queryOrderPage").serialize();
-        window.location.href = "order/exportCodeOrder?type=02&" + formArray;
+        //提交
+        $.ajax({
+            type: "POST",
+            url: "order/exportCodeCount",
+            data: "type=02&exportType=CSV&" + formArray,
+            success: function (result, textStuts) {
+                if (result.success) {
+                    window.location.href = "order/exportCodeOrder?type=02&exportType=CSV&" + formArray;
+                    sendMsg(true, msg);
+                } else {
+                    sendMsg(false, result.errorMsg);
+                }
+            }
+        });
     });
 
     if ($('#activityCurrentType').val() == "2") {

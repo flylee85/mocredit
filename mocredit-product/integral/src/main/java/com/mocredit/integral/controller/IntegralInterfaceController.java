@@ -439,6 +439,7 @@ public class IntegralInterfaceController extends IntegralBaseController {
         try {
             // 使用ObjectMapper嵌套json转对象报错采用fastJson
             ActivityVo activity = JSON.parseObject(param, ActivityVo.class);
+            activity.setPubEnterpriseId(activity.getEnterpriseId());
             activity.setPubEnterpriseName(activity.getEnterpriseName());
             activity.setProductType(activity.getProductCode());
             saveInRequestLog(request, null, activity.toString());

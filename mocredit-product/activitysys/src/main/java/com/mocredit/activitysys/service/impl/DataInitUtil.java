@@ -16,12 +16,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.jcraft.jsch.jce.MD5;
 import com.mocredit.activity.model.Activity;
 import com.mocredit.activity.persitence.ActivityMapper;
 import com.mocredit.base.exception.BusinessException;
 import com.mocredit.base.util.DateUtil;
 import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.IDUtil;
+import com.mocredit.base.util.Md5Utils;
 import com.mocredit.manage.model.Store;
 import com.mocredit.manage.model.Terminal;
 import com.mocredit.manage.persitence.StoreMapper;
@@ -34,28 +36,37 @@ import com.mocredit.manage.persitence.TerminalMapper;
  * @date 2015年11月25日
  */
 public class DataInitUtil {
-	/*正式*/
+	/* 正式 */
 	private static final String IN_URL = "jdbc:mysql://127.0.0.1:3310/mcntong?useUnicode=true&characterEncoding=utf-8";
 	private static final String IN_UNAME = "root";
 	private static final String IN_PWD = "mocredit";
 	private static final String OUT_URL = "jdbc:mysql://127.0.0.1:3309/activity_new?useUnicode=true&characterEncoding=utf-8";
 	private static final String OUT_UNAME = "root";
 	private static final String OUT_PWD = "eAhrpeDoq/ve39md";
-	private static final String DEVICE_URL = "jdbc:mysql://127.0.0.1:3309/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
-	private static final String DEVICE_UNAME = "root";
-	private static final String DEVICE_PWD = "eAhrpeDoq/ve39md";
-	
-	/*测试*/
-//	private static final String IN_URL = "jdbc:mysql://127.0.0.1:3310/mcntong?useUnicode=true&characterEncoding=utf-8";
-//	private static final String IN_UNAME = "root";
-//	private static final String IN_PWD = "mocredit";
-//	private static final String OUT_URL = "jdbc:mysql://127.0.0.1:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
-//	private static final String OUT_UNAME = "root";
-//	private static final String OUT_PWD = "root";
-//	private static final String DEVICE_URL = "jdbc:mysql://127.0.0.1:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
-//	private static final String DEVICE_UNAME = "root";
-//	private static final String DEVICE_PWD = "root";
-	
+	private static final String OLD_GATEWAY_URL = "jdbc:mysql://127.0.0.1:3309/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+	private static final String OLD_GATEWAY_USERNAME = "root";
+	private static final String OLD_GATEWAY_PWD = "eAhrpeDoq/ve39md";
+	private static final String NEW_GATEWAY_URL = "jdbc:mysql://127.0.0.1:3309/gateway?useUnicode=true&characterEncoding=utf-8";
+	private static final String NEW_GATEWAY_USERNAME = "root";
+	private static final String NEW_GATEWAY_PWD = "eAhrpeDoq/ve39md";
+	/* 测试 */
+	// private static final String IN_URL =
+	// "jdbc:mysql://127.0.0.1:3310/mcntong?useUnicode=true&characterEncoding=utf-8";
+	// private static final String IN_UNAME = "root";
+	// private static final String IN_PWD = "mocredit";
+	// private static final String OUT_URL =
+	// "jdbc:mysql://127.0.0.1:3306/activity_new?useUnicode=true&characterEncoding=utf-8";
+	// private static final String OUT_UNAME = "root";
+	// private static final String OUT_PWD = "root";
+	// private static final String OLD_GATEWAY_URL =
+	// "jdbc:mysql://127.0.0.1:3306/mcntong_gateway?useUnicode=true&characterEncoding=utf-8";
+	// private static final String OLD_GATEWAY_USERNAME = "root";
+	// private static final String OLD_GATEWAY_PWD = "root";
+	// private static final String NEW_GATEWAY_URL =
+	// "jdbc:mysql://127.0.0.1:3306/gateway?useUnicode=true&characterEncoding=utf-8";
+	// private static final String NEW_GATEWAY_USERNAME = "root";
+	// private static final String NEW_GATEWAY_PWD = "root";
+
 	private static String IMPORT_URL = "http://127.0.0.1:8080/integral/activityImport";
 
 	private Connection conIn;
@@ -72,10 +83,6 @@ public class DataInitUtil {
 		util.setStoreMapper(ctx.getBean(StoreMapper.class));
 		util.setTerminalMapper(ctx.getBean(TerminalMapper.class));
 		util.setActivityMapper(ctx.getBean(ActivityMapper.class));
-		// Properties p= new Properties();
-		// p.load(new FileInputStream(new
-		// File("classpath:resources/config.properties")));
-		// IMPORT_URL=p.getProperty("integral.activityImport");
 
 		// 加载MySql的驱动类
 		try {
@@ -84,8 +91,8 @@ public class DataInitUtil {
 			util.conIn = DriverManager.getConnection(IN_URL, IN_UNAME, IN_PWD);
 			System.out.println("==========创建写入库链接=========");
 			util.conOut = DriverManager.getConnection(OUT_URL, OUT_UNAME, OUT_PWD);
-//			 System.out.println("==========开启事务=========");
-//			 util.conOut.setAutoCommit(false);
+			// System.out.println("==========开启事务=========");
+			// util.conOut.setAutoCommit(false);
 			System.out.println("==========开始导入=========");
 			// 导入企业
 			System.out.println("==========start 导入企业=========");
@@ -119,20 +126,20 @@ public class DataInitUtil {
 			System.out.println("==========start导入离线活动=========");
 			util.importLiXianActivity();
 			System.out.println("==========end 导入离线活动=========");
-//			 System.out.println("==========提交事务=========");
-//			 util.conOut.commit();
+//			System.out.println("==========提交事务=========");
+//			util.conOut.commit();
 
 			util.conIn.close();
 			util.conOut.close();
 		} catch (Exception e) {
-//			System.out.println("==========导入时发生异常=========");
-//			 try {
-//			 System.out.println("==========回滚操作=========");
-//			 util.conOut.rollback();
-//			 } catch (SQLException e1) {
-//			 System.out.println("==========回滚时发生异常=========");
-//			 e1.printStackTrace();
-//			 }
+			// System.out.println("==========导入时发生异常=========");
+			// try {
+			// System.out.println("==========回滚操作=========");
+			// util.conOut.rollback();
+			// } catch (SQLException e1) {
+			// System.out.println("==========回滚时发生异常=========");
+			// e1.printStackTrace();
+			// }
 			e.printStackTrace();
 		}
 		System.out.println("==========结束导入=========");
@@ -228,7 +235,7 @@ public class DataInitUtil {
 			sb.append(getColumn(0));// city
 			sb.append(getColumn(0));// area
 			String address = rs.getString("address");
-			sb.append(getColumn(null==address?"":address.replaceAll("'", "")));
+			sb.append(getColumn(null == address ? "" : address.replaceAll("'", "")));
 			sb.append(getColumn(StringUtils.isEmpty(rs.getString("longitude")) ? 0 : rs.getString("longitude")));
 			sb.append(getColumn(StringUtils.isEmpty(rs.getString("latitude")) ? 0 : rs.getString("latitude")));
 			int status = rs.getInt("status");
@@ -274,10 +281,14 @@ public class DataInitUtil {
 		// 读取活动表
 		ResultSet rs = query("select * from device where status=0", true);
 		StringBuilder oldGateway = new StringBuilder("insert into device(storeid,devcode,shopid,agentid)values");
+		StringBuilder newGateway = new StringBuilder("insert into device(id,devcode,devcodemd5,password)values");
 		StringBuilder sb = new StringBuilder(
 				"INSERT INTO `t_terminal`(id,store_id,create_time,status,deskey,mackey,sn_code,supplier_id,type,gateway) VALUES");
-		Connection conn = DriverManager.getConnection(DEVICE_URL, DEVICE_UNAME, DEVICE_PWD);
+		Connection conn = DriverManager.getConnection(OLD_GATEWAY_URL, OLD_GATEWAY_USERNAME, OLD_GATEWAY_PWD);
 		Statement statement = conn.createStatement();
+
+		Connection newConn = DriverManager.getConnection(NEW_GATEWAY_URL, NEW_GATEWAY_USERNAME, NEW_GATEWAY_PWD);
+		Statement newStatement = newConn.createStatement();
 		while (rs.next()) {
 			sb.append("(");
 			sb.append(getColumn(rs.getString("id")));
@@ -287,18 +298,37 @@ public class DataInitUtil {
 			sb.append(getColumn(rs.getString("status")));
 			sb.append(getColumn(rs.getString("deskey")));
 			sb.append(getColumn(rs.getString("mackey")));
-			sb.append(getColumn(rs.getString("devcode")));
+			String devcode = rs.getString("devcode");
+			boolean isNew = !StringUtils.isEmpty(devcode) && devcode.startsWith("xp") && devcode.length() >= 10;
+			if (isNew) {
+				devcode = devcode.substring(2);
+			}
+			sb.append(getColumn(devcode));
 			sb.append(getColumn(0));// supplier_id
 			sb.append(getColumn("001"));
-			sb.append(getColumn("02"));
+			if (isNew) {
+				newGateway.append("(" + getColumn(IDUtil.getID()) + getColumn(devcode)
+						+ getColumn(Md5Utils.md5(devcode)) + getColumn("0000000000000000"));
+				newGateway.deleteCharAt(newGateway.length() - 1);
+				newGateway.append("),");
+				sb.append(getColumn("01"));// gateway
+			} else {
+				oldGateway.append("(" + getColumn(1) + getColumn(devcode) + getColumn(1) + 17 + "),");
+				sb.append(getColumn("02"));// gateway
+			}
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append("),");
-
-			oldGateway.append("("+getColumn(1) + getColumn(rs.getString("devcode")) + getColumn(1) + 17 + "),");
+		}
+		if (newGateway.length() > 0) {
+			newGateway.deleteCharAt(newGateway.length() - 1);
+			String newString = newGateway.toString();
+			System.out.println("导入新网关:" + newString);
+			newStatement.execute(newString);
+			newConn.close();
 		}
 		oldGateway.deleteCharAt(oldGateway.length() - 1);
 		String string = oldGateway.toString();
-		System.out.println(string);
+		System.out.println("导入老网关:" + string);
 		statement.execute(string);
 		conn.close();
 		rs.close();
@@ -385,8 +415,10 @@ public class DataInitUtil {
 		String minshengId = msrs.getString("id");
 		while (rs.next()) {
 			StringBuilder sb = new StringBuilder(
-					"INSERT INTO act_activity(enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel,exchange_channel ) values ");
+					"INSERT INTO act_activity(id,enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel,exchange_channel ) values ");
 			sb.append("(");
+			int activityId = rs.getInt("id");
+			sb.append(getColumn(activityId));//id
 			sb.append(getColumn(minshengId));// enterpriseId
 			sb.append(getColumn("民生银行"));// enterpriseName
 			sb.append(getColumn(rs.getString("PRODUCT_NAME")));
@@ -469,11 +501,6 @@ public class DataInitUtil {
 			sb.append(")");
 			System.out.println(sb.toString());
 			execute(sb.toString(), false);
-			ResultSet actId = query("SELECT LAST_INSERT_ID()", false);
-			int activityId = 0;
-			if (actId.next()) {
-				activityId = actId.getInt(1);
-			}
 			// 导入活动门店关系
 			String shopSql = "SELECT shopid FROM SD_POS_TERM WHERE MERCH_ID = '" + rs.getString("MERCH_ID")
 					+ "' AND TERM_ID = '" + rs.getString("TREM_ID") + "'";
@@ -510,8 +537,10 @@ public class DataInitUtil {
 		String huaxianId = msrs.getString("id");
 		while (rs.next()) {
 			StringBuilder sb = new StringBuilder(
-					"INSERT INTO act_activity(enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel,exchange_channel ) values ");
+					"INSERT INTO act_activity(id,enterprise_id,enterprise_name,name,type,CODE,out_code,start_time,end_time,select_date,bins,max_type,max_number,amount,integral,createtime,exchange_type,status,contract_id,channel,exchange_channel ) values ");
 			sb.append("(");
+			int activityId = rs.getInt("id");
+			sb.append(getColumn(activityId));//id
 			sb.append(getColumn(huaxianId));// enterpriseId
 			sb.append(getColumn("华夏银行"));// enterpriseName
 			sb.append(getColumn(rs.getString("PRODUCT_NAME")));
@@ -589,11 +618,6 @@ public class DataInitUtil {
 			sb.append(")");
 			System.out.println(sb.toString());
 			execute(sb.toString(), false);
-			ResultSet actId = query("SELECT LAST_INSERT_ID()", false);
-			int activityId = 0;
-			if (actId.next()) {
-				activityId = actId.getInt(1);
-			}
 			// 导入活动门店关系
 			String shopSql = "SELECT shopid FROM SD_POS_TERM WHERE MERCH_ID = '" + rs.getString("MERCH_ID")
 					+ "' AND TERM_ID = '" + rs.getString("TREM_ID") + "'";
@@ -656,86 +680,95 @@ public class DataInitUtil {
 	}
 
 	private void sysnActivity(Activity activity) {
-//
-//		// 获取验码系统中-修改活动，启动活动，停止活动的ＵＲＬ，并定义一个请求这些地址时，所需要的参数Map,将活动Id和活动名称都放在这个Map中
-//		String changeActivityUrl = IMPORT_URL;
-//		Map<String, Object> httpPostMap = new HashMap<String, Object>();
-//		httpPostMap.put("activityId", activity.getId());// 活动Id
-//		httpPostMap.put("activityName", activity.getName());// 活动Id
-//		// 定义一个修改内容描述
-//		StringBuffer changeDescribe = new StringBuffer();
-//		// 活动启用或停止
-//		if ("02".equals(activity.getStatus())) {
-//			// 验码模块-活动停止
-//			httpPostMap.put("status", "02");
-//			changeDescribe.append("活动状态：停止；");
-//		} else if ("01".equals(activity.getStatus())) {
-//			// 验码模块-活动启用
-//			httpPostMap.put("status", "01");
-//			changeDescribe.append("活动状态：启用；");
-//		}
-//
-//		// 开始时间，结束时间
-//		httpPostMap.put("startTime", DateUtil.dateToStr(activity.getStartTime(), "yyyy-MM-dd HH:mm:ss"));// 开始时间
-//		httpPostMap.put("endTime", DateUtil.dateToStr(activity.getEndTime(), "yyyy-MM-dd HH:mm:ss"));// 结束时间
-//		changeDescribe.append("开始时间：" + httpPostMap.get("startTime") + ";");
-//		changeDescribe.append("结束时间：" + httpPostMap.get("endTime") + ";");
-//
-//		// 活动指定日期修改，该处临时这样判断
-//		httpPostMap.put("selectDate", activity.getSelectDate());// 指定日期
-//		changeDescribe.append("指定日期：" + activity.getSelectDate() + ";");
-//
-//		// 活动积分修改
-//		httpPostMap.put("integral", activity.getIntegral());
-//		changeDescribe.append("积分：" + activity.getIntegral() + ";");
-//
-//		// 活动使用次数
-//		httpPostMap.put("rule", activity.getMaxNumber().toString());
-//		changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
-//
-//		// 活动使用次数
-//		httpPostMap.put("productCode", activity.getOutCode().toString());
-//		changeDescribe.append("外部编码：" + activity.getOutCode() + ";");
-//
-//		// BIN码
-//		httpPostMap.put("bins", activity.getBins());
-//		changeDescribe.append("BIN码列表：" + activity.getBins() + ";");
-//
-//		// 积分通道
-//		httpPostMap.put("channel", activity.getChannel());
-//		changeDescribe.append("积分通道：" + activity.getChannel() + ";");
-//
-//		// 兑换类型
-//		httpPostMap.put("exchangeType", activity.getExchangeType());
-//		changeDescribe.append("兑换类型：" + activity.getExchangeType() + ";");
-//
-//		// 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
-//		List<Store> selectAllofActivity = storeMapper.selectAllofActivity(activity.getId());
-//
-//		changeDescribe.append("门店信息：[");
-//		for (Store as : selectAllofActivity) {
-//			changeDescribe.append("{门店名称：" + as.getName() + ";");
-//			changeDescribe.append("{门店编码：" + as.getCode() + ";");
-//			changeDescribe.append("门店id：" + as.getId() + ";}");
-//			// 机具
-//			Terminal terminal = new Terminal();
-//			terminal.setStoreId(as.getId());
-//			List<Terminal> terminals = terminalMapper.selectAllEncode(terminal);
-//			as.setTerminals(terminals);
-//		}
-//		changeDescribe.append("]");
-//
-//		httpPostMap.put("storeList", selectAllofActivity);
-//
-//		// 将修改信息发送至验码系统
-//		httpPostMap.put("operCode", "1");
-//		System.out.println(JSON.toJSONString(httpPostMap));
-//		String returnJson = HttpUtil.doRestfulByHttpConnection(changeActivityUrl, JSON.toJSONString(httpPostMap));
-//		Map<String, Object> returnMap = JSON.parseObject(returnJson, Map.class);
-//		boolean isSuccess = Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
-//		if (!isSuccess) {
-//			throw new BusinessException("向积分核销系统同步信息失败");
-//		}
+		//
+		// //
+		// 获取验码系统中-修改活动，启动活动，停止活动的ＵＲＬ，并定义一个请求这些地址时，所需要的参数Map,将活动Id和活动名称都放在这个Map中
+		// String changeActivityUrl = IMPORT_URL;
+		// Map<String, Object> httpPostMap = new HashMap<String, Object>();
+		// httpPostMap.put("activityId", activity.getId());// 活动Id
+		// httpPostMap.put("activityName", activity.getName());// 活动Id
+		// // 定义一个修改内容描述
+		// StringBuffer changeDescribe = new StringBuffer();
+		// // 活动启用或停止
+		// if ("02".equals(activity.getStatus())) {
+		// // 验码模块-活动停止
+		// httpPostMap.put("status", "02");
+		// changeDescribe.append("活动状态：停止；");
+		// } else if ("01".equals(activity.getStatus())) {
+		// // 验码模块-活动启用
+		// httpPostMap.put("status", "01");
+		// changeDescribe.append("活动状态：启用；");
+		// }
+		//
+		// // 开始时间，结束时间
+		// httpPostMap.put("startTime",
+		// DateUtil.dateToStr(activity.getStartTime(), "yyyy-MM-dd
+		// HH:mm:ss"));// 开始时间
+		// httpPostMap.put("endTime", DateUtil.dateToStr(activity.getEndTime(),
+		// "yyyy-MM-dd HH:mm:ss"));// 结束时间
+		// changeDescribe.append("开始时间：" + httpPostMap.get("startTime") + ";");
+		// changeDescribe.append("结束时间：" + httpPostMap.get("endTime") + ";");
+		//
+		// // 活动指定日期修改，该处临时这样判断
+		// httpPostMap.put("selectDate", activity.getSelectDate());// 指定日期
+		// changeDescribe.append("指定日期：" + activity.getSelectDate() + ";");
+		//
+		// // 活动积分修改
+		// httpPostMap.put("integral", activity.getIntegral());
+		// changeDescribe.append("积分：" + activity.getIntegral() + ";");
+		//
+		// // 活动使用次数
+		// httpPostMap.put("rule", activity.getMaxNumber().toString());
+		// changeDescribe.append("最大次数：" + activity.getMaxNumber() + ";");
+		//
+		// // 活动使用次数
+		// httpPostMap.put("productCode", activity.getOutCode().toString());
+		// changeDescribe.append("外部编码：" + activity.getOutCode() + ";");
+		//
+		// // BIN码
+		// httpPostMap.put("bins", activity.getBins());
+		// changeDescribe.append("BIN码列表：" + activity.getBins() + ";");
+		//
+		// // 积分通道
+		// httpPostMap.put("channel", activity.getChannel());
+		// changeDescribe.append("积分通道：" + activity.getChannel() + ";");
+		//
+		// // 兑换类型
+		// httpPostMap.put("exchangeType", activity.getExchangeType());
+		// changeDescribe.append("兑换类型：" + activity.getExchangeType() + ";");
+		//
+		// // 将活动的门店关联信息添加到修改描述中和调用接口的请求参数中
+		// List<Store> selectAllofActivity =
+		// storeMapper.selectAllofActivity(activity.getId());
+		//
+		// changeDescribe.append("门店信息：[");
+		// for (Store as : selectAllofActivity) {
+		// changeDescribe.append("{门店名称：" + as.getName() + ";");
+		// changeDescribe.append("{门店编码：" + as.getCode() + ";");
+		// changeDescribe.append("门店id：" + as.getId() + ";}");
+		// // 机具
+		// Terminal terminal = new Terminal();
+		// terminal.setStoreId(as.getId());
+		// List<Terminal> terminals = terminalMapper.selectAllEncode(terminal);
+		// as.setTerminals(terminals);
+		// }
+		// changeDescribe.append("]");
+		//
+		// httpPostMap.put("storeList", selectAllofActivity);
+		//
+		// // 将修改信息发送至验码系统
+		// httpPostMap.put("operCode", "1");
+		// System.out.println(JSON.toJSONString(httpPostMap));
+		// String returnJson =
+		// HttpUtil.doRestfulByHttpConnection(changeActivityUrl,
+		// JSON.toJSONString(httpPostMap));
+		// Map<String, Object> returnMap = JSON.parseObject(returnJson,
+		// Map.class);
+		// boolean isSuccess =
+		// Boolean.parseBoolean(String.valueOf(returnMap.get("success")));
+		// if (!isSuccess) {
+		// throw new BusinessException("向积分核销系统同步信息失败");
+		// }
 	}
 
 	public StoreMapper getStoreMapper() {

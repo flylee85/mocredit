@@ -419,10 +419,6 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 					VerifyLogCode.VERIFY_INVALID_PHONE);
 			return null;
 		}
-		// 判断券码是否适用当前的门店 ，活动和门店的映射
-		List<ActActivityStore> actActivityStores = actActivityStoreMapper
-				.findByActivityId(activityCode.getActivityId());
-
 		// 编码不为空，优先适用门店编码获取
 		boolean canUse = false;
 		ActActivityStore activityStore = null;
@@ -433,11 +429,13 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> resultData = JSON.parseObject(resultStr, Map.class);
 			String storeId = resultData.get("data").toString();
-			for (ActActivityStore aas : actActivityStores) {
-				if (aas.getStoreId().equals(storeId)) {
+			if (!StringUtils.isEmpty(storeId)) {
+				Map<String, Object> param = new HashMap<String, Object>();
+				param.put("activityId", activityCode.getActivityId());
+				param.put("storeId", storeId);
+				activityStore = actActivityStoreMapper.findByActivityIdAndStoreId(param);
+				if (null != activityStore) {
 					canUse = true;
-					activityStore = aas;
-					break;
 				}
 			}
 			if (!canUse) {
@@ -763,12 +761,18 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			param.put("status", type.toString());
 		}
 		param.put("pageStart", pageSize * (pageNum - 1));
-		param.put("pageSize", pageSize);
+		param.put("pageSize", pageSize + 1);
 
 		// 获得总记录数
-		int pageCount = verifyCode.isDowload() ? 0 : acm.findPageCount(param);
 		// 获得数据
 		List<Map<String, Object>> page = acm.findPageList(param);
+		int pageCount = 0;
+		if (page.size() == pageSize + 1) {
+			pageCount = pageSize * pageNum + 1;
+			page.remove(pageSize);
+		} else {
+			pageCount = pageSize * (pageNum - 1) + page.size();
+		}
 		for (Map<String, Object> log : page) {
 			Object status = log.get("status");
 			String endTime = log.get("endTime").toString();
@@ -788,5 +792,105 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		returnMap.put("pageCount", pageCount);
 		returnMap.put("data", page);
 		return returnMap;
+	}
+
+	public AjaxResponseData checkCode(String device, String code) {
+		AjaxResponseData ard = new AjaxResponseData();
+		// 判断券码的规则合法性
+		if (!ActivityCodeUtils.verifyActivityCode(code)) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("券码非法!");
+			ard.setErrorCode(ErrorCode.CODE_15.getCode());
+			return ard;
+		}
+
+		// 判断是否能查询到该码
+		List<TActivityCode> queryList = this.findByCode(code);
+		if (null == queryList || queryList.size() < 1) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("无效的券码!");
+			ard.setErrorCode(ErrorCode.CODE_15.getCode());
+			return ard;
+		}
+
+		TActivityCode activityCode = queryList.get(0);
+		/* 判断码是否被禁用 */
+		if (ActivityCodeStatus.DISABLED.getValue().equals(activityCode.getStatus())) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("该码被禁用");
+			ard.setErrorCode(ErrorCode.CODE_14.getCode());
+			return ard;
+		}
+		/** 判断码是否已经使用过 **/
+		if (!"123456789012345".equals(code) && ActivityCodeStatus.USED.getValue().equals(activityCode.getStatus())) {
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("code", code);
+			param.put("verifyType", VerifyCodeStatus.VERIFYCODE.getValue());
+			List<TVerifiedCode> verifiedCode = vcm.findVerifiedCodesByCodeAndType(param);
+			ard.setSuccess(false);
+			TVerifiedCode oneCode = verifiedCode.get(0);
+			ard.setErrorMsg("当前券码已于时间" + DateUtil.dateToStr(oneCode.getVerifyTime(), "yyyy-MM-dd \n HH:mm:ss") + "在"
+					+ oneCode.getShopName() + oneCode.getStoreName() + "\n使用过。");
+			ard.setErrorCode(ErrorCode.CODE_51.getCode());
+			return ard;
+		}
+
+		// 兑换渠道校验
+		if (null == activityCode.getExchangeChannel()
+				|| !activityCode.getExchangeChannel().contains(ExchangeChannel.POS.getValue())) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("此券码不适用于该兑换方式!");
+			ard.setErrorCode(ErrorCode.CODE_14.getCode());
+			return ard;
+		}
+
+		// 编码不为空，优先适用门店编码获取
+		boolean canUse = false;
+		ActActivityStore activityStore = null;
+		/* 如果要校验设备号，校验该码是否适用于该设备所在门店 */
+		String resultStr = HttpUtil.doRestful(PropertiesUtil.getValue("MANAGE.GET_STORE_ID.URL") + "/" + device, "");
+		@SuppressWarnings("unchecked")
+		Map<String, Object> resultData = JSON.parseObject(resultStr, Map.class);
+		String storeId = resultData.get("data").toString();
+		if (!StringUtils.isEmpty(storeId)) {
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("activityId", activityCode.getActivityId());
+			param.put("storeId", storeId);
+			activityStore = actActivityStoreMapper.findByActivityIdAndStoreId(param);
+			if (null != activityStore) {
+				canUse = true;
+			}
+		}
+		if (!canUse) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("此券码不适用于当前门店!");
+			ard.setErrorCode(ErrorCode.CODE_59.getCode());
+			return ard;
+		}
+		canUse = false;
+		// 增加 券码适用的 选择日期（适用于 星期几）；
+		String current_day_of_week = DateUtil.getWeekDayForToday();
+		String[] selectDate = activityCode.getSelectDate().split(ActivityCodeUtils.SPLIT_CHAR_COMMA);
+		for (String d : selectDate) {
+			if (!StringUtils.isEmpty(d) && d.trim().equals(current_day_of_week)) {
+				canUse = true;
+			}
+		}
+		if (!canUse) {
+			ard.setSuccess(false);
+			ard.setErrorMsg("此券码不在适用星期范围内!");
+			ard.setErrorCode(ErrorCode.CODE_61.getCode());
+			return ard;
+		}
+		// 判断活动有效期
+		int effective = activityCode.effective();
+		if (0 == effective) {
+			ard.setData(activityCode);
+			return ard;
+		}
+		ard.setSuccess(false);
+		ard.setErrorMsg("当前使用时间不在有效的活动时间范围内!");
+		ard.setErrorCode(ErrorCode.CODE_60.getCode());
+		return ard;
 	}
 }
