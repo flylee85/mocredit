@@ -25,6 +25,9 @@ public class TActivityInfo {
 
     private String successSmsMsg;
 
+    private String status;
+
+
 
     public String getId() {
         return id;
@@ -72,5 +75,13 @@ public class TActivityInfo {
 
     public void setSuccessSmsMsg(String successSmsMsg) {
         this.successSmsMsg = successSmsMsg;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

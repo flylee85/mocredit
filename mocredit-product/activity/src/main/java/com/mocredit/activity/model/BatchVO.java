@@ -27,6 +27,7 @@ public class BatchVO implements Serializable{
 	private String posSuccessMsg;//验证成功
 	
 	private String successSmsMsg;//验证成功提示
+	private String status;//活动状态
 	
 	private List<ActivityStore> actActivityStores ;//活动门店关联列表
 	
@@ -103,5 +104,12 @@ public class BatchVO implements Serializable{
 	public void setSuccessSmsMsg(String successSmsMsg) {
 		this.successSmsMsg = successSmsMsg;
 	}
-	
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }
