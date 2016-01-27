@@ -1,17 +1,12 @@
 package com.yimeihuijin.codeandbonusapp.modules.consumeview;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -22,8 +17,6 @@ import com.yimeihuijin.commonlibrary.base.BaseFragment;
 import com.yimeihuijin.commonlibrary.widgets.CodeScreen;
 import com.yimeihuijin.commonlibrary.widgets.FlashButton;
 import com.yimeihuijin.commonlibrary.widgets.FlashLayout;
-
-import java.security.PrivilegedAction;
 
 /**
  * 主界面
@@ -124,7 +117,7 @@ public class ConsumeFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_consume1;
+        return R.layout.fragment_consume;
     }
 
     @Override
