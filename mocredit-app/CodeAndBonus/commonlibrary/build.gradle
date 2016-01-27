@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'candaochina'
             keyPassword 'candaochina123'
-            storeFile file('F:/candaojks.jks')
+            storeFile file('key/candaojks.jks')
             storePassword 'candaochina123'
         }
     }
