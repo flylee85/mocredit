@@ -41,6 +41,7 @@ public class ConsumeRevokePresenter extends BasePresenter implements ConsumeMode
                         return;
                     }
                     StateLock.lock();
+                    view.showDialog("正在撤销，请稍候...");
                     model.setCard(card);
                     model.todo(orderId,true);
                 }else{
@@ -74,12 +75,13 @@ public class ConsumeRevokePresenter extends BasePresenter implements ConsumeMode
 
     @Override
     public void conusmeComplete(ConsumeResultPresenter.ConsumeResultObject data) {
+        view.dismisDialog();
         Intent i = new Intent(view.getMain(), ConsumeResultActivity.class);
         view.getMain().startActivity(i);
         BusProvider.get().postSticky(data);
     }
 
-    public interface IConsumeRevokeView{
+    public interface IConsumeRevokeView extends SigninPresenter.IDialogView{
         public TextView getOrderIdTextView();
         public void goBack();
         public Activity getMain();

@@ -58,6 +58,7 @@ public class PayPresenter extends BasePresenter implements ConsumeModel.IConsume
                     return;
                 }
                 StateLock.lock();
+                view.showDialog("正在消费，请稍候...");
                 consumeModel.todo(null,false);
                 break;
             case R.id.pay_back:
@@ -90,6 +91,7 @@ public class PayPresenter extends BasePresenter implements ConsumeModel.IConsume
 
     @Override
     public void conusmeComplete(ConsumeResultPresenter.ConsumeResultObject data) {
+        view.dismisDialog();
        Intent i = new Intent(view.getMain(), ConsumeResultActivity.class);
         view.getMain().startActivity(i);
         BusProvider.get().postSticky(data);

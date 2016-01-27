@@ -117,7 +117,11 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
 
     public void onConsume(boolean isRevoke){
         if(ConsumeModel.isCodeConsuming()){
-            view.showDialog("正在验码...");
+            if(isRevoke) {
+                view.showDialog("正在撤销...");
+            }else{
+                view.showDialog("正在验码...");
+            }
             model.todo(view.getScreen().getCode(),isRevoke);
         }else{
             if(!isRevoke){
