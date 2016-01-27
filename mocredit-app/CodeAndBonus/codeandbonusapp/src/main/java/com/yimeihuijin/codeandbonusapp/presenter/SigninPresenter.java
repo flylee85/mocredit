@@ -62,6 +62,7 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
 
     @Override
     public void onCreate(){
+        super.onCreate();
         BusProvider.get().registerSticky(this);
 
         view.setRunningMsg("正在签到，请稍候...");
@@ -131,6 +132,7 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         BusProvider.get().unregister(this);
     }
 

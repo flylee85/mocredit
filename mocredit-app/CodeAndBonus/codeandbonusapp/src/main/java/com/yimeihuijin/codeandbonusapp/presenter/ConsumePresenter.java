@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +18,7 @@ import com.yimeihuijin.codeandbonusapp.modules.consumeview.ConsumeResultActivity
 import com.yimeihuijin.codeandbonusapp.utils.BusProvider;
 import com.yimeihuijin.codeandbonusapp.utils.StringUtils;
 import com.yimeihuijin.commonlibrary.Presenter.BasePresenter;
+import com.yimeihuijin.commonlibrary.utils.StateLock;
 import com.yimeihuijin.commonlibrary.widgets.CodeScreen;
 import com.yimeihuijin.commonlibrary.widgets.dialog.AlertDialog;
 import com.yimeihuijin.commonlibrary.widgets.dialog.ProgressDialog;
@@ -74,6 +74,12 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
                 view.getScreen().deleteBackCode();
                 break;
             case R.id.code_scan_consume:
+                //防止暴力点击
+                if(StateLock.isGlobalLocked()){
+                    return;
+                }
+                StateLock.lock();
+
                 onConsume(false);
                 break;
             case R.id.code_scan_keyboard:
@@ -84,10 +90,22 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
                     Toast.makeText(App.getInstance(),"订单号格式错误，请检查后重新输入！",Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                //防止暴力点击
+                if(StateLock.isGlobalLocked()){
+                    return;
+                }
+                StateLock.lock();
+
                 AlertDialog dialog = new AlertDialog(view.getAvtivity(), new ProgressDialog.IDialogListener() {
                     @Override
                     public void onConfirm() {
                         onConsume(true);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        StateLock.unlock();
                     }
                 });
                 dialog.setContent("是否确定撤销订单\n"+view.getScreen().getCode());
@@ -109,6 +127,7 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
                     BusProvider.get().postSticky(card);
                 }else{
                     Toast.makeText(App.getInstance(),"未获取到刷卡信息，请重新刷卡",Toast.LENGTH_LONG).show();
+                    StateLock.unlock();
                 }
             }else{
                 view.gotoCancel();
@@ -119,6 +138,7 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
 
     @Override
     public void onCreate() {
+        super.onCreate();
         view.getPager().addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -168,6 +188,7 @@ public class ConsumePresenter extends BasePresenter implements ConsumeModel.ICon
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

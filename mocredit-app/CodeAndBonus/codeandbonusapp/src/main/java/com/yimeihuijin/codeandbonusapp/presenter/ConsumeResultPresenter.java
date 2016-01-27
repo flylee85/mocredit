@@ -9,9 +9,8 @@ import com.yimeihuijin.codeandbonusapp.R;
 import com.yimeihuijin.codeandbonusapp.model.DeviceModel;
 import com.yimeihuijin.codeandbonusapp.utils.BusProvider;
 import com.yimeihuijin.commonlibrary.Presenter.BasePresenter;
+import com.yimeihuijin.commonlibrary.utils.StateLock;
 import com.yimeihuijin.commonlibrary.widgets.dialog.ProgressDialog;
-
-import java.util.Objects;
 
 /**
  * 消费结果页面的表现层
@@ -56,6 +55,11 @@ public class ConsumeResultPresenter extends BasePresenter{
                     DeviceModel.getInstance().printNormal(data.printInfo);
                     DeviceModel.getInstance().printQR(data.QR);
                 }
+
+                @Override
+                public void onCancel() {
+
+                }
             });
         }else{
             view.getImage().setImageResource(R.drawable.sign_error_icon);
@@ -66,6 +70,7 @@ public class ConsumeResultPresenter extends BasePresenter{
 
     @Override
     public void onCreate() {
+        super.onCreate();
         BusProvider.get().registerSticky(this);
 //        ConsumeResultObject data = BusProvider.get().getStickyEvent(ConsumeResultObject.class);
 //        if(data != null) {
@@ -75,6 +80,7 @@ public class ConsumeResultPresenter extends BasePresenter{
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         BusProvider.get().unregister(this);
     }
 

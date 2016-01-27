@@ -12,6 +12,7 @@ import com.yimeihuijin.codeandbonusapp.model.DeviceModel;
 import com.yimeihuijin.codeandbonusapp.modules.consumeview.ConsumeResultActivity;
 import com.yimeihuijin.codeandbonusapp.utils.BusProvider;
 import com.yimeihuijin.commonlibrary.Presenter.BasePresenter;
+import com.yimeihuijin.commonlibrary.utils.StateLock;
 
 /**
  * 消费撤销页面的表现层
@@ -36,6 +37,10 @@ public class ConsumeRevokePresenter extends BasePresenter implements ConsumeMode
             case R.id.consume_cancel_confirm:
                 DeviceModel.Card card = DeviceModel.getInstance().getCard();
                 if(card != null){
+                    if(StateLock.isGlobalLocked()){
+                        return;
+                    }
+                    StateLock.lock();
                     model.setCard(card);
                     model.todo(orderId,true);
                 }else{
@@ -52,11 +57,13 @@ public class ConsumeRevokePresenter extends BasePresenter implements ConsumeMode
 
     @Override
     public void onCreate() {
+        super.onCreate();
         BusProvider.get().registerSticky(this);
     }
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         BusProvider.get().unregister(this);
     }
 

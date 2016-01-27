@@ -66,6 +66,12 @@ public class ProgressDialog extends Dialog {
 					listener.onConfirm();
 				}
 			});
+			cancel.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					listener.onCancel();
+				}
+			});
 		}
 		confirm.setVisibility(View.VISIBLE);
 		cancel.setVisibility(View.VISIBLE);
@@ -74,6 +80,7 @@ public class ProgressDialog extends Dialog {
 
 	public static interface IDialogListener{
 		public void onConfirm();
+		public void onCancel();
 	}
 
 }

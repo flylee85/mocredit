@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
 import com.yimeihuijin.codeandbonusapp.App;
 import com.yimeihuijin.codeandbonusapp.R;
 import com.yimeihuijin.codeandbonusapp.model.runnable.ConsumeRunnables;
