@@ -13,6 +13,7 @@ import com.yimeihuijin.codeandbonusapp.modules.consumeview.ConsumeResultActivity
 import com.yimeihuijin.codeandbonusapp.utils.BusProvider;
 import com.yimeihuijin.commonlibrary.Presenter.BasePresenter;
 import com.yimeihuijin.commonlibrary.utils.BankInfoUtil;
+import com.yimeihuijin.commonlibrary.utils.StateLock;
 
 /**
  * 主界面刷卡后，进入的活动选择界面的表现层，负责活动选择，发起积分消费请求给ConsumeModel,把CconsumeModel传回的消费结果进行处理，并控制view显示
@@ -30,6 +31,7 @@ public class PayPresenter extends BasePresenter implements ConsumeModel.IConsume
     }
     @Override
     public void onCreate() {
+        super.onCreate();
         BusProvider.get().registerSticky(this);
         ConsumeModel.ActivitiesAdapter adapter = consumeModel.getAdapter();
         if(adapter.getCount() < 1){
@@ -52,6 +54,11 @@ public class PayPresenter extends BasePresenter implements ConsumeModel.IConsume
     public void onAction(int id){
         switch (id){
             case R.id.pay_confirm:
+                if(StateLock.isGlobalLocked()){
+                    return;
+                }
+                StateLock.lock();
+                view.showDialog("正在消费，请稍候...");
                 consumeModel.todo(null,false);
                 break;
             case R.id.pay_back:
@@ -73,6 +80,7 @@ public class PayPresenter extends BasePresenter implements ConsumeModel.IConsume
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         BusProvider.get().unregister(this);
     }
 
@@ -83,6 +91,7 @@ public class PayPresenter extends BasePresenter implements ConsumeModel.IConsume
 
     @Override
     public void conusmeComplete(ConsumeResultPresenter.ConsumeResultObject data) {
+        view.dismisDialog();
        Intent i = new Intent(view.getMain(), ConsumeResultActivity.class);
         view.getMain().startActivity(i);
         BusProvider.get().postSticky(data);

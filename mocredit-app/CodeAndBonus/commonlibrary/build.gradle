@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: "checkstyle"
 
 android {
     signingConfigs {
@@ -25,7 +26,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions{
+        abortOnError false
+    }
     productFlavors {
+    }
+}
+check.dependsOn 'checkstyle'
+
+task checkstyle(type: Checkstyle) {
+    source 'src'
+    configFile file("config/checkstyle.xml")
+    include '**/*.java'
+    exclude '**/gen/**'
+    ignoreFailures true
+    classpath = files()
+    reports {
+        xml {
+            destination "build/checkstyle-result.xml"
+        }
     }
 }
 

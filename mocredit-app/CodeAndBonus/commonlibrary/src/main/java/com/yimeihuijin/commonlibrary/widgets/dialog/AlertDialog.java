@@ -42,6 +42,7 @@ public class AlertDialog extends Dialog implements View.OnClickListener {
             dismiss();
         }else if(i == R.id.alert_cancel){
             dismiss();
+            listener.onCancel();
         }
     }
 

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: "checkstyle"
 
 android {
     signingConfigs {
@@ -15,8 +16,8 @@ android {
         applicationId "com.yimeihuijin.codeandbonusapp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 7
-        versionName 'V100R001C01B007'
+        versionCode 9
+        versionName 'V100R001C01B009'
         signingConfig signingConfigs.config
     }
     buildTypes {
@@ -31,7 +32,26 @@ android {
             renderscriptDebuggable true
         }
     }
+
+    lintOptions{
+        abortOnError false
+    }
     productFlavors {
+    }
+}
+check.dependsOn 'checkstyle'
+
+task checkstyle(type: Checkstyle) {
+    source 'src'
+    configFile file("config/checkstyle.xml")
+    include '**/*.java'
+    exclude '**/gen/**'
+    ignoreFailures true
+    classpath = files()
+    reports {
+        xml {
+            destination "build/checkstyle-result.xml"
+        }
     }
 }
 

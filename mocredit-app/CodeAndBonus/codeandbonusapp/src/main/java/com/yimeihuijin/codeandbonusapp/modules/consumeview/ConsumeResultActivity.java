@@ -29,7 +29,6 @@ public class ConsumeResultActivity extends BaseActivity implements ConsumeResult
 
     @Override
     protected void initialize() {
-
         icon = (ImageView) f(R.id.consume_result_icon);
         msg = (TextView) f(R.id.consume_result_msg);
         (back = (Button) f(R.id.consume_result_back)).setOnClickListener(this);
