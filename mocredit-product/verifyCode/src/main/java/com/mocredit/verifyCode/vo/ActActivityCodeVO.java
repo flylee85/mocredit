@@ -62,6 +62,7 @@ public class ActActivityCodeVO {
     private String orderCode;//发码批次
     private String activityCode;
     private String exchangeChannel;//兑换渠道
+    private String status; //活动状态
     //-----------------------------
 
     /** 操作类型 **/
@@ -257,5 +258,12 @@ public class ActActivityCodeVO {
 	public void setActivityCode(String activityCode) {
 		this.activityCode = activityCode;
 	}
-    
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

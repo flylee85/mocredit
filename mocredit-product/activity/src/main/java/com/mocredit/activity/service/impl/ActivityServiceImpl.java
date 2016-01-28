@@ -506,6 +506,7 @@ public class ActivityServiceImpl implements ActivityService {
 			as.setActivityId(activity.getId());
 		}
 		activityStoreMapper.batchAddActivityStore(storeList);
+		activity = activityMapper.getActivityById(activity.getId());
 		/*
 		 * // * 同步接口 //
 		 */
@@ -675,7 +676,6 @@ public class ActivityServiceImpl implements ActivityService {
 			String startActivityUrl = PropertiesUtil.getValue("verifyCode.startActivity");
 			Map<String, Object> httpPostMap = new HashMap<String, Object>();
 			httpPostMap.put("activityId", activity.getId());// 活动Id
-			httpPostMap.put("activityName", activity.getName());// 活动Id
 			// 定义一个修改内容描述
 			StringBuffer changeDescribe = new StringBuffer();
 			// 活动启用或停止
@@ -721,6 +721,11 @@ public class ActivityServiceImpl implements ActivityService {
 							"验码接口启用活动-----" + changeDescribe.toString());
 				}
 			} else {
+				// 活动名字
+				if (activity.getName() != null && !activity.getName().equals(oldActivity.getName())) {
+					httpPostMap.put("activityName", activity.getName());// 活动名
+					changeDescribe.append("活动名：" + activity.getName() + ";");
+				}
 				// 活动指定日期修改，该处临时这样判断
 				if (activity.getSelectDate() != null && !activity.getSelectDate().equals(oldActivity.getSelectDate())) {
 					httpPostMap.put("selectDate", activity.getSelectDate());// 指定日期
@@ -767,7 +772,11 @@ public class ActivityServiceImpl implements ActivityService {
 					httpPostMap.put("successSmsMsg", activity.getSuccessSmsMsg().toString());
 					changeDescribe.append("短信成功提示：" + activity.getSuccessSmsMsg() + ";");
 				}
-
+				// 活动状态
+				if (activity.getStatus() != null) {
+					httpPostMap.put("status", activity.getStatus());
+					changeDescribe.append("状态：" + activity.getStatus() + ";");
+				}
 				// 活动使用次数
 				if (oldActivity.getMaxNumber() != null && activity.getMaxNumber() != null
 						&& !oldActivity.getMaxNumber().equals(activity.getMaxNumber())) {
@@ -1041,7 +1050,7 @@ public class ActivityServiceImpl implements ActivityService {
 		optInfo.append("请求参数system_code：" + httpPostMap2.get("system_code") + ";");
 		optInfo.append("请求参数number：" + number + ";");
 		optInfo.append("请求回应is_success：true;");
-		optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + orderId, "", "码库接口提码-----"+number);
+		optLogService.addOptLog("活动Id:" + activityId + ",批次Id:" + orderId, "", "码库接口提码-----" + number);
 		// 返回数据
 		return codesMap;
 	}

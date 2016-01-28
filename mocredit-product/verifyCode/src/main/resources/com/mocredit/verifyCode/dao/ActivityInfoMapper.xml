@@ -10,14 +10,15 @@
         <result column="ticket_content" property="ticketContent" jdbcType="VARCHAR"></result>
         <result column="pos_success_msg" property="posSuccessMsg" jdbcType="VARCHAR"></result>
         <result column="success_sms_msg" property="successSmsMsg" jdbcType="VARCHAR"></result>
+        <result column="status" property="status" jdbcType="VARCHAR"></result>
     </resultMap>
 
     <!-- 保存 -->
     <insert id="save" parameterType="com.mocredit.verifyCode.model.TActivityInfo">
       INSERT  INTO  t_activity_info
-        (id,activity_id,ticket_title,ticket_content,pos_success_msg,success_sms_msg)
+        (id,activity_id,ticket_title,ticket_content,pos_success_msg,success_sms_msg,status)
         VALUES
-        (#{id},#{activityId},#{ticketTitle},#{ticketContent},#{posSuccessMsg},#{successSmsMsg})
+        (#{id},#{activityId},#{ticketTitle},#{ticketContent},#{posSuccessMsg},#{successSmsMsg},#{status})
     </insert>
     
     <delete id="delete" parameterType="java.lang.String">
@@ -33,5 +34,11 @@
     <select id="findByActivityId" parameterType="java.lang.String" resultType="com.mocredit.verifyCode.model.TActivityInfo" resultMap="baseResultMap">
         SELECT  * from t_activity_info WHERE  activity_id=#{activity_id}
     </select>
+    <!--活动启用和停用-->
+    <update id="updateStatus" parameterType="java.util.Map" >
+      update t_activity_info
+      SET status=#{status,jdbcType=VARCHAR}
+      WHERE activity_id=#{activityId,jdbcType=VARCHAR}
+    </update>
 
 </mapper>

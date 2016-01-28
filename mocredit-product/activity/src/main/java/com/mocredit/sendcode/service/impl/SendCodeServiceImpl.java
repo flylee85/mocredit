@@ -561,6 +561,7 @@ public class SendCodeServiceImpl implements SendCodeService {
         batchVO.setTicketContent(act.getReceiptPrint());// 活动小票内容
         batchVO.setPosSuccessMsg(act.getPosSuccessMsg());// pos验证成功短信
         batchVO.setSuccessSmsMsg(act.getSuccessSmsMsg());// 验证成功提示
+        batchVO.setStatus(act.getStatus());// 活动状态
         // 获取并设置关联门店数据
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put("activityId", act.getId());
