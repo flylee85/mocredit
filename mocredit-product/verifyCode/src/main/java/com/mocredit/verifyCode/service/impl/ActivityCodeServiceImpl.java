@@ -667,13 +667,15 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		AjaxResponseData ard = new AjaxResponseData();
 
 		// 2.更新 券码表中的数据
-		this.acm.updateActActivity(actActivityCodeVO.getActivityId(), actActivityCodeVO.getActivityName(),
-				actActivityCodeVO.getEnterpriseId(), actActivityCodeVO.getEnterpriseName(),
-				actActivityCodeVO.getContractId(), actActivityCodeVO.getAmount(), actActivityCodeVO.getStartTime(),
-				actActivityCodeVO.getEndTime(), actActivityCodeVO.getSelectDate(), actActivityCodeVO.getMaxNumber(),
-				actActivityCodeVO.getOutCode(), actActivityCodeVO.getEnterpriseCode(),
-				actActivityCodeVO.getActivityCode(), ActivityCodeStatus.NOT_USED.getValue(),
-				actActivityCodeVO.getExchangeChannel());
+        if(!actActivityCodeVO.codeDataIsEmpty()) {
+            this.acm.updateActActivity(actActivityCodeVO.getActivityId(), actActivityCodeVO.getActivityName(),
+                    actActivityCodeVO.getEnterpriseId(), actActivityCodeVO.getEnterpriseName(),
+                    actActivityCodeVO.getContractId(), actActivityCodeVO.getAmount(), actActivityCodeVO.getStartTime(),
+                    actActivityCodeVO.getEndTime(), actActivityCodeVO.getSelectDate(), actActivityCodeVO.getMaxNumber(),
+                    actActivityCodeVO.getOutCode(), actActivityCodeVO.getEnterpriseCode(),
+                    actActivityCodeVO.getActivityCode(), ActivityCodeStatus.NOT_USED.getValue(),
+                    actActivityCodeVO.getExchangeChannel());
+        }
 		// 3.更新活动关联的门店
 		this.actActivityStoreMapper.deleteByActivityId(actActivityCodeVO.getActivityId());
 		this.actActivityStoreMapper.batchSave(actActivityCodeVO.getActActivityStores());
