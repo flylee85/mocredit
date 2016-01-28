@@ -1,3 +1,4 @@
+
 apply plugin: 'com.android.application'
 apply plugin: "checkstyle"
 
@@ -67,6 +68,7 @@ task checkstyle(type: Checkstyle) {
         }
     }
 }
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
