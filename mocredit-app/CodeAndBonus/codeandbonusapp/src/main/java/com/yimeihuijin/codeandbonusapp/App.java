@@ -58,10 +58,10 @@ public class App extends Application {
 		super.onCreate();
 //		deleteDatabase(DBHelper.DB_NAME);
 		instance = this;
-		request_queue = Volley.newRequestQueue(this);
 		akey = getDBHelper().findAkey();
+		request_queue = Volley.newRequestQueue(this);
 		jieruhao = getDBHelper().findSeriesNumber();
-		URLs.initIP();
+		URLs.initIP(this);
 		initActivityListener();
 	}
 

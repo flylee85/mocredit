@@ -1,11 +1,13 @@
+
 apply plugin: 'com.android.application'
+apply plugin: "checkstyle"
 
 android {
     signingConfigs {
         config {
             keyAlias 'candaochina'
             keyPassword 'candaochina123'
-            storeFile file('F:/candaojks.jks')
+            storeFile file('key/candaojks.jks')
             storePassword 'candaochina123'
         }
     }
@@ -15,13 +17,14 @@ android {
         applicationId "com.yimeihuijin.codeandbonusapp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 3
-        versionName 'V100R001C01B001'
+        versionCode 10
+        versionName 'V1.0.0'
         signingConfig signingConfigs.config
     }
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -30,14 +33,52 @@ android {
             renderscriptDebuggable true
         }
     }
+
+    lintOptions{
+        abortOnError false
+    }
     productFlavors {
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+}
+check.dependsOn 'checkstyle'
+
+task checkstyle(type: Checkstyle) {
+    source 'src'
+    configFile file("config/checkstyle.xml")
+    include '**/*.java'
+    exclude '**/gen/**'
+    ignoreFailures true
+    classpath = files()
+    reports {
+        xml {
+            destination "build/checkstyle-result.xml"
+        }
     }
 }
 
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:support-v4:23.0.1'
     testCompile 'junit:junit:4.12'
     compile project(':commonlibrary')
     compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:support-v4:23.0.1'
+    compile('com.puppycrawl.tools:checkstyle:6.1.1'){
+        exclude group:'com.google.guava',module:'guava-jdk5'
+    }
 }
+
+

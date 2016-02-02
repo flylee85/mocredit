@@ -73,4 +73,14 @@ public class ConsumeRevokeFragment extends BaseFragment implements ConsumeRevoke
         super.onDestroy();
         presenter.onDestroy();
     }
+
+    @Override
+    public void showDialog(String msg) {
+        view.showDialog(msg);
+    }
+
+    @Override
+    public void dismisDialog() {
+        view.dismisDialog();
+    }
 }

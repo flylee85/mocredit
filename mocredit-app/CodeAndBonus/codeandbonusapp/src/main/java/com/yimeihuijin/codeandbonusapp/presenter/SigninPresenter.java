@@ -1,9 +1,13 @@
 package com.yimeihuijin.codeandbonusapp.presenter;
 
+import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +24,8 @@ import com.yimeihuijin.codeandbonusapp.utils.BusProvider;
 import com.yimeihuijin.codeandbonusapp.utils.StringUtils;
 import com.yimeihuijin.commonlibrary.Presenter.BasePresenter;
 import com.yimeihuijin.commonlibrary.base.BaseFragment;
+import com.yimeihuijin.commonlibrary.constants.URLs;
+import com.yimeihuijin.commonlibrary.widgets.dialog.InputDialog;
 
 import java.util.HashMap;
 
@@ -45,6 +51,8 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
     private SigninModel model;
     private ConsumeFragment fragment;
     private Handler handler;
+
+    private String ipPattern = "[1-2]?\\d?\\d.[1-2]?\\d?\\d.[1-2]?\\d?\\d.[1-2]?\\d?\\d";
     
 
     public SigninPresenter(ISigninView view) {
@@ -54,6 +62,7 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
 
     @Override
     public void onCreate(){
+        super.onCreate();
         BusProvider.get().registerSticky(this);
 
         view.setRunningMsg("正在签到，请稍候...");
@@ -82,12 +91,16 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {   //左侧滑动菜单点击事件
                 switch (i) {
-//                    case 0:
-//                        reSignin();
-//                        break;
+                    case 1:
+                        reSignin();
+                        break;
                     case 0:
                         printOrders();
                         break;
+                    case 2:
+                        changeIP();
+                        break;
+
                 }
             }
         });
@@ -119,6 +132,7 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         BusProvider.get().unregister(this);
     }
 
@@ -128,7 +142,6 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
 
     @Override
     public void onResume() {
-        view.setModeTitle(ConsumeModel.getMode());
 //        if(BusProvider.get().getStickyEvent(ConsumeResultPresenter.ResultBackAction.class) != null){
 //            view.gotoFragment(fragment);
 //        }
@@ -155,6 +168,7 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
      */
     public void reSignin(){
         if(fragment != null) {
+            view.goBackToFragment(fragment);
             view.clearFragment(fragment);
         }
         model.reSignin();
@@ -172,6 +186,25 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
                 handler.sendMessage(msg);
             }
         }.start();
+    }
+
+    private void changeIP(){
+        InputDialog dialog = new InputDialog((Activity)view, new InputDialog.IDialogInputListener() {
+            @Override
+            public String onInputConfirm(String text) {
+                if(text.matches(ipPattern)){
+                    URLs.setIP(text,App.getInstance());
+                    reSignin();
+                    return null;
+                }else{
+                    return "IP地址格式错误，请重新输入！";
+                }
+            }
+        });
+        dialog.setTitle("IP修改");
+        dialog.setHint("请输入新的IP");
+        dialog.setContent(URLs.getIP());
+        dialog.show();;
     }
 
     /**
@@ -205,11 +238,11 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
      * @param id
      */
     public void onAction(int id){
-        if(fragment == null){
-            return;
-        }
         switch (id){
             case R.id.action_scan:
+                if(fragment == null){
+                    return;
+                }
                 view.goBackToFragment(fragment);
                 DeviceModel.getInstance().scan(new Scanner.OnResultListener() {
                     @Override
@@ -221,20 +254,12 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
                     }
                 });
                 break;
-            case R.id.action_mode:
-                view.goBackToFragment(fragment);
-                view.setModeTitle(ConsumeModel.switchMode());
-                fragment.refresh();
-                break;
-            case R.id.action_bonus:
-                view.goBackToFragment(fragment);
-                view.setModeTitle(ConsumeModel.setModeTo(ConsumeModel.MODE_BONUS));
-                fragment.refresh();
-                break;
-            case R.id.action_code:
-                view.goBackToFragment(fragment);
-                view.setModeTitle(ConsumeModel.setModeTo(ConsumeModel.MODE_CODE));
-                fragment.refresh();
+            case android.R.id.home:
+                if(view.getDrawer().isDrawerOpen(GravityCompat.START)){
+                    view.getDrawer().closeDrawers();
+                }else{
+                    view.getDrawer().openDrawer(GravityCompat.START);
+                }
                 break;
         }
     }
@@ -250,8 +275,8 @@ public class SigninPresenter extends BasePresenter implements SigninModel.ISigni
         public void gotoFragment(BaseFragment fragment);
         public void goBackToFragment(BaseFragment fragment);
         public void goBack();
-        public void setModeTitle(String s);
         public void gotoService();
+        public DrawerLayout getDrawer();
         public ListView getLeftMenu();
         public void clearFragment(BaseFragment fragment);
         public Looper getLooper();

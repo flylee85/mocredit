@@ -75,6 +75,11 @@ public class Rest {
     public String yanma(String h, String t) {
         return controllerService.yanma(h, t);
     }
+    
+    @RequestMapping(value = "/maquanchaxun")
+    public String maquanchaxun(String h, String t) {
+        return controllerService.maquanchaxun(h, t);
+    }
 
     @RequestMapping(value = "/yanmachexiao")
     public String yanmachexiao(String h, String t) {

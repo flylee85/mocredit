@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.mocredit.base.enums.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,6 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.mocredit.base.datastructure.impl.AjaxResponseData;
-import com.mocredit.base.enums.ActivityBlackListsType;
-import com.mocredit.base.enums.ActivityCodeStatus;
-import com.mocredit.base.enums.ErrorCode;
-import com.mocredit.base.enums.ExchangeChannel;
-import com.mocredit.base.enums.VerifyCodeStatus;
-import com.mocredit.base.enums.VerifyLogCode;
 import com.mocredit.base.util.ActivityCodeUtils;
 import com.mocredit.base.util.DateUtil;
 import com.mocredit.base.util.HttpUtil;
@@ -86,16 +81,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 	/**
 	 * //判断 对当前码的操作是否在进行，如果进行则不操作，如果没有进行，则开始操作码
 	 *
-	 * @param amount
-	 *            要使用的金额 。如果是消费定额的（数据库中存放的金额，则这里为NULL）
-	 * @param useCount
-	 *            要使用的次数
 	 * @param device
 	 *            机具ID
-	 * @param store_id
-	 *            兑换的门店ID
-	 * @param store_code
-	 *            门店编码
 	 * @param request_serial_number
 	 *            POS请求的序列号
 	 * @param code
@@ -126,7 +113,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			// m.put("remainTimes", remainTimes);
 			// m.put("remainAmount", remainAmount);
 			// m.put("useCount", useCount);
-			// m.put("amount", amount);
+			m.put("amount", activityCode.getAmount());
 			m.put("activityId", activityCode.getActivityId());
 			m.put("activityName", activityCode.getActivityName());
 
@@ -370,6 +357,13 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		TActivityCode activityCode = queryList.get(0);
 		List<TActivityInfo> activityInfos = activityInfoMapper.findByActivityId(activityCode.getActivityId());
 		TActivityInfo activityInfo = activityInfos.get(0);
+		//活动是否启用
+		if(!activityInfo.getStatus().equals( ActivityInfoStatus.STARTING.getValue())){
+			ard.setSuccess(false);
+			ard.setErrorMsg("活动未启用");
+			ard.setErrorCode(ErrorCode.CODE_14.getCode());
+			return null;
+		}
 		// 锁
 		acm.selectActivityCodeForUpdateById(activityCode.getId());
 		// activityCode.setMaxNum(5);
@@ -647,6 +641,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		activityInfo.setTicketContent(actActivityCodeVO.getTicketContent());
 		activityInfo.setPosSuccessMsg(actActivityCodeVO.getPosSuccessMsg());
 		activityInfo.setSuccessSmsMsg(actActivityCodeVO.getSuccessSmsMsg());
+        activityInfo.setStatus(actActivityCodeVO.getStatus());
 		activityInfoMapper.save(activityInfo);
 
 		ard.setSuccess(true);
@@ -656,8 +651,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 	public AjaxResponseData deleteActActivityCodeWithTran(String activity_id) {
 		AjaxResponseData ard = new AjaxResponseData();
 
-		int c = activityCodeBlackListsMapper.addBlackListsByActivityId(activity_id,
-				ActivityBlackListsType.CANCEL.getValue(), ActivityBlackListsType.CANCEL.getText());
+		int c = activityInfoMapper.updateStatus(activity_id,ActivityInfoStatus.CANCELED.getValue());
 		if (c >= 0) {
 			ard.setSuccess(true);
 			ard.setErrorMsg("");
@@ -672,17 +666,16 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 	public AjaxResponseData updateActActivityWithTran(ActActivityCodeVO actActivityCodeVO) {
 		AjaxResponseData ard = new AjaxResponseData();
 
-		// 1.临时加入黑名单，状态为锁定
-		this.activityCodeBlackListsMapper.addBlackListsByActivityId(actActivityCodeVO.getActivityId(),
-				ActivityBlackListsType.LOCKING.getValue(), ActivityBlackListsType.LOCKING.getText());
 		// 2.更新 券码表中的数据
-		this.acm.updateActActivity(actActivityCodeVO.getActivityId(), actActivityCodeVO.getActivityName(),
-				actActivityCodeVO.getEnterpriseId(), actActivityCodeVO.getEnterpriseName(),
-				actActivityCodeVO.getContractId(), actActivityCodeVO.getAmount(), actActivityCodeVO.getStartTime(),
-				actActivityCodeVO.getEndTime(), actActivityCodeVO.getSelectDate(), actActivityCodeVO.getMaxNumber(),
-				actActivityCodeVO.getOutCode(), actActivityCodeVO.getEnterpriseCode(),
-				actActivityCodeVO.getActivityCode(), ActivityCodeStatus.NOT_USED.getValue(),
-				actActivityCodeVO.getExchangeChannel());
+        if(!actActivityCodeVO.codeDataIsEmpty()) {
+            this.acm.updateActActivity(actActivityCodeVO.getActivityId(), actActivityCodeVO.getActivityName(),
+                    actActivityCodeVO.getEnterpriseId(), actActivityCodeVO.getEnterpriseName(),
+                    actActivityCodeVO.getContractId(), actActivityCodeVO.getAmount(), actActivityCodeVO.getStartTime(),
+                    actActivityCodeVO.getEndTime(), actActivityCodeVO.getSelectDate(), actActivityCodeVO.getMaxNumber(),
+                    actActivityCodeVO.getOutCode(), actActivityCodeVO.getEnterpriseCode(),
+                    actActivityCodeVO.getActivityCode(), ActivityCodeStatus.NOT_USED.getValue(),
+                    actActivityCodeVO.getExchangeChannel());
+        }
 		// 3.更新活动关联的门店
 		this.actActivityStoreMapper.deleteByActivityId(actActivityCodeVO.getActivityId());
 		this.actActivityStoreMapper.batchSave(actActivityCodeVO.getActActivityStores());
@@ -698,6 +691,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		activityInfo.setTicketContent(actActivityCodeVO.getTicketContent());
 		activityInfo.setPosSuccessMsg(actActivityCodeVO.getPosSuccessMsg());
 		activityInfo.setSuccessSmsMsg(actActivityCodeVO.getSuccessSmsMsg());
+        activityInfo.setStatus(actActivityCodeVO.getStatus());
 		activityInfoMapper.save(activityInfo);
 
 		ard.setSuccess(true);
@@ -706,8 +700,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 
 	public AjaxResponseData startUsingActivityWithTran(String activity_id) {
 		AjaxResponseData ard = new AjaxResponseData();
-
-		this.activityCodeBlackListsMapper.deleteBlackListsByActivityId(activity_id);
+        this.activityInfoMapper.updateStatus(activity_id,ActivityInfoStatus.STARTING.getValue());
 		ard.setSuccess(true);
 		return ard;
 	}

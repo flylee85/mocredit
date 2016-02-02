@@ -621,6 +621,7 @@ public class ActivityCodeController {
 	         "outCode", //外部编码
 	         "enterpriseCode",//发行企业编码
 	         "activityCode" //活动编号
+	         status //活动状态
 	         }
 	 *
 	 * 

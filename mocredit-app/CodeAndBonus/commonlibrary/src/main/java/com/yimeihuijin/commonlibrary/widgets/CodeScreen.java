@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.TextView;
 
-public class CodeScreen extends TextView {
+public class CodeScreen extends TextView implements  Cloneable{
 
 	private StringBuffer code = new StringBuffer("");
 	private StringBuffer drawCode = new StringBuffer("");
@@ -28,11 +28,20 @@ public class CodeScreen extends TextView {
 
 	private Rect textSizeRect = new Rect();
 
+	public CodeScreen(Context context){
+		this(context,null);
+	}
+
 	public CodeScreen(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		codeSize = getTextSize();
 		hint = getText().toString();
 		// TODO Auto-generated constructor stub
+	}
+
+	public void setCodeSize(int size){
+		codeSize = size;
+		resetView();
 	}
 
 	public void inputCode(char c) {
@@ -110,4 +119,14 @@ public class CodeScreen extends TextView {
 		resetView();
 	}
 
+	@Override
+	public CodeScreen clone(){
+		CodeScreen code = null;
+		try {
+			code = (CodeScreen) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return code;
+	}
 }
