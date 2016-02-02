@@ -15,14 +15,14 @@ public class Bank {
     static {
         BANK_MAP.put("1", "中信银行");
         BANK_MAP.put("2", "民生银行");
-        BANK_MAP.put("3", "交通银行");
-        BANK_MAP.put("4", "招商银行");
-        BANK_MAP.put("5", "天津银行北京分行");
-        BANK_MAP.put("6", "中国银行");
-        BANK_MAP.put("7", "天津银行总行");
-        BANK_MAP.put("8", "北京银行");
-        BANK_MAP.put("9", "农行蛋糕券兑换");
-        BANK_MAP.put("10", "光大银行");
+//        BANK_MAP.put("3", "交通银行");
+//        BANK_MAP.put("4", "招商银行");
+//        BANK_MAP.put("5", "天津银行北京分行");
+//        BANK_MAP.put("6", "中国银行");
+//        BANK_MAP.put("7", "天津银行总行");
+//        BANK_MAP.put("8", "北京银行");
+//        BANK_MAP.put("9", "农行蛋糕券兑换");
+//        BANK_MAP.put("10", "光大银行");
 
     }
 

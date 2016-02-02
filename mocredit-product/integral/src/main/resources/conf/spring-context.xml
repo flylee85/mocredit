@@ -12,14 +12,14 @@
     <bean id="propertyConfigurer"
           class="com.mocredit.base.util.FilePropertyPlaceholderConfigurer">
         <property name="locations">
-             <list>
+          <!--   <list>
                  <value>file:./../../../config.properties</value>
                  <value>file:./../../../redis.properties</value>
-             </list>
-           <!-- <list>
+             </list>-->
+            <list>
                 <value>classpath:config.properties</value>
                 <value>classpath:redis.properties</value>
-            </list>-->
+            </list>
         </property>
 
     </bean>
