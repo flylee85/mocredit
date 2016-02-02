@@ -19,6 +19,7 @@
         <module>eGateway</module>
         <module>wememms</module>
         <module>recharge</module>
+        <module>verifyCode</module>
     </modules>
     <dependencies>
         <dependency>
