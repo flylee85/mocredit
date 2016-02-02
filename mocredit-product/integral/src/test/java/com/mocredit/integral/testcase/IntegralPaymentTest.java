@@ -10,8 +10,8 @@ import com.mocredit.integral.service.OrderService;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
-import org.junit.Test;
-import org.testng.Assert;
+import org.junit.Assert;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -16,6 +16,18 @@
     <name>integral</name>
 
     <dependencies>
+        <dependency>
+            <groupId>com.googlecode.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>1.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.jmockit</groupId>
+            <artifactId>jmockit-coverage</artifactId>
+            <version>0.999.24</version>
+            <scope>test</scope>
+        </dependency>
         <!-- 依赖server模块 -->
         <dependency>
             <groupId>com.mocredit.base</groupId>
@@ -74,24 +86,6 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.47</version>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.jmockit</groupId>
-            <artifactId>jmockit</artifactId>
-            <version>1.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.jmockit</groupId>
-            <artifactId>jmockit-coverage</artifactId>
-            <version>0.999.24</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-dbcp</groupId>

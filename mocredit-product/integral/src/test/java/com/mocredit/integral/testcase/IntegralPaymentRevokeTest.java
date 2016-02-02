@@ -1,6 +1,7 @@
 package com.mocredit.integral.testcase;
 
-import org.junit.Test;
+
+import org.testng.annotations.Test;
 
 /**
  * Created by ytq on 2016/1/29.
