@@ -1,12 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>mocredit</groupId>
+    <parent>
+        <groupId>com.mocredit.product</groupId>
+        <artifactId>mocredit-product</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
     <artifactId>verify_code</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>verify_code Maven Webapp</name>
-    <url>http://maven.apache.org</url>
+    <name>verify_code</name><properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+</properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -109,6 +113,12 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
+        </dependency>
+        <!-- 加入slf4j依赖包 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.7.6</version>
         </dependency>
     </dependencies>
     <build>
