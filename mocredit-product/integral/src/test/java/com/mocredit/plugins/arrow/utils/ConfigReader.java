@@ -75,7 +75,6 @@ public class ConfigReader {
     public String getSrouceCodeEncoding() {
         return this.sourceCodeEncoding;
     }
-
     /**
      * @param propertyFileName
      * @return
