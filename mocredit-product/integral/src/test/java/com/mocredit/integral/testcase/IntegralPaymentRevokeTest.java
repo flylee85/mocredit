@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.mocredit.integral.adapter.IntegralBankAdapter;
 import com.mocredit.integral.constant.ErrorCodeType;
 import com.mocredit.integral.entity.Activity;
-import com.mocredit.integral.entity.Order;
 import com.mocredit.integral.entity.Response;
 import com.mocredit.integral.service.ActivityService;
 import com.mocredit.integral.service.HttpRequestService;
@@ -32,8 +31,8 @@ public class IntegralPaymentRevokeTest {
     private OrderService orderService;
     private static Integer requestId = -1;
     private static Response resp = new Response();
-    private static final String param = "{\"oldOrderId\":\"test_payment_revoke\",\"orderId\":\"test_payment\"}";
     private static OrderVo order;
+    private static final String param = "{\"oldOrderId\":\"test_payment_revoke\",\"orderId\":\"test_payment\"}";
 
     static {
         order = JSON.parseObject(param, OrderVo.class);
