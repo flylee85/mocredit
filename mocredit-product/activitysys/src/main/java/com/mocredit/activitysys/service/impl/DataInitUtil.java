@@ -8,26 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.jcraft.jsch.jce.MD5;
 import com.mocredit.activity.model.Activity;
-import com.mocredit.activity.persitence.ActivityMapper;
-import com.mocredit.base.exception.BusinessException;
-import com.mocredit.base.util.DateUtil;
-import com.mocredit.base.util.HttpUtil;
 import com.mocredit.base.util.IDUtil;
 import com.mocredit.base.util.Md5Utils;
-import com.mocredit.manage.model.Store;
-import com.mocredit.manage.model.Terminal;
-import com.mocredit.manage.persitence.StoreMapper;
-import com.mocredit.manage.persitence.TerminalMapper;
 
 /**
  * 新平台数据初始化工具类，实现数据从老平台到新平台的迁移，完成新平台数据初始化。
@@ -66,24 +53,12 @@ public class DataInitUtil {
 	// "jdbc:mysql://127.0.0.1:3306/gateway?useUnicode=true&characterEncoding=utf-8";
 	// private static final String NEW_GATEWAY_USERNAME = "root";
 	// private static final String NEW_GATEWAY_PWD = "root";
-
-	private static String IMPORT_URL = "http://127.0.0.1:8080/integral/activityImport";
-
 	private Connection conIn;
 	private Connection conOut;
-	private StoreMapper storeMapper;
-	private TerminalMapper terminalMapper;
-	private ActivityMapper activityMapper;
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		// 初始化spring
-		String configLocation = "classpath*:conf/*.xml";
-		ApplicationContext ctx = new ClassPathXmlApplicationContext(configLocation);
 		DataInitUtil util = new DataInitUtil();
-		util.setStoreMapper(ctx.getBean(StoreMapper.class));
-		util.setTerminalMapper(ctx.getBean(TerminalMapper.class));
-		util.setActivityMapper(ctx.getBean(ActivityMapper.class));
-
 		// 加载MySql的驱动类
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -393,8 +368,6 @@ public class DataInitUtil {
 			sb.append(")");
 			System.out.println(sb.toString());
 			execute(sb.toString(), false);
-			Activity activity = activityMapper.getActivityById(id);
-			this.sysnActivity(activity);
 		}
 		rs.close();
 	}
@@ -515,8 +488,6 @@ public class DataInitUtil {
 				}
 			}
 
-			Activity activity = activityMapper.getActivityById(String.valueOf(activityId));
-			this.sysnActivity(activity);
 		}
 		rs.close();
 	}
@@ -612,7 +583,7 @@ public class DataInitUtil {
 			sb.append(getColumn(exchangeType));// exchange_type
 			sb.append(getColumn("01"));// status
 			sb.append(getColumn("0"));// contract_id
-			sb.append(getColumn("4"));// channel
+			sb.append(getColumn("3"));// channel
 			sb.append(getColumn("1"));// exchange_channel
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append(")");
@@ -631,9 +602,6 @@ public class DataInitUtil {
 							+ storeIds.getString(1) + "','" + shopId + "')", false);
 				}
 			}
-
-			Activity activity = activityMapper.getActivityById(String.valueOf(activityId));
-			this.sysnActivity(activity);
 		}
 		rs.close();
 	}
@@ -770,29 +738,4 @@ public class DataInitUtil {
 		// throw new BusinessException("向积分核销系统同步信息失败");
 		// }
 	}
-
-	public StoreMapper getStoreMapper() {
-		return storeMapper;
-	}
-
-	public void setStoreMapper(StoreMapper storeMapper) {
-		this.storeMapper = storeMapper;
-	}
-
-	public TerminalMapper getTerminalMapper() {
-		return terminalMapper;
-	}
-
-	public void setTerminalMapper(TerminalMapper terminalMapper) {
-		this.terminalMapper = terminalMapper;
-	}
-
-	public ActivityMapper getActivityMapper() {
-		return activityMapper;
-	}
-
-	public void setActivityMapper(ActivityMapper activityMapper) {
-		this.activityMapper = activityMapper;
-	}
-
 }
