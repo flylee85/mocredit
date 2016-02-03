@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Created by ytq on 2016/1/29.
+ * 积分消费
  */
 public class IntegralPaymentTest {
     @Tested
