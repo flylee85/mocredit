@@ -13,102 +13,100 @@ import org.testng.TestListenerAdapter;
 
 /**
  * @author netease_arrow 描述：来自网易的截图插件
- * 
  */
 public class TestResultListener extends TestListenerAdapter {
 
-	private static Logger logger = Logger.getLogger(TestResultListener.class
-			.getName());
-	protected ITestContext testContext = null; // 这里也是新加的
+    private static Logger logger = Logger.getLogger(TestResultListener.class
+            .getName());
+    protected ITestContext testContext = null; // 这里也是新加的
 
-	@Override
-	public void onStart(ITestContext testContext) { // 这里也是新加的，用于对context进行统一
-		this.testContext = testContext;
-		super.onStart(testContext);
-	}
+    @Override
+    public void onStart(ITestContext testContext) { // 这里也是新加的，用于对context进行统一
+        this.testContext = testContext;
+        super.onStart(testContext);
+    }
 
-	@Override
-	public void onTestSuccess(ITestResult tr) {
-		super.onTestSuccess(tr);
-		logger.info(tr.getName() + " test case runs successfully");
-	}
+    @Override
+    public void onTestSuccess(ITestResult tr) {
+        super.onTestSuccess(tr);
+        logger.info(tr.getName() + " test case runs successfully");
+    }
 
-	@Override
-	public void onTestStart(ITestResult tr) {
-		super.onTestStart(tr);
-		logger.info(tr.getName() + " test case start running");
-	}
+    @Override
+    public void onTestStart(ITestResult tr) {
+        super.onTestStart(tr);
+        logger.info(tr.getName() + " test case start running");
+    }
 
-	@Override
-	public void onFinish(ITestContext testContext) {
-		super.onFinish(testContext);
+    @Override
+    public void onFinish(ITestContext testContext) {
+        super.onFinish(testContext);
+        // List of test results which we will delete later
+        ArrayList<ITestResult> testsToBeRemoved = new ArrayList<ITestResult>();
+        // collect all id's from passed test
+        Set<Integer> passedTestIds = new HashSet<Integer>();
+        for (ITestResult passedTest : testContext.getPassedTests()
+                .getAllResults()) {
+            logger.info("Passed= " + passedTest.getName());
+            passedTestIds.add(getId(passedTest));
+        }
 
-		// List of test results which we will delete later
-		ArrayList<ITestResult> testsToBeRemoved = new ArrayList<ITestResult>();
-		// collect all id's from passed test
-		Set<Integer> passedTestIds = new HashSet<Integer>();
-		for (ITestResult passedTest : testContext.getPassedTests()
-				.getAllResults()) {
-			logger.info("Passed= " + passedTest.getName());
-			passedTestIds.add(getId(passedTest));
-		}
+        // Eliminate the repeat methods
+        Set<Integer> skipTestIds = new HashSet<Integer>();
+        for (ITestResult skipTest : testContext.getSkippedTests()
+                .getAllResults()) {
+            logger.info("Skipped = " + skipTest.getName());
+            // id = class + method + dataprovider
+            int skipTestId = getId(skipTest);
 
-		// Eliminate the repeat methods
-		Set<Integer> skipTestIds = new HashSet<Integer>();
-		for (ITestResult skipTest : testContext.getSkippedTests()
-				.getAllResults()) {
-			logger.info("Skipped = " + skipTest.getName());
-			// id = class + method + dataprovider
-			int skipTestId = getId(skipTest);
+            if (skipTestIds.contains(skipTestId)
+                    || passedTestIds.contains(skipTestId)) {
+                testsToBeRemoved.add(skipTest);
+            } else {
+                skipTestIds.add(skipTestId);
+            }
+        }
 
-			if (skipTestIds.contains(skipTestId)
-					|| passedTestIds.contains(skipTestId)) {
-				testsToBeRemoved.add(skipTest);
-			} else {
-				skipTestIds.add(skipTestId);
-			}
-		}
+        // Eliminate the repeat failed methods
+        Set<Integer> failedTestIds = new HashSet<Integer>();
+        for (ITestResult failedTest : testContext.getFailedTests()
+                .getAllResults()) {
+            logger.info("Failed = " + failedTest.getName());
+            // id = class + method + dataprovider
+            int failedTestId = getId(failedTest);
 
-		// Eliminate the repeat failed methods
-		Set<Integer> failedTestIds = new HashSet<Integer>();
-		for (ITestResult failedTest : testContext.getFailedTests()
-				.getAllResults()) {
-			logger.info("Failed = " + failedTest.getName());
-			// id = class + method + dataprovider
-			int failedTestId = getId(failedTest);
+            // if we saw this test as a failed test before we mark as to be
+            // deleted
+            // or delete this failed test if there is at least one passed
+            // version
+            if (failedTestIds.contains(failedTestId)
+                    || passedTestIds.contains(failedTestId)
+                    || skipTestIds.contains(failedTestId)) {
+                testsToBeRemoved.add(failedTest);
+            } else {
+                failedTestIds.add(failedTestId);
+            }
+        }
 
-			// if we saw this test as a failed test before we mark as to be
-			// deleted
-			// or delete this failed test if there is at least one passed
-			// version
-			if (failedTestIds.contains(failedTestId)
-					|| passedTestIds.contains(failedTestId)
-					|| skipTestIds.contains(failedTestId)) {
-				testsToBeRemoved.add(failedTest);
-			} else {
-				failedTestIds.add(failedTestId);
-			}
-		}
+        // finally delete all tests that are marked
+        for (Iterator<ITestResult> iterator = testContext.getFailedTests()
+                .getAllResults().iterator(); iterator.hasNext(); ) {
+            ITestResult testResult = iterator.next();
+            if (testsToBeRemoved.contains(testResult)) {
+                logger.info("Removed repeat faild test case = "
+                        + testResult.getName());
+                iterator.remove();
+            }
+        }
 
-		// finally delete all tests that are marked
-		for (Iterator<ITestResult> iterator = testContext.getFailedTests()
-				.getAllResults().iterator(); iterator.hasNext();) {
-			ITestResult testResult = iterator.next();
-			if (testsToBeRemoved.contains(testResult)) {
-				logger.info("Removed repeat faild test case = "
-						+ testResult.getName());
-				iterator.remove();
-			}
-		}
+    }
 
-	}
-
-	private int getId(ITestResult result) {
-		int id = result.getTestClass().getName().hashCode();
-		id = id + result.getMethod().getMethodName().hashCode();
-		id = id
-				+ (result.getParameters() != null ? Arrays.hashCode(result
-						.getParameters()) : 0);
-		return id;
-	}
+    private int getId(ITestResult result) {
+        int id = result.getTestClass().getName().hashCode();
+        id = id + result.getMethod().getMethodName().hashCode();
+        id = id
+                + (result.getParameters() != null ? Arrays.hashCode(result
+                .getParameters()) : 0);
+        return id;
+    }
 }
