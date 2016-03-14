@@ -151,28 +151,38 @@
 		</div>
 		<!-- / .modal 选择门店-->
 	<script>
+		var selectedStores=[];
+		var initFlag=true;
 	// 选择门店 全选
 	$('#shopModal thead :checkbox').click(function () {
 		$(this).parents(".dataTables_wrapper").find("tbody :checkbox").prop("checked", $(this).prop("checked"));
 	});
 	//选择门店确认
 	$("#chooseShopEnter").click(function () {
-		$(".chooseShop").text("已选 " + $("#shopModal .has-selected tbody tr").length + " 家门店");
 		var choosedStore = $(".choosedStore").empty();
 		var str = '<div class="row selectStore clearfix">';
-		$("#shopModal .has-selected tbody tr :checkbox").each(function(){
-			str += '<span data-id="'+ $(this).attr("data-id") +'" data-storeName="'+$(this).attr("data-storeName")+'" data-shopId="'+ $(this).attr("data-shopId")+'" data-shopName='+$(this).attr("data-shopName")+' class="label bg-info">'+ $(this).attr("data-storeName")+'<i class="icon-remove"></i></span>';
-		})
+		var selectedCount=0;
+		for(var i in selectedStores){
+			var store=selectedStores[i];
+			if(null!=store){
+				selectedCount++;
+				str += '<span data-id="'+ store.storeId +'" data-storeName="'+store.storeName+'" data-shopId="'+ store.shopId+'" data-shopName='+store.shopName+' class="label bg-info">'+ store.storeName+'<i class="icon-remove"></i></span>';
+			}
+		}
 		str += '</div>';
+
+		$(".chooseShop").text("已选 " + selectedCount + " 家门店");
 		$(".choosedStore").empty().append(str);
 		$('#shopModal').modal('hide');
 	});
 	var toSelectModal;
 	var selectedModal;
-	//>>
+	//>>　
 	$("#leftToRight").click(function(){
 		$('#shopModal .to-select tbody :checkbox:checked').each(function(){
 			var _this=$(this);
+			var store={shopId:_this.attr("data-shopid"),stopName:_this.attr("data-shopname"),storeId:_this.attr("data-id"),storeName:_this.attr("data-storename")}
+			addStore(store);
 			$("#shopModal .has-selected tbody .dataTables_empty").parent().remove();
 			$("#shopModal .has-selected tbody").append($(this).parent().parent());
 		})
@@ -181,6 +191,7 @@
 	$("#rightToLeft").click(function(){
 		$('#shopModal .has-selected tbody :checkbox:checked').each(function(){
 			var _this=$(this);
+			removeStore(_this.attr("data-id"));
 			$("#shopModal .to-select tbody .dataTables_empty").parent().remove();
 			$("#shopModal .to-select tbody").append($(this).parent().parent());
 		})
@@ -194,7 +205,9 @@
 	});
 	// 查询门店
 	$(".has-selected .storeSearch").click(function () {
-		selectedModal.ajax.reload();
+		if(!initFlag){
+			selectedModal.ajax.reload();
+		}
 	});
 	//门店初始化
 	function initToSelectMendian() {
@@ -239,7 +252,7 @@
 			});
 	}
 	//已选门店初始化
-	function initSelectedMendian() {
+	function initSelectedMendian(isinit) {
 			$('#shopModal .has-selected').find('[data-ride="datatables"]').each(function () {
 				selectedModal = $(this).DataTable({
 					"ajax": {
@@ -253,6 +266,13 @@
 								"city": $('.has-selected [name=city]').val(),
 								"shopName": $('.has-selected [name=shopName]').val()
 							})
+						},
+						dataSrc:function(json){
+							if(initFlag){
+								selectedStores=json.data;
+								initFlag=false;
+							}
+							return json.data;
 						}
 					},
 					"processing": true,
@@ -282,8 +302,23 @@
 //		}
 		//
 	}
+	function removeStore(storeId){
+		for(var  i in selectedStores){
+			var store=selectedStores[i];
+			if(null==store){
+				continue;
+			}
+			if(store.storeId==storeId){
+				selectedStores[i]=null;
+				return;
+			}
+		}
+	}
+	function addStore(store){
+		selectedStores.push(store);
+	}
 	initToSelectMendian();
-	initSelectedMendian();
+	initSelectedMendian(true);
 	</script>
 	</body>
 </html>
