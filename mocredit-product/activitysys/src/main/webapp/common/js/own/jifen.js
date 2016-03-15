@@ -109,6 +109,8 @@
 		});
 	});
 
+	var leftStores=null;
+	var rightStores=null;
 	// 打开门店页面
 	$(".chooseShop").hover(function () {
 		if ($(this).hasClass('popFloat')) {

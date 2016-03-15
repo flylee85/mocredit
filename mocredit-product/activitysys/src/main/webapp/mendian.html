@@ -151,8 +151,6 @@
 		</div>
 		<!-- / .modal 选择门店-->
 	<script>
-		var selectedStores=[];
-		var initFlag=true;
 	// 选择门店 全选
 	$('#shopModal thead :checkbox').click(function () {
 		$(this).parents(".dataTables_wrapper").find("tbody :checkbox").prop("checked", $(this).prop("checked"));
@@ -162,38 +160,38 @@
 		var choosedStore = $(".choosedStore").empty();
 		var str = '<div class="row selectStore clearfix">';
 		var selectedCount=0;
-		for(var i in selectedStores){
-			var store=selectedStores[i];
+		for(var i in rightStores){
+			var store=rightStores[i];
 			if(null!=store){
 				selectedCount++;
 				str += '<span data-id="'+ store.storeId +'" data-storeName="'+store.storeName+'" data-shopId="'+ store.shopId+'" data-shopName='+store.shopName+' class="label bg-info">'+ store.storeName+'<i class="icon-remove"></i></span>';
 			}
 		}
 		str += '</div>';
-
 		$(".chooseShop").text("已选 " + selectedCount + " 家门店");
 		$(".choosedStore").empty().append(str);
 		$('#shopModal').modal('hide');
 	});
-	var toSelectModal;
-	var selectedModal;
 	//>>　
 	$("#leftToRight").click(function(){
 		$('#shopModal .to-select tbody :checkbox:checked').each(function(){
 			var _this=$(this);
 			var store={shopId:_this.attr("data-shopid"),stopName:_this.attr("data-shopname"),storeId:_this.attr("data-id"),storeName:_this.attr("data-storename")}
-			addStore(store);
 			$("#shopModal .has-selected tbody .dataTables_empty").parent().remove();
 			$("#shopModal .has-selected tbody").append($(this).parent().parent());
+			var removeStore=removeExcludeLeft(store.storeId);
+            addExcludeRight(removeStore);
 		})
 	});
 	//<<
 	$("#rightToLeft").click(function(){
 		$('#shopModal .has-selected tbody :checkbox:checked').each(function(){
 			var _this=$(this);
-			removeStore(_this.attr("data-id"));
+			var storeId = _this.attr("data-id");
 			$("#shopModal .to-select tbody .dataTables_empty").parent().remove();
 			$("#shopModal .to-select tbody").append($(this).parent().parent());
+            var removeStore=removeExcludeRight(storeId);
+            addExcludeLeft(removeStore);
 		})
 	});
 	// 初始化地区
@@ -201,124 +199,193 @@
 	$(".city1").province_city();
 	// 查询门店
 	$(".to-select .storeSearch").click(function () {
-		toSelectModal.ajax.reload();
+        var storeName = $('.to-select [name=storeName]').val();
+        var prov = $('.to-select [name=province]').val();
+        var city = $('.to-select [name=city]').val();
+        var merchantName = $('.to-select [name=shopName]').val();
+        var stores=searchLeft(storeName,prov,city,merchantName,true)
+        var datatable = $('#shopModal .to-select').find('[data-ride="datatables"]:last').dataTable().api();
+        datatable.clear();
+        datatable.rows.add(stores);
+        datatable.draw();
 	});
 	// 查询门店
 	$(".has-selected .storeSearch").click(function () {
-		if(!initFlag){
-			selectedModal.ajax.reload();
-		}
+        var storeName = $('.has-selected [name=storeName]').val();
+        var prov = $('.has-selected [name=province]').val();
+        var city = $('.has-selected [name=city]').val();
+        var merchantName = $('.has-selected [name=shopName]').val();
+        var stores=searchLeft(storeName,prov,city,merchantName,false)
+        var datatable = $('#shopModal .has-selected').find('[data-ride="datatables"]:last').dataTable().api();
+        datatable.clear();
+        datatable.rows.add(stores);
+        datatable.draw();
 	});
 	//门店初始化
-	function initToSelectMendian() {
-			$('#shopModal .to-select').find('[data-ride="datatables"]').each(function () {
-				toSelectModal = $(this).DataTable({
-					"ajax": {
-						url: "activitysys/getSelectedStores",
-						type: "post",
-						data: function (d) {
-							return $.extend({}, d, {
-								"activityCurrentId":$("#activityCurrentId").val(),
-								"storeName": $('.to-select [name=storeName]').val(),
-								"province": $('.to-select [name=province]').val(),
-								"city": $('.to-select [name=city]').val(),
-								"shopName": $('.to-select [name=shopName]').val(),
-							})
-						}
-					},
-					"processing": true,
-					//"serverSide":true,
-					"autoWidth": true,
-					"ordering": false,
-					"paging":false,
-					"scrollY": "200px",
-					"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
-					"columns": [
-						{"data": null},
-						{"data": "shopName"},
-						{"data": "storeName", className: "storeName"},
-						{"data": "area"}
-					],
-					"columnDefs": [
-						{
-							"targets": 0,
-							"data": null,
-							"render": function (data, type, full) {
-								return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId'] + '" data-storeName="' + full['storeName'] + '" data-shopName="' + full['shopName'] + '">';
-							}
-						}
-					]
-				});
-			});
+    function bandLeft() {
+        $('#shopModal .to-select').find('[data-ride="datatables"]:last').each(function () {
+            $(this).dataTable({
+                data: leftStores,
+                "processing": true,
+                //"serverSide":true,
+                "autoWidth": true,
+                "ordering": false,
+                "paging": false,
+                "scrollY": "200px",
+                "dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
+                "columns": [
+                    {"data": null},
+                    {"data": "shopName"},
+                    {"data": "storeName", className: "storeName"},
+                    {"data": "area"}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "data": null,
+                        "render": function (data, type, full) {
+                            return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId'] + '" data-storeName="' + full['storeName'] + '" data-shopName="' + full['shopName'] + '">';
+                        }
+                    }
+                ]
+            });
+        })
+    }
+    function initToSelectMendian() {
+        if(leftStores){
+            var stores=[];
+            for(var i in leftStores){
+                var store=leftStores[i];
+                if(store!=null){
+                    stores.push(store);
+                }
+            }
+            leftStores=stores;
+            bandLeft();
+            return
+        }
+        $.get("activitysys/getSelectedStores","activityCurrentId="+$("#activityCurrentId").val(),function(json){
+            leftStores=json.data;
+            bandLeft();
+        },'json');
 	}
 	//已选门店初始化
-	function initSelectedMendian(isinit) {
-			$('#shopModal .has-selected').find('[data-ride="datatables"]').each(function () {
-				selectedModal = $(this).DataTable({
-					"ajax": {
-						url: "activitysys/getSelectedStores",
-						type: "post",
-						data: function (d) {
-							return $.extend({}, d, {
-								"activityId":$("#activityCurrentId").val(),
-								"storeName": $('.has-selected [name=storeName]').val(),
-								"province": $('.has-selected [name=province]').val(),
-								"city": $('.has-selected [name=city]').val(),
-								"shopName": $('.has-selected [name=shopName]').val()
-							})
-						},
-						dataSrc:function(json){
-							if(initFlag){
-								selectedStores=json.data;
-								initFlag=false;
-							}
-							return json.data;
-						}
-					},
-					"processing": true,
-					//"serverSide":true,
-					"autoWidth": true,
-					"ordering": false,
-					"paging":false,
-					"scrollY": "200px",
-					"dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
-					"columns": [
-						{"data": null},
-						{"data": "shopName"},
-						{"data": "storeName", className: "storeName"},
-						{"data": "area"}
-					],
-					"columnDefs": [
-						{
-							"targets": 0,
-							"data": null,
-							"render": function (data, type, full) {
-								return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId'] + '" data-storeName="' + full['storeName'] + '" data-shopName="' + full['shopName'] + '">';
-							}
-						}
-					]
-				});
-			});
-//		}
-		//
-	}
-	function removeStore(storeId){
-		for(var  i in selectedStores){
-			var store=selectedStores[i];
-			if(null==store){
-				continue;
-			}
-			if(store.storeId==storeId){
-				selectedStores[i]=null;
-				return;
+    function bandRight() {
+        $('#shopModal .has-selected').find('[data-ride="datatables"]:last').each(function () {
+            $(this).dataTable({
+                data: rightStores,
+                "processing": true,
+                //"serverSide":true,
+                "autoWidth": true,
+                "ordering": false,
+                "paging": false,
+                "scrollY": "200px",
+                "dom": "t<'row'<'col col-lg-6'i><'col col-lg-6'p>>",
+                "columns": [
+                    {"data": null},
+                    {"data": "shopName"},
+                    {"data": "storeName", className: "storeName"},
+                    {"data": "area"}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "data": null,
+                        "render": function (data, type, full) {
+                            return '<input type="checkbox" data-id="' + full['storeId'] + '" data-shopId="' + full['shopId'] + '" data-storeName="' + full['storeName'] + '" data-shopName="' + full['shopName'] + '">';
+                        }
+                    }
+                ]
+            });
+        });
+    }
+    function initSelectedMendian() {
+        if(rightStores){
+            var stores=[];
+            for(var i in rightStores){
+                var store=rightStores[i];
+                if(store!=null){
+                    stores.push(store);
+                }
+            }
+            rightStores=stores;
+            bandRight();
+            return ;
+        }
+        $.get("activitysys/getSelectedStores","activityId="+$("#activityCurrentId").val(),function(json){
+            rightStores=json.data;
+            bandRight();
+        },'json');
+    }
+		function addExcludeLeft(store){
+            leftStores.push(store);
+		}
+		function removeExcludeLeft(storeId){
+			for(var i in leftStores){
+				var store=leftStores[i];
+				if(null!=store&&store.storeId==storeId){
+                    leftStores[i]=null;
+					return store;
+				}
 			}
 		}
-	}
-	function addStore(store){
-		selectedStores.push(store);
-	}
+
+		function addExcludeRight(store){
+            rightStores.push(store);
+		}
+		function removeExcludeRight(storeId){
+			for(var i in rightStores){
+				var store=rightStores[i];
+                if(null!=store&&store.storeId==storeId){
+                    rightStores[i]=null;
+                    return store;
+                }
+			}
+		}
+        function searchLeft(storeName,prov,city,merchantName,isLeft){
+            var condition=[];
+            var length=0;
+            if(storeName){
+                condition['storeName']=storeName;
+                length++;
+            }
+            if(prov){
+                condition['provId']=prov;
+                length++;
+            }
+            if(city){
+                condition['cityId']=city;
+                length++;
+            }
+            if(merchantName){
+                condition['shopName']=merchantName;
+                length++;
+            }
+            var stores = isLeft?leftStores:rightStores;
+            var ret=[];
+            if(stores){
+                for(var i in stores){
+                    var store=stores[i];
+                    if(null==store){
+                        continue;
+                    }
+                    var flag=true;
+                    for(var j in condition){
+                        if(j=='storeName'||j=='shopName'){
+                            flag=flag&&null!=store[j]&&store[j].indexOf(condition[j])!=-1
+                        }else{
+                            flag=flag&&store[j]==condition[j];
+                        }
+                    }
+                    if(flag){
+                        ret.push(store);
+                    }
+                }
+            }
+            return ret;
+        }
 	initToSelectMendian();
-	initSelectedMendian(true);
+	initSelectedMendian();
 	</script>
 	</body>
 </html>

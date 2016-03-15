@@ -107,7 +107,9 @@
 	    select 
 	    s.id as storeId,s.name as storeName,m.id as shopId,m.name as shopName
 	    ,CONCAT(case when a.title is null then '' ELSE a.title END, ' ' , case when a1.title is null then '' ELSE a1.title END , ' ' , case when a2.title is null then '' ELSE a2.title END) AS area
-	    from t_store s
+	    ,s.province as provId
+        ,s.city as cityId
+        from t_store s
 	    left join t_merchant m on s.merchant_id=m.id
 	    left join t_area a on s.province=a.id
 	    left join t_area a1 on s.city=a1.id
@@ -119,6 +121,7 @@
 	    <if test="activityCurrentId != null and activityCurrentId !='' ">
 	     and s.id not in (select store_id from act_activity_store where activity_id=#{activityCurrentId})
 	    </if>
+		
 	    <if test="storeName !=null and storeName!='' ">
 	     and s.name like '%${storeName}%'
 	    </if>

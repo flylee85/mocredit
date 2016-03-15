@@ -25,6 +25,7 @@ var oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 		{ "data": "code" },
 		{ "data": "name","className":"sName" },
 		{ "data": "address" },
+		{ "data": "merchantName" },
 		{ "data": "phone" },
 		{ "data": "businessStatusName" },
 		{ "data": "terminalCount" },
@@ -38,7 +39,7 @@ var oTable= $("#store").find('[data-ride="datatables"]').DataTable( {
 				+ '<a href="terminal.html" class="changePage toTerminal" current-id="'+full[ 'id' ]+'">管理机具</a>'
 				},
 			"sortable": false,
-			"targets": 6
+			"targets": 7
 		}
 	]
 
