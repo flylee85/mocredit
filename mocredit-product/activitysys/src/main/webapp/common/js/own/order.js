@@ -112,7 +112,7 @@ $(function () {
             success: function (result, textStuts) {
                 if (result.success) {
                     window.location.href = "order/exportCodeOrder?type=02&exportType=CSV&" + formArray;
-                    sendMsg(true, msg);
+                    //sendMsg(true, msg);
                 } else {
                     sendMsg(false, result.errorMsg);
                 }
