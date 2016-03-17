@@ -32,6 +32,11 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 			param.put("enterpriseName", "%" + verifyCode.getEnterpriseName() + "%");
 		}
 		param.put("code", verifyCode.getCode());
+
+		param.put("requestSerialNumber",verifyCode.getOrderNo());
+		if (!StringUtils.isEmpty(verifyCode.getStoreName())) {
+			param.put("storeName", "%" + verifyCode.getStoreName() + "%");
+		}
 		// 处理类型
 		if (null != verifyCode.getStatusList()) {
 			StringBuilder type = new StringBuilder();

@@ -21,6 +21,9 @@ public class OrderDto {
     private Integer pageSize; //页面大小
     private boolean download;
 
+    private String orderNo;
+    private String storeName;
+
     public boolean isDownload() {
         return download;
     }
@@ -151,4 +154,23 @@ public class OrderDto {
         this.pageSize = pageSize;
     }
 
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        if(!"".equals(orderNo)) {
+            this.orderNo = orderNo;
+        }
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        if(!"".equals(storeName)) {
+            this.storeName = storeName;
+        }
+    }
 }

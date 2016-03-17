@@ -94,23 +94,40 @@
 						   </div>
 					   </div>
 				   </div>
-				   <div class="panel clearfix">
-					   <label class="col-lg-2 control-label">启用金额</label>
-					   <div class="col-lg-4">
-						   <input type="text" class="form-control input-small parsley-validated" placeholder="活动最低金额" tabindex="7" name="amountLimit" data-parsley-maxlength="200" >
-					   </div>
-					    <label class="col-lg-2 control-label">折扣额度</label>
-					   <div class="col-lg-4">
-						    <input type="text" class="form-control input-small parsley-validated" data-parsley-type="number" data-parsley-min="0.01"  placeholder="金额或者折扣度，两位小数" name="discount"  tabindex="3">
-						</div>
+				   <div class="panel clearfix typeTab" style="display:none;">
+                       <div class="form-group">
+                           <label class="col-lg-2 control-label">满</label>
+                           <div class="col-lg-4">
+                               <input type="text" class="form-control input-small parsley-validated" placeholder="满" tabindex="7" name="amountLimit">
+                           </div>
+                           <label class="col-lg-2 control-label">减</label>
+                           <div class="col-lg-4">
+                               <input type="text" class="form-control input-small parsley-validated" placeholder="减" name="discount">
+                           </div>
+                       </div>
+
+				   </div>
+				   <div class="panel clearfix typeTab" style="display:none;">
+                       <div class="form-group">
+                           <label class="col-lg-2 control-label">满</label>
+                           <div class="col-lg-4">
+                               <input type="text" class="form-control input-small parsley-validated" placeholder="满" tabindex="7" name="amountLimit">
+                           </div>
+                            <label class="col-lg-2 control-label">折扣</label>
+                           <div class="col-lg-4">
+                                <input type="text" class="form-control input-small parsley-validated" placeholder="折扣 三位小数" name="discount"  tabindex="3">
+                            </div>
+                        </div>
 				   </div>
 				   <div  class="panel clearfix">
-				   	 <label class="col-lg-2 control-label">积分</label>
+                       <div class="form-group">
+                           <label class="col-lg-2 control-label">积分</label>
 
-						   <div class="col-lg-4">
-							   <input type="text" class="form-control input-small parsley-validated"
-									  data-parsley-required="true" data-parsley-type="integer" placeholder="积分" tabindex="7" name="integral">
-						   </div>
+                           <div class="col-lg-4">
+                               <input type="text" class="form-control input-small parsley-validated"
+                                      data-parsley-type="integer" placeholder="积分" tabindex="7" name="integral">
+                           </div>
+                       </div>
 				   </div>
 				   <div class="panel clearfix">
 				   		<label class="col-lg-2 control-label">支持BIN码</label>

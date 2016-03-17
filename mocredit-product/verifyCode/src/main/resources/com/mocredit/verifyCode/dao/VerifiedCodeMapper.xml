@@ -119,6 +119,12 @@
 			<if test="enterpriseName != null">
 				and vc.issue_enterprise_name like '${enterpriseName}'
 			</if>
+			<if test="requestSerialNumber != null">
+				and vc.request_serial_number=#{requestSerialNumber}
+			</if>
+			<if test="storeName != null">
+				and vc.store_name like '${storeName}'
+			</if>
 		</where>
 		order by verify_time desc
 		limit #{pageStart},#{pageSize}
@@ -156,6 +162,12 @@
 			</if>
 			<if test="enterpriseName != null">
 				and vc.issue_enterprise_name like '${enterpriseName}'
+			</if>
+			<if test="requestSerialNumber != null">
+				and vc.request_serial_number=#{requestSerialNumber}
+			</if>
+			<if test="storeName != null">
+				and vc.store_name like '${storeName}'
 			</if>
 		</where>
 	</select>

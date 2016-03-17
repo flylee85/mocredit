@@ -32,6 +32,31 @@
 		$('#content').load('activity.html');
 	});
 
+	$("input[name=activityStyle]").click(function(){
+		var index = $(this).index()-1;
+        console.log(index);
+		$(".typeTab").hide();
+        if(index<0){
+            $(".typeTab:first input[name=amountLimit]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
+            $(".typeTab:first input[name=discount]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
+            $(".typeTab:last input[name=amountLimit]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
+            $(".typeTab:last input[name=discount]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min").removeAttr("data-parsley-max");
+            return;
+        }
+		if(index==0) {
+            $(".typeTab:last input[name=amountLimit]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
+            $(".typeTab:last input[name=discount]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min").removeAttr("data-parsley-max");
+            $(".typeTab:first").show();
+            $(".typeTab:first input[name=amountLimit]").attr("data-parsley-required",true).attr("data-parsley-type","number").attr("data-parsley-min","0.01");
+            $(".typeTab:first input[name=discount]").attr("data-parsley-required",true).attr("data-parsley-type","number").attr("data-parsley-min","0.001");
+		}else{
+            $(".typeTab:first input[name=amountLimit]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
+            $(".typeTab:first input[name=discount]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
+            $(".typeTab:last").show();
+            $(".typeTab:last input[name=amountLimit]").attr("data-parsley-required",true).attr("data-parsley-type","number").attr("data-parsley-min","0.01");
+            $(".typeTab:last input[name=discount]").attr("data-parsley-required",true).attr("data-parsley-type","number").attr("data-parsley-min","0.001").attr("data-parsley-max","0.999");
+        }
+	})
 	/**
 	 * 添加发码活动确认按钮
 	 */
@@ -87,6 +112,13 @@
 				formObject.maxNumber+=this.id+":"+$this.val()+";";
 			}
 		})
+        //amountLimit
+        var amountLimitInput=$(".typeTab:visible [name=amountLimit]");
+        formObject.amountLimit=amountLimitInput.length>0?amountLimitInput.val():0;
+        //discount
+        var discountInput=$(".typeTab:visible [name=discount]");
+        formObject.discount=discountInput.length>0?discountInput.val():0;
+
 		//提交
 		$.ajax({
 			type: "post",
@@ -163,8 +195,8 @@
 				addActivityFamaForm.find("select[name='channel']").attr('data-val',dataObject.channel);
 				addActivityFamaForm.find("input[name='exchangeType'][value="+dataObject.exchangeType+"]").attr("checked","checked");
 				addActivityFamaForm.find("input[name='activityStyle'][value="+dataObject.activityStyle+"]").click();
-				addActivityFamaForm.find("input[name='amountLimit']").val(dataObject.amountLimit);
-				addActivityFamaForm.find("input[name='discount']").val(dataObject.discount);
+				addActivityFamaForm.find("input[name='amountLimit']:visible").val(dataObject.amountLimit);
+				addActivityFamaForm.find("input[name='discount']:visible").val(dataObject.discount);
 				if(dataObject.storeCount != 0){
 					addActivityFamaForm.find(".chooseShop").addClass('popFloat').text("已选择 " + dataObject.storeCount + " 家门店");
 				}else{

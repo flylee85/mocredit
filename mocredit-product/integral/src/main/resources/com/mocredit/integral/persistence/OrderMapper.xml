@@ -92,6 +92,9 @@
         from ti_order a LEFT JOIN ti_activity b ON a.activity_id=b.activity_id LEFT JOIN ti_store c ON
         a.store_id=c.store_id and a.activity_id=c.activity_id WHERE 1=1
         AND a.uuid &lt;=(SELECT a.uuid FROM ti_order a ORDER BY a.uuid DESC limit #{t.offset},1)
+        <if test="t.orderNo!=null">
+            AND a.order_id =#{t.orderNo}
+        </if>
         <if test="t.startTime!=null">
             AND a.ctime >=#{t.startTime}
         </if>
@@ -109,6 +112,9 @@
         </if>
         <if test="t.cardNo!=null">
             AND a.card_num like CONCAT('%','${t.cardNo}','%')
+        </if>
+        <if test="t.storeName!=null">
+            AND c.store_name like CONCAT('%','${t.storeName}','%')
         </if>
         <if test="t.statusList!=null">
             AND a.`status` IN
@@ -122,7 +128,13 @@
 
     <select id="findOrderByListCount" resultType="int" parameterType="com.mocredit.integral.dto.OrderDto">
         select count(1)
-        from ti_order a LEFT JOIN ti_activity b ON a.activity_id=b.activity_id WHERE 1=1
+        from ti_order a LEFT JOIN ti_activity b ON a.activity_id=b.activity_id
+        LEFT JOIN ti_store c ON
+        a.store_id=c.store_id and a.activity_id=c.activity_id
+        WHERE 1=1
+        <if test="t.cardNo!=null">
+            AND a.card_num like CONCAT('%','${t.cardNo}','%')
+        </if>
         <if test="t.startTime!=null">
             AND a.ctime >=#{t.startTime}
         </if>
@@ -138,8 +150,11 @@
         <if test="t.enCode!=null">
             AND a.en_code like CONCAT('%','${t.enCode}','%')
         </if>
-        <if test="t.cardNo!=null">
-            AND a.card_num like CONCAT('%','${t.cardNo}','%')
+        <if test="t.orderNo!=null">
+            AND a.order_id =#{t.orderNo}
+        </if>
+        <if test="t.storeName!=null">
+            AND c.store_name like CONCAT('%','${t.storeName}','%')
         </if>
         <if test="t.statusList!=null">
             AND a.`status` IN
