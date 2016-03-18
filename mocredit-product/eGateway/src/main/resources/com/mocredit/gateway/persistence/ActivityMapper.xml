@@ -30,7 +30,7 @@
     <insert id="save" parameterType="com.mocredit.gateway.entity.Activity">
 		insert into
 		`activity`(name,code,enterprise_name,merchant_id,merchant_name,rule,status,ctime,utime)
-		values(#{t.name},#{t.code},#{t.enterpriseName},#{t.merchantId},#{t.merchantName},#{t.rule},#{t.status},now(),now())
+		values(#{t.name},genOffActCode(),#{t.enterpriseName},#{t.merchantId},#{t.merchantName},#{t.rule},#{t.status},now(),now())
 	</insert>
     <select id="getByActivityCode" resultMap="BaseResultMap">
 		select * from

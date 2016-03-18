@@ -145,7 +145,7 @@ function openUpdate(id, type){
 		if(result.success){
 			var form=$("#addStore form");
 			form.find("input[name=name]").attr("data-id",result.data.store.id).val(result.data.store.name);
-			form.find("input[name=code]").val(result.data.store.code);
+			form.find("#scode").val(result.data.store.code);
 			form.find("input[name=linkman]").val(result.data.store.linkman);
 			if(result.data.store.phone){
 				var phoneJson=result.data.store.phone.split(",");

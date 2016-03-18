@@ -108,6 +108,7 @@ function openUpdate(id, type){
 		if(result.success){
 			var form=$("#addShangjia form");
 			form.find("input[name=name]").attr("data-id",result.data.id).val(result.data.name);
+			form.find("#mcode").val(result.data.code);
 			form.find("input[name=linkman]").val(result.data.linkman);
 			form.find("input[name=linkphone]").val(result.data.linkphone);
 			form.find("input[name=address]").val(result.data.address);

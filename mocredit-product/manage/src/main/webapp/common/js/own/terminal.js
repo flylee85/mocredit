@@ -92,6 +92,7 @@ if(isLinked){
 		form.reset();
 		$("#addTerminal form :input[name=snCode]").attr("data-id","").val("");
 		$("#addTerminal form :input[name=info]").val("");
+        $("#tcode").val("");
 	});
 }else{
 	$("#toAdd").remove();
@@ -105,6 +106,7 @@ function openUpdate(id, type){
 			var form=$("#addTerminal form");
 			var terminal = result.data.terminal;
 			form.find("input[name=snCode]").attr("data-id",terminal.id).val(terminal.snCode);
+			$("#tcode").val(terminal.terminalCode);
 			form.find("select[name=supplierId] option[value="+terminal.supplierId+"]").attr("selected","selected");
 			form.find("select[name=type] option[value="+terminal.type+"]").attr("selected","selected");
 			form.find("select[name=gateway] option[value="+terminal.gateway+"]").attr("selected","selected");

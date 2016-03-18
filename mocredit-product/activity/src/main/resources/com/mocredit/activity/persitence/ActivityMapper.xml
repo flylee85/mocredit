@@ -295,7 +295,7 @@
 	<trim prefix="values (" suffix=")" suffixOverrides="," >
 			#{name},
 			#{type},
-			#{code},
+			genActivityCode(),
 			#{outCode},
 			#{receiptTitle},
 			#{receiptPrint},

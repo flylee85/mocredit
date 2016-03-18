@@ -91,6 +91,7 @@ function openUpdateEnterprise(id, type){
 		if(result.success){
 			var form=$("#addEnterprise form");
 			form.find("input[name=name]").attr("data-id",result.data.id).val(result.data.name);
+			form.find("#ecode").val(result.data.code);
 			form.find("input[name=linkman]").val(result.data.linkman);
 			form.find("input[name=linkphone]").val(result.data.linkphone);
 			form.find("input[name=linkaddress]").val(result.data.linkaddress);

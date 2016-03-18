@@ -222,7 +222,7 @@
 	        	var dataObject = result.data;
 				addActivityFamaForm.find("input[name='id']").val(dataObject.id);
 				addActivityFamaForm.find("input[name='name']").val(dataObject.name);
-				addActivityFamaForm.find("input[name='code']").val(dataObject.code);
+				addActivityFamaForm.find("#code").val(dataObject.code);
 				addActivityFamaForm.find("input[name='outCode']").val(dataObject.outCode);
 				addActivityFamaForm.find("select[name='enterpriseId']").val(dataObject.enterpriseId);
 				addActivityFamaForm.find("select[name='enterpriseId']").attr('data-val',dataObject.enterpriseId);

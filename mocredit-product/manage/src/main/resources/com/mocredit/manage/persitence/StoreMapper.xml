@@ -141,7 +141,7 @@
       area, address, longitude, 
       latitude, status, mobile, 
       phone,create_time,linkman,business_status,mail_address)
-    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, genStoreCode(),
       #{merchantId,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, #{longitude,jdbcType=DOUBLE}, 
       #{latitude,jdbcType=DOUBLE}, #{status,jdbcType=TINYINT}, #{mobile,jdbcType=VARCHAR}, 

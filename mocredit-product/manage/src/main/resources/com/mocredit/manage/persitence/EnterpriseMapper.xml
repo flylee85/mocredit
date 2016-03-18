@@ -116,7 +116,7 @@
       mms_total, sms_warning, mms_warning, 
       mmschannle, audit, linkaddress
       )
-    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, genEnterpriseCode(),
       #{linkman,jdbcType=VARCHAR}, #{linkphone,jdbcType=VARCHAR}, #{linkman2,jdbcType=VARCHAR}, 
       #{linkphone2,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{smsBalance,jdbcType=INTEGER}, #{smsTotal,jdbcType=INTEGER}, #{mmsBalance,jdbcType=INTEGER}, 

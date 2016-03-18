@@ -137,7 +137,7 @@
       sms_total, mms_balance, mms_total, 
       sms_warning, mms_warning, mmschannle, 
       email, descr)
-    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, genShopCode(),
       #{wapUrl,jdbcType=VARCHAR}, #{webUrl,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, 
       #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, 
       #{linkman,jdbcType=VARCHAR}, #{linkphone,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 

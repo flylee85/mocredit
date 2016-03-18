@@ -92,7 +92,7 @@ function openUpdateFamaActivity() {
             var dataObject = result.data;
             addActivityFamaForm.find("input[name='id']").val(dataObject.id);
             addActivityFamaForm.find("input[name='name']").val(dataObject.name);
-            addActivityFamaForm.find("input[name='code']").val(dataObject.code);
+            addActivityFamaForm.find("#acode").val(dataObject.code);
             addActivityFamaForm.find("input[name='enterpriseName']").val(dataObject.enterpriseName);
             addActivityFamaForm.find("input[name='merchantId']").val(dataObject.merchantId);
             addActivityFamaForm.find("input[name='merchantName']").val(dataObject.merchantName);
