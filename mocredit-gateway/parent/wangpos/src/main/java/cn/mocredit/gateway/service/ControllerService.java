@@ -17,4 +17,11 @@ public interface ControllerService {
     String resetDevpassword(String json);
     String yanmachexiao(String h,String t);
     String shoudantongbu(String h,String t);
+
+    /**
+     * 重置秘钥
+     * @param key
+     * @return
+     */
+    String resetKey(String key);
 }

@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import cn.mocredit.gateway.util.RSACoder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,11 +90,16 @@ public class ControllerServiceImpl implements ControllerService {
     ChongZhengRepository chongZhengRepository;
     @Autowired
     CheckCodeRecordRepository checkCodeRecordRepository;
-    
+
     /**
      * 活动id的前缀，当活动是中信权益活动时使用此前缀
      */
     private static final String ZXQY = "ZXQY";
+    /**
+     * 默认秘钥
+     */
+    private static final String DEFAULT_PASSWORD = "0000000000000000";
+
     private Logger logger = getLogger(this.getClass());
     @Value("${rsaPrivateKey}")
     private String rsaPrivateKey;
@@ -116,8 +122,8 @@ public class ControllerServiceImpl implements ControllerService {
     private String consumeCancelCorrectUrl;
     @Value("${checkcodeCancelNewUrl}")
     private String checkcodeCancelNewUrl;
-	@Value("${shoudantongbuUrl}")
-	private String shoudantongbuUrl;
+    @Value("${shoudantongbuUrl}")
+    private String shoudantongbuUrl;
     @Value("${fakeDemo}")
     private boolean fakeDemo;
 
@@ -184,6 +190,7 @@ public class ControllerServiceImpl implements ControllerService {
         logger.info(content);
         return encrypt(content, tx.getMd5Hex());
     }
+
     public String fakeYanma(String h, String t) {
         TongXin tx = new TongXin(h, t).invoke();
         JsonData jsonData = tx.getJsonData();
@@ -205,6 +212,7 @@ public class ControllerServiceImpl implements ControllerService {
         logger.info(content);
         return encrypt(content, tx.getMd5Hex());
     }
+
     @Override
     public String yanma(String h, String t) {
         if (fakeDemo) {
@@ -214,8 +222,8 @@ public class ControllerServiceImpl implements ControllerService {
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
         YanMaQingQiuData req = jsonToObject(jsonData.getjData(), YanMaQingQiuData.class);
-        if(req == null){
-        	return "-1";
+        if (req == null) {
+            return "-1";
         }
         YanMaXiangYingData ret = new YanMaXiangYingData();
         ret.setTitle("福码");//TODO 如何获得新老活动的名称？先写死。。。
@@ -226,10 +234,10 @@ public class ControllerServiceImpl implements ControllerService {
             String searchno = uuid();
             String batchno = req.getOrderId();
             EitemBo eitem = barcodeserviceYanma(device.getDevcode(), req.getCode(), "0", "1", batchno, searchno);
-            if(eitem == null){
-            	eitem = new EitemBo();
-            	eitem.setIsSuccess("false");
-            	eitem.setError("所验的码是无效码");
+            if (eitem == null) {
+                eitem = new EitemBo();
+                eitem.setIsSuccess("false");
+                eitem.setError("所验的码是无效码");
             }
             String isSuccess = eitem.getIsSuccess();
 
@@ -243,7 +251,7 @@ public class ControllerServiceImpl implements ControllerService {
             ret.setBatchno(eitem.getBacthNo());
             ret.setErweima(req.getCode());
             ret.setPosno(batchno);
-            if(eitem.getXiaoTiao() != null){
+            if (eitem.getXiaoTiao() != null) {
                 ret.setPrintInfo(eitem.getXiaoTiao().replace("\\n", "\n"));
             }
             jsonData.setjData(objectToJson(ret));
@@ -280,7 +288,7 @@ public class ControllerServiceImpl implements ControllerService {
             jSONObject.put("shopId", device.getShopid());
             jSONObject.put("code", code);
             String ss = HttpUtil.httpForJson(sendToVerifyCodeModelUrl + "/ActivityCode/verifyCode", jSONObject);
-            logger.info("1DAA487F859F423BABC6C58441238706 验码模块的返回值："+ss);
+            logger.info("1DAA487F859F423BABC6C58441238706 验码模块的返回值：" + ss);
             HxForJson resJson = JacksonJsonMapper.jsonToObject(ss, HxForJson.class);
 
             if (resJson.getSuccess().equals("true")) {
@@ -309,15 +317,15 @@ public class ControllerServiceImpl implements ControllerService {
             return encrypt(content, tx.getMd5Hex());
         }
     }
-    
+
     @Override
-    public String maquanchaxun(String h,String t){
+    public String maquanchaxun(String h, String t) {
         TongXin tx = new TongXin(h, t).invoke();
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
-        MaquanchaxunBo maquan = jsonToObject(jsonData.getjData(),MaquanchaxunBo.class);
-        if(maquan == null){
-        	return "-1";
+        MaquanchaxunBo maquan = jsonToObject(jsonData.getjData(), MaquanchaxunBo.class);
+        if (maquan == null) {
+            return "-1";
         }
         maquan.device = tx.getDevice().getDevcode();
         String ret = callService(codeQueryServiceUrl, objectToJson(maquan));
@@ -329,12 +337,12 @@ public class ControllerServiceImpl implements ControllerService {
     }
 
     @Override
-    public String yanmachexiao(String h,String t){
+    public String yanmachexiao(String h, String t) {
         TongXin tx = new TongXin(h, t).invoke();
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
         YanMaXiangYingData ret = new YanMaXiangYingData();
-        if(!jsonData.getjData().contains("posno")) {
+        if (!jsonData.getjData().contains("posno")) {
             String result = callCheckcodeCancelNew(jsonData.getjData());
             HxForJson resJson = JacksonJsonMapper.jsonToObject(result, HxForJson.class);
             ret.setTitle("福码");
@@ -351,11 +359,11 @@ public class ControllerServiceImpl implements ControllerService {
                 ret.setYmOrderId(ret.getOrderId());
                 ret.setErweima(ret.getOrderId());
             }
-        }else{
-            CodeRevokeBo crb = jsonToObject(jsonData.getjData(),CodeRevokeBo.class);
-            if(crb != null){
-            	CheckCodeRecord ccr = checkCodeRecordRepository.getCheckCodeRecordByBatchno(crb.requestSerialNumber);
-            	EitemRevertBo eitem = codeRevokeOld(ccr.getImei(),ccr.getBatchno(),ccr.getSearchno(),crb.posno);
+        } else {
+            CodeRevokeBo crb = jsonToObject(jsonData.getjData(), CodeRevokeBo.class);
+            if (crb != null) {
+                CheckCodeRecord ccr = checkCodeRecordRepository.getCheckCodeRecordByBatchno(crb.requestSerialNumber);
+                EitemRevertBo eitem = codeRevokeOld(ccr.getImei(), ccr.getBatchno(), ccr.getSearchno(), crb.posno);
                 String isSuccess = eitem.getIsSuccess();
 
                 ret.setRtnFlag("true".equals(isSuccess) ? "0" : "1");
@@ -368,7 +376,7 @@ public class ControllerServiceImpl implements ControllerService {
                 logger.info(content);
                 checkCodeRecordRepository.delete(ccr);
                 return encrypt(content, tx.getMd5Hex());
-            }else{
+            } else {
                 ret.setRtnFlag("1");
                 ret.setErrorMes("无法撤销该订单");
             }
@@ -392,16 +400,16 @@ public class ControllerServiceImpl implements ControllerService {
         String retxml = callBarcodeservice(a, String.class);
         logger.info("xml from barcodeservice http yanma" + retxml);
         List<EitemBo> eitemlist = (List<EitemBo>) XmlUtil.getBO(new EitemBo().getClass(), retxml);
-        if(eitemlist == null || eitemlist.size() < 1){
-        	EitemBo bo = new EitemBo();
-        	bo.setIsSuccess("false");
-        	bo.setError("所验的码是无效码");
-        	return bo;
+        if (eitemlist == null || eitemlist.size() < 1) {
+            EitemBo bo = new EitemBo();
+            bo.setIsSuccess("false");
+            bo.setError("所验的码是无效码");
+            return bo;
         }
         return eitemlist.get(0);
     }
 
-    private EitemRevertBo codeRevokeOld(String imei,String batchno,String searchno,String posno){
+    private EitemRevertBo codeRevokeOld(String imei, String batchno, String searchno, String posno) {
         Args a = new Args();
         a.setMethodName("redVBarcode");
 //        a.setImei("test1234");
@@ -447,7 +455,7 @@ public class ControllerServiceImpl implements ControllerService {
         logger.info(content);
         return encrypt(content, tx.getMd5Hex());
     }
-    
+
     @Override
     public String huodongliebiao(String h, String t) {
         if (fakeDemo) {
@@ -471,7 +479,7 @@ public class ControllerServiceImpl implements ControllerService {
         return encrypt(content, tx.getMd5Hex());
     }
 
-    private ActivityBo[] getActivitys(String devcode){
+    private ActivityBo[] getActivitys(String devcode) {
         return null;
     }
 
@@ -486,7 +494,7 @@ public class ControllerServiceImpl implements ControllerService {
         if ("false".equals(eb.getIsSuccess()) && !"没有兑换的活动".equals(eb.getResultInfo())) return null;
         List<String> ids = eitemlist.stream().map(bo -> bo.getEitemid()).collect(toList());
         Map<String, Activity> map = activityRepository.getByEitemId(ids).stream().collect(toMap(Activity::getEitemid, a -> a));
-        return eitemlist.stream().map(bo ->mapEitemListBoToActivityBo(bo, map)).toArray(ActivityBo[]::new);
+        return eitemlist.stream().map(bo -> mapEitemListBoToActivityBo(bo, map)).toArray(ActivityBo[]::new);
     }
 
     private ActivityBo mapEitemListBoToActivityBo(EitemListBo bo, Map<String, Activity> map) {
@@ -550,6 +558,7 @@ public class ControllerServiceImpl implements ControllerService {
         logger.info(content);
         return encrypt(content, tx.getMd5Hex());
     }
+
     @Override
     public String xiaofei(String h, String t) {
         if (fakeDemo) {
@@ -569,7 +578,7 @@ public class ControllerServiceImpl implements ControllerService {
         ObjectAgrs ret = new ObjectAgrs();
         ret.cardNum = cardNo;
         ret.cardExpDate = exp_date;
-        ret.activityId =  "771657cc0c674d33bbed5cedbd98838a";
+        ret.activityId = "771657cc0c674d33bbed5cedbd98838a";
         ret.activityId = req.getActivitId();
         ret.enCode = "12312321r";
         ret.enCode = devcode;
@@ -682,6 +691,7 @@ public class ControllerServiceImpl implements ControllerService {
         liuShuiRepository.save(liuShui);
         return liuShui;
     }
+
     public String fakeChexiao(String h, String t) {
         TongXin tx = new TongXin(h, t).invoke();
         JsonData jsonData = tx.getJsonData();
@@ -697,6 +707,7 @@ public class ControllerServiceImpl implements ControllerService {
         logger.info(content);
         return encrypt(content, tx.getMd5Hex());
     }
+
     @Override
     public String chexiao(String h, String t) {
         if (fakeDemo) {
@@ -798,8 +809,8 @@ public class ControllerServiceImpl implements ControllerService {
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
         CheXiaoQingQiuData req = jsonToObject(jsonData.getjData(), CheXiaoQingQiuData.class);
-        if(req==null){
-        	return "-1";
+        if (req == null) {
+            return "-1";
         }
         String devcode = tx.getDevice().getDevcode();
         String orderId = req.getOrderId();
@@ -841,8 +852,8 @@ public class ControllerServiceImpl implements ControllerService {
         JsonData jsonData = tx.getJsonData();
         if (jsonData == null) return "-1";
         CheXiaoQingQiuData req = jsonToObject(jsonData.getjData(), CheXiaoQingQiuData.class);
-        if(req==null){
-        	return "-1";
+        if (req == null) {
+            return "-1";
         }
         String devcode = tx.getDevice().getDevcode();
         String orderId = req.getOrderId();
@@ -854,7 +865,7 @@ public class ControllerServiceImpl implements ControllerService {
         a.orderId = req.getOrderId();
         a.cardNum = req.getCardNo();
 
-        String ret = callService(consumeCancelCorrectUrl,objectToJson(a));
+        String ret = callService(consumeCancelCorrectUrl, objectToJson(a));
 //        ChongZheng cz = new ChongZheng();
 //        cz.setId(uuid());
 //        cz.setDevcode(devcode);
@@ -879,15 +890,15 @@ public class ControllerServiceImpl implements ControllerService {
 
     @Override
     public String resetDevpassword(String json) {
-        ObjectAgrs a = jsonToObject(json,ObjectAgrs.class);
-        if(a == null || a.enCode == null){
+        ObjectAgrs a = jsonToObject(json, ObjectAgrs.class);
+        if (a == null || a.enCode == null) {
             return "参数错误";
         }
         List<Device> devices = deviceRepository.getDeviceByMD5(md5Hex(a.enCode));
         if (devices.size() != 1) {
             return "查不到该en（" + a.enCode + "）对应的机具";
         }
-        for(Device dev:devices){
+        for (Device dev : devices) {
             dev.setPassword("0000000000000000");
         }
         return "0";
@@ -895,15 +906,15 @@ public class ControllerServiceImpl implements ControllerService {
 
     @Override
     public String syncdevcode(String json) {
-        ObjectAgrs a = jsonToObject(json,ObjectAgrs.class);
+        ObjectAgrs a = jsonToObject(json, ObjectAgrs.class);
 
-        if(OPER_ADD.equals(a.oper)){
-            if(a == null || a.enCode == null || a.oper == null || a.id == null){
-            return "参数错误";
+        if (OPER_ADD.equals(a.oper)) {
+            if (a == null || a.enCode == null || a.oper == null || a.id == null) {
+                return "参数错误";
             }
             List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
-            if(devices != null && devices.size() > 0){
-            	return "机具号"+a.enCode+"已存在";
+            if (devices != null && devices.size() > 0) {
+                return "机具号" + a.enCode + "已存在";
             }
             Device dev = new Device();
             dev.setId(a.id);
@@ -912,22 +923,22 @@ public class ControllerServiceImpl implements ControllerService {
             dev.setDevcodemd5(md5Hex(a.enCode));
             dev.setPassword("0000000000000000");
             deviceRepository.save(dev);
-        }else {
+        } else {
 
             if (OPER_DEL.equals(a.oper)) {
-                if(a == null || a.oper == null || a.enCode == null){
+                if (a == null || a.oper == null || a.enCode == null) {
                     return "参数错误";
                 }
                 List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
-                if(devices != null){
+                if (devices != null) {
                     deviceRepository.delete(devices);
                 }
             } else if (OPER_MDF.equals(a.oper)) {
-                if(a == null || a.enCode == null || a.oper == null || a.id == null){
+                if (a == null || a.enCode == null || a.oper == null || a.id == null) {
                     return "参数错误";
                 }
                 List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
-                if(devices == null || devices.isEmpty()){
+                if (devices == null || devices.isEmpty()) {
                     Device dev = new Device();
                     dev.setId(a.id);
                     dev.setDevcode(a.enCode);
@@ -949,38 +960,39 @@ public class ControllerServiceImpl implements ControllerService {
         return "0";
     }
 
-    
+
     @Override
-	public String shoudantongbu(String h, String t) {
-    	TongXin tx = new TongXin(h, t).invoke();
-		JsonData jsonData = tx.getJsonData();
-		if (jsonData == null)
-			return "-1";
-		ShoudanBo shoudan = jsonToObject(jsonData.getjData(), ShoudanBo.class);
-		ShoudanResponse response = new ShoudanResponse();
-		if (shoudan == null) {
-			response.success = "false";
-			response.errorMsg = "收单信息格式错误";
-		} else {
-			String ret = callShoudanService(objectToJson(shoudan));
-			if ("0".equals(ret)) {
-				response.success = "true";
-				response.errorMsg = "收单同步成功";
-			}else{
-				response.success = "false";
-				response.errorMsg = "收单同步失败";
-			}
-		}
-		jsonData.setjData(objectToJson(response));
-		jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
-		String content = objectToJson(jsonData);
-		logger.info(content);
-		return encrypt(content, tx.getMd5Hex());
-	}
+    public String shoudantongbu(String h, String t) {
+        TongXin tx = new TongXin(h, t).invoke();
+        JsonData jsonData = tx.getJsonData();
+        if (jsonData == null)
+            return "-1";
+        ShoudanBo shoudan = jsonToObject(jsonData.getjData(), ShoudanBo.class);
+        ShoudanResponse response = new ShoudanResponse();
+        if (shoudan == null) {
+            response.success = "false";
+            response.errorMsg = "收单信息格式错误";
+        } else {
+            String ret = callShoudanService(objectToJson(shoudan));
+            if ("0".equals(ret)) {
+                response.success = "true";
+                response.errorMsg = "收单同步成功";
+            } else {
+                response.success = "false";
+                response.errorMsg = "收单同步失败";
+            }
+        }
+        jsonData.setjData(objectToJson(response));
+        jsonData.setTimestamp(fmtDate2Str(new Date(), "yyyy-MM-dd HH:mm:ss:SSS"));
+        String content = objectToJson(jsonData);
+        logger.info(content);
+        return encrypt(content, tx.getMd5Hex());
+    }
 
     /**
      * 此方法会向别处发送HTTP请求，用来代替直接调用barcodeservice的方法
-     * @param a 参数
+     *
+     * @param a          参数
      * @param expectType 返回类型
      * @param <T>
      * @return
@@ -989,7 +1001,7 @@ public class ControllerServiceImpl implements ControllerService {
         try {
             MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
             map.add("arg_json", new ObjectMapper().writeValueAsString(a));
-            logger.info("post to old gateway info:"+new ObjectMapper().writeValueAsString(a));
+            logger.info("post to old gateway info:" + new ObjectMapper().writeValueAsString(a));
             return new RestTemplate().postForObject(restBarcodeServiceAddress, map, expectType);
         } catch (Exception e) {
             logger.error(getStackTrace(e));
@@ -999,7 +1011,7 @@ public class ControllerServiceImpl implements ControllerService {
 
     private String callActivityService(String a) {
         try {
-            String json = "{\"enCode\":\""+a+"\"}";
+            String json = "{\"enCode\":\"" + a + "\"}";
             return new RestTemplate().postForObject(getActivitiesServiceUrl, json, String.class);
         } catch (Exception e) {
             logger.error(getStackTrace(e));
@@ -1007,7 +1019,7 @@ public class ControllerServiceImpl implements ControllerService {
         }
     }
 
-    private String callConsumeCorrectService(String json){
+    private String callConsumeCorrectService(String json) {
         try {
             return new RestTemplate().postForObject(consumeCorrectUrl, json, String.class);
         } catch (Exception e) {
@@ -1016,7 +1028,7 @@ public class ControllerServiceImpl implements ControllerService {
         }
     }
 
-    private String callCheckcodeCancelNew(String json){
+    private String callCheckcodeCancelNew(String json) {
         try {
             return new RestTemplate().postForObject(checkcodeCancelNewUrl, json, String.class);
         } catch (Exception e) {
@@ -1024,9 +1036,9 @@ public class ControllerServiceImpl implements ControllerService {
             return null;
         }
     }
-    
 
-    private String callService(String url,String json){
+
+    private String callService(String url, String json) {
         try {
             return new RestTemplate().postForObject(url, json, String.class);
         } catch (Exception e) {
@@ -1035,7 +1047,7 @@ public class ControllerServiceImpl implements ControllerService {
         }
     }
 
-    private String callConsumeService(String json){
+    private String callConsumeService(String json) {
         try {
             return new RestTemplate().postForObject(consumeServiceUrl, json, String.class);
         } catch (Exception e) {
@@ -1043,7 +1055,8 @@ public class ControllerServiceImpl implements ControllerService {
             return null;
         }
     }
-    private String callConsumeCancelService(String json){
+
+    private String callConsumeCancelService(String json) {
         try {
             return new RestTemplate().postForObject(consumeCancelUrl, json, String.class);
         } catch (Exception e) {
@@ -1051,16 +1064,16 @@ public class ControllerServiceImpl implements ControllerService {
             return null;
         }
     }
-    
-	private String callShoudanService(String json) {
-		try {
-			return new RestTemplate().postForObject(shoudantongbuUrl, json, String.class);
-		} catch (Exception e) {
-			logger.error(getStackTrace(e));
-			return null;
-		}
-	}
-    
+
+    private String callShoudanService(String json) {
+        try {
+            return new RestTemplate().postForObject(shoudantongbuUrl, json, String.class);
+        } catch (Exception e) {
+            logger.error(getStackTrace(e));
+            return null;
+        }
+    }
+
     private class TongXin {
         private String h;
         private String t;
@@ -1112,5 +1125,31 @@ public class ControllerServiceImpl implements ControllerService {
             return this;
         }
     }
-    
+
+    /**
+     * 重置秘钥接口，成功返回0，失败返回1，结果为明文
+     *
+     * @param key
+     * @return
+     */
+    @Override
+    public String resetKey(String key) {
+        String snKey = RSACoder.decryptByPrivateKey(key, rsaPrivateKey);
+        List<Device> deviceByMD5 = deviceRepository.getDeviceByMD5(snKey);
+        if (null != deviceByMD5 && !deviceByMD5.isEmpty()) {
+            deviceByMD5.get(0).setPassword(DEFAULT_PASSWORD);
+            return "0";
+        }
+        return "1";
+    }
+
+    public static void main(String[] args) {
+        String sncode="9ff5a509bfda697300186aa98e2af568";
+        System.out.println("sncode :"+sncode);
+        String pk="30820122300d06092a864886f70d01010105000382010f003082010a0282010100b4f30cab754ba89765a1d8d6420f27b9e798a7d2752149df1e33760133aa9f75378dd1914b31d88afa3bb9b42c8a6385ff85abfb8f827b7466221291d632059e6aec7f3d12e5f36c81d6280f7ec2d25ffef8187bf1cfd6a226cafe8864a9479b0164d7f02b14b11b949e631d4bc3e7d8b572363f4acf9df3246dcf4dee18978fbdbc95668abec149aef0170473b745c507b801fade61205646e3c297d9f80efc14a5749ca1f174e94dba68fb634b5f2b018ce5f099490b5d2f0d406c84a6d828dcdaddbe6005d5cff1506b533a448775efc3560e86e024db0bb5b099c8761e4a1114c1b9e229fe4147222e3afcf4a26ad0a260863374cfa1fe2b89f68ed60fb90203010001";
+        String prk="308204bf020100300d06092a864886f70d0101010500048204a9308204a50201000282010100b4f30cab754ba89765a1d8d6420f27b9e798a7d2752149df1e33760133aa9f75378dd1914b31d88afa3bb9b42c8a6385ff85abfb8f827b7466221291d632059e6aec7f3d12e5f36c81d6280f7ec2d25ffef8187bf1cfd6a226cafe8864a9479b0164d7f02b14b11b949e631d4bc3e7d8b572363f4acf9df3246dcf4dee18978fbdbc95668abec149aef0170473b745c507b801fade61205646e3c297d9f80efc14a5749ca1f174e94dba68fb634b5f2b018ce5f099490b5d2f0d406c84a6d828dcdaddbe6005d5cff1506b533a448775efc3560e86e024db0bb5b099c8761e4a1114c1b9e229fe4147222e3afcf4a26ad0a260863374cfa1fe2b89f68ed60fb90203010001028201010083fe5f999ae06bc4b470513a49c9c052cdebff4f77fda663492684c7efa660d7228522fff7780edba2197b2740ee5a16df03e52685d2cab767e126e696f6ba3e8b04a4f42a1aef6c9171649b98fe0873da0ba3e095cde46538230f74f2e8c0c1034d4a6f791d88ebf3876e096ac127185f93469af8b966207ccc555225826edb42cc8b57ecf03da71ae98e4d1c656f1720c604e388c353625b2c2b15d933a3c249c636dd5d27bf93f73b7812aa0a479c85313ad2958465715f7cd27fb06ef51b639f3f421a1a18abe1f80a1d3df2766e4fdcedd8c535f9ab24bdd0085ea8451d51a00aa97cb1fc4c199b34ba80b02ba2eba38d6b4f98513335b6d31219fe150102818100e7f9925ccccd2253827cfb9bf8ded521bb9f878457621cb9ffe9a000a1854269e0e3acad7bd3a21ef85f35e7094d3ea16e0136a2eeee1c5795333f10c8aca3ac5760034e4b135fc2183d04e4e7cb4018f23eef942b426da04ff1e3290683c26bdb00d81ecb99620b60d60d5ef96d4267b7c5b60dde96df15e6a27bd780c26c8902818100c7b09f42f9754933273000b1a582d11139952a5add89e66539a132c33ca386350472caaadf723efbdcd457f143df1fa7a80381f55c2d9267480f024990b1ea51712ba08599feec6372fd2a72c6f4ef10f57229adddf93fbe429bd6eaf45825c0b9082407f80e17e8f87457a9efea4fd58ff18333e67307547028f8d330d19db1028180131a6d6031096f9b3af2b9f1b543fc7f43a9368ac27b74ec2853fff62d57010a2117febf66a41e04b8e57655e9613018312bee68ea8e374d4b1f264166953901574cb3d8fdbbc1b60532f93534957b58d292363e987566fbbdb9a8c05726009bcb343d9803a244fdb4e2cbc5177b54ed9fa7ab7f66e63bc6dcf0628c73b10f2902818100ab35b5f6f86724f1a4c1b5769a8fc4acde1014967fa782507bcec7f539028348e59d7e426efe471e2ec228fc84d2c3133e2c73ba68e3f1c877b1d6a6385732adcd38389313ebcbc5a08b8b5f8951ebbf4092374609317103b19c67f25eb94cf5262fe2a4aa7b7ae8964d39f44bed3bb1c18eb28d47228cc04ac1f6452c702ca10281810089474745682a5554cd44895c92611cbb3fdfb15db795963b4c7cb020609140a4286eb31528577b62e9b8dd75e409b41f282683b9d7f15a76711cf595a360875d41a4c353b69d0835828c8ca3270833dc4ab381cf09ccef43d8cb3951481098cf3fffc3d12d56edd146fd427e02f07bbf4e95372e37e35f76c9607e11c4bf5070";
+        String ms=RSACoder.encryptByPublicKey(sncode,pk);
+        System.out.println("ms :"+ms);
+        System.out.println(RSACoder.decryptByPrivateKey(ms,prk));
+    }
 }

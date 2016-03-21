@@ -155,4 +155,15 @@ public class Rest {
         return controllerService.shoudantongbu(h, t);
     }
 
+    /**
+     * 重置KEY
+     *
+     * @param key
+     * @return
+     */
+    @RequestMapping(value = "/resetKey")
+    public String resetKey(String key) {
+        return controllerService.resetKey(key);
+    }
+
 }
