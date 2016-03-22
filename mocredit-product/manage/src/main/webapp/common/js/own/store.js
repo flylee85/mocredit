@@ -60,11 +60,13 @@ $.get("area/getChildren/0",null,function(result){
 },"json");
 $("#searchArea form .area select").change(function(){
 	var $select=$("#searchArea form .area select");
-	console.log($select);
 	var index=$select.index(this);
 	$select.filter(":gt("+index+")").find("option:gt(0)").remove();
 	var next=$select.eq(index+1);
 	if(next.length>0){
+		if(this.value==""){
+			return;
+		}
 		$.get("area/getChildren/"+this.value,null,function(result){
 				setArea(next,0,result.data);
 		},'json');
@@ -131,6 +133,9 @@ $("#addStore form .area select").change(function(){
 	$select.filter(":gt("+index+")").find("option:gt(0)").remove();
 	var next=$select.eq(index+1);
 	if(next.length>0){
+		if(this.value==""){
+			return;
+		}
 		$.get("area/getChildren/"+this.value,null,function(result){
 				setArea(next,0,result.data);
 		},'json');
