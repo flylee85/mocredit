@@ -81,7 +81,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private MmsframeMapper mmsframeMapper;
 	@Autowired
 	private SendMMSPackage sendMMSPackage;
-	private boolean importFlag = false;
+	private boolean importFlag = true;
 
 	/**
 	 * 获取一条活动，根据主键
@@ -494,6 +494,10 @@ public class ActivityServiceImpl implements ActivityService {
 				throw new BusinessException("已存在重复的外部编码");
 			}
 		}
+		//积分为空时，设置为0
+		if(null==activity.getIntegral()){
+			activity.setIntegral(0);
+		}
 		// 更新活动
 		Integer affectCount = activityMapper.updateActivity(activity);
 		// 删除原有的活动门店关联
@@ -589,7 +593,7 @@ public class ActivityServiceImpl implements ActivityService {
 				changeDescribe.append("指定日期：" + activity.getSelectDate() + ";");
 
 				// 活动积分修改
-				httpPostMap.put("integral", activity.getIntegral().toString());
+				httpPostMap.put("integral", null==activity.getIntegral()?0:activity.getIntegral().toString());
 				changeDescribe.append("积分：" + activity.getIntegral() + ";");
 
 				// // 活动最大类型修改

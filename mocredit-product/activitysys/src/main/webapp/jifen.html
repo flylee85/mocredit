@@ -98,11 +98,11 @@
                        <div class="form-group">
                            <label class="col-lg-2 control-label">满</label>
                            <div class="col-lg-4">
-                               <input type="text" class="form-control input-small parsley-validated" placeholder="满" tabindex="7" name="amountLimit">
+                               <input type="text" class="form-control input-small parsley-validated" placeholder="满" tabindex="20" name="amountLimit">
                            </div>
                            <label class="col-lg-2 control-label">减</label>
                            <div class="col-lg-4">
-                               <input type="text" class="form-control input-small parsley-validated" placeholder="减" name="discount">
+                               <input type="text" class="form-control input-small parsley-validated" data-parsley-lte="amountLimit"  data-parsley-lte-message="满减金额不能超过起始金额" placeholder="减" name="discount">
                            </div>
                        </div>
 

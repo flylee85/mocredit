@@ -1,4 +1,7 @@
-	// 验证
+window.ParsleyValidator.addValidator('lte', function (value, elem) {
+	return $("input[name=amountLimit]").val()>value; 
+}, 32);
+  // 验证
 	var form2 = $("#addActivityJifenForm").parsley();
 
 	// datepicker
@@ -34,11 +37,10 @@
 
 	$("input[name=activityStyle]").click(function(){
 		var index = $(this).index()-1;
-        console.log(index);
 		$(".typeTab").hide();
         if(index<0){
             $(".typeTab:first input[name=amountLimit]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
-            $(".typeTab:first input[name=discount]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
+            $(".typeTab:first input[name=discount]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min").removeAttr("data-parsley-lte");
             $(".typeTab:last input[name=amountLimit]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
             $(".typeTab:last input[name=discount]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min").removeAttr("data-parsley-max");
             return;
@@ -48,10 +50,10 @@
             $(".typeTab:last input[name=discount]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min").removeAttr("data-parsley-max");
             $(".typeTab:first").show();
             $(".typeTab:first input[name=amountLimit]").attr("data-parsley-required",true).attr("data-parsley-type","number").attr("data-parsley-min","0.01");
-            $(".typeTab:first input[name=discount]").attr("data-parsley-required",true).attr("data-parsley-type","number").attr("data-parsley-min","0.001");
+            $(".typeTab:first input[name=discount]").attr("data-parsley-required",true).attr("data-parsley-type","number").attr("data-parsley-min","0.001").attr("data-parsley-lte","amountLimit");
 		}else{
             $(".typeTab:first input[name=amountLimit]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
-            $(".typeTab:first input[name=discount]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min");
+            $(".typeTab:first input[name=discount]").removeAttr("data-parsley-required").removeAttr("data-parsley-type").removeAttr("data-parsley-min").removeAttr("data-parsley-lte");
             $(".typeTab:last").show();
             $(".typeTab:last input[name=amountLimit]").attr("data-parsley-required",true).attr("data-parsley-type","number").attr("data-parsley-min","0.01");
             $(".typeTab:last input[name=discount]").attr("data-parsley-required",true).attr("data-parsley-type","number").attr("data-parsley-min","0.001").attr("data-parsley-max","0.999");
