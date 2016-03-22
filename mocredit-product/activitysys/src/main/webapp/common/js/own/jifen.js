@@ -1,5 +1,5 @@
 window.ParsleyValidator.addValidator('lte', function (value, elem) {
-	return $("input[name=amountLimit]").val()>value; 
+	return parseFloat($("input[name=amountLimit]").val())>=parseFloat(value); 
 }, 32);
   // 验证
 	var form2 = $("#addActivityJifenForm").parsley();
