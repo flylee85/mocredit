@@ -18,8 +18,8 @@ public class CSVUtil {
                     .hasNext(); ) {
                 Map.Entry propertyEntry = (Map.Entry) propertyIterator
                         .next();
-                csvFileOutputStream.write("\"" + propertyEntry.getValue()
-                        + "\"");
+                csvFileOutputStream.write("\t" + propertyEntry.getValue()
+                        + "");
                 if (propertyIterator.hasNext()) {
                     csvFileOutputStream.write(",");
                 }
@@ -42,8 +42,8 @@ public class CSVUtil {
                         .iterator(); propertyIterator.hasNext(); ) {
                     Map.Entry propertyEntry = (Map.Entry) propertyIterator
                             .next();
-                    csvFileOutputStream.write("\""
-                            + map.get(propertyEntry.getValue()) + "\"");
+                    csvFileOutputStream.write("\t"
+                            + map.get(propertyEntry.getValue()) + "");
                     csvFileOutputStream.write(",");
                 }
                 csvFileOutputStream.newLine();
@@ -82,8 +82,8 @@ public class CSVUtil {
                     .hasNext(); ) {
                 Map.Entry propertyEntry = (Map.Entry) propertyIterator
                         .next();
-                csvFileOutputStream.write("\""
-                        + propertyEntry.getValue() + "\"");
+                csvFileOutputStream.write("\t"
+                        + propertyEntry.getValue() + "");
                 if (propertyIterator.hasNext()) {
                     csvFileOutputStream.write(",");
                 }
@@ -102,8 +102,8 @@ public class CSVUtil {
                             .next();
                     // System.out.println( BeanUtils.getProperty(row,
                     // propertyEntry.getKey().toString()));
-                    csvFileOutputStream.write("\""
-                            + propertyEntry.getValue() + "\"");
+                    csvFileOutputStream.write("\t"
+                            + propertyEntry.getValue() + "");
                     if (propertyIterator.hasNext()) {
                         csvFileOutputStream.write(",");
                     }
@@ -135,12 +135,12 @@ public class CSVUtil {
         row1.put("4", "14");
         exportData.add(row1);
         row1 = new LinkedHashMap<String, String>();
-        row1.put("1", "21");
+        row1.put("1", "21111111111111");
         row1.put("2", "22");
         row1.put("3", "23");
         row1.put("4", "24");
         int i = 0;
-        while (i < 500000) {
+        while (i < 5000) {
             exportData.add(row1);
             i++;
         }
