@@ -106,7 +106,8 @@
         from `ti_activity_trans_record` where activity_id =#{activityId}
     </select>
     <update id="updateByExpireDate">
-        update `ti_activity_trans_record` set trans_count=0,utime=now() where expire_date=#{expireDate}
+        update `ti_activity_trans_record` set trans_count=0,utime=now() where expire_date
+        &lt;=#{expireDate}
     </update>
     <update id="minusCountByActId">
         update `ti_activity_trans_record` set trans_count=trans_count-1,utime=now() where trans_count >0 and activity_id=#{actId}

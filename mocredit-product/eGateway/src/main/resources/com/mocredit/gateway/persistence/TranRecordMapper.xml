@@ -19,7 +19,7 @@
 		DUPLICATE KEY UPDATE tran_count=tran_count+1,expire_date=#{t.expireDate},utime=now();
 	</insert>
     <update id="updateByExpireDate">
-		update `tran_record` set tran_count=0,utime=now() where expire_date=#{expireDate}
+		update `tran_record` set tran_count=0,utime=now() where expire_date&lt;=#{expireDate}
     </update>
     <select id="getTranRecordByCardNum" resultMap="BaseResultMap">
         select * from

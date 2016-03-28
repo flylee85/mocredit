@@ -10,6 +10,7 @@ import com.mocredit.integral.constant.*;
 import com.mocredit.integral.util.RandomUtil;
 import com.mocredit.integral.vo.OrderVo;
 import com.mocredit.integral.vo.TerminalVo;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -417,6 +418,9 @@ public class HttpRequestService extends LogService {
                 resp.setErrorCode(responseData.getErrorCode());
                 resp.setErrorMsg(responseData.getErrorMsg());
                 resp.setSuccess(responseData.getSuccess());
+                if (responseData.getSuccess() && StringUtils.isBlank(responseData.getErrorMsg())) {
+                    resp.setErrorMsg("验证成功");
+                }
                 switch (channel) {
                     case Bank.ZX_BANK_CHANNEL: {
                         if (BankStatus.getMsgByZX(responseData.getErrorCode()) != null) {
