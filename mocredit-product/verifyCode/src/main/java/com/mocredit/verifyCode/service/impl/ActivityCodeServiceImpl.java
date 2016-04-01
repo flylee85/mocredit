@@ -357,8 +357,8 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		TActivityCode activityCode = queryList.get(0);
 		List<TActivityInfo> activityInfos = activityInfoMapper.findByActivityId(activityCode.getActivityId());
 		TActivityInfo activityInfo = activityInfos.get(0);
-		//活动是否启用
-		if(!activityInfo.getStatus().equals( ActivityInfoStatus.STARTING.getValue())){
+		// 活动是否启用
+		if (!activityInfo.getStatus().equals(ActivityInfoStatus.STARTING.getValue())) {
 			ard.setSuccess(false);
 			ard.setErrorMsg("活动未启用");
 			ard.setErrorCode(ErrorCode.CODE_14.getCode());
@@ -589,11 +589,17 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 			ard.setErrorCode(ErrorCode.CODE_14.getCode());
 			return null;
 		}
+		ActActivityStore activityStore = new ActActivityStore();
+		activityStore.setStoreId(verifyCodes.getStoreId());
+		activityStore.setStoreName(verifyCodes.getStoreName());
+		activityStore.setShopId(verifyCodes.getShopId());
+		activityStore.setShopName(verifyCodes.getShopName());
+
 		if (!ActivityCodeStatus.USED.getValue().equals(activityCode.getStatus())) {
 			ard.setSuccess(false);
 			ard.setErrorMsg("非法类型请求操作：该码已被撤销！");
 			ard.setErrorCode(ErrorCode.CODE_51.getCode());
-			addLog(device, request_serial_number, activityCode, new ActActivityStore(), VerifyCodeStatus.REVOKE,
+			addLog(device, request_serial_number, activityCode, activityStore, VerifyCodeStatus.REVOKE,
 					VerifyLogCode.REVOKE_HAS_REVOKED);
 			return null;
 		}
@@ -603,7 +609,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		activityCodeForUpdate.setStatus(ActivityCodeStatus.NOT_USED.getValue());
 		activityCodeForUpdate.setId(activityCode.getId());
 		acm.updateActivityCode(activityCodeForUpdate);
-		addLog(device, request_serial_number, activityCode, new ActActivityStore(), VerifyCodeStatus.REVOKE,
+		addLog(device, request_serial_number, activityCode, activityStore, VerifyCodeStatus.REVOKE,
 				VerifyLogCode.REVOKE_SUCCESS);
 
 		ard.setSuccess(true);
@@ -641,7 +647,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		activityInfo.setTicketContent(actActivityCodeVO.getTicketContent());
 		activityInfo.setPosSuccessMsg(actActivityCodeVO.getPosSuccessMsg());
 		activityInfo.setSuccessSmsMsg(actActivityCodeVO.getSuccessSmsMsg());
-        activityInfo.setStatus(actActivityCodeVO.getStatus());
+		activityInfo.setStatus(actActivityCodeVO.getStatus());
 		activityInfoMapper.save(activityInfo);
 
 		ard.setSuccess(true);
@@ -651,7 +657,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 	public AjaxResponseData deleteActActivityCodeWithTran(String activity_id) {
 		AjaxResponseData ard = new AjaxResponseData();
 
-		int c = activityInfoMapper.updateStatus(activity_id,ActivityInfoStatus.CANCELED.getValue());
+		int c = activityInfoMapper.updateStatus(activity_id, ActivityInfoStatus.CANCELED.getValue());
 		if (c >= 0) {
 			ard.setSuccess(true);
 			ard.setErrorMsg("");
@@ -667,15 +673,15 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		AjaxResponseData ard = new AjaxResponseData();
 
 		// 2.更新 券码表中的数据
-        if(!actActivityCodeVO.codeDataIsEmpty()) {
-            this.acm.updateActActivity(actActivityCodeVO.getActivityId(), actActivityCodeVO.getActivityName(),
-                    actActivityCodeVO.getEnterpriseId(), actActivityCodeVO.getEnterpriseName(),
-                    actActivityCodeVO.getContractId(), actActivityCodeVO.getAmount(), actActivityCodeVO.getStartTime(),
-                    actActivityCodeVO.getEndTime(), actActivityCodeVO.getSelectDate(), actActivityCodeVO.getMaxNumber(),
-                    actActivityCodeVO.getOutCode(), actActivityCodeVO.getEnterpriseCode(),
-                    actActivityCodeVO.getActivityCode(), ActivityCodeStatus.NOT_USED.getValue(),
-                    actActivityCodeVO.getExchangeChannel());
-        }
+		if (!actActivityCodeVO.codeDataIsEmpty()) {
+			this.acm.updateActActivity(actActivityCodeVO.getActivityId(), actActivityCodeVO.getActivityName(),
+					actActivityCodeVO.getEnterpriseId(), actActivityCodeVO.getEnterpriseName(),
+					actActivityCodeVO.getContractId(), actActivityCodeVO.getAmount(), actActivityCodeVO.getStartTime(),
+					actActivityCodeVO.getEndTime(), actActivityCodeVO.getSelectDate(), actActivityCodeVO.getMaxNumber(),
+					actActivityCodeVO.getOutCode(), actActivityCodeVO.getEnterpriseCode(),
+					actActivityCodeVO.getActivityCode(), ActivityCodeStatus.NOT_USED.getValue(),
+					actActivityCodeVO.getExchangeChannel());
+		}
 		// 3.更新活动关联的门店
 		this.actActivityStoreMapper.deleteByActivityId(actActivityCodeVO.getActivityId());
 		this.actActivityStoreMapper.batchSave(actActivityCodeVO.getActActivityStores());
@@ -691,7 +697,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		activityInfo.setTicketContent(actActivityCodeVO.getTicketContent());
 		activityInfo.setPosSuccessMsg(actActivityCodeVO.getPosSuccessMsg());
 		activityInfo.setSuccessSmsMsg(actActivityCodeVO.getSuccessSmsMsg());
-        activityInfo.setStatus(actActivityCodeVO.getStatus());
+		activityInfo.setStatus(actActivityCodeVO.getStatus());
 		activityInfoMapper.save(activityInfo);
 
 		ard.setSuccess(true);
@@ -700,7 +706,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 
 	public AjaxResponseData startUsingActivityWithTran(String activity_id) {
 		AjaxResponseData ard = new AjaxResponseData();
-        this.activityInfoMapper.updateStatus(activity_id,ActivityInfoStatus.STARTING.getValue());
+		this.activityInfoMapper.updateStatus(activity_id, ActivityInfoStatus.STARTING.getValue());
 		ard.setSuccess(true);
 		return ard;
 	}
