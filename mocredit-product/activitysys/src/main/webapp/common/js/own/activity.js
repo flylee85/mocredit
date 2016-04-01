@@ -20,7 +20,8 @@ $(function () {
                 "columns": [
                     {"data": "name", "name": "name", "className": "name", "width": "180px"},
                     {"data": "storeCount", "name": "storeCount", "width": "90px", "sortable": false},
-                    {"data": "orderCount", "name": "orderCount", "width": "90px", "sortable": false},
+                    {"data": "verifyCount", "name": "verifyCount", "width": "90px", "sortable": false},
+                    {"data": "exchangeCount", "name": "exchangeCount", "width": "90px", "sortable": false},
                     {"data": "createtime", "name": "createtime", "width": "130px"},
                     {"data": null, "name": "endTime", "width": "150px"},
                     {"data": null, "width": "100px"},
@@ -28,7 +29,15 @@ $(function () {
                 ],
                 "columnDefs": [
                     {
-                        "targets": 4,
+                        "targets": 1,
+                        "data": null,
+                        "render": function (data, type, full) {
+                            var storeCount = full['storeCount'];
+                            return '<a href="actStore.html?id=' + full['id'] + '&name=' + full['name'] + '"target="_blank" >' + storeCount + '</a>'
+                        }
+                    },
+                    {
+                        "targets": 5,
                         "data": null,
                         "render": function (data, type, full) {
                             var entTime = data['endTime'];
@@ -36,7 +45,7 @@ $(function () {
                         }
                     },
                     {
-                        "targets": 5,
+                        "targets": 6,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -52,7 +61,7 @@ $(function () {
                         }
                     },
                     {
-                        "targets": 6,
+                        "targets": 7,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -84,6 +93,9 @@ $(function () {
                     {"data": "name", "name": "name", "className": "name", "width": "200px"},
                     {"data": "storeCount", "name": "storeCount", "width": "90px", "sortable": false},
                     {"data": "orderCount", "name": "storeCount", "width": "90px", "sortable": false},
+                    {"data": "verifyCount", "name": "verifyCount", "width": "90px", "sortable": false},
+                    {"data": "exchangeCount", "name": "exchangeCount", "width": "90px", "sortable": false},
+                    {"data": "disableCount", "name": "disableCount", "width": "90px", "sortable": false},
                     {"data": "createtime", "name": "createtime", "width": "180px"},
                     {"data": null, "name": "endTime", "width": "130px"},
                     {"data": null, "width": "70px"},
@@ -93,7 +105,15 @@ $(function () {
                 "columnDefs": [
                     {"searchable": false, "targets": [1, 2]},
                     {
-                        "targets": 4,
+                        "targets": 1,
+                        "data": null,
+                        "render": function (data, type, full) {
+                            var storeCount = full['storeCount'];
+                            return '<a href="actStore.html?id=' + full['id'] + '&name=' + full['name'] + '"target="_blank" >' + storeCount + '</a>'
+                        }
+                    },
+                    {
+                        "targets": 7,
                         "data": null,
                         "render": function (data, type, full) {
                             var entTime = data['endTime'];
@@ -101,7 +121,7 @@ $(function () {
                         }
                     },
                     {
-                        "targets": 5,
+                        "targets": 8,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
@@ -116,14 +136,14 @@ $(function () {
                             return html;
                         }
                     }, {
-                        "targets": 6,
+                        "targets": 9,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {
                             return '<a href="javascript:openUpdateFamaActivity(\'' + full['id'] + '\',1)" >编辑</a>';
                         }
                     }, {
-                        "targets": 7,
+                        "targets": 10,
                         "data": null,
                         "sortable": false,
                         "render": function (data, type, full) {

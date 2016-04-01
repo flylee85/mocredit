@@ -88,4 +88,14 @@ public interface OrderMapper {
      * @return
      */
     int findOrderByListCount(@Param(value = "t") OrderDto orderDto);
+
+    /**
+     * 根据活动id统计活动信息
+     *
+     * @param activityId
+     * @return
+     */
+    Map statActIntegral(@Param(value = "activityId") String activityId);
+
+    Map statActStoreIntegral(@Param(value = "activityId") String activityId, @Param(value = "storeId") String storeId);
 }

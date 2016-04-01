@@ -7,217 +7,245 @@
 	日期：2015/07/08
 -->
 <mapper namespace="com.mocredit.activity.persitence.ActivityStoreMapper">
-	<!-- ===================活动商户关联,开始======================== -->
-	
-	<!--  公用列,包含活动商户关联表所有字段     -->
-	<sql id="base_activityStore_column_list" >
+    <!-- ===================活动商户关联,开始======================== -->
+
+    <!--  公用列,包含活动商户关联表所有字段     -->
+    <sql id="base_activityStore_column_list">
 		a.activity_id as activityId,
 		a.store_id as storeId,
 		a.enterprise_id as enterpriseId,
 		a.shop_id as shopId
 	</sql>
-	
-	<!--  公用查询条件，包含活动商户关联所有字段的查询条件     -->
-	<sql id="base_activityStore_condition" >
-			<if test="activityId != null" >
-				and a.activity_id = #{activityId}
-			</if>
-			<if test="storeId != null" >
-				and a.store_id = #{storeId}
-			</if>
-			<if test="enterpriseId != null" >
-				and a.enterprise_id = #{enterpriseId}
-			</if>
-			<if test="shopId != null" >
-				and a.shop_id = #{shopId}
-			</if>
-	</sql>
-	
-	<!--  获取一条活动商户关联，根据主键    -->
-	<select id="getActivityStoreById" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.lang.String" >
-	select 
-	<include refid="base_activityStore_column_list" />
-	from act_activity_store a
-	where a.id = #{id}
-	</select>
-	
-	<!--  获取一条活动商户关联，随机获取    -->
-	<select id="getActivityStoreByRand" resultType="com.mocredit.activity.model.ActivityStore" >
-	select 
-	<include refid="base_activityStore_column_list" />
-	from act_activity_store a
-	order by rand() limit 1
-	</select>
-	<!--  获取活动商户关联总数量，根据条件    -->
-	<select id="getActivityStoreCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
-	select 
-	count(a.id)
-	from act_activity_store a
-	<where>
-		<include refid="base_activityStore_condition" />
-		<if test="activityIdList != null" >
-			and a.activity_id in 
-			<foreach collection="activityIdList" index="index" item="actId" open="(" separator="," close=")">
-   					#{actId}
- 	 		</foreach>
-		</if>
-	</where>
-	</select>
-	<!--  查询活动商户关联列表，根据条件    -->
-	<select id="queryActivityStoreList" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.util.Map" >
-	select 
-	<include refid="base_activityStore_column_list" />
-	,sh.name as shopName
-	,st.name as storeName
-	,sh.code as  shopCode
-	,st.code as storeCode
-	from act_activity_store a
-	left join t_store st on a.store_id=st.id
-	left join t_merchant sh on a.shop_id=sh.id
-	<where>
-		<include refid="base_activityStore_condition" />
-		<if test="activityIdList != null" >
-			and a.activity_id in 
-			<foreach collection="activityIdList" index="index" item="actId" open="(" separator="," close=")">
-   					#{actId}
- 	 		</foreach>
-		</if>
-		<if test="storeName != null" >
-		 and a.store_name=#{storeName}
-		</if>
-		and st.status=1
-	</where>
-	order by a.activity_id asc
-	<if test="pageInfoStart != null and pageInfoLimit != null" >
-    	limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
-    </if>
-	</select>
-	
-	<!--  获取活动商户关联总数量，根据条件    -->
-	<select id="getActivityStoreTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
-	select 
-	count(a.id)
-	from act_activity_store a
-	<where>
-		<include refid="base_activityStore_condition" />
-	</where>
-	</select>
-	
-	<select id="selectForChoose" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.util.Map">
-	    select 
-	    s.id as storeId,s.name as storeName,m.id as shopId,m.name as shopName
-	    ,CONCAT(case when a.title is null then '' ELSE a.title END, ' ' , case when a1.title is null then '' ELSE a1.title END , ' ' , case when a2.title is null then '' ELSE a2.title END) AS area
-	    ,s.province as provId
+
+    <!--  公用查询条件，包含活动商户关联所有字段的查询条件     -->
+    <sql id="base_activityStore_condition">
+        <if test="activityId != null">
+            and a.activity_id = #{activityId}
+        </if>
+        <if test="storeId != null">
+            and a.store_id = #{storeId}
+        </if>
+        <if test="enterpriseId != null">
+            and a.enterprise_id = #{enterpriseId}
+        </if>
+        <if test="shopId != null">
+            and a.shop_id = #{shopId}
+        </if>
+    </sql>
+
+    <!--  获取一条活动商户关联，根据主键    -->
+    <select id="getActivityStoreById" resultType="com.mocredit.activity.model.ActivityStore"
+            parameterType="java.lang.String">
+        select
+        <include refid="base_activityStore_column_list"/>
+        from act_activity_store a
+        where a.id = #{id}
+    </select>
+
+    <!--  获取一条活动商户关联，随机获取    -->
+    <select id="getActivityStoreByRand" resultType="com.mocredit.activity.model.ActivityStore">
+        select
+        <include refid="base_activityStore_column_list"/>
+        from act_activity_store a
+        order by rand() limit 1
+    </select>
+    <!--  获取活动商户关联总数量，根据条件    -->
+    <select id="getActivityStoreCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(a.id)
+        from act_activity_store a
+        <where>
+            <include refid="base_activityStore_condition"/>
+            <if test="activityIdList != null">
+                and a.activity_id in
+                <foreach collection="activityIdList" index="index" item="actId" open="(" separator="," close=")">
+                    #{actId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!--  查询活动商户关联列表，根据条件    -->
+    <select id="queryActivityStoreList" resultType="com.mocredit.activity.model.ActivityStore"
+            parameterType="java.util.Map">
+        select
+        <include refid="base_activityStore_column_list"/>
+        ,sh.name as shopName
+        ,st.name as storeName
+        ,sh.code as shopCode
+        ,st.code as storeCode
+        from act_activity_store a
+        left join t_store st on a.store_id=st.id
+        left join t_merchant sh on a.shop_id=sh.id
+        <where>
+            <include refid="base_activityStore_condition"/>
+            <if test="activityIdList != null">
+                and a.activity_id in
+                <foreach collection="activityIdList" index="index" item="actId" open="(" separator="," close=")">
+                    #{actId}
+                </foreach>
+            </if>
+            <if test="storeName != null">
+                and a.store_name=#{storeName}
+            </if>
+            and st.status=1
+        </where>
+        order by a.activity_id asc
+        <if test="pageInfoStart != null and pageInfoLimit != null">
+            limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!--  获取活动商户关联总数量，根据条件    -->
+    <select id="getActivityStoreTotal" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(a.id)
+        from act_activity_store a
+        <where>
+            <include refid="base_activityStore_condition"/>
+        </where>
+    </select>
+
+    <select id="selectForChoose" resultType="com.mocredit.activity.model.ActivityStore" parameterType="java.util.Map">
+        select
+        s.id as storeId,s.name as storeName,m.id as shopId,m.name as shopName
+        ,CONCAT(case when a.title is null then '' ELSE a.title END, ' ' , case when a1.title is null then '' ELSE
+        a1.title END , ' ' , case when a2.title is null then '' ELSE a2.title END) AS area
+        ,s.province as provId
         ,s.city as cityId
         from t_store s
-	    left join t_merchant m on s.merchant_id=m.id
-	    left join t_area a on s.province=a.id
-	    left join t_area a1 on s.city=a1.id
-	    left join t_area a2 on s.area=a2.id
-	    <where>
-	     <if test="activityId != null">
-	     and s.id in (select store_id from act_activity_store where activity_id=#{activityId})
-	    </if>
-	    <if test="activityCurrentId != null and activityCurrentId !='' ">
-	     and s.id not in (select store_id from act_activity_store where activity_id=#{activityCurrentId})
-	    </if>
-		
-	    <if test="storeName !=null and storeName!='' ">
-	     and s.name like '%${storeName}%'
-	    </if>
-	    <if test="province !=null and province!='' ">
-	     and s.province =#{province}
-	    </if>
-	    <if test="city !=null and city!='' ">
-	     and s.city =#{city}
-	    </if>
-	    <if test="shopName !=null and shopName!='' ">
-	    and m.name like '%${shopName}%'
-	    </if>	    
-	    and s.status!=2 and s.business_status=1 and m.id is not null
-	    </where>
-  </select>
-  
-	<!--  添加一条活动商户关联记录  -->
-	<insert id="addActivityStore" parameterType="com.mocredit.activity.model.ActivityStore" >
-	insert into act_activity_store
-	<trim prefix="(" suffix=")" suffixOverrides="," >
-			activity_id,
-			store_id,
-			enterprise_id,
-			shop_id
-	</trim>
-	<trim prefix="values (" suffix=")" suffixOverrides="," >
-			#{activityId},
-			#{storeId},
-			#{enterpriseId},
-			#{shopId}
-	</trim>
-	</insert>
-	
-	<!--  批量添加活动商户关联记录  -->
-	<insert id="batchAddActivityStore" parameterType="java.util.List" >
-	insert into act_activity_store
-	<trim prefix="(" suffix=")" suffixOverrides="," >
-			activity_id,
-			store_id,
-			enterprise_id,
-			shop_id
-	</trim>
-	values
-	<foreach collection="list" item="item" index="index" separator=",">
+        left join t_merchant m on s.merchant_id=m.id
+        left join t_area a on s.province=a.id
+        left join t_area a1 on s.city=a1.id
+        left join t_area a2 on s.area=a2.id
+        <where>
+            <if test="activityId != null">
+                and s.id in (select store_id from act_activity_store where activity_id=#{activityId})
+            </if>
+            <if test="activityCurrentId != null and activityCurrentId !='' ">
+                and s.id not in (select store_id from act_activity_store where activity_id=#{activityCurrentId})
+            </if>
+
+            <if test="storeName !=null and storeName!='' ">
+                and s.name like '%${storeName}%'
+            </if>
+            <if test="province !=null and province!='' ">
+                and s.province =#{province}
+            </if>
+            <if test="city !=null and city!='' ">
+                and s.city =#{city}
+            </if>
+            <if test="shopName !=null and shopName!='' ">
+                and m.name like '%${shopName}%'
+            </if>
+            and s.status!=2 and s.business_status=1 and m.id is not null
+        </where>
+    </select>
+
+    <!--  添加一条活动商户关联记录  -->
+    <insert id="addActivityStore" parameterType="com.mocredit.activity.model.ActivityStore">
+        insert into act_activity_store
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            activity_id,
+            store_id,
+            enterprise_id,
+            shop_id
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{activityId},
+            #{storeId},
+            #{enterpriseId},
+            #{shopId}
+        </trim>
+    </insert>
+
+    <!--  批量添加活动商户关联记录  -->
+    <insert id="batchAddActivityStore" parameterType="java.util.List">
+        insert into act_activity_store
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            activity_id,
+            store_id,
+            enterprise_id,
+            shop_id
+        </trim>
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{item.activityId},
-				#{item.storeId},
-				#{item.enterpriseId},
-				#{item.shopId}
+                #{item.storeId},
+                #{item.enterpriseId},
+                #{item.shopId}
             </trim>
         </foreach>
-	</insert>
-	<!--  修改一条活动商户关联记录  -->
-	<update id="updateActivityStore" parameterType="com.mocredit.activity.model.ActivityStore" >
-	update act_activity_store
-	<set >
-		<if test="activityId != null" >
-			activity_id = #{activityId},
-		</if>
-		<if test="storeId != null" >
-			store_id = #{storeId},
-		</if>
-		<if test="enterpriseId != null" >
-			enterprise_id = #{enterpriseId},
-		</if>
-		<if test="shopId != null" >
-			shop_id = #{shopId},
-		</if>
-	</set>
-	where id = #{id}
-	</update>
-	
-	<!--  删除一条活动商户关联记录 ，根据主键    -->
-	<delete id="deleteActivityStoreById" parameterType="java.lang.String" >
+    </insert>
+    <!--  修改一条活动商户关联记录  -->
+    <update id="updateActivityStore" parameterType="com.mocredit.activity.model.ActivityStore">
+        update act_activity_store
+        <set>
+            <if test="activityId != null">
+                activity_id = #{activityId},
+            </if>
+            <if test="storeId != null">
+                store_id = #{storeId},
+            </if>
+            <if test="enterpriseId != null">
+                enterprise_id = #{enterpriseId},
+            </if>
+            <if test="shopId != null">
+                shop_id = #{shopId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--  删除一条活动商户关联记录 ，根据主键    -->
+    <delete id="deleteActivityStoreById" parameterType="java.lang.String">
 	delete from act_activity_store
 	where id = #{id}
 	</delete>
 
-	<!--  删除活动商户关联记录 ，根据条件    -->
-	<delete id="deleteActivityStore" parameterType="java.util.Map" >
-	delete from act_activity_store
-	<where>
-		<if test="activityId != null" >
-			and activity_id = #{activityId}
-		</if>
-		<if test="storeId != null" >
-			and store_id = #{storeId}
-		</if>
-		<if test="enterpriseId != null" >
-			and enterprise_id = #{enterpriseId}
-		</if>
-		<if test="shopId != null" >
-			shop_id = #{shopId},
-		</if>
-	</where>
-</delete>
-
-<!-- ===================活动商户关联,结束======================== -->
+    <!--  删除活动商户关联记录 ，根据条件    -->
+    <delete id="deleteActivityStore" parameterType="java.util.Map">
+        delete from act_activity_store
+        <where>
+            <if test="activityId != null">
+                and activity_id = #{activityId}
+            </if>
+            <if test="storeId != null">
+                and store_id = #{storeId}
+            </if>
+            <if test="enterpriseId != null">
+                and enterprise_id = #{enterpriseId}
+            </if>
+            <if test="shopId != null">
+                shop_id = #{shopId},
+            </if>
+        </where>
+    </delete>
+    <insert id="saveAndUpdActStore" parameterType="com.mocredit.activity.model.ActivityStoreStat">
+        insert into
+        `act_store_stat`(activity_id,store_id,verify_count,exchange_count,ctime,utime)
+        values(#{t.activityId},#{t.storeId},#{t.verifyCount},#{t.exchangeCount},now(),now()) ON
+        DUPLICATE KEY UPDATE
+        verify_count=#{t.verifyCount},exchange_count=#{t.exchangeCount},utime=now();
+    </insert>
+    <select id="getActStoreStat" resultType="com.mocredit.activity.model.ActivityStoreStat">
+        SELECT (SELECT `type` FROM act_activity WHERE id=a.activity_id) AS activityType,a.activity_id AS activityId,a.store_id AS storeId,b.code,b.name AS
+        storeName,(SELECT `name` FROM t_merchant WHERE id=a.shop_id) AS
+        merchantName,
+        c.verify_count AS verifyCount,c.exchange_count AS exchangeCount FROM
+        act_activity_store a LEFT JOIN t_store b ON a.store_id=b.id
+        LEFT JOIN act_store_stat c ON a.activity_id=c.activity_id AND a.store_id=c.store_id
+        WHERE 1=1
+        <if test="activityId !=null and activityId!=''">
+            and a.activity_id=#{activityId}
+        </if>
+        <if test="keyword !=null and keyword!=''">
+            and(b.name like '%${keyword}%' or b.code like '%${keyword}%')
+        </if>
+    </select>
+    <select id="getActStoreAll" resultType="com.mocredit.activity.model.ActivityStoreStat">
+        SELECT (SELECT `type` FROM act_activity  WHERE id=a.activity_id) AS activityType,
+        a.activity_id AS activityId,a.store_id AS storeId FROM act_activity_store a
+    </select>
+    <!-- ===================活动商户关联,结束======================== -->
 </mapper>

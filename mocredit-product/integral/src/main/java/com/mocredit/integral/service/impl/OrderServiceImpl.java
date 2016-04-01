@@ -146,4 +146,14 @@ public class OrderServiceImpl implements OrderService {
         }
         return DateUtil.strToDate(expireDate, "yyyy-MM-dd");
     }
+
+    @Override
+    public Map statActIntegral(String activityId) {
+        return orderMapper.statActIntegral(activityId);
+    }
+
+    @Override
+    public Map statActStoreIntegral(String activityId, String storeId) {
+        return orderMapper.statActStoreIntegral(activityId,storeId);
+    }
 }

@@ -98,4 +98,7 @@ public interface OrderService extends BaseService<Order> {
      * @return
      */
     boolean savePaymentReserval(Order order);
+
+    Map statActIntegral(String activityId);
+    Map statActStoreIntegral(String activityId,String storeId);
 }

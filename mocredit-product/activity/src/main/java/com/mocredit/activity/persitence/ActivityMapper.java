@@ -3,6 +3,7 @@ package com.mocredit.activity.persitence;
 import java.util.List;
 import java.util.Map;
 
+import com.mocredit.activity.model.ActivityStoreStat;
 import org.apache.ibatis.annotations.Param;
 
 import com.mocredit.activity.model.Activity;
@@ -40,4 +41,6 @@ public interface ActivityMapper {
 	List<Map<String, Object>>selectForDevice(@Param("activityId") List<String> activityId);
 	//为机具查询活动信息
 	Map<String, Object>selectStoreInfoForDevice(@Param("snCode") String snCode);
+	//保存更新活动统计信息
+	int saveAndUpdAct(@Param("t") Activity t);
 }

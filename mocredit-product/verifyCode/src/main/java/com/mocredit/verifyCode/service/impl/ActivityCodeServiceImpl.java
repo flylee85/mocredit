@@ -886,4 +886,13 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
 		ard.setErrorCode(ErrorCode.CODE_60.getCode());
 		return ard;
 	}
+
+	@Override
+	public Map statActCode(String actId) {
+		return acm.statActCode(actId);
+	}
+	@Override
+	public Map statActStoreCode(String actId,String storeId) {
+		return acm.statActStoreCode(actId,storeId);
+	}
 }

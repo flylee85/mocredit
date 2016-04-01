@@ -1,5 +1,8 @@
 package com.mocredit.base.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -238,11 +241,13 @@ public class HttpRequestUtil {
         // System.out.println(doPostJson("http://localhost:8080/integral/interface/activityImport",
         // "{\"activityId\":\"1\",\"startTime\":\"2015-08-12 11:11:11\",\"storeList\":\"[{\"shopId\":\"1\",\"storeId\":\"3\"}]\"}")
         // );
+        JSONObject jsonObject = JSON.parseObject("{\"activityId\":\"1819\"}");
+        String actId = jsonObject.getString("activityId");
         System.out
                 .println(doPostJson(
 
-                        "http://127.0.0.1:8080/paymentRevoke",
-                        "{\"orderId\":\"1903110527e5791\",\"oldOrderId\":\"222\"}"));
+                        "http://127.0.0.1:9092/order/statActIntegral",
+                        "{\"activityId\":\"1803\"}"));
 //        System.out
 //                .println(doPostJson(
 //                        "http://117.121.20.146:9092/integral/payment",

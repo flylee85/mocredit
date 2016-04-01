@@ -22,6 +22,8 @@ public class VerifyCodeVO {
 
     private String orderNo;//订单号
     private String storeName;//门店名称
+    private String storeId;
+    private String activityId;
 
     public boolean isDowload() {
         return dowload;
@@ -125,5 +127,21 @@ public class VerifyCodeVO {
 
     public void setStoreName(String storeName) {
         this.storeName = storeName;
+    }
+
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
     }
 }

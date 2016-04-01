@@ -118,4 +118,19 @@ public interface ActivityCodeMapper {
      * @return
      */
     int findPageCount(Map<String, Object>param);
+
+    /**
+     *根据活动id查询活动的统计结果
+     * @param actId
+     * @return
+     */
+    Map statActCode(String actId);
+
+    /**
+     * 统计活动门店信息
+     * @param actId
+     * @param storeId
+     * @return
+     */
+    Map statActStoreCode(@Param(value = "actId")String actId,@Param(value = "storeId")String storeId);
 }

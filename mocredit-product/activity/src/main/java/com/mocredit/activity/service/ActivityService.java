@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.mocredit.activity.model.ActivityStoreStat;
 import org.springframework.stereotype.Service;
 
 import com.mocredit.activity.model.Activity;
@@ -59,6 +60,13 @@ public interface ActivityService {
 	 * @return
 	 */
 	public PageInfo<Activity> queryActivityPage(Map<String, Object> activityMap,Integer draw,Integer pageNum, Integer pageSize);
+
+	/**
+	 * 根据活动id统计门店信息
+	 * @param activityId
+	 * @return
+	 */
+	public PageInfo<ActivityStoreStat> findActStoreByList(Map<String, Object> activityMap,Integer draw,Integer pageNum, Integer pageSize);
 
 	/**
 	 * 查询活动管理相关选择门店分页信息，根据条件
@@ -144,4 +152,18 @@ public interface ActivityService {
 	public List<Map<String, Object>> getActivitiesForDevice(List<String> activityId,String snCode);
 
 	public void sendMMSPackage(String activityId);
+
+	/**
+	 * 保存活动统计信息
+	 * @param activity
+	 * @return
+	 */
+    int saveAndUpdAct(Activity activity);
+    int saveAndUpdActStore(ActivityStoreStat activityStoreStat);
+	/**
+	 * 根据活动id统计门店信息
+	 * @param activityId
+	 * @return
+	 */
+	public PageInfo<ActivityStoreStat> findActStoreAll(Integer pageNum, Integer pageSize);
 }

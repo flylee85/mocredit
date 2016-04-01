@@ -8,7 +8,7 @@
 -->
 <mapper namespace="com.mocredit.activity.persitence.ActivityMapper">
 	<!-- ===================活动,开始======================== -->
-	
+
 	<!--  公用列,包含活动表所有字段     -->
 	<sql id="base_activity_column_list" >
 		a.id as id,
@@ -47,7 +47,7 @@
 		a.amount_limit as amountLimit,
 		a.discount as discount
 	</sql>
-	
+
 	<!--  公用查询条件，包含活动所有字段的查询条件     -->
 	<sql id="base_activity_condition" >
 			<if test="id != null" >
@@ -132,45 +132,46 @@
 				and a.modifier = #{modifier}
 			</if>
 			<!--
-			<trim prefix=" and ( " suffix=" ) "  prefixOverrides=" or ">  
+			<trim prefix=" and ( " suffix=" ) "  prefixOverrides=" or ">
 				<if test="orInfo_code != null or orInfo_code != null" >
 					a.code = #{orInfo_code}
 				</if>
 				<if test="orInfo_name != null or orInfo_name != null" >
 					a.code = #{orInfo_name}
 				</if>
-			</trim> 
+			</trim>
 			-->
 	</sql>
-	
+
 	<!--  获取一条活动，根据主键    -->
 	<select id="getActivityById" resultType="com.mocredit.activity.model.Activity" parameterType="java.lang.String" >
-	select 
+	select
 	<include refid="base_activity_column_list" />
 	,(select count(1) from act_activity_store where activity_id=a.id) as storeCount
 	from act_activity a
 	where a.id = #{id} limit 1
 	</select>
-	
+
 	<!--  获取一条活动，随机获取    -->
 	<select id="getActivityByRand" resultType="com.mocredit.activity.model.Activity" >
-	select 
+	select
 	<include refid="base_activity_column_list" />
 	from act_activity a
 	order by rand() limit 1
 	</select>
-	
+
 	<!--  查询活动列表，根据条件    -->
 	<select id="queryActivityList" resultType="com.mocredit.activity.model.Activity" parameterType="java.util.Map" >
-	select 
+	select
 	<include refid="base_activity_column_list" />
 	,(SELECT
 				count(1)
 			FROM
 				act_activity_store where activity_id=a.id)  as storeCount
-	, (select count(id) from act_batch where activity_id=a.id) as orderCount
-	from act_activity a
-	<where>
+	, (SELECT IFNULL(SUM(send_number),0) FROM act_batch WHERE activity_id=a.id) as orderCount,
+	verify_count AS verifyCount,exchange_count AS exchangeCount,disable_count AS disableCount
+	from act_activity a LEFT JOIN act_stat b ON a.id=b.activity_id
+		<where>
 		<include refid="base_activity_condition" />
 		<if test="searchInfoContent != null" >
 			and  ( a.name like '%${searchInfoContent}%' or a.code like '%${searchInfoContent}%' )
@@ -200,10 +201,10 @@
     	limit #{pageInfoStart,jdbcType=INTEGER},#{pageInfoLimit,jdbcType=INTEGER}
     </if>
 	</select>
-	
+
 	<!--  获取活动总数量，根据条件    -->
 	<select id="getActivityTotal" resultType="java.lang.Integer" parameterType="java.util.Map" >
-	select 
+	select
 	count(a.id)
 	from act_activity a
 	<where>
@@ -237,9 +238,9 @@
 			act_activity aa
 		left join t_enterprise e on aa.enterprise_id=e.id
 		WHERE aa.id in
-		<foreach item="item" index="index" collection="activityId" open="(" separator="," close=")">  
-		  '${item}'  
-		 </foreach> 
+		<foreach item="item" index="index" collection="activityId" open="(" separator="," close=")">
+		  '${item}'
+		 </foreach>
 	</select>
 	<select id="selectStoreInfoForDevice" resultType="java.util.HashMap" parameterType="java.lang.String" >
 		SELECT
@@ -253,7 +254,7 @@
 		where t.sn_code=#{snCode} limit 1
 	</select>
 	<!--  添加一条活动记录  -->
-	<insert id="addActivity" parameterType="com.mocredit.activity.model.Activity"     
+	<insert id="addActivity" parameterType="com.mocredit.activity.model.Activity"
         useGeneratedKeys="true" keyProperty="id" >
 	insert into act_activity
 	<trim prefix="(" suffix=")" suffixOverrides="," >
@@ -329,7 +330,7 @@
 			#{discount}
 	</trim>
 	</insert>
-	
+
 	<!--  修改一条活动记录  -->
 	<update id="updateActivity" parameterType="com.mocredit.activity.model.Activity" >
 	update act_activity
@@ -442,7 +443,7 @@
 	</set>
 	where id = #{id}
 	</update>
-	
+
 	<!--  删除一条活动记录 ，根据主键    -->
 	<delete id="deleteActivityById" parameterType="java.lang.String" >
 	delete from act_activity
@@ -533,6 +534,12 @@
 		</if>
 	</where>
 </delete>
-
+<insert id="saveAndUpdAct" parameterType="com.mocredit.activity.model.Activity">
+	insert into
+        `act_stat`(activity_id,verify_count,exchange_count,disable_count,ctime,utime)
+        values(#{t.id},#{t.verifyCount},#{t.exchangeCount},#{t.disableCount},now(),now()) ON
+        DUPLICATE KEY UPDATE
+        verify_count=#{t.verifyCount},exchange_count=#{t.exchangeCount},disable_count=#{t.disableCount},utime=now();
+</insert>
 <!-- ===================活动,结束======================== -->
 </mapper>
