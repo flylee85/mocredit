@@ -169,9 +169,11 @@ public class ActivityServiceImpl implements ActivityService {
 			if (searchContent != null && !"".equals(searchContent)) {
 				activityMap.put("searchInfoContent", searchContent);
 			}
-			String orderContent = String.valueOf(
-					activityMap.get("columns[" + String.valueOf(activityMap.get("order[0][column]")) + "][name]"));
-			String orderDir = String.valueOf(activityMap.get("order[0][dir]"));
+//			String orderContent = String.valueOf(
+//					activityMap.get("columns[" + String.valueOf(activityMap.get("order[0][column]")) + "][name]"));
+//			String orderDir = String.valueOf(activityMap.get("order[0][dir]"));
+			String orderContent=null;
+			String orderDir=null;
 			if (orderContent != null && !"".equals(orderContent) && orderDir != null && !"".equals(orderDir)) {
 				activityMap.put("orderInfoContent", orderContent);
 				activityMap.put("orderInfoDir", orderDir);
