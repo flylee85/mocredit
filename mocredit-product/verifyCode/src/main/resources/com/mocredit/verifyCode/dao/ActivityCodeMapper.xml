@@ -21,7 +21,7 @@
         <result column="release_time" property="releaseTime" jdbcType="TIMESTAMP" ></result>
         <result column="contract_id" property="contractId" jdbcType="VARCHAR"></result>
         <result column="select_date" property="selectDate" jdbcType="VARCHAR"></result>
-        
+
         <result column="out_code" property="outCode" jdbcType="VARCHAR"></result>
         <result column="custom_name" property="customName" jdbcType="VARCHAR"></result>
         <result column="order_code" property="orderCode" jdbcType="VARCHAR"></result>
@@ -50,7 +50,7 @@
           SELECT * FROM  t_activity_code where code=#{code} limit 1
         ]]>
     </select>
-    
+
 <!-- 根据编码查询码记录 -->
     <select id="findByCodeAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TActivityCode" resultMap="baseResultMap" parameterType="map" >
         <![CDATA[
@@ -182,7 +182,7 @@
 			</if>
 		</where>
 		order by createtime desc
-		limit #{pageStart},#{pageSize} 
+		limit #{pageStart},#{pageSize}
 	</select>
 	<!-- 根据条件查询流水分页数据条数 -->
 	<select id="findPageCount"  resultType="java.lang.Integer" parameterType="Map">
@@ -214,4 +214,21 @@
 			</if>
 		</where>
 	</select>
+    <select id="statActCode" resultType="java.util.HashMap">
+        SELECT
+        (SELECT COUNT(1) FROM t_verified_code WHERE  activity_id=#{actId}) AS verifyCount,
+        (SELECT COUNT(1) FROM t_activity_code WHERE  activity_id=#{actId} AND  STATUS='02') AS exchangeCount,
+        (SELECT COUNT(1) FROM t_activity_code WHERE  activity_id=#{actId} AND  STATUS='03') AS disableCount
+        FROM dual
+    </select>
+    <select id="statActStoreCode" resultType="java.util.HashMap">
+        SELECT verifyCount,(exchCount-revokeCount)AS exchangeCount FROM
+        (SELECT
+        (SELECT COUNT(1) FROM t_verified_code WHERE  activity_id=#{actId} AND store_id=#{storeId}) AS verifyCount,
+        (SELECT COUNT(1) FROM t_verified_code WHERE  activity_id=#{actId} AND store_id=#{storeId} AND STATUS=1) AS exchCount,
+        (SELECT COUNT(1) FROM t_verified_code a WHERE  activity_id=#{actId} AND a.code IN(SELECT DISTINCT(CODE) FROM t_verified_code
+        WHERE  activity_id=#{actId} AND store_id=#{storeId} AND STATUS=1
+        ) AND STATUS=2) AS revokeCount
+        FROM DUAL) a
+    </select>
 </mapper>

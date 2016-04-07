@@ -3,67 +3,99 @@
 <!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
 <mapper namespace="com.mocredit.verifyCode.dao.VerifiedCodeMapper">
     <resultMap id="baseResultMap" type="com.mocredit.verifyCode.model.TVerifiedCode">
-        <id column="id" property="id" jdbcType="VARCHAR" ></id>
-        <result column="activity_id" property="activityId" jdbcType="VARCHAR" ></result>
-        <result column="activity_name" property="activityName" jdbcType="VARCHAR" ></result>
-        <result column="amount" property="amount" jdbcType="DECIMAL" ></result>
-        <result column="code" property="code" jdbcType="VARCHAR" ></result>
-        <result column="code_serial_number" property="codeSerialNumber" jdbcType="VARCHAR" ></result>
-        <result column="device" property="device" jdbcType="VARCHAR" ></result>
-        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" ></result>
-        <result column="shop_id" property="shopId" jdbcType="VARCHAR" ></result>
-        <result column="shop_name" property="shopName" jdbcType="VARCHAR" ></result>
-        <result column="issue_enterprise_id" property="issueEnterpriseId" jdbcType="VARCHAR" ></result>
-        <result column="issue_enterprise_name" property="issueEnterpriseName" jdbcType="VARCHAR" ></result>
-        <result column="number" property="number" jdbcType="INTEGER" ></result>
-        <result column="request_serial_number" property="requestSerialNumber" jdbcType="VARCHAR" ></result>
-        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" ></result>
-        <result column="store_id" property="storeId" jdbcType="VARCHAR" ></result>
-        <result column="store_name" property="storeName" jdbcType="VARCHAR" ></result>
-        <result column="verify_time" property="verifyTime" jdbcType="TIMESTAMP" ></result>
-        <result column="verify_type" property="verifyType" jdbcType="INTEGER" ></result>
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="activity_id" property="activityId" jdbcType="VARCHAR"></result>
+        <result column="activity_name" property="activityName" jdbcType="VARCHAR"></result>
+        <result column="amount" property="amount" jdbcType="DECIMAL"></result>
+        <result column="code" property="code" jdbcType="VARCHAR"></result>
+        <result column="code_serial_number" property="codeSerialNumber" jdbcType="VARCHAR"></result>
+        <result column="device" property="device" jdbcType="VARCHAR"></result>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"></result>
+        <result column="shop_id" property="shopId" jdbcType="VARCHAR"></result>
+        <result column="shop_name" property="shopName" jdbcType="VARCHAR"></result>
+        <result column="issue_enterprise_id" property="issueEnterpriseId" jdbcType="VARCHAR"></result>
+        <result column="issue_enterprise_name" property="issueEnterpriseName" jdbcType="VARCHAR"></result>
+        <result column="number" property="number" jdbcType="INTEGER"></result>
+        <result column="request_serial_number" property="requestSerialNumber" jdbcType="VARCHAR"></result>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"></result>
+        <result column="store_id" property="storeId" jdbcType="VARCHAR"></result>
+        <result column="store_name" property="storeName" jdbcType="VARCHAR"></result>
+        <result column="verify_time" property="verifyTime" jdbcType="TIMESTAMP"></result>
+        <result column="verify_type" property="verifyType" jdbcType="INTEGER"></result>
         <result column="contract_id" property="contractId" jdbcType="VARCHAR"></result>
     </resultMap>
 
 
     <!-- 根据券码查询券码验证记录 -->
-    <select id="findVerifiedCodesByCode" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="java.lang.String" >
+    <select id="findVerifiedCodesByCode" resultType="com.mocredit.verifyCode.model.TVerifiedCode"
+            resultMap="baseResultMap" parameterType="java.lang.String">
         <![CDATA[
+
+
           SELECT * FROM  t_verified_code where code=#{code}
+
+
         ]]>
     </select>
 
-    <select id="findVerifiedCodesByCodeAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="map">
+    <select id="findVerifiedCodesByCodeAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TVerifiedCode"
+            resultMap="baseResultMap" parameterType="map">
         <![CDATA[
+
+
           SELECT * FROM  t_verified_code where code=#{code} and request_serial_number=#{request_serial_number}
+
+
         ]]>
     </select>
 
-    <select id="findVerifiedCodesByDeviceAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="map">
+    <select id="findVerifiedCodesByDeviceAndRequestSerialNumber"
+            resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="map">
         <![CDATA[
+
+
           SELECT * FROM  t_verified_code where request_serial_number=#{request_serial_number} and device=#{device} and DATE_FORMAT( verify_time,'%Y%m%d')= DATE_FORMAT( #{date},'%Y%m%d') and status=1 limit 1
+
+
         ]]>
     </select>
-    <select id="findByDeviceAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="map">
+    <select id="findByDeviceAndRequestSerialNumber" resultType="com.mocredit.verifyCode.model.TVerifiedCode"
+            resultMap="baseResultMap" parameterType="map">
         <![CDATA[
+
+
           SELECT * FROM  t_verified_code where request_serial_number=#{request_serial_number} and device=#{device} and status=1 limit 1
+
+
         ]]>
     </select>
     <!-- 根据券码序列号（券码ID）查询券码验证记录 -->
-    <select id="findVerifiedCodesByActiveCodeId" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="java.lang.String" >
+    <select id="findVerifiedCodesByActiveCodeId" resultType="com.mocredit.verifyCode.model.TVerifiedCode"
+            resultMap="baseResultMap" parameterType="java.lang.String">
         <![CDATA[
+
+
           SELECT * FROM  t_verified_code where code_serial_number=#{codeSerialNumber}
+
+
         ]]>
     </select>
-<!-- 根据券码序列号（券码ID）查询券码验证记录 -->
-    <select id="findVerifiedCodesByCodeAndType" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="java.util.Map" >
+    <!-- 根据券码序列号（券码ID）查询券码验证记录 -->
+    <select id="findVerifiedCodesByCodeAndType" resultType="com.mocredit.verifyCode.model.TVerifiedCode"
+            resultMap="baseResultMap" parameterType="java.util.Map">
         <![CDATA[
+
+
           SELECT * FROM  t_verified_code where code=#{code} and status=1 and verify_type=#{verifyType} limit 1
+
+
         ]]>
     </select>
     <!-- 插入记录 -->
     <insert id="insertVerifiedCode" parameterType="com.mocredit.verifyCode.model.TVerifiedCode">
         <![CDATA[
+
+
         INSERT  INTO t_verified_code (
           id,code,code_serial_number,verify_time,activity_id,activity_name,
           amount,device,store_id,store_name,start_time,end_time,
@@ -75,106 +107,125 @@
           #{number},#{requestSerialNumber},#{issueEnterpriseId},#{issueEnterpriseName},
           #{shopId},#{shopName},#{verifyType},#{contractId},#{status}
         )
+
+
         ]]>
     </insert>
     <!-- 根据条件查询流水分页数据 -->
-	<select id="getPage"  resultType="Map" parameterType="Map">
-		SELECT
-			vc.request_serial_number AS orderId,
-			ac.issue_enterprise_name AS enterpriseName,
-			vc.shop_name AS shopName,
-			vc.store_name AS storeName,
-			vc.activity_name as activityName,
-			vc.verify_type as `status`,
-			vc.`code`,
-			ac.custom_mobile as mobile,
-			vc.verify_time as orderTime,
-			vc.device as enCode,
-			vc.status as verifyStatus
-		FROM
-			t_verified_code vc
-		LEFT JOIN t_activity_code ac ON vc.code_serial_number = ac.id 
-		<where>
-			<if test="code != null">
-				vc.code=#{code}
-			</if>
-			<if test="enCode != null">
-				and vc.device=#{enCode}
-			</if>
-			<if test="mobile != null">
-				and ac.custom_mobile=#{mobile}
-			</if>
-			<if test="startTime != null">
-				and vc.verify_time &gt;=#{startTime,jdbcType=TIMESTAMP}
-			</if>
-			<if test="endTime != null">
-				and vc.verify_time&lt;=#{endTime,jdbcType=TIMESTAMP}
-			</if>
-			<if test="type != null">
-				and vc.verify_type in (${type})
-			</if>
-			<if test="activityName != null">
-				and vc.activity_name like '${activityName}'
-			</if>
-			<if test="enterpriseName != null">
-				and vc.issue_enterprise_name like '${enterpriseName}'
-			</if>
-			<if test="requestSerialNumber != null">
-				and vc.request_serial_number=#{requestSerialNumber}
-			</if>
-			<if test="storeName != null">
-				and vc.store_name like '${storeName}'
-			</if>
-		</where>
-		order by verify_time desc
-		limit #{pageStart},#{pageSize}
-	</select>
-	<!-- 根据条件查询流水分页数据 -->
-	<select id="getPageCount"  resultType="Long" parameterType="Map">
-		SELECT
-			count(1)
-		FROM
-			t_verified_code vc
-		<if test="mobile != null">
-		LEFT JOIN t_activity_code ac ON vc.code_serial_number = ac.id 
-		</if>
-		<where>
-			<if test="code != null">
-				vc.code=#{code}
-			</if>
-			<if test="enCode != null">
-				and vc.device=#{enCode}
-			</if>
-			<if test="mobile != null">
-				and ac.custom_mobile=#{mobile}
-			</if>
-			<if test="startTime != null">
-				and vc.verify_time &gt;=#{startTime,jdbcType=TIMESTAMP}
-			</if>
-			<if test="endTime != null">
-				and vc.verify_time&lt;=#{endTime,jdbcType=TIMESTAMP}
-			</if>
-			<if test="type != null">
-				and vc.verify_type in (${type})
-			</if>
-			<if test="activityName != null">
-				and vc.activity_name like '${activityName}'
-			</if>
-			<if test="enterpriseName != null">
-				and vc.issue_enterprise_name like '${enterpriseName}'
-			</if>
-			<if test="requestSerialNumber != null">
-				and vc.request_serial_number=#{requestSerialNumber}
-			</if>
-			<if test="storeName != null">
-				and vc.store_name like '${storeName}'
-			</if>
-		</where>
-	</select>
-	 <!-- 根据券码序列号（券码ID）查询券码验证记录 -->
-    <select id="findLastVerifiedCode" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap" parameterType="java.lang.String" >
+    <select id="getPage" resultType="Map" parameterType="Map">
+        SELECT
+        vc.request_serial_number AS orderId,
+        ac.issue_enterprise_name AS enterpriseName,
+        vc.shop_name AS shopName,
+        vc.store_name AS storeName,
+        vc.activity_name as activityName,
+        vc.verify_type as `status`,
+        vc.`code`,
+        ac.custom_mobile as mobile,
+        vc.verify_time as orderTime,
+        vc.device as enCode,
+        vc.status as verifyStatus
+        FROM
+        t_verified_code vc
+        LEFT JOIN t_activity_code ac ON vc.code_serial_number = ac.id
+        <where>
+            <if test="code != null">
+                vc.code=#{code}
+            </if>
+            <if test="enCode != null">
+                and vc.device=#{enCode}
+            </if>
+            <if test="mobile != null">
+                and ac.custom_mobile=#{mobile}
+            </if>
+            <if test="startTime != null">
+                and vc.verify_time &gt;=#{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                and vc.verify_time&lt;=#{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="type != null">
+                and vc.verify_type in (${type})
+            </if>
+            <if test="activityName != null">
+                and vc.activity_name like '${activityName}'
+            </if>
+            <if test="enterpriseName != null">
+                and vc.issue_enterprise_name like '${enterpriseName}'
+            </if>
+            <if test="requestSerialNumber != null">
+                and vc.request_serial_number=#{requestSerialNumber}
+            </if>
+            <if test="storeName != null">
+                and vc.store_name like '${storeName}'
+            </if>
+            <if test="storeId != null">
+                and vc.store_id=#{storeId}
+            </if>
+            <if test="activityId != null">
+                and vc.activity_id=#{activityId}
+            </if>
+        </where>
+        order by verify_time desc
+        limit #{pageStart},#{pageSize}
+    </select>
+    <!-- 根据条件查询流水分页数据 -->
+    <select id="getPageCount" resultType="Long" parameterType="Map">
+        SELECT
+        count(1)
+        FROM
+        t_verified_code vc
+        <if test="mobile != null">
+            LEFT JOIN t_activity_code ac ON vc.code_serial_number = ac.id
+        </if>
+        <where>
+            <if test="code != null">
+                vc.code=#{code}
+            </if>
+            <if test="enCode != null">
+                and vc.device=#{enCode}
+            </if>
+            <if test="mobile != null">
+                and ac.custom_mobile=#{mobile}
+            </if>
+            <if test="startTime != null">
+                and vc.verify_time &gt;=#{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                and vc.verify_time&lt;=#{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="type != null">
+                and vc.verify_type in (${type})
+            </if>
+            <if test="activityName != null">
+                and vc.activity_name like '${activityName}'
+            </if>
+            <if test="enterpriseName != null">
+                and vc.issue_enterprise_name like '${enterpriseName}'
+            </if>
+            <if test="requestSerialNumber != null">
+                and vc.request_serial_number=#{requestSerialNumber}
+            </if>
+            <if test="storeName != null">
+                and vc.store_name like '${storeName}'
+            </if>
+            <if test="storeId != null">
+                and vc.store_id=#{storeId}
+            </if>
+            <if test="activityId != null">
+                and vc.activity_id=#{activityId}
+            </if>
+        </where>
+    </select>
+    <!-- 根据券码序列号（券码ID）查询券码验证记录 -->
+    <select id="findLastVerifiedCode" resultType="com.mocredit.verifyCode.model.TVerifiedCode" resultMap="baseResultMap"
+            parameterType="java.lang.String">
         <![CDATA[
+
+
           SELECT verify_time,store_name,shop_name FROM  t_verified_code where code_serial_number=#{codeSerialNumber,jdbcType=VARCHAR} and status=1  ORDER BY verify_time DESC limit 1
+
+
         ]]>
     </select>
 </mapper>

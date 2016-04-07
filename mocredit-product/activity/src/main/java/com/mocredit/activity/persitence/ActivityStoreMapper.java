@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.mocredit.activity.model.ActivityStore;
+import com.mocredit.activity.model.ActivityStoreStat;
+import org.apache.ibatis.annotations.Param;
 
 /**
- * 
+ *
  * 活动商户关联-Dao 接口
- * 
+ *
  * @author lishoukun
  * @date 2015/07/08
  */
@@ -46,4 +48,9 @@ public interface ActivityStoreMapper {
 	int getActivityStoreCount(Map<String, Object> activityStoreMap);
 
 	List<ActivityStore> selectForChoose(Map<String, String> param);
+	//根据活动id查询活动的各个门店兑换统计
+	List<ActivityStoreStat> getActStoreStat(Map<String, Object> activityStoreMap);
+	List<ActivityStoreStat> getActStoreAll();
+	//保存更新活动统计信息
+	int saveAndUpdActStore(@Param("t") ActivityStoreStat activityStoreStat);
 }

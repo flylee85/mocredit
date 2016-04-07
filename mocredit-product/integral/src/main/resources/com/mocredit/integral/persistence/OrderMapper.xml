@@ -35,6 +35,12 @@
         <if test="t.endTime!=null">
             AND a.ctime &lt;=#{t.endTime}
         </if>
+        <if test="t.storeId!=null">
+            AND a.store_id =#{t.storeId}
+        </if>
+        <if test="t.activityId!=null">
+            AND a.activity_id=#{t.activityId}
+        </if>
         <if test="t.activityName!=null">
             AND b.activity_name like CONCAT('%','${t.activityName}','%')
         </if>
@@ -141,5 +147,23 @@
         a.store_id=c.store_id and a.activity_id=c.activity_id
         WHERE 1=1
         <include refid="findOrderByList_Base_Column"/>
+    </select>
+    <select id="statActIntegral" resultType="java.util.HashMap">
+    SELECT verifyCount,(payCount-revokeCount) AS exchangeCount FROM ( SELECT
+        (SELECT COUNT(1) FROM ti_order WHERE  activity_id=#{activityId}) AS verifyCount,
+        (SELECT COUNT(1) FROM ti_order WHERE  activity_id=#{activityId} AND is_success=1 AND old_order_id IS NULL) AS payCount,
+        (SELECT COUNT(DISTINCT(old_order_id)) FROM ti_order WHERE  activity_id=#{activityId} AND old_order_id IN(
+           SELECT order_id FROM ti_order WHERE  activity_id=#{activityId}  AND is_success=1 AND old_order_id IS NULL
+        )) AS revokeCount
+        FROM DUAL)a
+    </select>
+    <select id="statActStoreIntegral" resultType="java.util.HashMap">
+        SELECT verifyCount,(payCount-revokeCount) AS exchangeCount FROM ( SELECT
+        (SELECT COUNT(1) FROM ti_order WHERE  activity_id=#{activityId} AND store_id=#{storeId}) AS verifyCount,
+        (SELECT COUNT(1) FROM ti_order WHERE  activity_id=#{activityId} AND store_id=#{storeId} AND is_success=1 AND old_order_id IS NULL) AS payCount,
+        (SELECT COUNT(DISTINCT(old_order_id)) FROM ti_order WHERE  activity_id=#{activityId} AND store_id=#{storeId} AND old_order_id IN(
+           SELECT order_id FROM ti_order WHERE  activity_id=#{activityId} AND store_id=#{storeId} AND is_success=1 AND old_order_id IS NULL
+        )) AS revokeCount
+        FROM DUAL)a
     </select>
 </mapper>

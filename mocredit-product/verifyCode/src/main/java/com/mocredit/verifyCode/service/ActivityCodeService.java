@@ -184,4 +184,12 @@ public interface ActivityCodeService {
 	 */
 	AjaxResponseData checkCode(String device, String code);
 
+	/**
+	 * 更具活动id统计活动的信息
+	 * @param actId
+	 * @return
+	 */
+	Map  statActCode(String actId);
+
+	Map  statActStoreCode(String actId,String storeId);
 }

@@ -23,7 +23,8 @@ public class OrderDto {
 
     private String orderNo;
     private String storeName;
-
+    private String activityId;//活动id
+    private String storeId;//门店id
     public boolean isDownload() {
         return download;
     }
@@ -171,6 +172,26 @@ public class OrderDto {
     public void setStoreName(String storeName) {
         if(!"".equals(storeName)) {
             this.storeName = storeName;
+        }
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        if (!"".equals(activityId)) {
+            this.activityId = activityId;
+        }
+    }
+
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        if (!"".equals(storeId)) {
+            this.storeId = storeId;
         }
     }
 }

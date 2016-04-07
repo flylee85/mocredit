@@ -1,6 +1,7 @@
 package com.mocredit.integral.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.mocredit.integral.dto.OrderDto;
 import com.mocredit.integral.entity.Order;
 import com.mocredit.integral.entity.Response;
@@ -36,6 +37,35 @@ public class IntegralOrderController extends BaseController {
             map.put("pageCount", orderService.findOrderByListCount(orderDto));
         }
         resp.setData(map);
+        return JSON.toJSONString(resp);
+    }
+
+    @RequestMapping(value = "/statActIntegral", produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public String statActIntegral(@RequestBody String param) {
+        Response resp = new Response();
+        JSONObject jsonObject = JSON.parseObject(param);
+        try {
+            String actId = jsonObject.getString("activityId");
+            resp.setData(orderService.statActIntegral(actId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return JSON.toJSONString(resp);
+    }
+
+    @RequestMapping(value = "/statActStoreIntegral", produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public String statActStoreIntegral(@RequestBody String param) {
+        Response resp = new Response();
+        JSONObject jsonObject = JSON.parseObject(param);
+        try {
+            String actId = jsonObject.getString("activityId");
+            String storeId = jsonObject.getString("storeId");
+            resp.setData(orderService.statActStoreIntegral(actId, storeId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return JSON.toJSONString(resp);
     }
 }
