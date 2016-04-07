@@ -202,7 +202,7 @@ public class ActivityController {
         // 定义返回页面的对象
         ResponseData responseData = new AjaxResponseData();
         try {
-			/*
+            /*
 			 * 根据参数获取活动对象 如果程序执行到这里没有发生异常，则证明该操作成功执行,将获取到的数据放到返回页面的对象中
 			 */
             Activity activity = activityService.getActivity(reqMap);
@@ -929,7 +929,7 @@ public class ActivityController {
             responseData.setErrorMsg(e.getMessage(), e);
         }
         // 返回页面数据
-        return JSON.toJSONString(responseData);
+        return JSON.toJSONString(responseData, SerializerFeature.WriteMapNullValue);
     }
 
     @RequestMapping("/test")

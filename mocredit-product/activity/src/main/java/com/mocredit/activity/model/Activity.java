@@ -93,9 +93,9 @@ public class Activity implements Serializable {
     // 活动订单列表，与数据库无关
     private List<Batch> orderList = new ArrayList<Batch>();
     // 门店数量，与数据库无关
-    private Integer storeCount;
+    private int storeCount;
     // 订单数量，与数据库无关
-    private Integer orderCount;
+    private int orderCount;
     // 活动发行方名称
     private String enterpriseName;
     // 合同名称
@@ -106,11 +106,11 @@ public class Activity implements Serializable {
     private String amountLimit;//活动最低额度限制
     private double discount;//折扣额度（金额或者折扣度，两位小数）
     //码验证总数，兑换总数，废码总数
-    private Integer verifyCount;
-    private Integer exchangeCount;
-    private Integer disableCount;
+    private int verifyCount;
+    private int exchangeCount;
+    private int disableCount;
 
-    public Integer getVerifyCount() {
+    public int getVerifyCount() {
         return verifyCount;
     }
 
@@ -118,7 +118,7 @@ public class Activity implements Serializable {
         this.verifyCount = verifyCount;
     }
 
-    public Integer getExchangeCount() {
+    public int getExchangeCount() {
         return exchangeCount;
     }
 
@@ -126,7 +126,7 @@ public class Activity implements Serializable {
         this.exchangeCount = exchangeCount;
     }
 
-    public Integer getDisableCount() {
+    public int getDisableCount() {
         return disableCount;
     }
 

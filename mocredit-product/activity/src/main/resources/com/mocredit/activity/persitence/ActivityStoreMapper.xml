@@ -223,29 +223,31 @@
     </delete>
     <insert id="saveAndUpdActStore" parameterType="com.mocredit.activity.model.ActivityStoreStat">
         insert into
-        `act_store_stat`(activity_id,store_id,verify_count,exchange_count,ctime,utime)
-        values(#{t.activityId},#{t.storeId},#{t.verifyCount},#{t.exchangeCount},now(),now()) ON
+        `act_store_stat`(activity_id,activity_type,store_id,store_name,merchant_name,verify_count,exchange_count,ctime,utime)
+        values(#{t.activityId},#{t.activityType},#{t.storeId},#{t.storeName},#{t.merchantName},#{t.verifyCount},#{t.exchangeCount},now(),now()) ON
         DUPLICATE KEY UPDATE
-        verify_count=#{t.verifyCount},exchange_count=#{t.exchangeCount},utime=now();
+        verify_count=#{t.verifyCount},exchange_count=#{t.exchangeCount},store_name=#{t.storeName},merchant_name=#{t.merchantName},utime=now();
     </insert>
     <select id="getActStoreStat" resultType="com.mocredit.activity.model.ActivityStoreStat">
-        SELECT (SELECT `type` FROM act_activity WHERE id=a.activity_id) AS activityType,a.activity_id AS activityId,a.store_id AS storeId,b.code,b.name AS
-        storeName,(SELECT `name` FROM t_merchant WHERE id=a.shop_id) AS
-        merchantName,
-        c.verify_count AS verifyCount,c.exchange_count AS exchangeCount FROM
-        act_activity_store a LEFT JOIN t_store b ON a.store_id=b.id
-        LEFT JOIN act_store_stat c ON a.activity_id=c.activity_id AND a.store_id=c.store_id
-        WHERE 1=1
+        SELECT a.activity_id AS activityId,a.activity_type AS activityType, a.store_id AS storeId,a.store_name AS
+        storeName,
+        a.merchant_name AS merchantName,a.verify_count AS verifyCount,a.exchange_count AS exchangeCount
+        FROM act_store_stat a WHERE 1=1
         <if test="activityId !=null and activityId!=''">
             and a.activity_id=#{activityId}
         </if>
         <if test="keyword !=null and keyword!=''">
-            and(b.name like '%${keyword}%' or b.code like '%${keyword}%')
+            and(a.store_name like '%${keyword}%' or a.merchant_name like '%${keyword}%')
         </if>
+        ORDER by a.utime DESC
     </select>
     <select id="getActStoreAll" resultType="com.mocredit.activity.model.ActivityStoreStat">
-        SELECT (SELECT `type` FROM act_activity  WHERE id=a.activity_id) AS activityType,
-        a.activity_id AS activityId,a.store_id AS storeId FROM act_activity_store a
+      SELECT
+         (SELECT `type` FROM act_activity  WHERE id=a.activity_id) AS activityType,
+         (SELECT `name` FROM t_store  WHERE id=a.store_id) AS storeName,
+         (SELECT `name` FROM t_merchant  WHERE id=a.shop_id) AS merchantName,
+         a.activity_id AS activityId,a.store_id AS storeId
+      FROM act_activity_store a
     </select>
     <!-- ===================活动商户关联,结束======================== -->
 </mapper>
