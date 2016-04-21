@@ -914,7 +914,7 @@ public class ControllerServiceImpl implements ControllerService {
             }
             List<Device> devices = deviceRepository.getDeviceByEn(a.enCode);
             if (devices != null && devices.size() > 0) {
-                return "机具号" + a.enCode + "已存在";
+                return "0";
             }
             Device dev = new Device();
             dev.setId(a.id);
