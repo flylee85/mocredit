@@ -411,7 +411,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
         // 编码不为空，优先适用门店编码获取
         boolean canUse = false;
         ActActivityStore activityStore = null;
-		/* 如果要校验设备号，校验该码是否适用于该设备所在门店 */
+        /* 如果要校验设备号，校验该码是否适用于该设备所在门店 */
         if (checkDevice) {
             String resultStr = HttpUtil.doRestful(PropertiesUtil.getValue("MANAGE.GET_STORE_ID.URL") + "/" + device,
                     "");
@@ -755,7 +755,7 @@ public class ActivityCodeServiceImpl implements ActivityCodeService {
             param.put("status", type.toString());
         }
         param.put("pageStart", pageSize * (pageNum - 1));
-        param.put("pageSize", pageSize + 1);
+        param.put("pageSize", pageSize);
 
         // 获得总记录数
         // 获得数据

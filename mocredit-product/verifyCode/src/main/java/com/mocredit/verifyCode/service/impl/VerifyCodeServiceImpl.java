@@ -47,7 +47,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
             param.put("type", type.toString());
         }
         param.put("pageStart", pageSize * (pageNum - 1));
-        param.put("pageSize", pageSize + 1);
+        param.put("pageSize", pageSize);
 
         // 获得数据
         List<Map<String, Object>> page = verifyCodeMapper.getPage(param);
