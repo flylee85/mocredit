@@ -97,7 +97,7 @@
         insert into
         `ti_activity_trans_record`(activity_id,trans_type,trans_count,expire_date,ctime,utime)
         values(#{t.activityId},#{t.transType},#{t.transCount},#{t.expireDate},now(),now()) ON
-        DUPLICATE KEY UPDATE trans_count=trans_count+1,utime=now();
+        DUPLICATE KEY UPDATE trans_count=trans_count+1,expire_date=#{t.expireDate},utime=now();
     </insert>
     <select id="getTranRecordByActId" resultType="com.mocredit.integral.entity.ActivityTransRecord">
         select uuid as uuid,activity_id as activityId,
@@ -106,10 +106,10 @@
         from `ti_activity_trans_record` where activity_id =#{activityId}
     </select>
     <update id="updateByExpireDate">
-        update `ti_activity_trans_record` set trans_count=0 where expire_date=#{expireDate}
+        update `ti_activity_trans_record` set trans_count=0,utime=now() where expire_date=#{expireDate}
     </update>
     <update id="minusCountByActId">
-        update `ti_activity_trans_record` set trans_count=trans_count-1 where trans_count >0 and activity_id=#{actId}
+        update `ti_activity_trans_record` set trans_count=trans_count-1,utime=now() where trans_count >0 and activity_id=#{actId}
     </update>
     <select id="statCountByTime" resultType="com.mocredit.integral.entity.ActivityTransRecord">
 		SELECT

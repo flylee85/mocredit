@@ -16,16 +16,16 @@
 		insert into
 		`tran_record`(activity_id,card_num,tran_type,tran_count,expire_date,ctime,utime)
 		values(#{t.activityId},#{t.cardNum},#{t.tranType},#{t.tranCount},#{t.expireDate},now(),now()) ON
-		DUPLICATE KEY UPDATE tran_count=tran_count+1,utime=now();
+		DUPLICATE KEY UPDATE tran_count=tran_count+1,expire_date=#{t.expireDate},utime=now();
 	</insert>
     <update id="updateByExpireDate">
-		update `tran_record` set tran_count=0 where expire_date=#{expireDate}
+		update `tran_record` set tran_count=0,utime=now() where expire_date=#{expireDate}
     </update>
     <select id="getTranRecordByCardNum" resultMap="BaseResultMap">
         select * from
         `tran_record` where card_num=#{cardNum} and activity_id=#{activityId}
     </select>
     <update id="minusCountByCardNum">
-        update `tran_record` set tran_count=tran_count-1 where tran_count >0 and card_num=#{cardNum} and activity_id=#{activityId}
+        update `tran_record` set tran_count=tran_count-1,utime=now() where tran_count >0 and card_num=#{cardNum} and activity_id=#{activityId}
     </update>
 </mapper>
