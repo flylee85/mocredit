@@ -1,0 +1,37 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.org/config/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://activemq.org/config/1.0
+http://people.apache.org/repository/org.apache.activemq/xsds/activemq-core-4.1-incubator-SNAPSHOT.xsd">
+
+	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+		destroy-method="stop">
+		<property name="connectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL">
+					<value>tcp://116.58.219.209:61616</value>
+					<!--  <value>tcp://res.city.m.cn:61616</value>-->
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<!-- Spring JMS Template -->
+	<bean id="JmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory">
+			<ref local="jmsFactory" />
+		</property>
+		<property name="defaultDestinationName" value="subject" />
+
+		<!-- 区别它采用的模式为false是p2p为true是订阅 -->
+		<property name="pubSubDomain" value="false" />
+	</bean>
+
+	<!-- 发送信息  -->
+	<bean id="messageSender" class="cn.m.mt.jmsclient.impl.MessageSenderImpl">
+		<property name="jmsTemplet" ref="JmsTemplate" />
+	</bean>
+
+</beans> 
