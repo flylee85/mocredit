@@ -11,8 +11,8 @@
 		class="cn.m.mt.mocreditservice.util.FilePropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>file:./../../../jdbc.properties</value>
-			 	<value>file:./../../../system.properties</value>  
+				<value>classpath:jdbc.properties</value>
+			 	<value>classpath:system.properties</value>
 			</list>
 		</property>
 	</bean>
